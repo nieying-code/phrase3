@@ -118,7 +118,7 @@ python -m src.run_phase3 --config configs/phase3.yaml --output outputs
 - 最优储备金：`0.0`
 - 储备比例：`0.0`
 - 随机种子：`20260723`
-- CI状态：运行中（GitHub Actions）
+- CI状态：`success`（GitHub Actions `ci`，run #5，验证提交 `01bfa06`）
 
 ## 已知限制
 
