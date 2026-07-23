@@ -10,7 +10,7 @@
 - Base branch: `main`
 - Base merge SHA: `dee5eac1b5b13b843f3dfc98df71bbff3fed377f`
 - Phase 4 implementation SHA: `a528cb020ed6a5e666cb28be3ce451b15f818ace`
-- Draft PR: https://github.com/nieying-code/phrase3/pull/2
+- PR（Ready for review）: https://github.com/nieying-code/phrase3/pull/2
 - Repository: `nieying-code/phrase3`
 
 ## 实现内容
