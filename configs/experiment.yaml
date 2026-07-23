@@ -1,0 +1,25 @@
+experiment:
+  name: phase3_small_validation
+  seeds: [20260723, 20260724, 20260725]
+  budgets: [700.0, 800.0, 900.0, 1000.0, 1100.0, 1200.0]
+  train_scenarios: 50
+  out_of_sample_scenarios: 5000
+
+comparisons:
+  models:
+    - deterministic_mean
+    - all_pre_disaster
+    - fixed_reserve
+    - endogenous_reserve_extensive
+  algorithms:
+    - full_extensive
+    - standard_ccg
+    - spw_ccg
+
+sensitivity:
+  demand_cv: [0.10, 0.20, 0.30, 0.40, 0.50]
+  emergency_price_markup_mean: [0.10, 0.25, 0.40, 0.55]
+  supply_reduction_mean: [0.0, 0.15, 0.30, 0.45]
+  shelf_life: [1, 2, 3, 4, 6]
+  storage_capacity_multiplier: [0.5, 0.75, 1.0, 1.5]
+  shortage_penalty_multiplier: [6.0, 9.0, 12.0, 18.0, 24.0]
