@@ -1,0 +1,1270 @@
+{
+  "config": "configs\\phase3.yaml",
+  "seed": 20260723,
+  "solver_preference": [
+    "gurobi",
+    "highs"
+  ],
+  "status": "optimal",
+  "objective": 3269.9644075814263,
+  "consistency_difference": 1.3642420526593924e-12,
+  "tolerance": 1e-05,
+  "master": {
+    "status": "optimal",
+    "objective": 3269.964407581425,
+    "regular_cost": 1000.0,
+    "reserve": 0.0,
+    "reserve_ratio": 0.0,
+    "theta": 2269.964407581425,
+    "regular_purchase": {
+      "relief_food": [
+        350.8973468240235,
+        75.40555874899755,
+        -0.0,
+        68.3923385316705
+      ]
+    },
+    "master_scenario_costs": {
+      "s0000": 806.3817591328677,
+      "s0001": 1308.7299787916936,
+      "s0002": 1135.7911604899145,
+      "s0003": 2014.915274096315,
+      "s0004": 1656.860077022544,
+      "s0005": 1298.6662320034652,
+      "s0006": 91.05149250259788,
+      "s0007": 2269.9644075814244,
+      "s0008": 2269.9644075814253,
+      "s0009": 2269.9644075814253,
+      "s0010": 710.5842409639725,
+      "s0011": 437.1215514873164,
+      "s0012": 62.37737363565124,
+      "s0013": 2111.4919271821727,
+      "s0014": 1613.0002635278172,
+      "s0015": 1681.834846105437,
+      "s0016": 2269.964407581425,
+      "s0017": 2269.9644075814235,
+      "s0018": 604.6194592742478,
+      "s0019": 1449.8257757761353
+    },
+    "scenario_names": [
+      "s0000",
+      "s0001",
+      "s0002",
+      "s0003",
+      "s0004",
+      "s0005",
+      "s0006",
+      "s0007",
+      "s0008",
+      "s0009",
+      "s0010",
+      "s0011",
+      "s0012",
+      "s0013",
+      "s0014",
+      "s0015",
+      "s0016",
+      "s0017",
+      "s0018",
+      "s0019"
+    ],
+    "solver": "appsi_highs",
+    "runtime_seconds": 0.05572750000283122,
+    "termination_condition": "optimal",
+    "message": null
+  },
+  "evaluation": {
+    "status": "optimal",
+    "regular_cost": 1000.0,
+    "robust_objective": 3269.9644075814263,
+    "worst_scenario": "s0016",
+    "worst_recourse_cost": 2269.9644075814263,
+    "exact_scenario_costs": {
+      "s0000": 62.50753357206105,
+      "s0001": 0.0,
+      "s0002": 0.0,
+      "s0003": 974.9744515124028,
+      "s0004": 29.335660694617815,
+      "s0005": 47.682708676435375,
+      "s0006": 64.44344808483973,
+      "s0007": 0.0,
+      "s0008": 1164.2349343783912,
+      "s0009": 2.148589019384118,
+      "s0010": 64.22563082667439,
+      "s0011": 67.62444516503247,
+      "s0012": 27.60519375029953,
+      "s0013": 35.71662920499217,
+      "s0014": 51.484770295741605,
+      "s0015": 0.0,
+      "s0016": 2269.9644075814263,
+      "s0017": 0.0,
+      "s0018": 64.48744703289256,
+      "s0019": 29.569531454981522
+    },
+    "infeasible_scenarios": [],
+    "failed_scenarios": [],
+    "runtime_seconds": 0.14126010000472888,
+    "scenario_results": {
+      "s0000": {
+        "scenario": "s0000",
+        "status": "optimal",
+        "objective": 62.50753357206105,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            116.29308571546242,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              283.2113930483206,
+              -0.0,
+              0.0
+            ],
+            [
+              75.40555874899755,
+              209.23624453059855,
+              0.0
+            ],
+            [
+              -0.0,
+              75.40555874899755,
+              0.0
+            ],
+            [
+              41.64565419169105,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.0057477999944239855,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0001": {
+        "scenario": "s0001",
+        "status": "optimal",
+        "objective": 0.0,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              272.469027800605,
+              -0.0,
+              0.0
+            ],
+            [
+              52.77011203249174,
+              127.11650542420402,
+              0.0
+            ],
+            [
+              -0.0,
+              52.77011203249174,
+              0.0
+            ],
+            [
+              28.6395019434665,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.006476899987319484,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0002": {
+        "scenario": "s0002",
+        "status": "optimal",
+        "objective": 0.0,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              275.96063342582914,
+              -0.0,
+              0.0
+            ],
+            [
+              24.52233044474677,
+              213.7262247830023,
+              0.0
+            ],
+            [
+              -0.0,
+              24.52233044474677,
+              0.0
+            ],
+            [
+              12.05919488707687,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.00515300000552088,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0003": {
+        "scenario": "s0003",
+        "status": "optimal",
+        "objective": 974.9744515124028,
+        "emergency_purchase": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            20.994281901645195,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              256.86872011881326,
+              -0.0,
+              0.0
+            ],
+            [
+              59.089439554612824,
+              165.31828009875903,
+              0.0
+            ],
+            [
+              -0.0,
+              59.089439554612824,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.006524500000523403,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0004": {
+        "scenario": "s0004",
+        "status": "optimal",
+        "objective": 29.335660694617815,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            54.57797338533547,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              265.5963273007709,
+              -0.0,
+              0.0
+            ],
+            [
+              75.40555874899755,
+              169.90397292019748,
+              0.0
+            ],
+            [
+              -0.0,
+              75.40555874899755,
+              0.0
+            ],
+            [
+              21.071408557936877,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.006272099999478087,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0005": {
+        "scenario": "s0005",
+        "status": "optimal",
+        "objective": 47.682708676435375,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            88.71201614220536,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              274.1205809266796,
+              -0.0,
+              0.0
+            ],
+            [
+              65.54997918161949,
+              194.41813668969394,
+              0.0
+            ],
+            [
+              -0.0,
+              65.54997918161949,
+              0.0
+            ],
+            [
+              68.3923385316705,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.005111999984364957,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0006": {
+        "scenario": "s0006",
+        "status": "optimal",
+        "objective": 64.44344808483973,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            119.89478713458554,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              281.9561543978906,
+              -0.0,
+              0.0
+            ],
+            [
+              75.40555874899755,
+              224.59444125100245,
+              0.0
+            ],
+            [
+              -0.0,
+              75.40555874899755,
+              0.0
+            ],
+            [
+              49.503338451643074,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.00616489999811165,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0007": {
+        "scenario": "s0007",
+        "status": "optimal",
+        "objective": 0.0,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              237.9757519561907,
+              -0.0,
+              0.0
+            ],
+            [
+              58.1090192426669,
+              132.16534420110892,
+              0.0
+            ],
+            [
+              -0.0,
+              58.1090192426669,
+              0.0
+            ],
+            [
+              64.29869586865888,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.005378400004701689,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0008": {
+        "scenario": "s0008",
+        "status": "optimal",
+        "objective": 1164.2349343783912,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            -0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            25.069658363014454,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              201.7657027141101,
+              -0.0,
+              0.0
+            ],
+            [
+              0.0,
+              70.70649905177933,
+              0.0
+            ],
+            [
+              -0.0,
+              -0.0,
+              0.0
+            ],
+            [
+              6.307663171405061,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.006294499995419756,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0009": {
+        "scenario": "s0009",
+        "status": "optimal",
+        "objective": 2.148589019384118,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            3.9973749197844057,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              235.88186729554405,
+              -0.0,
+              0.0
+            ],
+            [
+              75.40555874899755,
+              116.54663519881967,
+              0.0
+            ],
+            [
+              -0.0,
+              75.40555874899755,
+              0.0
+            ],
+            [
+              67.65286597129955,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.005592800007434562,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0010": {
+        "scenario": "s0010",
+        "status": "optimal",
+        "objective": 64.22563082667439,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            119.48954572404539,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              287.0032128679269,
+              -0.0,
+              0.0
+            ],
+            [
+              66.60845142387421,
+              189.9284664788434,
+              0.0
+            ],
+            [
+              -0.0,
+              66.60845142387421,
+              0.0
+            ],
+            [
+              68.3923385316705,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.005649900005664676,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0011": {
+        "scenario": "s0011",
+        "status": "optimal",
+        "objective": 67.62444516503247,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            125.8129212372697,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              253.88030497270222,
+              -0.0,
+              0.0
+            ],
+            [
+              75.40555874899755,
+              217.09097510198526,
+              0.0
+            ],
+            [
+              -0.0,
+              75.40555874899755,
+              0.0
+            ],
+            [
+              31.63353545456458,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.005341599986422807,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0012": {
+        "scenario": "s0012",
+        "status": "optimal",
+        "objective": 27.60519375029953,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            51.35850000055727,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              300.0,
+              -0.0,
+              0.0
+            ],
+            [
+              75.40555874899755,
+              176.8486418312841,
+              0.0
+            ],
+            [
+              -0.0,
+              75.40555874899755,
+              0.0
+            ],
+            [
+              64.69242769367759,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.004996599978767335,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0013": {
+        "scenario": "s0013",
+        "status": "optimal",
+        "objective": 35.71662920499217,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            66.44954270696218,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              256.46682551954535,
+              -0.0,
+              0.0
+            ],
+            [
+              75.40555874899755,
+              133.42428133844686,
+              0.0
+            ],
+            [
+              -0.0,
+              75.40555874899755,
+              0.0
+            ],
+            [
+              57.10808152859855,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.006326999980956316,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0014": {
+        "scenario": "s0014",
+        "status": "optimal",
+        "objective": 51.484770295741605,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            95.7856191548681,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              267.4646938957071,
+              -0.0,
+              0.0
+            ],
+            [
+              61.55935017238675,
+              129.64155849688285,
+              0.0
+            ],
+            [
+              -0.0,
+              61.55935017238675,
+              0.0
+            ],
+            [
+              68.3923385316705,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.005508899979759008,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0015": {
+        "scenario": "s0015",
+        "status": "optimal",
+        "objective": 0.0,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              264.4495225547789,
+              -0.0,
+              0.0
+            ],
+            [
+              67.35741670972902,
+              94.67958695640611,
+              0.0
+            ],
+            [
+              -0.0,
+              67.35741670972902,
+              0.0
+            ],
+            [
+              21.883333809420165,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.006343299988657236,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0016": {
+        "scenario": "s0016",
+        "status": "optimal",
+        "objective": 2269.9644075814263,
+        "emergency_purchase": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            48.87950920717972,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              233.79868464332907,
+              -0.0,
+              0.0
+            ],
+            [
+              68.00283102452389,
+              131.901011033106,
+              0.0
+            ],
+            [
+              -0.0,
+              68.00283102452389,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.005149300006451085,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0017": {
+        "scenario": "s0017",
+        "status": "optimal",
+        "objective": 0.0,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              231.77074055796788,
+              -0.0,
+              0.0
+            ],
+            [
+              46.101891835343736,
+              136.3082733712068,
+              0.0
+            ],
+            [
+              -0.0,
+              46.101891835343736,
+              0.0
+            ],
+            [
+              53.48976765341403,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.005251700000371784,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0018": {
+        "scenario": "s0018",
+        "status": "optimal",
+        "objective": 64.48744703289256,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            119.97664564259082,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              289.0601964266793,
+              -0.0,
+              0.0
+            ],
+            [
+              75.40555874899755,
+              185.9500668339177,
+              0.0
+            ],
+            [
+              -0.0,
+              75.40555874899755,
+              0.0
+            ],
+            [
+              48.75793465242904,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.005905800004256889,
+        "termination_condition": "optimal",
+        "message": null
+      },
+      "s0019": {
+        "scenario": "s0019",
+        "status": "optimal",
+        "objective": 29.569531454981522,
+        "emergency_purchase": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "emergency_spend": 0.0,
+        "shortage": {
+          "relief_food": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "waste": {
+          "relief_food": [
+            -0.0,
+            0.0,
+            55.01308177670981,
+            0.0
+          ]
+        },
+        "ending_inventory": {
+          "relief_food": [
+            [
+              270.549829974767,
+              -0.0,
+              0.0
+            ],
+            [
+              70.28943327072142,
+              162.98520576161346,
+              0.0
+            ],
+            [
+              -0.0,
+              70.28943327072142,
+              0.0
+            ],
+            [
+              68.3923385316705,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "solver": "appsi_highs",
+        "runtime_seconds": 0.004921200015814975,
+        "termination_condition": "optimal",
+        "message": null
+      }
+    }
+  }
+}
