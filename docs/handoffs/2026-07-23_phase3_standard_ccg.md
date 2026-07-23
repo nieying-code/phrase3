@@ -8,7 +8,8 @@
 
 - Branch: `feature/phase3-standard-ccg`
 - Base branch: `main`
-- Commit SHA: `d5b91d545b1d6cb2f3ed128c15ad2d857a139795`
+- Initial implementation SHA: `d5b91d545b1d6cb2f3ed128c15ad2d857a139795`
+- ChatGPT review-fix SHA: `4d5835448d7d979b2e55f841df5e7f141e4f2f66`
 - PR链接: https://github.com/nieying-code/phrase3/pull/1
 - 正式仓库: `nieying-code/phrase3`
 
@@ -96,7 +97,7 @@ python -m compileall -q src tests
 python -m pytest -q
 ```
 
-结果：`19 passed in 1.00s`。
+结果：`22 passed in 2.71s`。
 
 ```text
 python -m src.run_phase3 --config configs/phase3.yaml --output outputs
@@ -118,7 +119,23 @@ python -m src.run_phase3 --config configs/phase3.yaml --output outputs
 - 最优储备金：`0.0`
 - 储备比例：`0.0`
 - 随机种子：`20260723`
-- CI状态：`success`（GitHub Actions `ci`，run #5，验证提交 `01bfa06`）
+- CI状态：`success`（GitHub Actions `ci`，run #9，验证审查修复提交 `4d58354`）
+
+## ChatGPT审查修复
+
+- **P1 限时与不可行状态**：所有求解均使用
+  `load_solutions=False`，先读取求解器终止条件；仅在终止状态为最优时加载解。
+  `NoFeasibleSolutionError` 等异常不再根据异常类型或文本猜测为不可行，而是归为
+  `solver_error`。新增真实 HiGHS 不可行模型、模拟限时终止和异常路径测试。
+- **P2 求解器容差配置**：`feasibility_tolerance` 与
+  `optimality_tolerance` 已从配置贯穿确定性模型、固定比例模型、扩展模型、独立
+  recourse oracle 和 C&CG。HiGHS 映射到 primal/mip/dual feasibility
+  tolerance，Gurobi 映射到 `FeasibilityTol` 与 `OptimalityTol`。结果JSON记录实际
+  配置值。
+- **P3 handoff元数据**：已更新初始提交、审查修复提交、PR链接、测试数量和最新
+  已验证CI。
+- 修复后正式实例目标仍为 `3269.9644075814263`，与修复前一致；C&CG仍在5次
+  迭代收敛，最优储备金仍为 `0.0`。
 
 ## 已知限制
 
