@@ -5,6 +5,10 @@
     "gurobi",
     "highs"
   ],
+  "solver_tolerances": {
+    "feasibility": 1e-07,
+    "optimality": 1e-07
+  },
   "termination_status": "optimal",
   "converged": true,
   "objective": 3269.9644075814263,
@@ -59,9 +63,9 @@
     "s0018": 64.48744703289256,
     "s0019": 29.569531454981522
   },
-  "total_runtime_seconds": 0.8803055000025779,
-  "master_runtime_seconds": 0.08494560001417994,
-  "oracle_runtime_seconds": 0.7846503000473604,
+  "total_runtime_seconds": 0.9769893999909982,
+  "master_runtime_seconds": 0.09990939998533577,
+  "oracle_runtime_seconds": 0.8656128000002354,
   "solver": "appsi_highs",
   "iteration_log": [
     {
@@ -76,8 +80,8 @@
       "regular_cost": 1000.0,
       "R": -0.0,
       "R/B": -0.0,
-      "master_time": 0.012233099987497553,
-      "oracle_time": 0.14355070001329295,
+      "master_time": 0.013561699975980446,
+      "oracle_time": 0.17796819997602142,
       "infeasible_scenario_count": 10,
       "worst_recourse_cost": null,
       "worst_scenario": null
@@ -94,8 +98,8 @@
       "regular_cost": 1000.0,
       "R": -0.0,
       "R/B": -0.0,
-      "master_time": 0.014969900017604232,
-      "oracle_time": 0.17228280002018437,
+      "master_time": 0.016550600004848093,
+      "oracle_time": 0.15899520000675693,
       "infeasible_scenario_count": 5,
       "worst_recourse_cost": null,
       "worst_scenario": null
@@ -112,8 +116,8 @@
       "regular_cost": 1000.0,
       "R": -0.0,
       "R/B": -0.0,
-      "master_time": 0.01606380002340302,
-      "oracle_time": 0.1494992999942042,
+      "master_time": 0.02019010001095012,
+      "oracle_time": 0.16209120000712574,
       "infeasible_scenario_count": 3,
       "worst_recourse_cost": null,
       "worst_scenario": null
@@ -130,8 +134,8 @@
       "regular_cost": 1000.0,
       "R": 0.0,
       "R/B": 0.0,
-      "master_time": 0.019673200004035607,
-      "oracle_time": 0.15796040001441725,
+      "master_time": 0.02493250000406988,
+      "oracle_time": 0.16529499998432584,
       "infeasible_scenario_count": 2,
       "worst_recourse_cost": null,
       "worst_scenario": null
@@ -148,8 +152,8 @@
       "regular_cost": 1000.0,
       "R": 0.0,
       "R/B": 0.0,
-      "master_time": 0.022005599981639534,
-      "oracle_time": 0.1613571000052616,
+      "master_time": 0.02467449998948723,
+      "oracle_time": 0.2012632000260055,
       "infeasible_scenario_count": 0,
       "worst_recourse_cost": 2269.9644075814263,
       "worst_scenario": "s0016"
@@ -185,7 +189,7 @@
     },
     "infeasible_scenarios": [],
     "failed_scenarios": [],
-    "runtime_seconds": 0.1613571000052616,
+    "runtime_seconds": 0.2012632000260055,
     "scenario_results": {
       "s0000": {
         "scenario": "s0000",
@@ -241,7 +245,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006618199986405671,
+        "runtime_seconds": 0.009522000007564202,
         "termination_condition": "optimal",
         "message": null
       },
@@ -299,7 +303,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006227500009117648,
+        "runtime_seconds": 0.030752800026675686,
         "termination_condition": "optimal",
         "message": null
       },
@@ -357,7 +361,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005847100022947416,
+        "runtime_seconds": 0.006520700000692159,
         "termination_condition": "optimal",
         "message": null
       },
@@ -415,7 +419,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.0052226999832782894,
+        "runtime_seconds": 0.006987900007516146,
         "termination_condition": "optimal",
         "message": null
       },
@@ -473,7 +477,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.00615159998415038,
+        "runtime_seconds": 0.005721300025470555,
         "termination_condition": "optimal",
         "message": null
       },
@@ -531,7 +535,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.00551739998627454,
+        "runtime_seconds": 0.0061113999981898814,
         "termination_condition": "optimal",
         "message": null
       },
@@ -589,7 +593,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005372999992687255,
+        "runtime_seconds": 0.006485599995357916,
         "termination_condition": "optimal",
         "message": null
       },
@@ -647,7 +651,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006254299980355427,
+        "runtime_seconds": 0.007485500012990087,
         "termination_condition": "optimal",
         "message": null
       },
@@ -705,7 +709,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.007654199987882748,
+        "runtime_seconds": 0.00661690000561066,
         "termination_condition": "optimal",
         "message": null
       },
@@ -763,7 +767,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005458900006487966,
+        "runtime_seconds": 0.005373499996494502,
         "termination_condition": "optimal",
         "message": null
       },
@@ -821,7 +825,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006459199998062104,
+        "runtime_seconds": 0.009191600023768842,
         "termination_condition": "optimal",
         "message": null
       },
@@ -879,7 +883,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005950599996140227,
+        "runtime_seconds": 0.005664800002705306,
         "termination_condition": "optimal",
         "message": null
       },
@@ -937,7 +941,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.0061163000063970685,
+        "runtime_seconds": 0.006997099990257993,
         "termination_condition": "optimal",
         "message": null
       },
@@ -995,7 +999,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006504400022095069,
+        "runtime_seconds": 0.006494500004919246,
         "termination_condition": "optimal",
         "message": null
       },
@@ -1053,7 +1057,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005466400005389005,
+        "runtime_seconds": 0.006720999983372167,
         "termination_condition": "optimal",
         "message": null
       },
@@ -1111,7 +1115,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.007813699980033562,
+        "runtime_seconds": 0.00775910000083968,
         "termination_condition": "optimal",
         "message": null
       },
@@ -1169,7 +1173,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.007264600018970668,
+        "runtime_seconds": 0.011960600008023903,
         "termination_condition": "optimal",
         "message": null
       },
@@ -1227,7 +1231,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006321699998807162,
+        "runtime_seconds": 0.009450699988519773,
         "termination_condition": "optimal",
         "message": null
       },
@@ -1285,7 +1289,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.008460099983494729,
+        "runtime_seconds": 0.008653099997900426,
         "termination_condition": "optimal",
         "message": null
       },
@@ -1343,7 +1347,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005691799975465983,
+        "runtime_seconds": 0.007645200006663799,
         "termination_condition": "optimal",
         "message": null
       }

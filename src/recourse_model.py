@@ -67,6 +67,8 @@ def solve_recourse_model(
     *,
     solver_preference: Iterable[str] = ("gurobi", "highs"),
     time_limit_seconds: float = 600.0,
+    feasibility_tolerance: float | None = None,
+    optimality_tolerance: float | None = None,
     tee: bool = False,
 ) -> RecourseResult:
     """Solve and extract a normalized exact-recourse result."""
@@ -77,6 +79,8 @@ def solve_recourse_model(
         model,
         solver_preference=solver_preference,
         time_limit_seconds=time_limit_seconds,
+        feasibility_tolerance=feasibility_tolerance,
+        optimality_tolerance=optimality_tolerance,
         tee=tee,
     )
     if record.status != "optimal":
@@ -152,6 +156,8 @@ def solve_recourse(
     *,
     solver_preference: Iterable[str] = ("gurobi", "highs"),
     time_limit_seconds: float = 600.0,
+    feasibility_tolerance: float | None = None,
+    optimality_tolerance: float | None = None,
     tee: bool = False,
 ) -> RecourseResult:
     """Convenience wrapper for building and solving one exact recourse LP."""
@@ -166,5 +172,7 @@ def solve_recourse(
         model,
         solver_preference=solver_preference,
         time_limit_seconds=time_limit_seconds,
+        feasibility_tolerance=feasibility_tolerance,
+        optimality_tolerance=optimality_tolerance,
         tee=tee,
     )

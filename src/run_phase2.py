@@ -25,11 +25,15 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
     solver_config = config["solver"]
     preference = tuple(str(name) for name in solver_config["preference"])
     time_limit = float(solver_config["time_limit_seconds"])
+    feasibility_tolerance = float(solver_config["feasibility_tolerance"])
+    optimality_tolerance = float(solver_config["optimality_tolerance"])
 
     deterministic = solve_model(
         build_deterministic_model(data),
         solver_preference=preference,
         time_limit_seconds=time_limit,
+        feasibility_tolerance=feasibility_tolerance,
+        optimality_tolerance=optimality_tolerance,
     )
 
     fixed_solutions = []
@@ -39,6 +43,8 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
                 build_fixed_reserve_model(data, float(ratio)),
                 solver_preference=preference,
                 time_limit_seconds=time_limit,
+                feasibility_tolerance=feasibility_tolerance,
+                optimality_tolerance=optimality_tolerance,
             )
         )
 

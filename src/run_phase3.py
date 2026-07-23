@@ -46,6 +46,8 @@ def _evaluate_solution(
     *,
     solver_preference: tuple[str, ...],
     time_limit_seconds: float,
+    feasibility_tolerance: float,
+    optimality_tolerance: float,
 ) -> EvaluationResult:
     return evaluate_first_stage(
         data,
@@ -53,6 +55,8 @@ def _evaluate_solution(
         solution.reserve,
         solver_preference=solver_preference,
         time_limit_seconds=time_limit_seconds,
+        feasibility_tolerance=feasibility_tolerance,
+        optimality_tolerance=optimality_tolerance,
     )
 
 
@@ -62,6 +66,14 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
     solver_config = config["solver"]
     preference = tuple(str(name) for name in solver_config["preference"])
     time_limit = float(solver_config["time_limit_seconds"])
+    feasibility_tolerance = float(solver_config["feasibility_tolerance"])
+    optimality_tolerance = float(solver_config["optimality_tolerance"])
+    solver_kwargs = {
+        "solver_preference": preference,
+        "time_limit_seconds": time_limit,
+        "feasibility_tolerance": feasibility_tolerance,
+        "optimality_tolerance": optimality_tolerance,
+    }
     ccg_config = config["ccg"]
     consistency_tolerance = float(
         config.get("phase3", {}).get(
@@ -72,14 +84,12 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
 
     deterministic = solve_model(
         build_deterministic_model(data),
-        solver_preference=preference,
-        time_limit_seconds=time_limit,
+        **solver_kwargs,
     )
     deterministic_eval = _evaluate_solution(
         data,
         deterministic,
-        solver_preference=preference,
-        time_limit_seconds=time_limit,
+        **solver_kwargs,
     )
 
     fixed: list[tuple[float, ModelSolution, EvaluationResult]] = []
@@ -87,8 +97,7 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
         ratio = float(raw_ratio)
         solution = solve_model(
             build_fixed_reserve_model(data, ratio),
-            solver_preference=preference,
-            time_limit_seconds=time_limit,
+            **solver_kwargs,
         )
         fixed.append(
             (
@@ -97,16 +106,14 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
                 _evaluate_solution(
                     data,
                     solution,
-                    solver_preference=preference,
-                    time_limit_seconds=time_limit,
+                    **solver_kwargs,
                 ),
             )
         )
 
     extensive = solve_endogenous_extensive(
         data,
-        solver_preference=preference,
-        time_limit_seconds=time_limit,
+        **solver_kwargs,
         consistency_tolerance=consistency_tolerance,
     )
     ccg = run_standard_ccg(
@@ -114,8 +121,7 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
         absolute_tolerance=float(ccg_config["absolute_tolerance"]),
         relative_tolerance=float(ccg_config["relative_tolerance"]),
         max_iterations=int(ccg_config["max_iterations"]),
-        solver_preference=preference,
-        time_limit_seconds=time_limit,
+        **solver_kwargs,
     )
 
     solutions_root = output_root / "solutions" / "phase3"
@@ -125,6 +131,10 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
         "config": str(config_path),
         "seed": int(config["project"]["seed"]),
         "solver_preference": list(preference),
+        "solver_tolerances": {
+            "feasibility": feasibility_tolerance,
+            "optimality": optimality_tolerance,
+        },
     }
     _write_json(
         solutions_root / "extensive_solution.json",

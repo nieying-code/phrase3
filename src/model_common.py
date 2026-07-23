@@ -62,11 +62,25 @@ def solve_with_status(
     *,
     solver_preference: Iterable[str] = ("gurobi", "highs"),
     time_limit_seconds: float = 600.0,
+    feasibility_tolerance: float | None = None,
+    optimality_tolerance: float | None = None,
     tee: bool = False,
 ) -> SolveRecord:
     """Solve a Pyomo model without conflating failures and infeasibility."""
 
     started = perf_counter()
+    for name, value in (
+        ("feasibility_tolerance", feasibility_tolerance),
+        ("optimality_tolerance", optimality_tolerance),
+    ):
+        if value is not None and float(value) <= 0.0:
+            return SolveRecord(
+                status="solver_error",
+                solver="unavailable",
+                runtime_seconds=perf_counter() - started,
+                termination_condition="invalid_solver_option",
+                message=f"{name} must be positive",
+            )
     try:
         solver_name, solver = select_solver(solver_preference)
     except Exception as exc:
@@ -80,34 +94,53 @@ def solve_with_status(
 
     if solver_name in {"appsi_highs", "highs"}:
         solver.options["time_limit"] = float(time_limit_seconds)
+        if feasibility_tolerance is not None:
+            solver.options["primal_feasibility_tolerance"] = float(
+                feasibility_tolerance
+            )
+            solver.options["mip_feasibility_tolerance"] = float(
+                feasibility_tolerance
+            )
+        if optimality_tolerance is not None:
+            solver.options["dual_feasibility_tolerance"] = float(
+                optimality_tolerance
+            )
     elif solver_name == "gurobi":
         solver.options["TimeLimit"] = float(time_limit_seconds)
+        if feasibility_tolerance is not None:
+            solver.options["FeasibilityTol"] = float(feasibility_tolerance)
+        if optimality_tolerance is not None:
+            solver.options["OptimalityTol"] = float(optimality_tolerance)
 
     try:
-        result = solver.solve(model, tee=tee)
+        # Do not ask Pyomo to load a solution before inspecting termination.
+        # In particular, appsi_highs raises NoFeasibleSolutionError for both
+        # true infeasibility and time limits with no incumbent when automatic
+        # loading is enabled.  The termination condition is the authoritative
+        # distinction.
+        result = solver.solve(model, tee=tee, load_solutions=False)
     except Exception as exc:
-        message = str(exc)
-        lowered = message.lower()
-        status = (
-            "infeasible"
-            if (
-                type(exc).__name__ == "NoFeasibleSolutionError"
-                or "no feasible solution" in lowered
-                or "feasible solution was not found" in lowered
-            )
-            else "solver_error"
-        )
         return SolveRecord(
-            status=status,
+            status="solver_error",
             solver=solver_name,
             runtime_seconds=perf_counter() - started,
             termination_condition=type(exc).__name__,
-            message=message,
+            message=str(exc),
         )
 
     termination = result.solver.termination_condition
     solver_status = result.solver.status
     if termination in OPTIMAL_TERMINATIONS:
+        try:
+            model.solutions.load_from(result)
+        except Exception as exc:
+            return SolveRecord(
+                status="solver_error",
+                solver=solver_name,
+                runtime_seconds=perf_counter() - started,
+                termination_condition="solution_load_error",
+                message=str(exc),
+            )
         status = "optimal"
     elif termination in INFEASIBLE_TERMINATIONS:
         status = "infeasible"

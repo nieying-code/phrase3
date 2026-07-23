@@ -117,6 +117,8 @@ def solve_master(
     *,
     solver_preference: Iterable[str] = ("gurobi", "highs"),
     time_limit_seconds: float = 600.0,
+    feasibility_tolerance: float | None = None,
+    optimality_tolerance: float | None = None,
     tee: bool = False,
 ) -> MasterSolution:
     """Solve a restricted master and extract only first-stage/master values."""
@@ -125,6 +127,8 @@ def solve_master(
         model,
         solver_preference=solver_preference,
         time_limit_seconds=time_limit_seconds,
+        feasibility_tolerance=feasibility_tolerance,
+        optimality_tolerance=optimality_tolerance,
         tee=tee,
     )
     scenarios = tuple(str(s) for s in model.S)
@@ -172,6 +176,8 @@ def solve_endogenous_extensive(
     *,
     solver_preference: Iterable[str] = ("gurobi", "highs"),
     time_limit_seconds: float = 600.0,
+    feasibility_tolerance: float | None = None,
+    optimality_tolerance: float | None = None,
     consistency_tolerance: float = 1.0e-6,
     tee: bool = False,
 ) -> ExtensiveSolution:
@@ -181,6 +187,8 @@ def solve_endogenous_extensive(
         build_endogenous_extensive_model(data),
         solver_preference=solver_preference,
         time_limit_seconds=time_limit_seconds,
+        feasibility_tolerance=feasibility_tolerance,
+        optimality_tolerance=optimality_tolerance,
         tee=tee,
     )
     if master.status != "optimal":
@@ -197,6 +205,8 @@ def solve_endogenous_extensive(
         float(master.reserve),
         solver_preference=solver_preference,
         time_limit_seconds=time_limit_seconds,
+        feasibility_tolerance=feasibility_tolerance,
+        optimality_tolerance=optimality_tolerance,
         tee=tee,
     )
     if evaluation.status != "optimal" or evaluation.robust_objective is None:

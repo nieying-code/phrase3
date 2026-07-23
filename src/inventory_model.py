@@ -84,6 +84,8 @@ def solve_model(
     *,
     solver_preference: Iterable[str] = ("gurobi", "highs"),
     time_limit_seconds: float = 600.0,
+    feasibility_tolerance: float | None = None,
+    optimality_tolerance: float | None = None,
     tee: bool = False,
 ) -> ModelSolution:
     """Solve a phase-2-compatible model and extract its master variables."""
@@ -92,6 +94,8 @@ def solve_model(
         model,
         solver_preference=solver_preference,
         time_limit_seconds=time_limit_seconds,
+        feasibility_tolerance=feasibility_tolerance,
+        optimality_tolerance=optimality_tolerance,
         tee=tee,
     )
     if record.status != "optimal":

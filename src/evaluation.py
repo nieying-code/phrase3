@@ -67,6 +67,8 @@ def evaluate_first_stage(
     scenario_names: Sequence[str] | None = None,
     solver_preference: Iterable[str] = ("gurobi", "highs"),
     time_limit_seconds: float = 600.0,
+    feasibility_tolerance: float | None = None,
+    optimality_tolerance: float | None = None,
     tee: bool = False,
 ) -> EvaluationResult:
     """Independently re-solve every requested recourse scenario."""
@@ -82,6 +84,8 @@ def evaluate_first_stage(
             reserve,
             solver_preference=solver_preference,
             time_limit_seconds=time_limit_seconds,
+            feasibility_tolerance=feasibility_tolerance,
+            optimality_tolerance=optimality_tolerance,
             tee=tee,
         )
 

@@ -5,6 +5,10 @@
     "gurobi",
     "highs"
   ],
+  "solver_tolerances": {
+    "feasibility": 1e-07,
+    "optimality": 1e-07
+  },
   "status": "optimal",
   "objective": 3269.9644075814263,
   "consistency_difference": 1.3642420526593924e-12,
@@ -69,7 +73,7 @@
       "s0019"
     ],
     "solver": "appsi_highs",
-    "runtime_seconds": 0.05572750000283122,
+    "runtime_seconds": 0.06459470000118017,
     "termination_condition": "optimal",
     "message": null
   },
@@ -103,7 +107,7 @@
     },
     "infeasible_scenarios": [],
     "failed_scenarios": [],
-    "runtime_seconds": 0.14126010000472888,
+    "runtime_seconds": 0.17106849999981932,
     "scenario_results": {
       "s0000": {
         "scenario": "s0000",
@@ -159,7 +163,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.0057477999944239855,
+        "runtime_seconds": 0.007922699995106086,
         "termination_condition": "optimal",
         "message": null
       },
@@ -217,7 +221,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006476899987319484,
+        "runtime_seconds": 0.006012199999531731,
         "termination_condition": "optimal",
         "message": null
       },
@@ -275,7 +279,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.00515300000552088,
+        "runtime_seconds": 0.007697399996686727,
         "termination_condition": "optimal",
         "message": null
       },
@@ -333,7 +337,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006524500000523403,
+        "runtime_seconds": 0.005483699991600588,
         "termination_condition": "optimal",
         "message": null
       },
@@ -391,7 +395,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006272099999478087,
+        "runtime_seconds": 0.007091499981470406,
         "termination_condition": "optimal",
         "message": null
       },
@@ -449,7 +453,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005111999984364957,
+        "runtime_seconds": 0.0054598999849986285,
         "termination_condition": "optimal",
         "message": null
       },
@@ -507,7 +511,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.00616489999811165,
+        "runtime_seconds": 0.007540799997514114,
         "termination_condition": "optimal",
         "message": null
       },
@@ -565,7 +569,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005378400004701689,
+        "runtime_seconds": 0.00810300000011921,
         "termination_condition": "optimal",
         "message": null
       },
@@ -623,7 +627,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006294499995419756,
+        "runtime_seconds": 0.007810599985532463,
         "termination_condition": "optimal",
         "message": null
       },
@@ -681,7 +685,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005592800007434562,
+        "runtime_seconds": 0.006989300018176436,
         "termination_condition": "optimal",
         "message": null
       },
@@ -739,7 +743,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005649900005664676,
+        "runtime_seconds": 0.008026099996641278,
         "termination_condition": "optimal",
         "message": null
       },
@@ -797,7 +801,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005341599986422807,
+        "runtime_seconds": 0.006493699998827651,
         "termination_condition": "optimal",
         "message": null
       },
@@ -855,7 +859,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.004996599978767335,
+        "runtime_seconds": 0.008384899992961437,
         "termination_condition": "optimal",
         "message": null
       },
@@ -913,7 +917,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006326999980956316,
+        "runtime_seconds": 0.006723400001646951,
         "termination_condition": "optimal",
         "message": null
       },
@@ -971,7 +975,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005508899979759008,
+        "runtime_seconds": 0.007696599990595132,
         "termination_condition": "optimal",
         "message": null
       },
@@ -1029,7 +1033,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.006343299988657236,
+        "runtime_seconds": 0.008903499983716756,
         "termination_condition": "optimal",
         "message": null
       },
@@ -1087,7 +1091,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005149300006451085,
+        "runtime_seconds": 0.007067700003972277,
         "termination_condition": "optimal",
         "message": null
       },
@@ -1145,7 +1149,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005251700000371784,
+        "runtime_seconds": 0.006998299999395385,
         "termination_condition": "optimal",
         "message": null
       },
@@ -1203,7 +1207,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.005905800004256889,
+        "runtime_seconds": 0.006973200011998415,
         "termination_condition": "optimal",
         "message": null
       },
@@ -1261,7 +1265,7 @@
           ]
         },
         "solver": "appsi_highs",
-        "runtime_seconds": 0.004921200015814975,
+        "runtime_seconds": 0.007172699988586828,
         "termination_condition": "optimal",
         "message": null
       }
