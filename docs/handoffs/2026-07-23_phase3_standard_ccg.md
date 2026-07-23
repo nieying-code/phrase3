@@ -8,8 +8,8 @@
 
 - Branch: `feature/phase3-standard-ccg`
 - Base branch: `main`
-- Commit SHA: pending
-- PR链接: pending
+- Commit SHA: `d5b91d545b1d6cb2f3ed128c15ad2d857a139795`
+- PR链接: https://github.com/nieying-code/phrase3/pull/1
 - 正式仓库: `nieying-code/phrase3`
 
 ## 修改内容
@@ -118,7 +118,7 @@ python -m src.run_phase3 --config configs/phase3.yaml --output outputs
 - 最优储备金：`0.0`
 - 储备比例：`0.0`
 - 随机种子：`20260723`
-- CI状态：pending
+- CI状态：运行中（GitHub Actions）
 
 ## 已知限制
 
