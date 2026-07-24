@@ -74,6 +74,9 @@ def evaluate_first_stage(
     """Independently re-solve every requested recourse scenario."""
 
     started = perf_counter()
+    solver_preference = tuple(solver_preference)
+    if not solver_preference:
+        raise ValueError("solver_preference must not be empty")
     selected = tuple(data.scenarios if scenario_names is None else scenario_names)
     results: dict[str, RecourseResult] = {}
     for scenario in selected:
