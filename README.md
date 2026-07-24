@@ -2,7 +2,7 @@
 
 本项目研究固定总预算在灾前常规采购与灾后应急储备之间的内生分配，并考虑多期库龄、到期浪费、仓储容量、需求波动、应急价格上涨和供应受限。
 
-当前完成阶段3：独立精确补救模型、全部训练场景内生储备金扩展模型、完整有限场景 oracle、标准有限场景 C&CG，以及确定性/固定比例/内生模型的统一精确评价。跨预算场景池热启动 SPW-C&CG 留到阶段4。
+PR #1 的代码标签沿用了“阶段3”，但实际同时完成了原计划阶段3（全场景内生储备扩展式）和阶段4（标准有限场景 C&CG）：包括独立精确补救模型、完整有限场景 oracle，以及确定性/固定比例/内生模型的统一精确评价。跨预算场景池热启动 SPW-C&CG 对应原计划阶段5。
 
 ## 模型
 
@@ -49,7 +49,7 @@ python -m pytest -q
 - 不可行补救场景的识别和加入；
 - C&CG 场景去重、有限迭代和固定随机种子复现。
 
-## 运行阶段3
+## 运行阶段3/4
 
 ```powershell
 python -m src.run_phase3 --config configs/phase3.yaml --output outputs
@@ -60,13 +60,16 @@ python -m src.run_phase3 --config configs/phase3.yaml --output outputs
 ```text
 outputs/
   logs/phase3/ccg_iterations.csv
+  reproducibility/phase3/manifest.json
+  reproducibility/phase3/resolved_config.json
+  reproducibility/phase3/training_scenarios.csv
   solutions/phase3/ccg_solution.json
   solutions/phase3/extensive_solution.json
   tables/phase3/model_comparison.csv
   tables/phase3/scenario_evaluation.csv
 ```
 
-这些结果文件记录配置路径、随机种子、求解器、运行时间、上下界、迭代场景、最优储备金、储备比例和精确逐场景补救成本。
+这些结果文件记录配置路径、随机种子、求解器、运行时间、上下界、迭代场景、最优储备金、储备比例和精确逐场景补救成本。正式入口还保存解析后的完整配置、完整训练场景、SHA-256 哈希、Python/依赖/求解器版本和 Git commit SHA；只有扩展式与 C&CG 均成功且目标在容差内一致时进程才以退出码 0 结束。
 
 ## 目录
 
