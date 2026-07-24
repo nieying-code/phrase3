@@ -9,12 +9,13 @@
 - Branch: `fix/phase3-phase4-acceptance`
 - Base branch: `main`
 - Base SHA: `dee5eac1b5b13b843f3dfc98df71bbff3fed377f`
-- Code and tests commit: `3c0ef228683eec20575b071ba5293c348615c1f5`
-- Documentation commit: `cd93daae248541e1842d60c25a8035457abc57a6`
-- Artifact line-ending commit: `d0e55f2eb93e948b163fc5a96ac848c933a51efa`
-- Reproducibility snapshot commit: `2c98258`
-- Final commit: pending
-- PR: pending
+- Remote code and tests commit: `70ee2a06b16bb71b88617b532f56521abbb14686`
+- Remote documentation commit: `721b0fa27936e6b80768d69e412852473ccbec62`
+- Remote artifact line-ending commit: `28718083e7be855d2b5f4cee280ee72d179468f5`
+- Remote reproducibility snapshot commit: `f004b474cf3ad21e98c763f579b517afc6ea7fd5`
+- Pre-handoff-update remote head: `095c09090ce30317bec7f102933c387a93d0e60e`
+- Final remote head: 以 PR 页面为准；本 handoff 更新是最后一项文档变更。
+- PR: https://github.com/nieying-code/phrase3/pull/3
 
 ## 修改内容
 
@@ -97,7 +98,7 @@ python -m src.run_phase3 --config configs/phase3.yaml --output D:\新建文件�
 - 配置 SHA-256：`22ca2be7ce1c9afdb9ef7807cbf029c9ee21eaeb07ba7ed45de05b13c968d6b3`。
 - 场景 SHA-256：`b17f4274e38cfccdebed6685c4122820f6c679f61db62e94aed16d07144d3b90`。
 - 可复现快照记录的代码 SHA：`d0e55f2eb93e948b163fc5a96ac848c933a51efa`，运行前工作树为干净状态。
-- CI：pending。
+- CI：[run #22](https://github.com/nieying-code/phrase3/actions/runs/30068490961)，成功；语法检查通过，`28 passed in 8.02s`。
 
 ## 已知限制
 
