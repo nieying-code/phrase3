@@ -1,0 +1,60 @@
+project:
+  name: phase5_spw_ccg_relief_procurement
+  seed: 20260723
+  output_language: zh
+
+dimensions:
+  items: [relief_food]
+  periods: 4
+  scenarios: 20
+
+budget:
+  total: 1000.0
+  allocation_rule: residual_to_reserve
+  fixed_reserve_ratios: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
+
+inventory:
+  shelf_life:
+    relief_food: 3
+  initial_inventory:
+    relief_food: [0.0, 0.0, 0.0]
+  storage_capacity: [300.0, 300.0, 300.0, 300.0]
+  fifo_mode: fifo_optimal_solution_exists
+
+cost_scaling:
+  currency_scale: 1.0
+  shortage_penalty_multiplier: 12.0
+  waste_penalty_multiplier: 0.25
+  note: multipliers_are_relative_to_max_unit_procurement_cost
+
+scenario_generation:
+  demand_seasonality: [0.85, 1.05, 1.25, 0.95]
+  regular_price: [2.00, 2.05, 2.15, 2.10]
+  demand_price_correlation: 0.60
+  demand_supply_correlation: -0.45
+  base_demand: 100.0
+  demand_cv: 0.30
+  emergency_price_markup_mean: 0.35
+  emergency_price_markup_sd: 0.15
+  supply_reduction_mean: 0.20
+  base_supply_ratio: 1.35
+  supply_shock_sd: 0.20
+
+solver:
+  preference: [gurobi, highs]
+  time_limit_seconds: 600
+  feasibility_tolerance: 1.0e-7
+  optimality_tolerance: 1.0e-7
+
+ccg:
+  max_iterations: 200
+  absolute_tolerance: 1.0e-6
+  relative_tolerance: 1.0e-6
+  serial_recourse: true
+
+phase5:
+  budgets: [700.0, 800.0, 900.0, 1000.0, 1100.0, 1200.0]
+  active_scenario_tolerance: 1.0e-6
+  objective_absolute_tolerance: 1.0e-5
+  objective_relative_tolerance: 1.0e-7
+  alternate_execution_order: true

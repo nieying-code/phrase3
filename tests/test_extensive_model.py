@@ -86,20 +86,36 @@ def test_endogenous_model_not_worse_than_tested_fixed_ratios() -> None:
     assert float(endogenous.objective) <= min(fixed_objectives) + 1.0e-7
 
 
-def test_evaluation_and_extensive_accept_generator_solver_preference() -> None:
+def test_evaluate_first_stage_accepts_generator_solver_preference() -> None:
     data = unique_two_scenario_data()
-    extensive = solve_endogenous_extensive(
+    solution = solve_endogenous_extensive(
+        data,
+        solver_preference=("highs",),
+    )
+    assert solution.status == "optimal"
+
+    evaluation = evaluate_first_stage(
+        data,
+        solution.master.regular_purchase,
+        float(solution.master.reserve),
+        solver_preference=(name for name in ("highs",)),
+    )
+
+    assert evaluation.status == "optimal"
+    assert set(evaluation.scenario_results) == set(data.scenarios)
+    assert not evaluation.failed_scenarios
+
+
+def test_extensive_accepts_generator_solver_preference() -> None:
+    data = unique_two_scenario_data()
+
+    solution = solve_endogenous_extensive(
         data,
         solver_preference=(name for name in ("highs",)),
         consistency_tolerance=1.0e-7,
     )
 
-    assert extensive.status == "optimal"
-    evaluation = evaluate_first_stage(
-        data,
-        extensive.master.regular_purchase,
-        float(extensive.master.reserve),
-        solver_preference=(name for name in ("highs",)),
-    )
-    assert evaluation.status == "optimal"
-    assert set(evaluation.scenario_results) == set(data.scenarios)
+    assert solution.status == "optimal"
+    assert solution.evaluation is not None
+    assert set(solution.evaluation.scenario_results) == set(data.scenarios)
+    assert not solution.evaluation.failed_scenarios

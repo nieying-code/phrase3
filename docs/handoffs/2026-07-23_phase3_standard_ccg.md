@@ -141,7 +141,7 @@ python -m src.run_phase3 --config configs/phase3.yaml --output outputs
 
 ## 已知限制
 
-- 未实现 SPW-C&CG 和跨预算场景池热启动；按原始计划留待阶段5。
+- PR #1 当时未实现 SPW-C&CG 和跨预算场景池热启动；该工作后来由 PR #2 按原始计划作为阶段5完成。
 - oracle 当前为串行枚举，未并行化。
 - 未实现严格二进制 FIFO；当前线性模型保证存在 FIFO 最优解。
 - 仓储容量采用到期处置后的期末口径，不限制到货瞬间临时占用。
