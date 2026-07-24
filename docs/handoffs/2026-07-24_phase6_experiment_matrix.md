@@ -12,6 +12,7 @@
 - Base branch: `main`
 - Base merge commit: `cb6b4c785407efaae7715f40f423540f7fb709e8`
 - Matrix commit SHA: `44a356577e9e91c9b37bd7b4d2a8db707b1e90a5`
+- Initial handoff commit SHA: `ee03d236400ba280e924d901903c8d4636226cdb`
 - PR: https://github.com/nieying-code/phrase3/pull/4
 
 ## 修改内容
@@ -69,7 +70,7 @@
 - `python -m compileall -q src tests`：通过。
 - `python -m pytest -q`：`44 passed in 26.48s`。
 - YAML解析与关键矩阵不变量：通过。
-- CI：pending。
+- CI：https://github.com/nieying-code/phrase3/actions/runs/30078047309，成功；普通回归 `38 passed in 13.14s`，阶段5端到端及失败诊断 `6 passed in 8.95s`。
 
 ## 已知限制
 
