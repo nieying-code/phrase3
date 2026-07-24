@@ -1,3 +1,4 @@
+# 阶段1历史草案。阶段6正式参数以 phase6_experiment_matrix.yaml 为准。
 experiment:
   name: phase3_small_validation
   seeds: [20260723, 20260724, 20260725]

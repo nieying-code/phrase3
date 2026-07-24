@@ -1,0 +1,400 @@
+schema_version: "1.0"
+matrix_id: phase6_formal_experiments_v1
+status: frozen_for_implementation
+frozen_on: "2026-07-24"
+
+objectives:
+  - validate_endogenous_reserve_value
+  - validate_standard_ccg_scalability
+  - validate_spw_ccg_exactness_and_speed
+  - evaluate_out_of_sample_performance
+  - identify_sensitivity_and_failure_regions
+
+data_tracks:
+  controlled_synthetic:
+    role: correctness_scalability_and_mechanism_identification
+    generator_family: correlated_finite_scenarios
+    required: true
+  real_calibrated_synthetic:
+    role: external_calibration_with_independent_resampling
+    required: true
+    execution_gate: provenance_and_calibration_report_approved
+  historical_case:
+    role: interpretable_case_study
+    required: false
+    execution_gate: demand_price_and_supply_proxies_are_traceable
+
+controlled_synthetic_baseline:
+  legacy_D0_uses_phase3_parameters_unchanged: true
+  common_disaster_factor_across_items: true
+  item_specific_noise: true
+  period_specific_noise: true
+  demand_cv: 0.30
+  emergency_price_markup_mean: 0.35
+  emergency_price_markup_sd: 0.15
+  supply_reduction_mean: 0.20
+  supply_shock_sd: 0.20
+  demand_price_correlation: 0.60
+  demand_supply_correlation: -0.45
+  shortage_penalty_multiplier: 12.0
+  waste_penalty_multiplier: 0.25
+  seasonality_rule: deterministic_periodic_profile_normalized_to_mean_one
+  item_archetypes:
+    - id: relief_food_1
+      demand_multiplier: 1.00
+      regular_price_multiplier: 1.00
+      shelf_life_periods: 6
+    - id: relief_food_2
+      demand_multiplier: 0.75
+      regular_price_multiplier: 1.20
+      shelf_life_periods: 4
+    - id: relief_food_3
+      demand_multiplier: 0.50
+      regular_price_multiplier: 1.50
+      shelf_life_periods: 3
+    - id: relief_food_4
+      demand_multiplier: 0.35
+      regular_price_multiplier: 2.00
+      shelf_life_periods: 2
+    - id: relief_food_5
+      demand_multiplier: 0.25
+      regular_price_multiplier: 2.50
+      shelf_life_periods: 1
+  tier_item_rule: use_first_k_archetypes
+
+seed_plan:
+  development_seed: 20260723
+  pilot_training_seeds:
+    - 2026072001
+    - 2026072002
+    - 2026072003
+  formal_training_seeds:
+    - 2026072401
+    - 2026072402
+    - 2026072403
+    - 2026072404
+    - 2026072405
+    - 2026072406
+    - 2026072407
+    - 2026072408
+    - 2026072409
+    - 2026072410
+  formal_test_seeds:
+    - 2026082401
+    - 2026082402
+    - 2026082403
+    - 2026082404
+    - 2026082405
+    - 2026082406
+    - 2026082407
+    - 2026082408
+    - 2026082409
+    - 2026082410
+  pairing_rule: pair_training_and_test_seeds_by_list_position
+  tuning_rule: formal_training_and_test_seeds_must_not_be_used_for_tuning
+
+budget_plan:
+  reference_formula: sum_over_items_and_periods_of_regular_price_times_expected_demand
+  formal_factors:
+    - 0.75
+    - 0.90
+    - 1.00
+    - 1.10
+    - 1.25
+    - 1.40
+  sensitivity_factors:
+    - 0.90
+    - 1.10
+    - 1.30
+  legacy_absolute_budgets:
+    - 700.0
+    - 800.0
+    - 900.0
+    - 1000.0
+    - 1100.0
+    - 1200.0
+  ordering: ascending
+  pilot_nondegeneracy_gate:
+    minimum_distinct_reserve_regimes: 2
+    rule: adjust_factors_only_before_formal_seed_execution_and_version_the_matrix
+
+scale_tiers:
+  - id: D0
+    label: legacy_debug
+    items: 1
+    periods: 4
+    training_scenarios: 20
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 1
+    extensive_required: true
+    solver_time_limit_seconds: 300
+    timing_repetitions: 1
+  - id: V1
+    label: small_gold_standard
+    items: 1
+    periods: 6
+    training_scenarios: 50
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 10
+    extensive_required: true
+    solver_time_limit_seconds: 600
+    timing_repetitions: 3
+  - id: V2
+    label: upper_gold_standard
+    items: 1
+    periods: 6
+    training_scenarios: 100
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 10
+    extensive_required: true
+    solver_time_limit_seconds: 900
+    timing_repetitions: 3
+  - id: P1
+    label: medium_performance
+    items: 3
+    periods: 12
+    training_scenarios: 500
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 10
+    extensive_required: false
+    extensive_optional_time_limit_seconds: 1800
+    solver_time_limit_seconds: 1800
+    timing_repetitions: 3
+  - id: P2
+    label: large_performance
+    items: 5
+    periods: 12
+    training_scenarios: 1000
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 10
+    extensive_required: false
+    solver_time_limit_seconds: 3600
+    timing_repetitions: 1
+  - id: P3
+    label: very_large_performance
+    items: 5
+    periods: 24
+    training_scenarios: 2500
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 5
+    extensive_required: false
+    solver_time_limit_seconds: 7200
+    timing_repetitions: 1
+    activation_gate: P2_completion_rate_at_least_0_80
+  - id: P4
+    label: stretch_limit
+    items: 5
+    periods: 24
+    training_scenarios: 5000
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 3
+    extensive_required: false
+    solver_time_limit_seconds: 7200
+    timing_repetitions: 1
+    activation_gate: P3_completion_rate_at_least_0_80
+
+model_comparison:
+  tiers:
+    - V1
+    - V2
+    - P1
+  policies:
+    - deterministic_mean
+    - zero_reserve
+    - fixed_reserve_0_10
+    - fixed_reserve_0_20
+    - fixed_reserve_0_30
+    - fixed_reserve_0_40
+    - fixed_reserve_0_50
+    - endogenous_reserve
+  training_budget_factors:
+    - 0.75
+    - 0.90
+    - 1.00
+    - 1.10
+    - 1.25
+    - 1.40
+  out_of_sample_common_random_numbers: true
+
+algorithm_comparison:
+  tiers:
+    - V1
+    - V2
+    - P1
+    - P2
+    - P3
+    - P4
+  algorithms:
+    - standard_ccg_cold
+    - spw_ccg_warm
+  full_candidate_oracle_required: true
+  alternate_execution_order: true
+  solver_threads: 1
+  serial_recourse: true
+  max_iterations: 200
+  objective_absolute_tolerance: 1.0e-5
+  objective_relative_tolerance: 1.0e-7
+  paired_timing: true
+
+exactness_gates:
+  extensive_vs_standard_ccg:
+    tiers:
+      - D0
+      - V1
+      - V2
+    objective_absolute_tolerance: 1.0e-5
+    objective_relative_tolerance: 1.0e-7
+    all_exact_recourse_evaluations_must_be_optimal: true
+  cold_vs_warm:
+    objective_absolute_tolerance: 1.0e-5
+    objective_relative_tolerance: 1.0e-7
+    final_first_stage_feasibility_required: true
+    failed_pair_excluded_from_speed_claim_but_retained_in_failure_table: true
+
+sensitivity:
+  design: one_factor_at_a_time_plus_screening_factorial
+  tier: V2
+  training_seed_count: 10
+  budget_factors:
+    - 0.90
+    - 1.10
+    - 1.30
+  one_factor_at_a_time:
+    demand_cv:
+      values: [0.15, 0.30, 0.45]
+      baseline: 0.30
+    emergency_price_markup_mean:
+      values: [0.15, 0.35, 0.55]
+      baseline: 0.35
+    emergency_price_markup_sd:
+      values: [0.05, 0.15, 0.25]
+      baseline: 0.15
+    supply_reduction_mean:
+      values: [0.05, 0.20, 0.40]
+      baseline: 0.20
+    supply_shock_sd:
+      values: [0.10, 0.20, 0.35]
+      baseline: 0.20
+    demand_price_correlation:
+      values: [0.30, 0.60, 0.90]
+      baseline: 0.60
+    demand_supply_correlation:
+      values: [-0.20, -0.45, -0.70]
+      baseline: -0.45
+    shelf_life_periods:
+      values: [1, 3, 6]
+      baseline: 3
+    storage_capacity_to_expected_period_demand:
+      values: [0.50, 1.50, 3.00]
+      baseline: 3.00
+    shortage_penalty_multiplier:
+      values: [6.0, 12.0, 24.0]
+      baseline: 12.0
+    waste_penalty_multiplier:
+      values: [0.10, 0.25, 0.50]
+      baseline: 0.25
+  screening_factorial:
+    training_seed_count: 5
+    factors:
+      budget_factor: [0.90, 1.30]
+      demand_cv: [0.15, 0.45]
+      emergency_price_markup_mean: [0.15, 0.55]
+      supply_reduction_mean: [0.05, 0.40]
+    full_factorial_runs_per_seed: 16
+
+out_of_sample_evaluation:
+  tiers:
+    - V2
+  training_seed_count: 5
+  budget_factors:
+    - 0.90
+    - 1.10
+    - 1.30
+  policies:
+    - deterministic_mean
+    - zero_reserve
+    - fixed_reserve_0_10
+    - fixed_reserve_0_20
+    - fixed_reserve_0_30
+    - fixed_reserve_0_40
+    - fixed_reserve_0_50
+    - endogenous_reserve
+  scenarios_per_training_seed: 5000
+  independent_from_training: true
+  common_test_set_across_policies: true
+  reoptimization_on_test_set_forbidden: true
+  metrics:
+    - mean_total_cost
+    - median_total_cost
+    - total_cost_p90
+    - total_cost_p95
+    - total_cost_p99
+    - total_cost_cvar95
+    - maximum_total_cost
+    - mean_shortage
+    - shortage_probability
+    - service_level
+    - mean_waste
+    - mean_emergency_spend
+    - reserve_utilization
+
+performance_metrics:
+  - total_wall_time
+  - master_time
+  - oracle_time
+  - initialization_time
+  - iterations
+  - initial_scenario_count
+  - final_scenario_count
+  - scenario_reuse_rate
+  - adjacent_active_set_jaccard
+  - peak_memory_mb
+  - termination_status
+  - speedup_cold_over_warm
+
+statistical_reporting:
+  paired_unit: same_tier_training_seed_and_budget
+  descriptive_statistics:
+    - count
+    - mean
+    - standard_deviation
+    - median
+    - interquartile_range
+    - minimum
+    - maximum
+  uncertainty:
+    method: paired_bootstrap
+    confidence_level: 0.95
+    bootstrap_resamples: 10000
+  optional_nonparametric_test: wilcoxon_signed_rank
+  multiple_comparison_rule: report_effect_sizes_and_adjusted_p_values_when_used
+  runtime_primary_statistic: median
+
+scale_advancement:
+  minimum_completed_pair_rate: 0.80
+  median_runtime_fraction_of_limit_maximum: 0.75
+  stop_rule: report_largest_verified_tier_before_algorithmic_expansion
+  failures_must_remain_in_denominators: true
+
+reproducibility:
+  save_resolved_config: true
+  save_training_scenarios: true
+  save_test_scenarios: true
+  save_content_hashes: true
+  save_git_commit: true
+  save_python_and_package_versions: true
+  save_solver_and_version: true
+  save_hardware_and_thread_count: true
+  save_run_start_and_end_time: true
+  save_failure_diagnostics: true
+  raw_data_is_immutable: true
+
+required_outputs:
+  - outputs/experiments/phase6/run_registry.csv
+  - outputs/experiments/phase6/model_comparison.csv
+  - outputs/experiments/phase6/algorithm_performance.csv
+  - outputs/experiments/phase6/out_of_sample_evaluation.csv
+  - outputs/experiments/phase6/sensitivity_results.csv
+  - outputs/experiments/phase6/failure_registry.csv
+  - outputs/experiments/phase6/manifests
+  - outputs/figures/phase6

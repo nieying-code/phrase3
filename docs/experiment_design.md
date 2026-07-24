@@ -1,4 +1,8 @@
-# 实验设计（阶段 1 初稿）
+# 实验设计（阶段 1 初稿，历史版本）
+
+> 阶段6的正式冻结矩阵见 `docs/phase6_experiment_matrix.md`，机器可读配置见
+> `configs/phase6_experiment_matrix.yaml`。本文件保留用于追溯阶段1的设计演变，
+> 不再作为正式运行参数来源。
 
 ## 1. 实验层级
 

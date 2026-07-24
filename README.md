@@ -79,6 +79,10 @@ python -m src.run_phase5 --config configs/phase5.yaml --output outputs
 
 阶段5输出逐预算冷/热目标、迭代次数、主问题时间、oracle 时间、初始/最终场景池以及活跃和历史对抗场景。热启动仍使用完整场景 oracle，因此不是场景删减或近似算法。配置加载或数据生成失败时会写出最小诊断；预算验证、场景池构造、冷/热求解、目标比较和状态传递失败时会保留此前已完成预算及当前失败结果，并由命令行返回非零状态。
 
+## 阶段6实验矩阵
+
+阶段6正式运行前先冻结 `configs/phase6_experiment_matrix.yaml`。矩阵规定规模档位、训练/测试种子、归一化预算、模型与算法对照、独立样本外评价、敏感性参数、统计方案、逐级扩展门槛和失败保留规则。完整说明见 `docs/phase6_experiment_matrix.md`。当前提交只冻结实验设计，不实现或执行阶段6正式实验。
+
 ## 目录
 
 ```text
@@ -86,10 +90,12 @@ configs/
   base.yaml
   phase3.yaml
   phase5.yaml
+  phase6_experiment_matrix.yaml
 docs/
   mathematical_model.md
   phase3_model_and_algorithm.md
   phase5_spw_ccg.md
+  phase6_experiment_matrix.md
   handoffs/
 src/
   model_common.py
