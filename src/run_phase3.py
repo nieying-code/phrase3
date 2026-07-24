@@ -169,7 +169,6 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
     write_scenarios_csv(data, scenarios_path)
     reproducibility = build_reproducibility_manifest(
         config_path=config_path,
-        resolved_config=config,
         resolved_config_path=resolved_config_path,
         scenarios_path=scenarios_path,
         runtime_context=runtime_context,

@@ -50,7 +50,9 @@ def test_formal_run_enforces_acceptance_and_writes_reproducibility(
     assert manifest["scenarios_sha256"] == hashlib.sha256(
         scenarios_path.read_bytes()
     ).hexdigest()
-    assert len(manifest["resolved_config_sha256"]) == 64
+    assert manifest["resolved_config_sha256"] == hashlib.sha256(
+        config_path.read_bytes()
+    ).hexdigest()
 
     ccg_payload = json.loads(
         (

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 from importlib import metadata
-import json
 from pathlib import Path
 import platform
 import subprocess
@@ -24,17 +23,6 @@ PACKAGE_NAMES = (
     "matplotlib",
     "pytest",
 )
-
-
-def canonical_json_bytes(payload: Mapping[str, Any]) -> bytes:
-    """Serialize a mapping deterministically for hashing."""
-
-    return json.dumps(
-        payload,
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("utf-8")
 
 
 def sha256_file(path: Path) -> str:
@@ -130,7 +118,6 @@ def capture_runtime_context(
 def build_reproducibility_manifest(
     *,
     config_path: Path,
-    resolved_config: Mapping[str, Any],
     resolved_config_path: Path,
     scenarios_path: Path,
     runtime_context: Mapping[str, Any],
@@ -140,9 +127,7 @@ def build_reproducibility_manifest(
     return {
         "source_config_path": str(config_path),
         "resolved_config_path": str(resolved_config_path),
-        "resolved_config_sha256": hashlib.sha256(
-            canonical_json_bytes(resolved_config)
-        ).hexdigest(),
+        "resolved_config_sha256": sha256_file(resolved_config_path),
         "scenarios_path": str(scenarios_path),
         "scenarios_sha256": sha256_file(scenarios_path),
         "scenario_generator_version": SCENARIO_GENERATOR_VERSION,
