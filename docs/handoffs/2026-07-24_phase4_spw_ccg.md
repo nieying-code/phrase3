@@ -9,7 +9,10 @@
 - Branch: `agent/phase4-spw-ccg`
 - Base branch: `main`
 - Base merge SHA: `dee5eac1b5b13b843f3dfc98df71bbff3fed377f`
-- Phase 4 implementation SHA: `a528cb020ed6a5e666cb28be3ce451b15f818ace`
+- Original Phase 4 implementation SHA: `a528cb020ed6a5e666cb28be3ce451b15f818ace`
+- Published review remediation code SHA: `04dfff10d3fcbe35a24b31373f6f7865dc5f3d9d`
+- Equivalent locally validated Git commit: `1a28d0247dcad3a846c35d19b09cb156a396dfba`
+- 最终远程 PR head：以 PR 页面显示为准；handoff 文档提交晚于上述代码提交，避免把旧实现 SHA 误写成最终代码版本。
 - PR（Ready for review）: https://github.com/nieying-code/phrase3/pull/2
 - Repository: `nieying-code/phrase3`
 
@@ -66,16 +69,40 @@ python -m pytest -q
 结果：
 
 - 语法检查通过。
-- `25 passed in 7.23s`。
+- 审查整改前本地结果：`25 passed in 7.23s`。
+- 审查整改后本地完整回归：`27 passed in 17.24s`。
+- 按 CI 步骤拆分复核：`26 passed in 5.64s`，阶段4端到端测试 `1 passed in 10.19s`。
 
 新增测试覆盖：
 
 - 多预算下冷、热算法目标一致；
 - 冷、热均保持完整场景可行性并正常收敛；
-- 第二个预算的热池等于基础场景、上一预算活跃场景与历史对抗场景的去重并集；
+- 三个连续预算中，热池独立验证为基础场景、上一预算活跃场景与累积历史对抗场景的去重并集；
+- 历史对抗场景跨预算单调累积，并独立核对其来源；
+- 活跃场景按完整精确补救成本和容差公式独立核对；
 - 活跃和历史集合不会出现候选集外场景；
+- 每次冷、热求解的精确场景成本均覆盖全部候选场景；
+- 冷、热目标超差时阶段状态不能错误报告为 `optimal`；
 - 冷/热执行顺序按预算交替；
-- 非递增预算序列被拒绝。
+- 非递增预算序列被拒绝；
+- 正式六预算入口生成完整 JSON、对比表、场景池传递表和迭代日志。
+
+## 审查整改
+
+针对 PR #2 的阶段4复核意见，本次追加：
+
+1. CI 将普通回归与正式阶段4端到端验证分成两个明确步骤；
+2. 新增 `tests/test_run_phase4.py`，直接执行 `configs/phase4.yaml` 的六预算配置并检查四类交付文件；
+3. 场景池测试不再调用生产辅助函数计算期望集合，改为按数学定义独立构造；
+4. 跨三个预算检查历史场景的累积性、活跃场景定义和完整 oracle 覆盖；
+5. 命令行入口在阶段状态不是 `optimal` 时返回失败，使 CI 能拦截冷、热目标不一致等异常。
+
+CI：
+
+- 整改前基线：[run #15](https://github.com/nieying-code/phrase3/actions/runs/30027365666)，成功，`25 passed in 7.73s`。
+- 整改代码提交：[run #16](https://github.com/nieying-code/phrase3/actions/runs/30062424940)，成功。
+  - 普通回归：`26 passed in 3.71s`；
+  - 阶段4正式端到端验证：`1 passed in 5.63s`。
 
 ## 正式小规模验证
 
