@@ -1,7 +1,7 @@
 {
   "source_config_path": "configs\\phase3.yaml",
   "resolved_config_path": "outputs\\reproducibility\\phase3\\resolved_config.json",
-  "resolved_config_sha256": "22ca2be7ce1c9afdb9ef7807cbf029c9ee21eaeb07ba7ed45de05b13c968d6b3",
+  "resolved_config_sha256": "34f7954dfd83cc95ea0e2131ccf01d38d015f3aeb83fbadecb74bfa9d3463bc3",
   "scenarios_path": "outputs\\reproducibility\\phase3\\training_scenarios.csv",
   "scenarios_sha256": "bbb560af6023d82f4ebcde9349882f3a88e1b269fd324e77cecbc74e4dad0599",
   "scenario_generator_version": "1.0",
@@ -29,7 +29,7 @@
     "version": "1.15.1"
   },
   "git": {
-    "commit_sha": "d0e55f2eb93e948b163fc5a96ac848c933a51efa",
+    "commit_sha": "090ec85c0fb3528fd6b0940e76408bb590919d00",
     "working_tree_dirty": false
   },
   "reported_solvers": {
