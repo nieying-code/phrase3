@@ -9,7 +9,10 @@
 - Branch: `fix/phase3-phase4-acceptance`
 - Base branch: `main`
 - Base SHA: `dee5eac1b5b13b843f3dfc98df71bbff3fed377f`
-- Code commit: pending
+- Code and tests commit: `3c0ef228683eec20575b071ba5293c348615c1f5`
+- Documentation commit: `cd93daae248541e1842d60c25a8035457abc57a6`
+- Artifact line-ending commit: `d0e55f2eb93e948b163fc5a96ac848c933a51efa`
+- Reproducibility snapshot commit: `2c98258`
 - Final commit: pending
 - PR: pending
 
@@ -82,7 +85,7 @@ python -m src.run_phase3 --config configs/phase3.yaml --output D:\新建文件�
 
 - 语法检查：通过。
 - 针对性测试：`14 passed in 7.27s`。
-- 完整回归：`28 passed in 6.54s`。
+- 完整回归：`28 passed in 11.71s`（最终提交前复核；此前同一测试集为 `28 passed in 6.46s`）。
 - 正式验收状态：`passed`。
 - 扩展式目标：`3269.9644075814263`。
 - C&CG 目标：`3269.9644075814263`。
@@ -91,6 +94,9 @@ python -m src.run_phase3 --config configs/phase3.yaml --output D:\新建文件�
 - 最坏场景：`s0016`。
 - 最优储备金：`0.0`，储备比例 `0.0`。
 - 求解器：HiGHS / `appsi_highs`。
+- 配置 SHA-256：`22ca2be7ce1c9afdb9ef7807cbf029c9ee21eaeb07ba7ed45de05b13c968d6b3`。
+- 场景 SHA-256：`b17f4274e38cfccdebed6685c4122820f6c679f61db62e94aed16d07144d3b90`。
+- 可复现快照记录的代码 SHA：`d0e55f2eb93e948b163fc5a96ac848c933a51efa`，运行前工作树为干净状态。
 - CI：pending。
 
 ## 已知限制
