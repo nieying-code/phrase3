@@ -15,6 +15,8 @@
 - Equivalent locally validated Git commit: `1a28d0247dcad3a846c35d19b09cb156a396dfba`
 - Second review remediation code SHA: `4b91831a88fa427950b9513914de64a9a189e0e2`
 - Equivalent locally validated Git commit: `858dfcff5597c79d70f131128af207ec0cfcf885`
+- Third review remediation code SHA: `b03dad0416c844e52202826ca7174a08dabd80f6`
+- Equivalent locally validated Git commit: `a321f3c`
 - 最终远程 PR head：以 PR 页面显示为准；handoff 文档提交晚于上述代码提交，避免把旧实现 SHA 误写成最终代码版本。
 - PR（Ready for review）: https://github.com/nieying-code/phrase3/pull/2
 - Repository: `nieying-code/phrase3`
@@ -78,6 +80,8 @@ python -m pytest -q
 - 按 CI 步骤拆分复核：`26 passed in 5.64s`，阶段5端到端测试 `1 passed in 10.19s`。
 - 第二轮整改后本地完整回归：`32 passed in 24.50s`。
 - 第二轮按 CI 步骤拆分复核：普通回归 `28 passed in 21.54s`，阶段5端到端及失败诊断 `4 passed in 19.40s`。
+- 第三轮整改后本地完整回归：`36 passed in 23.30s`。
+- 第三轮按 CI 步骤拆分复核：普通回归 `30 passed in 22.50s`，阶段5端到端及失败诊断 `6 passed in 15.00s`。
 
 新增测试覆盖：
 
@@ -92,6 +96,9 @@ python -m pytest -q
 - 冷/热执行顺序按预算交替；
 - 非递增预算序列被拒绝；
 - 正式六预算入口生成完整 JSON、对比表、场景池传递表和迭代日志。
+- 配置文件不存在时仍生成最小 JSON 和三份带表头 CSV 诊断；
+- 第二个预算在状态传递失败时保留第一个预算的完整比较结果；
+- `evaluate_first_stage()` 和 `solve_endogenous_extensive()` 的生成器形式求解器偏好可被安全重复使用。
 
 ## 审查整改
 
@@ -129,6 +136,21 @@ CI：
 - [run #18](https://github.com/nieying-code/phrase3/actions/runs/30065055287)，成功；
   - 普通回归：`28 passed in 12.27s`；
   - 阶段5端到端及失败诊断：`4 passed in 11.33s`。
+
+第三轮复核整改：
+
+1. `run_phase5.run()` 从配置加载开始进入诊断保护；配置不存在或数据生成失败时仍写出最小 JSON 和三份带表头 CSV；
+2. 每个预算的数据验证、冷/热初始池构造、冷/热求解、目标比较和状态传递分别保留失败阶段、异常类型及已有结果；
+3. 状态传递失败不再落入 runner 总捕获并清空历史，返回值和输出文件都保留此前完成的 `comparisons`；
+4. `evaluate_first_stage()` 和 `solve_endogenous_extensive()` 入口立即把 `solver_preference` 固化为非空元组；
+5. 新增缺失配置、第二预算状态传递失败、两个公开接口生成器输入的直接回归测试。
+
+第三轮整改 CI：
+
+- [run #20](https://github.com/nieying-code/phrase3/actions/runs/30066806071)，成功；
+  - 语法检查：通过；
+  - 普通回归：`30 passed in 10.79s`；
+  - 阶段5端到端及失败诊断：`6 passed in 12.12s`。
 
 ## 正式小规模验证
 
