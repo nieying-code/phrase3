@@ -13,6 +13,9 @@ import yaml
 from .model_data import ProcurementData
 
 
+SCENARIO_GENERATOR_VERSION = "1.0"
+
+
 def load_config(path: str | Path) -> dict[str, Any]:
     with Path(path).open("r", encoding="utf-8") as handle:
         config = yaml.safe_load(handle)
@@ -142,7 +145,7 @@ def write_scenarios_csv(data: ProcurementData, path: str | Path) -> None:
     destination = Path(path)
     destination.parent.mkdir(parents=True, exist_ok=True)
     with destination.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(
             ["scenario", "item", "period", "demand", "emergency_price", "emergency_supply"]
         )

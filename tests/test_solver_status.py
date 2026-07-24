@@ -29,6 +29,47 @@ def test_highs_infeasibility_uses_termination_condition() -> None:
     assert record.termination_condition == "infeasible"
 
 
+def test_highs_unbounded_model_is_classified_explicitly() -> None:
+    model = _empty_model()
+    model.objective.set_value(-model.x)
+
+    record = model_common.solve_with_status(
+        model,
+        solver_preference=("highs",),
+    )
+
+    assert record.status == "unbounded"
+    assert record.termination_condition == "unbounded"
+
+
+def test_infeasible_or_unbounded_is_not_collapsed_to_solver_error(
+    monkeypatch,
+) -> None:
+    class AmbiguousSolver:
+        options: dict[str, float] = {}
+
+        def solve(self, model, **kwargs):
+            return SimpleNamespace(
+                solver=SimpleNamespace(
+                    termination_condition=(
+                        TerminationCondition.infeasibleOrUnbounded
+                    ),
+                    status=SolverStatus.warning,
+                )
+            )
+
+    monkeypatch.setattr(
+        model_common,
+        "select_solver",
+        lambda preference: ("appsi_highs", AmbiguousSolver()),
+    )
+
+    record = model_common.solve_with_status(_empty_model())
+
+    assert record.status == "infeasible_or_unbounded"
+    assert record.termination_condition == "infeasibleOrUnbounded"
+
+
 def test_no_feasible_solution_exception_is_not_guessed_infeasible(
     monkeypatch,
 ) -> None:

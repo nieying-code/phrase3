@@ -120,6 +120,21 @@ def test_ccg_identifies_and_adds_infeasible_recourse_scenario() -> None:
     assert len(ccg.final_scenario_set) == len(set(ccg.final_scenario_set))
 
 
+def test_ccg_accepts_generator_solver_preference() -> None:
+    data = unique_two_scenario_data()
+
+    ccg = run_standard_ccg(
+        data,
+        initial_scenarios=("low",),
+        solver_preference=(name for name in ("highs",)),
+        max_iterations=10,
+    )
+
+    assert ccg.converged
+    assert ccg.termination_status == "optimal"
+    assert set(ccg.exact_scenario_costs) == set(data.scenarios)
+
+
 def test_fixed_seed_reproduces_scenarios() -> None:
     config = load_config("configs/phase3.yaml")
     first = generate_synthetic_data(config)

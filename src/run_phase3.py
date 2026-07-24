@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -17,15 +18,22 @@ from .inventory_model import (
     build_fixed_reserve_model,
     solve_model,
 )
-from .scenario_generator import generate_synthetic_data, load_config
+from .reproducibility import (
+    build_reproducibility_manifest,
+    capture_runtime_context,
+)
+from .scenario_generator import (
+    generate_synthetic_data,
+    load_config,
+    write_scenarios_csv,
+)
 
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        json.dump(payload, handle, ensure_ascii=False, indent=2)
+        handle.write("\n")
 
 
 def _write_rows(
@@ -35,7 +43,11 @@ def _write_rows(
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(fieldnames))
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=list(fieldnames),
+            lineterminator="\n",
+        )
         writer.writeheader()
         writer.writerows(rows)
 
@@ -60,6 +72,69 @@ def _evaluate_solution(
     )
 
 
+def _build_acceptance(
+    extensive: ExtensiveSolution,
+    ccg: CCGResult,
+    *,
+    consistency_tolerance: float,
+) -> dict[str, Any]:
+    """Evaluate the non-negotiable phase-3/4 formal-run gates."""
+
+    extensive_objective = extensive.objective
+    ccg_objective = ccg.objective
+    objectives_available = (
+        extensive_objective is not None
+        and ccg_objective is not None
+        and math.isfinite(float(extensive_objective))
+        and math.isfinite(float(ccg_objective))
+    )
+    objective_difference = (
+        abs(float(extensive_objective) - float(ccg_objective))
+        if objectives_available
+        else None
+    )
+    checks = {
+        "extensive_optimal": {
+            "passed": extensive.status == "optimal",
+            "actual": extensive.status,
+        },
+        "ccg_converged": {
+            "passed": ccg.converged,
+            "actual": ccg.converged,
+        },
+        "ccg_termination_optimal": {
+            "passed": ccg.termination_status == "optimal",
+            "actual": ccg.termination_status,
+        },
+        "objectives_available": {
+            "passed": objectives_available,
+            "actual": {
+                "extensive": extensive_objective,
+                "ccg": ccg_objective,
+            },
+        },
+        "extensive_ccg_consistent": {
+            "passed": (
+                objective_difference is not None
+                and objective_difference <= consistency_tolerance
+            ),
+            "actual_difference": objective_difference,
+            "tolerance": consistency_tolerance,
+        },
+    }
+    failed_checks = [
+        name for name, check in checks.items() if not check["passed"]
+    ]
+    return {
+        "status": "passed" if not failed_checks else "failed",
+        "passed": not failed_checks,
+        "failed_checks": failed_checks,
+        "objective_difference": objective_difference,
+        "consistency_tolerance": consistency_tolerance,
+        "checks": checks,
+    }
+
+
 def run(config_path: Path, output_root: Path) -> dict[str, Any]:
     config = load_config(config_path)
     data = generate_synthetic_data(config)
@@ -80,6 +155,23 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
             "consistency_tolerance",
             ccg_config["absolute_tolerance"],
         )
+    )
+
+    reproducibility_root = output_root / "reproducibility" / "phase3"
+    resolved_config_path = reproducibility_root / "resolved_config.json"
+    scenarios_path = reproducibility_root / "training_scenarios.csv"
+    manifest_path = reproducibility_root / "manifest.json"
+    runtime_context = capture_runtime_context(
+        solver_preference=preference,
+        project_root=Path(__file__).resolve().parents[1],
+    )
+    _write_json(resolved_config_path, config)
+    write_scenarios_csv(data, scenarios_path)
+    reproducibility = build_reproducibility_manifest(
+        config_path=config_path,
+        resolved_config_path=resolved_config_path,
+        scenarios_path=scenarios_path,
+        runtime_context=runtime_context,
     )
 
     deterministic = solve_model(
@@ -123,6 +215,21 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
         max_iterations=int(ccg_config["max_iterations"]),
         **solver_kwargs,
     )
+    acceptance = _build_acceptance(
+        extensive,
+        ccg,
+        consistency_tolerance=consistency_tolerance,
+    )
+    reproducibility["reported_solvers"] = {
+        "deterministic": deterministic.solver,
+        "fixed_reserve": sorted(
+            {solution.solver for _, solution, _ in fixed}
+        ),
+        "extensive": extensive.master.solver,
+        "ccg": ccg.solver,
+    }
+    reproducibility["formal_acceptance"] = acceptance
+    _write_json(manifest_path, reproducibility)
 
     solutions_root = output_root / "solutions" / "phase3"
     logs_root = output_root / "logs" / "phase3"
@@ -135,6 +242,8 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
             "feasibility": feasibility_tolerance,
             "optimality": optimality_tolerance,
         },
+        "reproducibility": reproducibility,
+        "formal_acceptance": acceptance,
     }
     _write_json(
         solutions_root / "extensive_solution.json",
@@ -283,6 +392,8 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
     )
     return {
         **metadata,
+        "status": "accepted" if acceptance["passed"] else "failed",
+        "acceptance": acceptance,
         "deterministic": deterministic.as_dict(),
         "deterministic_evaluation": deterministic_eval.as_dict(),
         "fixed_reserve": [
@@ -319,11 +430,20 @@ def main() -> None:
                 "ccg_iterations": result["ccg"]["iterations"],
                 "reserve": result["ccg"]["reserve"],
                 "reserve_ratio": result["ccg"]["reserve_ratio"],
+                "acceptance_status": result["acceptance"]["status"],
+                "acceptance_failed_checks": result["acceptance"][
+                    "failed_checks"
+                ],
             },
             ensure_ascii=False,
             indent=2,
         )
     )
+    if not result["acceptance"]["passed"]:
+        raise SystemExit(
+            "phase 3/4 formal acceptance failed: "
+            + ", ".join(result["acceptance"]["failed_checks"])
+        )
 
 
 if __name__ == "__main__":
