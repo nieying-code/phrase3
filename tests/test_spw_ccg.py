@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from dataclasses import replace
 import math
 
 import pytest
 
 from src.scenario_generator import generate_synthetic_data, load_config
+import src.spw_ccg as spw_ccg_module
 from src.spw_ccg import (
-    build_warm_initial_scenarios,
     run_spw_ccg_budget_sequence,
 )
 
@@ -15,25 +16,36 @@ def _phase3_data():
     return generate_synthetic_data(load_config("configs/phase3.yaml"))
 
 
-def test_spw_ccg_matches_cold_start_across_budgets() -> None:
+@pytest.fixture(scope="module")
+def three_budget_result():
     data = _phase3_data()
     result = run_spw_ccg_budget_sequence(
         data,
-        (900.0, 1000.0),
+        (900.0, 1000.0, 1100.0),
         solver_preference=("highs",),
         time_limit_seconds=60.0,
         feasibility_tolerance=1.0e-7,
         optimality_tolerance=1.0e-7,
     )
+    return data, result
+
+
+def test_spw_ccg_matches_cold_start_across_budgets(
+    three_budget_result,
+) -> None:
+    data, result = three_budget_result
 
     assert result.status == "optimal"
-    assert len(result.comparisons) == 2
+    assert len(result.comparisons) == 3
     assert result.comparisons[0].execution_order == ("cold", "warm")
     assert result.comparisons[1].execution_order == ("warm", "cold")
+    assert result.comparisons[2].execution_order == ("cold", "warm")
     for row in result.comparisons:
         assert row.cold_result.converged
         assert row.warm_result.converged
         assert row.objectives_consistent
+        assert set(row.cold_result.exact_scenario_costs) == set(data.scenarios)
+        assert set(row.warm_result.exact_scenario_costs) == set(data.scenarios)
         assert math.isclose(
             float(row.cold_result.objective),
             float(row.warm_result.objective),
@@ -45,25 +57,90 @@ def test_spw_ccg_matches_cold_start_across_budgets() -> None:
         )
 
 
-def test_transferred_pool_contains_base_active_and_history() -> None:
-    data = _phase3_data()
-    result = run_spw_ccg_budget_sequence(
-        data,
-        (900.0, 1000.0),
-        solver_preference=("highs",),
-        time_limit_seconds=60.0,
-    )
-    first_state = result.comparisons[0].transferred_state
-    expected = build_warm_initial_scenarios(data, first_state)
-    second = result.comparisons[1]
+def test_transferred_pool_is_independent_cumulative_union(
+    three_budget_result,
+) -> None:
+    data, result = three_budget_result
+    cumulative_history: set[str] = set()
 
-    assert second.warm_initial_scenarios == expected
-    assert set(first_state.active_scenarios) <= set(expected)
-    assert set(first_state.historical_adversarial_scenarios) <= set(expected)
-    assert set(first_state.active_scenarios) <= set(data.scenarios)
-    assert set(first_state.historical_adversarial_scenarios) <= set(
-        data.scenarios
+    for index, comparison in enumerate(result.comparisons):
+        if index == 0:
+            assert (
+                comparison.warm_initial_scenarios
+                == comparison.cold_initial_scenarios
+            )
+        else:
+            previous = result.comparisons[index - 1].transferred_state
+            requested = {
+                *comparison.cold_initial_scenarios,
+                *previous.active_scenarios,
+                *previous.historical_adversarial_scenarios,
+            }
+            expected_warm = tuple(
+                scenario for scenario in data.scenarios if scenario in requested
+            )
+            assert comparison.warm_initial_scenarios == expected_warm
+            assert set(previous.historical_adversarial_scenarios) <= set(
+                comparison.transferred_state.historical_adversarial_scenarios
+            )
+
+        costs = comparison.warm_result.exact_scenario_costs
+        worst_cost = max(costs.values())
+        expected_active = tuple(
+            scenario
+            for scenario in data.scenarios
+            if worst_cost - costs[scenario]
+            <= result.active_scenario_tolerance
+        )
+        assert comparison.transferred_state.active_scenarios == expected_active
+
+        cumulative_history.update(
+            entry.added_scenario
+            for entry in comparison.warm_result.iteration_log
+            if entry.added_scenario is not None
+            and entry.added_type in {"infeasible", "worst_cost"}
+        )
+        if comparison.warm_result.worst_scenario is not None:
+            cumulative_history.add(comparison.warm_result.worst_scenario)
+        expected_history = tuple(
+            scenario
+            for scenario in data.scenarios
+            if scenario in cumulative_history
+        )
+        assert (
+            comparison.transferred_state.historical_adversarial_scenarios
+            == expected_history
+        )
+
+
+def test_inconsistent_objectives_cannot_report_optimal(
+    three_budget_result,
+    monkeypatch,
+) -> None:
+    data, result = three_budget_result
+    template = result.comparisons[0].warm_result
+    returned_results = iter(
+        (
+            replace(template, objective=100.0),
+            replace(template, objective=101.0),
+        )
     )
+    monkeypatch.setattr(
+        spw_ccg_module,
+        "run_standard_ccg",
+        lambda *args, **kwargs: next(returned_results),
+    )
+
+    inconsistent = run_spw_ccg_budget_sequence(
+        data,
+        (900.0,),
+        solver_preference=("highs",),
+        objective_absolute_tolerance=0.0,
+        objective_relative_tolerance=0.0,
+    )
+
+    assert inconsistent.status == "inconsistent_cold_warm_objectives"
+    assert not inconsistent.comparisons[0].objectives_consistent
 
 
 def test_budget_sequence_must_be_strictly_increasing() -> None:

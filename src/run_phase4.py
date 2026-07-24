@@ -237,6 +237,8 @@ def main() -> None:
             indent=2,
         )
     )
+    if result["status"] != "optimal":
+        raise SystemExit(f"phase 4 failed with status: {result['status']}")
 
 
 if __name__ == "__main__":
