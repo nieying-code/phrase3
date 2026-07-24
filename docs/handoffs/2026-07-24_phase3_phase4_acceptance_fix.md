@@ -14,6 +14,8 @@
 - Remote artifact line-ending commit: `28718083e7be855d2b5f4cee280ee72d179468f5`
 - Remote reproducibility snapshot commit: `f004b474cf3ad21e98c763f579b517afc6ea7fd5`
 - Pre-handoff-update remote head: `095c09090ce30317bec7f102933c387a93d0e60e`
+- Resolved-config byte-hash fix commit: `090ec85c0fb3528fd6b0940e76408bb590919d00`
+- Refreshed reproducibility snapshot commit: `fdb3396081a7390bb8c26715646bd66c93bb9504`
 - Final remote head: 以 PR 页面为准；本 handoff 更新是最后一项文档变更。
 - PR: https://github.com/nieying-code/phrase3/pull/3
 
@@ -46,6 +48,13 @@
 - `outputs/reproducibility/phase3/manifest.json`：配置/场景 SHA-256、场景生成器版本、Python/平台、依赖包、求解器版本、Git commit SHA、工作树状态、实际报告求解器和正式验收结果。
 
 源代码和运行环境信息在创建输出文件前捕获，避免把本次运行刚写出的结果误判为运行前已有的工作树修改。
+
+### 最终可复现性复审修复
+
+- `resolved_config_sha256` 现在直接对已写出的 `resolved_config.json` 文件字节计算 SHA-256，不再对内存中的规范化 JSON 计算另一种摘要。
+- 正式入口测试直接读取 `resolved_config.json` 字节并核对 Manifest，场景 CSV 继续执行同样的文件字节校验。
+- 在代码修复提交已经推送、工作树干净的状态下重新运行正式阶段3/4，Manifest 中记录的源码 SHA 可由远程仓库访问。
+- 重新生成并核对三份复现文件；Manifest 中的配置和场景摘要均与 Git 提交对象中的实际文件字节一致。
 
 ### 文档一致性
 
@@ -86,7 +95,7 @@ python -m src.run_phase3 --config configs/phase3.yaml --output D:\新建文件�
 
 - 语法检查：通过。
 - 针对性测试：`14 passed in 7.27s`。
-- 完整回归：`28 passed in 11.71s`（最终提交前复核；此前同一测试集为 `28 passed in 6.46s`）。
+- 完整回归：`41 passed in 36.33s`。
 - 正式验收状态：`passed`。
 - 扩展式目标：`3269.9644075814263`。
 - C&CG 目标：`3269.9644075814263`。
@@ -95,9 +104,10 @@ python -m src.run_phase3 --config configs/phase3.yaml --output D:\新建文件�
 - 最坏场景：`s0016`。
 - 最优储备金：`0.0`，储备比例 `0.0`。
 - 求解器：HiGHS / `appsi_highs`。
-- 配置 SHA-256：`22ca2be7ce1c9afdb9ef7807cbf029c9ee21eaeb07ba7ed45de05b13c968d6b3`。
-- 场景 SHA-256：`b17f4274e38cfccdebed6685c4122820f6c679f61db62e94aed16d07144d3b90`。
-- 可复现快照记录的代码 SHA：`d0e55f2eb93e948b163fc5a96ac848c933a51efa`，运行前工作树为干净状态。
+- 配置文件 SHA-256：`34f7954dfd83cc95ea0e2131ccf01d38d015f3aeb83fbadecb74bfa9d3463bc3`。
+- 场景文件 SHA-256：`bbb560af6023d82f4ebcde9349882f3a88e1b269fd324e77cecbc74e4dad0599`。
+- 可复现快照记录的代码 SHA：`090ec85c0fb3528fd6b0940e76408bb590919d00`，正式运行前工作树为干净状态。
+- Git 提交对象字节复核：配置和场景文件摘要均与 Manifest 完全一致。
 - CI：[run #22](https://github.com/nieying-code/phrase3/actions/runs/30068490961)，成功；语法检查通过，`28 passed in 8.02s`。
 
 ## PR #2 合并后同步
@@ -111,6 +121,16 @@ python -m src.run_phase3 --config configs/phase3.yaml --output D:\新建文件�
 - 同步后本地完整回归：`41 passed in 26.70s`。
 - 按当前 CI 步骤拆分复核：普通回归 `35 passed in 13.80s`，阶段5端到端及失败诊断 `6 passed in 16.91s`。
 - 同步后 CI：[run #25](https://github.com/nieying-code/phrase3/actions/runs/30070107637)，成功；普通回归 `35 passed in 15.89s`，阶段5端到端及失败诊断 `6 passed in 10.62s`。
+
+## 最终可复现性复审验证
+
+- 配置文件字节哈希针对性测试：`2 passed in 6.41s`。
+- 完整本地回归：`41 passed in 36.33s`。
+- 正式阶段3/4运行：验收 `passed`；扩展式与 C&CG 目标均为 `3269.9644075814263`，目标差 `0.0`，C&CG 迭代 `5`。
+- 代码修复提交：`090ec85c0fb3528fd6b0940e76408bb590919d00`，已在正式运行前推送并确认远程可访问。
+- 复现快照提交：`fdb3396081a7390bb8c26715646bd66c93bb9504`。
+- Manifest 配置哈希和场景哈希均与工作区文件及 Git 提交对象字节完全一致。
+- 最终代码与快照 CI：[run #28](https://github.com/nieying-code/phrase3/actions/runs/30071459714)，成功；普通回归 `35 passed in 18.60s`，阶段5端到端及失败诊断 `6 passed in 12.53s`。
 
 ## 已知限制
 
