@@ -1,0 +1,76 @@
+{
+  "source_config_path": "configs\\phase3.yaml",
+  "resolved_config_path": "outputs\\reproducibility\\phase3\\resolved_config.json",
+  "resolved_config_sha256": "22ca2be7ce1c9afdb9ef7807cbf029c9ee21eaeb07ba7ed45de05b13c968d6b3",
+  "scenarios_path": "outputs\\reproducibility\\phase3\\training_scenarios.csv",
+  "scenarios_sha256": "bbb560af6023d82f4ebcde9349882f3a88e1b269fd324e77cecbc74e4dad0599",
+  "scenario_generator_version": "1.0",
+  "python": {
+    "version": "3.12.13",
+    "implementation": "CPython",
+    "executable": "C:\\Users\\21610\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "packages": {
+    "pyomo": "6.10.1",
+    "highspy": "1.15.1",
+    "numpy": "2.5.1",
+    "pandas": "3.0.5",
+    "PyYAML": "6.0.3",
+    "matplotlib": "3.11.1",
+    "pytest": "9.1.1"
+  },
+  "solver": {
+    "preference": [
+      "gurobi",
+      "highs"
+    ],
+    "selected": "appsi_highs",
+    "version": "1.15.1"
+  },
+  "git": {
+    "commit_sha": "d0e55f2eb93e948b163fc5a96ac848c933a51efa",
+    "working_tree_dirty": false
+  },
+  "reported_solvers": {
+    "deterministic": "appsi_highs",
+    "fixed_reserve": [
+      "appsi_highs"
+    ],
+    "extensive": "appsi_highs",
+    "ccg": "appsi_highs"
+  },
+  "formal_acceptance": {
+    "status": "passed",
+    "passed": true,
+    "failed_checks": [],
+    "objective_difference": 0.0,
+    "consistency_tolerance": 1e-05,
+    "checks": {
+      "extensive_optimal": {
+        "passed": true,
+        "actual": "optimal"
+      },
+      "ccg_converged": {
+        "passed": true,
+        "actual": true
+      },
+      "ccg_termination_optimal": {
+        "passed": true,
+        "actual": "optimal"
+      },
+      "objectives_available": {
+        "passed": true,
+        "actual": {
+          "extensive": 3269.9644075814263,
+          "ccg": 3269.9644075814263
+        }
+      },
+      "extensive_ccg_consistent": {
+        "passed": true,
+        "actual_difference": 0.0,
+        "tolerance": 1e-05
+      }
+    }
+  }
+}
