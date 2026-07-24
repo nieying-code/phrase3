@@ -337,28 +337,47 @@ def _iteration_rows(result: SPWCCGResult) -> list[dict[str, Any]]:
 
 
 def run(config_path: Path, output_root: Path) -> dict[str, Any]:
-    config = load_config(config_path)
-    data = generate_synthetic_data(config)
-    solver_config = config["solver"]
-    ccg_config = config["ccg"]
-    phase5 = config["phase5"]
-    preference = tuple(str(name) for name in solver_config["preference"])
-    feasibility_tolerance = float(solver_config["feasibility_tolerance"])
-    optimality_tolerance = float(solver_config["optimality_tolerance"])
-
     metadata = {
         "config": str(config_path),
-        "seed": int(config["project"]["seed"]),
-        "solver_preference": list(preference),
+        "seed": None,
+        "solver_preference": [],
         "solver_tolerances": {
-            "feasibility": feasibility_tolerance,
-            "optimality": optimality_tolerance,
+            "feasibility": None,
+            "optimality": None,
         },
     }
+    requested_budgets: list[float] = []
+    runner_stage = "config_load"
     try:
+        config = load_config(config_path)
+        solver_config = config["solver"]
+        ccg_config = config["ccg"]
+        phase5 = config["phase5"]
+        preference = tuple(str(name) for name in solver_config["preference"])
+        feasibility_tolerance = float(
+            solver_config["feasibility_tolerance"]
+        )
+        optimality_tolerance = float(solver_config["optimality_tolerance"])
+        requested_budgets = [
+            float(value) for value in phase5.get("budgets", ())
+        ]
+        metadata = {
+            "config": str(config_path),
+            "seed": int(config["project"]["seed"]),
+            "solver_preference": list(preference),
+            "solver_tolerances": {
+                "feasibility": feasibility_tolerance,
+                "optimality": optimality_tolerance,
+            },
+        }
+
+        runner_stage = "data_generation"
+        data = generate_synthetic_data(config)
+
+        runner_stage = "phase5_algorithm"
         result = run_spw_ccg_budget_sequence(
             data,
-            tuple(float(value) for value in phase5["budgets"]),
+            tuple(requested_budgets),
             active_scenario_tolerance=float(
                 phase5["active_scenario_tolerance"]
             ),
@@ -388,16 +407,14 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
         payload = {
             **metadata,
             "status": "runner_exception",
-            "budgets": [
-                float(value) for value in phase5.get("budgets", ())
-            ],
+            "budgets": requested_budgets,
             "completed_budget_count": 0,
             "total_cold_seconds": 0.0,
             "total_warm_seconds": 0.0,
             "total_iteration_reduction": 0,
             "comparisons": [],
             "failure": {
-                "stage": "runner",
+                "stage": runner_stage,
                 "exception_type": type(exc).__name__,
                 "message": str(exc),
             },

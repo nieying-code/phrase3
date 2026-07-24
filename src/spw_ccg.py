@@ -317,6 +317,7 @@ def run_spw_ccg_budget_sequence(
     }
     comparisons: list[BudgetComparison] = []
     previous_state: ScenarioPoolState | None = None
+
     def failed_result(failure: BudgetFailure) -> SPWCCGResult:
         return SPWCCGResult(
             status=failure.status,
@@ -330,18 +331,86 @@ def run_spw_ccg_budget_sequence(
         )
 
     for index, budget in enumerate(ordered_budgets):
-        budget_data = replace(data, budget=budget)
-        budget_data.validate()
+        if not alternate_execution_order or index % 2 == 0:
+            execution_order = ("cold", "warm")
+        else:
+            execution_order = ("warm", "cold")
+
+        cold_initial: tuple[str, ...] = ()
+        warm_initial: tuple[str, ...] = ()
+        cold_pool_seconds = 0.0
+        warm_pool_seconds = 0.0
+        cold: CCGResult | None = None
+        warm: CCGResult | None = None
+
+        try:
+            budget_data = replace(data, budget=budget)
+            budget_data.validate()
+        except Exception as exc:
+            return failed_result(
+                BudgetFailure(
+                    budget=budget,
+                    status="budget_validation_exception",
+                    stage="budget_validation",
+                    message=f"{type(exc).__name__}: {exc}",
+                    execution_order=execution_order,
+                    cold_initial_scenarios=cold_initial,
+                    warm_initial_scenarios=warm_initial,
+                    cold_pool_build_seconds=cold_pool_seconds,
+                    warm_pool_build_seconds=warm_pool_seconds,
+                    cold_result=cold,
+                    warm_result=warm,
+                    exception_type=type(exc).__name__,
+                )
+            )
 
         cold_pool_started = perf_counter()
-        cold_initial = select_initial_scenarios(budget_data)
+        try:
+            cold_initial = select_initial_scenarios(budget_data)
+        except Exception as exc:
+            cold_pool_seconds = perf_counter() - cold_pool_started
+            return failed_result(
+                BudgetFailure(
+                    budget=budget,
+                    status="cold_pool_exception",
+                    stage="cold_pool",
+                    message=f"{type(exc).__name__}: {exc}",
+                    execution_order=execution_order,
+                    cold_initial_scenarios=cold_initial,
+                    warm_initial_scenarios=warm_initial,
+                    cold_pool_build_seconds=cold_pool_seconds,
+                    warm_pool_build_seconds=warm_pool_seconds,
+                    cold_result=cold,
+                    warm_result=warm,
+                    exception_type=type(exc).__name__,
+                )
+            )
         cold_pool_seconds = perf_counter() - cold_pool_started
 
         warm_pool_started = perf_counter()
-        warm_initial = build_warm_initial_scenarios(
-            budget_data,
-            previous_state,
-        )
+        try:
+            warm_initial = build_warm_initial_scenarios(
+                budget_data,
+                previous_state,
+            )
+        except Exception as exc:
+            warm_pool_seconds = perf_counter() - warm_pool_started
+            return failed_result(
+                BudgetFailure(
+                    budget=budget,
+                    status="warm_pool_exception",
+                    stage="warm_pool",
+                    message=f"{type(exc).__name__}: {exc}",
+                    execution_order=execution_order,
+                    cold_initial_scenarios=cold_initial,
+                    warm_initial_scenarios=warm_initial,
+                    cold_pool_build_seconds=cold_pool_seconds,
+                    warm_pool_build_seconds=warm_pool_seconds,
+                    cold_result=cold,
+                    warm_result=warm,
+                    exception_type=type(exc).__name__,
+                )
+            )
         warm_pool_seconds = perf_counter() - warm_pool_started
 
         def solve(initial: Sequence[str]) -> CCGResult:
@@ -351,13 +420,6 @@ def run_spw_ccg_budget_sequence(
                 **solver_kwargs,
             )
 
-        if not alternate_execution_order or index % 2 == 0:
-            execution_order = ("cold", "warm")
-        else:
-            execution_order = ("warm", "cold")
-
-        cold: CCGResult | None = None
-        warm: CCGResult | None = None
         for mode in execution_order:
             initial = cold_initial if mode == "cold" else warm_initial
             try:
@@ -422,17 +484,35 @@ def run_spw_ccg_budget_sequence(
         if cold is None or warm is None:
             raise AssertionError("execution order did not run both C&CG modes")
 
-        difference = abs(float(cold.objective) - float(warm.objective))
-        consistency_limit = (
-            objective_absolute_tolerance
-            + objective_relative_tolerance
-            * max(
-                1.0,
-                abs(float(cold.objective)),
-                abs(float(warm.objective)),
+        try:
+            difference = abs(float(cold.objective) - float(warm.objective))
+            consistency_limit = (
+                objective_absolute_tolerance
+                + objective_relative_tolerance
+                * max(
+                    1.0,
+                    abs(float(cold.objective)),
+                    abs(float(warm.objective)),
+                )
             )
-        )
-        consistent = difference <= consistency_limit
+            consistent = difference <= consistency_limit
+        except Exception as exc:
+            return failed_result(
+                BudgetFailure(
+                    budget=budget,
+                    status="comparison_exception",
+                    stage="comparison",
+                    message=f"{type(exc).__name__}: {exc}",
+                    execution_order=execution_order,
+                    cold_initial_scenarios=cold_initial,
+                    warm_initial_scenarios=warm_initial,
+                    cold_pool_build_seconds=cold_pool_seconds,
+                    warm_pool_build_seconds=warm_pool_seconds,
+                    cold_result=cold,
+                    warm_result=warm,
+                    exception_type=type(exc).__name__,
+                )
+            )
         if not consistent:
             return failed_result(
                 BudgetFailure(
@@ -453,13 +533,31 @@ def run_spw_ccg_budget_sequence(
                 )
             )
 
-        state = build_transferred_state(
-            budget_data,
-            budget=budget,
-            result=warm,
-            previous_state=previous_state,
-            active_scenario_tolerance=active_scenario_tolerance,
-        )
+        try:
+            state = build_transferred_state(
+                budget_data,
+                budget=budget,
+                result=warm,
+                previous_state=previous_state,
+                active_scenario_tolerance=active_scenario_tolerance,
+            )
+        except Exception as exc:
+            return failed_result(
+                BudgetFailure(
+                    budget=budget,
+                    status="state_transfer_exception",
+                    stage="state_transfer",
+                    message=f"{type(exc).__name__}: {exc}",
+                    execution_order=execution_order,
+                    cold_initial_scenarios=cold_initial,
+                    warm_initial_scenarios=warm_initial,
+                    cold_pool_build_seconds=cold_pool_seconds,
+                    warm_pool_build_seconds=warm_pool_seconds,
+                    cold_result=cold,
+                    warm_result=warm,
+                    exception_type=type(exc).__name__,
+                )
+            )
         comparisons.append(
             BudgetComparison(
                 budget=budget,

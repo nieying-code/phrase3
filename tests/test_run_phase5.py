@@ -8,6 +8,7 @@ import sys
 import pytest
 
 import src.run_phase5 as run_phase5_module
+import src.spw_ccg as spw_ccg_module
 from src.run_phase5 import run
 
 
@@ -179,6 +180,84 @@ def test_unexpected_runner_error_still_writes_diagnostics(
             encoding="utf-8-sig"
         ).splitlines()
         assert len(lines) == 1
+
+
+def test_missing_config_still_writes_minimum_diagnostics(
+    tmp_path: Path,
+) -> None:
+    payload = run(tmp_path / "missing.yaml", tmp_path / "outputs")
+
+    assert payload["status"] == "runner_exception"
+    assert payload["completed_budget_count"] == 0
+    assert payload["comparisons"] == []
+    assert payload["failure"]["stage"] == "config_load"
+    assert payload["failure"]["exception_type"] == "FileNotFoundError"
+
+    output_root = tmp_path / "outputs"
+    solution_path = (
+        output_root / "solutions" / "phase5" / "spw_ccg_results.json"
+    )
+    assert solution_path.is_file()
+    written_payload = json.loads(solution_path.read_text(encoding="utf-8"))
+    assert written_payload["status"] == "runner_exception"
+    for relative_path in (
+        Path("tables/phase5/budget_comparison.csv"),
+        Path("tables/phase5/scenario_pool_transfer.csv"),
+        Path("logs/phase5/ccg_iterations.csv"),
+    ):
+        lines = (output_root / relative_path).read_text(
+            encoding="utf-8-sig"
+        ).splitlines()
+        assert len(lines) == 1
+
+
+def test_second_budget_state_transfer_failure_preserves_first_budget(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    original = spw_ccg_module.build_transferred_state
+    calls = 0
+
+    def fail_second_transfer(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise RuntimeError("synthetic state transfer failure")
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(
+        spw_ccg_module,
+        "build_transferred_state",
+        fail_second_transfer,
+    )
+
+    payload = run(Path("configs/phase5.yaml"), tmp_path)
+
+    assert payload["status"] == "state_transfer_exception"
+    assert payload["completed_budget_count"] == 1
+    assert len(payload["comparisons"]) == 1
+    assert payload["comparisons"][0]["budget"] == 700.0
+    assert payload["failure"]["budget"] == 800.0
+    assert payload["failure"]["stage"] == "state_transfer"
+    assert payload["failure"]["exception_type"] == "RuntimeError"
+    assert payload["failure"]["cold_result"]["converged"]
+    assert payload["failure"]["warm_result"]["converged"]
+
+    solution_path = (
+        tmp_path / "solutions" / "phase5" / "spw_ccg_results.json"
+    )
+    written_payload = json.loads(solution_path.read_text(encoding="utf-8"))
+    assert written_payload["completed_budget_count"] == 1
+    assert len(written_payload["comparisons"]) == 1
+
+    comparison_path = (
+        tmp_path / "tables" / "phase5" / "budget_comparison.csv"
+    )
+    with comparison_path.open(encoding="utf-8-sig", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    assert len(rows) == 2
+    assert rows[0]["status"] == "optimal"
+    assert rows[1]["status"] == "state_transfer_exception"
 
 
 def test_main_exits_nonzero_after_failed_run(monkeypatch) -> None:

@@ -183,6 +183,9 @@ def solve_endogenous_extensive(
 ) -> ExtensiveSolution:
     """Solve the full model, then independently re-evaluate all scenarios."""
 
+    solver_preference = tuple(solver_preference)
+    if not solver_preference:
+        raise ValueError("solver_preference must not be empty")
     master = solve_master(
         build_endogenous_extensive_model(data),
         solver_preference=solver_preference,
