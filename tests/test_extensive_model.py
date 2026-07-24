@@ -84,3 +84,22 @@ def test_endogenous_model_not_worse_than_tested_fixed_ratios() -> None:
         assert evaluation.status == "optimal"
         fixed_objectives.append(float(evaluation.robust_objective))
     assert float(endogenous.objective) <= min(fixed_objectives) + 1.0e-7
+
+
+def test_evaluation_and_extensive_accept_generator_solver_preference() -> None:
+    data = unique_two_scenario_data()
+    extensive = solve_endogenous_extensive(
+        data,
+        solver_preference=(name for name in ("highs",)),
+        consistency_tolerance=1.0e-7,
+    )
+
+    assert extensive.status == "optimal"
+    evaluation = evaluate_first_stage(
+        data,
+        extensive.master.regular_purchase,
+        float(extensive.master.reserve),
+        solver_preference=(name for name in ("highs",)),
+    )
+    assert evaluation.status == "optimal"
+    assert set(evaluation.scenario_results) == set(data.scenarios)

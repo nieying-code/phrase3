@@ -20,6 +20,12 @@ OPTIMAL_TERMINATIONS = {
 INFEASIBLE_TERMINATIONS = {
     TerminationCondition.infeasible,
 }
+UNBOUNDED_TERMINATIONS = {
+    TerminationCondition.unbounded,
+}
+INFEASIBLE_OR_UNBOUNDED_TERMINATIONS = {
+    TerminationCondition.infeasibleOrUnbounded,
+}
 TIME_LIMIT_TERMINATIONS = {
     TerminationCondition.maxTimeLimit,
     TerminationCondition.maxIterations,
@@ -144,6 +150,10 @@ def solve_with_status(
         status = "optimal"
     elif termination in INFEASIBLE_TERMINATIONS:
         status = "infeasible"
+    elif termination in UNBOUNDED_TERMINATIONS:
+        status = "unbounded"
+    elif termination in INFEASIBLE_OR_UNBOUNDED_TERMINATIONS:
+        status = "infeasible_or_unbounded"
     elif termination in TIME_LIMIT_TERMINATIONS:
         status = "time_limit"
     elif solver_status == SolverStatus.error:
