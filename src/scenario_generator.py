@@ -145,7 +145,7 @@ def write_scenarios_csv(data: ProcurementData, path: str | Path) -> None:
     destination = Path(path)
     destination.parent.mkdir(parents=True, exist_ok=True)
     with destination.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(
             ["scenario", "item", "period", "demand", "emergency_price", "emergency_supply"]
         )
