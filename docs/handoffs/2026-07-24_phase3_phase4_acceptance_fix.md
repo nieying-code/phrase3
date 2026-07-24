@@ -110,7 +110,7 @@ python -m src.run_phase3 --config configs/phase3.yaml --output D:\新建文件�
   - 生成器参数测试保留 PR #2 中拆分更细的两个独立接口测试。
 - 同步后本地完整回归：`41 passed in 26.70s`。
 - 按当前 CI 步骤拆分复核：普通回归 `35 passed in 13.80s`，阶段5端到端及失败诊断 `6 passed in 16.91s`。
-- 同步后 CI：pending。
+- 同步后 CI：[run #25](https://github.com/nieying-code/phrase3/actions/runs/30070107637)，成功；普通回归 `35 passed in 15.89s`，阶段5端到端及失败诊断 `6 passed in 10.62s`。
 
 ## 已知限制
 
