@@ -139,7 +139,7 @@ python -m src.run_phase3 --config configs/phase3.yaml --output outputs
 
 ## 已知限制
 
-- 未实现 SPW-C&CG 和跨预算场景池热启动；留待阶段4。
+- 未实现 SPW-C&CG 和跨预算场景池热启动；按原始实施计划留待阶段5。
 - oracle 当前为串行枚举，未并行化。
 - 未实现严格二进制 FIFO；当前线性模型保证存在 FIFO 最优解。
 - 仓储容量采用到期处置后的期末口径，不限制到货瞬间临时占用。
@@ -157,7 +157,7 @@ python -m src.run_phase3 --config configs/phase3.yaml --output outputs
 
 ## 下一步建议
 
-阶段4实现跨预算场景池热启动 SPW-C&CG：保存前一预算的最终场景集、历史最坏场景和活跃场景；对每个预算同时运行冷启动与热启动；验证目标一致性，并分别记录迭代次数、主问题时间和 oracle 时间。
+阶段5实现跨预算场景池热启动 SPW-C&CG：保存前一预算的最终场景集、历史最坏场景和活跃场景；对每个预算同时运行冷启动与热启动；验证目标一致性，并分别记录迭代次数、主问题时间和 oracle 时间。
 
 ## ChatGPT审查清单
 

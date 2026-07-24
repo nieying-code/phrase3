@@ -188,6 +188,9 @@ def run_standard_ccg(
         raise ValueError("C&CG tolerances must be nonnegative")
     if max_iterations <= 0:
         raise ValueError("max_iterations must be positive")
+    solver_preference = tuple(solver_preference)
+    if not solver_preference:
+        raise ValueError("solver_preference must not be empty")
     initial = tuple(
         select_initial_scenarios(data)
         if initial_scenarios is None

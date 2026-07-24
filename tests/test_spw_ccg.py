@@ -7,6 +7,7 @@ import pytest
 
 from src.scenario_generator import generate_synthetic_data, load_config
 import src.spw_ccg as spw_ccg_module
+from src.ccg import run_standard_ccg
 from src.spw_ccg import (
     run_spw_ccg_budget_sequence,
 )
@@ -140,7 +141,36 @@ def test_inconsistent_objectives_cannot_report_optimal(
     )
 
     assert inconsistent.status == "inconsistent_cold_warm_objectives"
-    assert not inconsistent.comparisons[0].objectives_consistent
+    assert not inconsistent.comparisons
+    assert inconsistent.failure is not None
+    assert inconsistent.failure.stage == "comparison"
+    assert inconsistent.failure.cold_result is not None
+    assert inconsistent.failure.warm_result is not None
+
+
+def test_solver_exception_is_returned_as_failure(monkeypatch) -> None:
+    data = _phase3_data()
+
+    def raise_timeout(*args, **kwargs):
+        raise TimeoutError("synthetic timeout")
+
+    monkeypatch.setattr(
+        spw_ccg_module,
+        "run_standard_ccg",
+        raise_timeout,
+    )
+
+    failed = run_spw_ccg_budget_sequence(
+        data,
+        (900.0,),
+        solver_preference=("highs",),
+    )
+
+    assert failed.status == "cold_exception"
+    assert failed.failure is not None
+    assert failed.failure.stage == "cold"
+    assert failed.failure.exception_type == "TimeoutError"
+    assert "synthetic timeout" in failed.failure.message
 
 
 def test_budget_sequence_must_be_strictly_increasing() -> None:
@@ -150,3 +180,23 @@ def test_budget_sequence_must_be_strictly_increasing() -> None:
             (1000.0, 900.0),
             solver_preference=("highs",),
         )
+
+
+def test_solver_preference_generator_is_reusable() -> None:
+    data = _phase3_data()
+
+    standard = run_standard_ccg(
+        data,
+        solver_preference=(name for name in ("highs",)),
+        time_limit_seconds=60.0,
+    )
+    warm_started = run_spw_ccg_budget_sequence(
+        data,
+        (900.0, 1000.0),
+        solver_preference=(name for name in ("highs",)),
+        time_limit_seconds=60.0,
+    )
+
+    assert standard.converged
+    assert warm_started.status == "optimal"
+    assert len(warm_started.comparisons) == 2

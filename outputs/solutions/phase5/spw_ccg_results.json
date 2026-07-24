@@ -1,5 +1,5 @@
 {
-  "config": "configs\\phase4.yaml",
+  "config": "configs\\phase5.yaml",
   "seed": 20260723,
   "solver_preference": [
     "gurobi",
@@ -25,6 +25,7 @@
   "total_cold_seconds": 4.971605199913029,
   "total_warm_seconds": 2.395172300108243,
   "total_iteration_reduction": 13,
+  "completed_budget_count": 6,
   "comparisons": [
     {
       "budget": 700.0,
@@ -16071,5 +16072,6 @@
         ]
       }
     }
-  ]
+  ],
+  "failure": null
 }

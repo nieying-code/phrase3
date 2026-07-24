@@ -1,8 +1,8 @@
-# 阶段4：跨预算场景池热启动 SPW-C&CG
+# 阶段5：跨预算场景池热启动 SPW-C&CG
 
 ## 1. 目标
 
-阶段4在阶段3标准有限场景 C&CG 的基础上，实现预算序列之间的场景池复用。对严格递增的预算
+阶段5在阶段4标准有限场景 C&CG 的基础上，实现预算序列之间的场景池复用。对严格递增的预算
 \(B_1<\cdots<B_m\)，每个预算同时运行：
 
 1. 冷启动标准 C&CG；
@@ -39,7 +39,7 @@
 +\epsilon_{rel}\max(1,|z^{cold}_j|,|z^{warm}_j|).
 \]
 
-任何预算下冷、热算法不收敛或目标超差，阶段4结果都不得标记为通过。
+任何预算下冷、热算法不收敛或目标超差，阶段5结果都不得标记为通过。失败时保留此前完成的预算比较、当前预算已经取得的冷/热 C&CG 结果、迭代日志、终止状态和错误消息；结果文件写完后，命令行以非零状态退出。
 
 ## 4. 公平计时
 
@@ -52,10 +52,10 @@
 
 ## 5. 输出
 
-- `outputs/solutions/phase4/spw_ccg_results.json`：完整冷/热结果与传递状态；
-- `outputs/tables/phase4/budget_comparison.csv`：逐预算目标、迭代和时间对比；
-- `outputs/tables/phase4/scenario_pool_transfer.csv`：逐场景的池成员与活跃/历史标记；
-- `outputs/logs/phase4/ccg_iterations.csv`：全部预算、冷/热模式的逐迭代日志。
+- `outputs/solutions/phase5/spw_ccg_results.json`：完整冷/热结果、传递状态和失败诊断；
+- `outputs/tables/phase5/budget_comparison.csv`：逐预算目标、迭代、时间和失败状态；
+- `outputs/tables/phase5/scenario_pool_transfer.csv`：逐场景的池成员与活跃/历史标记；
+- `outputs/logs/phase5/ccg_iterations.csv`：全部已执行预算、冷/热模式的逐迭代日志。
 
 ## 6. 已知限制
 

@@ -83,6 +83,48 @@ class BudgetComparison:
 
 
 @dataclass(frozen=True)
+class BudgetFailure:
+    """Partial cold/warm results retained when one budget cannot finish."""
+
+    budget: float
+    status: str
+    stage: str
+    message: str
+    execution_order: tuple[str, str]
+    cold_initial_scenarios: tuple[str, ...]
+    warm_initial_scenarios: tuple[str, ...]
+    cold_pool_build_seconds: float
+    warm_pool_build_seconds: float
+    cold_result: CCGResult | None
+    warm_result: CCGResult | None
+    exception_type: str | None = None
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "budget": self.budget,
+            "status": self.status,
+            "stage": self.stage,
+            "message": self.message,
+            "exception_type": self.exception_type,
+            "execution_order": list(self.execution_order),
+            "cold_initial_scenarios": list(self.cold_initial_scenarios),
+            "warm_initial_scenarios": list(self.warm_initial_scenarios),
+            "cold_pool_build_seconds": self.cold_pool_build_seconds,
+            "warm_pool_build_seconds": self.warm_pool_build_seconds,
+            "cold_result": (
+                self.cold_result.as_dict()
+                if self.cold_result is not None
+                else None
+            ),
+            "warm_result": (
+                self.warm_result.as_dict()
+                if self.warm_result is not None
+                else None
+            ),
+        }
+
+
+@dataclass(frozen=True)
 class SPWCCGResult:
     """Complete cross-budget cold-versus-warm experiment."""
 
@@ -93,14 +135,27 @@ class SPWCCGResult:
     objective_absolute_tolerance: float
     objective_relative_tolerance: float
     alternate_execution_order: bool
+    failure: BudgetFailure | None = None
 
     @property
     def total_cold_seconds(self) -> float:
-        return sum(row.cold_total_seconds for row in self.comparisons)
+        total = sum(row.cold_total_seconds for row in self.comparisons)
+        if self.failure is not None and self.failure.cold_result is not None:
+            total += (
+                self.failure.cold_pool_build_seconds
+                + self.failure.cold_result.total_runtime_seconds
+            )
+        return total
 
     @property
     def total_warm_seconds(self) -> float:
-        return sum(row.warm_total_seconds for row in self.comparisons)
+        total = sum(row.warm_total_seconds for row in self.comparisons)
+        if self.failure is not None and self.failure.warm_result is not None:
+            total += (
+                self.failure.warm_pool_build_seconds
+                + self.failure.warm_result.total_runtime_seconds
+            )
+        return total
 
     @property
     def total_iteration_reduction(self) -> int:
@@ -117,7 +172,11 @@ class SPWCCGResult:
             "total_cold_seconds": self.total_cold_seconds,
             "total_warm_seconds": self.total_warm_seconds,
             "total_iteration_reduction": self.total_iteration_reduction,
+            "completed_budget_count": len(self.comparisons),
             "comparisons": [row.as_dict() for row in self.comparisons],
+            "failure": (
+                self.failure.as_dict() if self.failure is not None else None
+            ),
         }
 
 
@@ -242,6 +301,9 @@ def run_spw_ccg_budget_sequence(
         raise ValueError("active_scenario_tolerance must be nonnegative")
     if objective_absolute_tolerance < 0.0 or objective_relative_tolerance < 0.0:
         raise ValueError("objective consistency tolerances must be nonnegative")
+    solver_preference = tuple(solver_preference)
+    if not solver_preference:
+        raise ValueError("solver_preference must not be empty")
 
     solver_kwargs = {
         "absolute_tolerance": ccg_absolute_tolerance,
@@ -255,7 +317,17 @@ def run_spw_ccg_budget_sequence(
     }
     comparisons: list[BudgetComparison] = []
     previous_state: ScenarioPoolState | None = None
-    overall_status = "optimal"
+    def failed_result(failure: BudgetFailure) -> SPWCCGResult:
+        return SPWCCGResult(
+            status=failure.status,
+            budgets=ordered_budgets,
+            comparisons=tuple(comparisons),
+            active_scenario_tolerance=active_scenario_tolerance,
+            objective_absolute_tolerance=objective_absolute_tolerance,
+            objective_relative_tolerance=objective_relative_tolerance,
+            alternate_execution_order=alternate_execution_order,
+            failure=failure,
+        )
 
     for index, budget in enumerate(ordered_budgets):
         budget_data = replace(data, budget=budget)
@@ -281,20 +353,74 @@ def run_spw_ccg_budget_sequence(
 
         if not alternate_execution_order or index % 2 == 0:
             execution_order = ("cold", "warm")
-            cold = solve(cold_initial)
-            warm = solve(warm_initial)
         else:
             execution_order = ("warm", "cold")
-            warm = solve(warm_initial)
-            cold = solve(cold_initial)
 
-        if not cold.converged or not warm.converged:
-            raise RuntimeError(
-                f"C&CG did not converge at budget {budget}: "
-                f"cold={cold.termination_status}, warm={warm.termination_status}"
-            )
-        if cold.objective is None or warm.objective is None:
-            raise RuntimeError(f"missing robust objective at budget {budget}")
+        cold: CCGResult | None = None
+        warm: CCGResult | None = None
+        for mode in execution_order:
+            initial = cold_initial if mode == "cold" else warm_initial
+            try:
+                mode_result = solve(initial)
+            except Exception as exc:
+                return failed_result(
+                    BudgetFailure(
+                        budget=budget,
+                        status=f"{mode}_exception",
+                        stage=mode,
+                        message=f"{type(exc).__name__}: {exc}",
+                        execution_order=execution_order,
+                        cold_initial_scenarios=cold_initial,
+                        warm_initial_scenarios=warm_initial,
+                        cold_pool_build_seconds=cold_pool_seconds,
+                        warm_pool_build_seconds=warm_pool_seconds,
+                        cold_result=cold,
+                        warm_result=warm,
+                        exception_type=type(exc).__name__,
+                    )
+                )
+            if mode == "cold":
+                cold = mode_result
+            else:
+                warm = mode_result
+            if not mode_result.converged:
+                return failed_result(
+                    BudgetFailure(
+                        budget=budget,
+                        status=f"{mode}_{mode_result.termination_status}",
+                        stage=mode,
+                        message=(
+                            f"{mode} C&CG did not converge: "
+                            f"{mode_result.termination_status}"
+                        ),
+                        execution_order=execution_order,
+                        cold_initial_scenarios=cold_initial,
+                        warm_initial_scenarios=warm_initial,
+                        cold_pool_build_seconds=cold_pool_seconds,
+                        warm_pool_build_seconds=warm_pool_seconds,
+                        cold_result=cold,
+                        warm_result=warm,
+                    )
+                )
+            if mode_result.objective is None:
+                return failed_result(
+                    BudgetFailure(
+                        budget=budget,
+                        status=f"{mode}_missing_objective",
+                        stage=mode,
+                        message=f"{mode} C&CG returned no robust objective",
+                        execution_order=execution_order,
+                        cold_initial_scenarios=cold_initial,
+                        warm_initial_scenarios=warm_initial,
+                        cold_pool_build_seconds=cold_pool_seconds,
+                        warm_pool_build_seconds=warm_pool_seconds,
+                        cold_result=cold,
+                        warm_result=warm,
+                    )
+                )
+
+        if cold is None or warm is None:
+            raise AssertionError("execution order did not run both C&CG modes")
 
         difference = abs(float(cold.objective) - float(warm.objective))
         consistency_limit = (
@@ -308,7 +434,24 @@ def run_spw_ccg_budget_sequence(
         )
         consistent = difference <= consistency_limit
         if not consistent:
-            overall_status = "inconsistent_cold_warm_objectives"
+            return failed_result(
+                BudgetFailure(
+                    budget=budget,
+                    status="inconsistent_cold_warm_objectives",
+                    stage="comparison",
+                    message=(
+                        f"cold/warm objective difference {difference} "
+                        f"exceeds tolerance {consistency_limit}"
+                    ),
+                    execution_order=execution_order,
+                    cold_initial_scenarios=cold_initial,
+                    warm_initial_scenarios=warm_initial,
+                    cold_pool_build_seconds=cold_pool_seconds,
+                    warm_pool_build_seconds=warm_pool_seconds,
+                    cold_result=cold,
+                    warm_result=warm,
+                )
+            )
 
         state = build_transferred_state(
             budget_data,
@@ -335,7 +478,7 @@ def run_spw_ccg_budget_sequence(
         previous_state = state
 
     return SPWCCGResult(
-        status=overall_status,
+        status="optimal",
         budgets=ordered_budgets,
         comparisons=tuple(comparisons),
         active_scenario_tolerance=active_scenario_tolerance,

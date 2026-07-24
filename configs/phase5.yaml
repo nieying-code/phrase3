@@ -1,5 +1,5 @@
 project:
-  name: phase4_spw_ccg_relief_procurement
+  name: phase5_spw_ccg_relief_procurement
   seed: 20260723
   output_language: zh
 
@@ -52,7 +52,7 @@ ccg:
   relative_tolerance: 1.0e-6
   serial_recourse: true
 
-phase4:
+phase5:
   budgets: [700.0, 800.0, 900.0, 1000.0, 1100.0, 1200.0]
   active_scenario_tolerance: 1.0e-6
   objective_absolute_tolerance: 1.0e-5
