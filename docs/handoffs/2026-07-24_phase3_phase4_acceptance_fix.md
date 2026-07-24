@@ -100,6 +100,18 @@ python -m src.run_phase3 --config configs/phase3.yaml --output D:\新建文件�
 - 可复现快照记录的代码 SHA：`d0e55f2eb93e948b163fc5a96ac848c933a51efa`，运行前工作树为干净状态。
 - CI：[run #22](https://github.com/nieying-code/phrase3/actions/runs/30068490961)，成功；语法检查通过，`28 passed in 8.02s`。
 
+## PR #2 合并后同步
+
+- PR #2 已合并到 `main`，合并提交为 `ebf347162fdf8962bf901fa7a8170385ed91ecc0`。
+- PR #3 已通过非强制 merge 同步最新 `main`，没有改写既有远程提交历史。
+- 合并冲突仅涉及 `README.md`、旧阶段3 handoff 和 `tests/test_extensive_model.py`：
+  - README 同时保留阶段3/4历史映射和阶段5已完成状态；
+  - 旧 handoff 改为“PR #1 当时未实现、后来由 PR #2 完成阶段5”的历史表述；
+  - 生成器参数测试保留 PR #2 中拆分更细的两个独立接口测试。
+- 同步后本地完整回归：`41 passed in 26.70s`。
+- 按当前 CI 步骤拆分复核：普通回归 `35 passed in 13.80s`，阶段5端到端及失败诊断 `6 passed in 16.91s`。
+- 同步后 CI：pending。
+
 ## 已知限制
 
 - 当前 oracle 仍为串行枚举。
