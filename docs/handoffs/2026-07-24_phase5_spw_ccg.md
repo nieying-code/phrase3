@@ -13,6 +13,8 @@
 - Original mislabeled implementation SHA: `a528cb020ed6a5e666cb28be3ce451b15f818ace`
 - First review remediation code SHA: `04dfff10d3fcbe35a24b31373f6f7865dc5f3d9d`
 - Equivalent locally validated Git commit: `1a28d0247dcad3a846c35d19b09cb156a396dfba`
+- Second review remediation code SHA: `4b91831a88fa427950b9513914de64a9a189e0e2`
+- Equivalent locally validated Git commit: `858dfcff5597c79d70f131128af207ec0cfcf885`
 - 最终远程 PR head：以 PR 页面显示为准；handoff 文档提交晚于上述代码提交，避免把旧实现 SHA 误写成最终代码版本。
 - PR（Ready for review）: https://github.com/nieying-code/phrase3/pull/2
 - Repository: `nieying-code/phrase3`
@@ -74,6 +76,8 @@ python -m pytest -q
 - 审查整改前本地结果：`25 passed in 7.23s`。
 - 审查整改后本地完整回归：`27 passed in 17.24s`。
 - 按 CI 步骤拆分复核：`26 passed in 5.64s`，阶段5端到端测试 `1 passed in 10.19s`。
+- 第二轮整改后本地完整回归：`32 passed in 24.50s`。
+- 第二轮按 CI 步骤拆分复核：普通回归 `28 passed in 21.54s`，阶段5端到端及失败诊断 `4 passed in 19.40s`。
 
 新增测试覆盖：
 
@@ -114,7 +118,17 @@ CI：
 4. 新增最大迭代失败诊断、未预期异常诊断和生成器求解器偏好回归测试；
 5. 按《项目.docx》和 `docs/project_plan.md` 恢复原始编号：阶段4为标准 C&CG，阶段5为 SPW-C&CG。
 
-第二轮整改提交与 CI：等待本轮验证和推送后填写。
+阶段定义依据：
+
+- 《项目.docx》执行阶段第4项为标准 C&CG、第5项为跨预算场景池热启动 C&CG；
+- `docs/project_plan.md` 第15–21行采用相同定义；
+- 保留旧分支名仅为维持同一 PR，不再把它作为交付阶段编号。
+
+第二轮整改 CI：
+
+- [run #18](https://github.com/nieying-code/phrase3/actions/runs/30065055287)，成功；
+  - 普通回归：`28 passed in 12.27s`；
+  - 阶段5端到端及失败诊断：`4 passed in 11.33s`。
 
 ## 正式小规模验证
 
