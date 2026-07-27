@@ -3,6 +3,7 @@ __pycache__/
 .venv/
 .deps/
 .codex_deps/
+.phase6_deps/
 .pytest_cache/
 data/generated/*
 !data/generated/.gitkeep
@@ -29,3 +30,4 @@ outputs/tables/*
 !outputs/tables/phase5/
 !outputs/tables/phase5/budget_comparison.csv
 !outputs/tables/phase5/scenario_pool_transfer.csv
+outputs/experiments/*
