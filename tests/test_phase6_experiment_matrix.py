@@ -1,3 +1,5 @@
+import hashlib
+import math
 from pathlib import Path
 
 import yaml
@@ -11,6 +13,60 @@ def _load_matrix() -> dict:
         payload = yaml.safe_load(handle)
     assert isinstance(payload, dict)
     return payload
+
+
+def _compute_reference_budget(matrix: dict, tier: dict) -> float:
+    if tier["id"] == "D0":
+        with Path("configs/base.yaml").open("r", encoding="utf-8") as handle:
+            legacy = yaml.safe_load(handle)
+        return sum(
+            price * demand * seasonality
+            for price, seasonality in zip(
+                legacy["scenario_generation"]["regular_price"],
+                legacy["scenario_generation"]["demand_seasonality"],
+                strict=True,
+            )
+            for demand in [legacy["scenario_generation"]["base_demand"]]
+        )
+
+    protocol = matrix["generator_protocol"]
+    baseline = matrix["controlled_synthetic_baseline"]
+    deterministic = protocol["deterministic_baselines"]
+    periods = tier["periods"]
+    archetypes = baseline["item_archetypes"][: tier["items"]]
+
+    seasonality_spec = deterministic["demand_seasonality"]
+    raw_seasonality = [
+        1.0
+        + seasonality_spec["sine_amplitude"] * math.sin(2.0 * math.pi * t / periods)
+        + seasonality_spec["cosine_amplitude"]
+        * math.cos(4.0 * math.pi * t / periods)
+        for t in range(periods)
+    ]
+    raw_mean = sum(raw_seasonality) / periods
+    seasonality = [value / raw_mean for value in raw_seasonality]
+
+    price_spec = deterministic["regular_price"]
+    total = 0.0
+    for item in archetypes:
+        for t in range(periods):
+            expected_demand = (
+                deterministic["first_item_base_demand_per_period"]
+                * item["demand_multiplier"]
+                * seasonality[t]
+            )
+            regular_price = (
+                price_spec["base_first_item"]
+                * item["regular_price_multiplier"]
+                * (
+                    1.0
+                    + price_spec["trend_slope"] * t / (periods - 1)
+                    + price_spec["sine_amplitude"]
+                    * math.sin(2.0 * math.pi * t / periods)
+                )
+            )
+            total += regular_price * expected_demand
+    return total
 
 
 def test_phase6_matrix_has_disjoint_reproducible_seed_sets() -> None:
@@ -28,6 +84,62 @@ def test_phase6_matrix_has_disjoint_reproducible_seed_sets() -> None:
     assert pilot.isdisjoint(training)
     assert pilot.isdisjoint(testing)
     assert training.isdisjoint(testing)
+
+
+def test_phase6_generator_protocol_resolves_every_tier_and_reference_budget() -> None:
+    matrix = _load_matrix()
+    protocol = matrix["generator_protocol"]
+    baseline = matrix["controlled_synthetic_baseline"]
+    tiers = matrix["scale_tiers"]
+    expected_budgets = matrix["budget_plan"]["reference_budget_by_tier"]
+    tolerance = matrix["budget_plan"]["reference_budget_validation"][
+        "absolute_tolerance"
+    ]
+
+    assert protocol["protocol_id"] == "phase6_controlled_synthetic_v1_0"
+    assert protocol["tier_resolution_must_be_deterministic"] is True
+    assert protocol["random_number_generation"]["numpy_version"] == "2.5.1"
+    assert protocol["random_number_generation"]["normal_dtype"] == "float64"
+    assert (
+        sum(protocol["latent_factor_model"]["demand_variance_loadings"].values())
+        == 1.0
+    )
+    canonical_base = Path("configs/base.yaml").read_text(encoding="utf-8").replace(
+        "\r\n", "\n"
+    )
+    assert (
+        hashlib.sha256(canonical_base.encode("utf-8")).hexdigest()
+        == protocol["legacy_D0"]["canonical_lf_sha256"]
+    )
+
+    supported_periods = set(
+        protocol["deterministic_baselines"]["demand_seasonality"][
+            "applicable_period_counts"
+        ]
+    )
+    for tier in tiers:
+        assert tier["id"] in expected_budgets
+        if tier["id"] != "D0":
+            assert tier["id"] in protocol["applies_to_tiers"]
+            assert tier["periods"] in supported_periods
+            selected_items = baseline["item_archetypes"][: tier["items"]]
+            assert len(selected_items) == tier["items"]
+            assert all(item["shelf_life_periods"] > 0 for item in selected_items)
+            assert (
+                protocol["deterministic_baselines"]["initial_inventory"]["value"]
+                == 0.0
+            )
+            assert (
+                protocol["deterministic_baselines"]["storage_capacity"]["factor"]
+                > 0.0
+            )
+        actual = _compute_reference_budget(matrix, tier)
+        assert math.isclose(
+            actual,
+            expected_budgets[tier["id"]],
+            rel_tol=0.0,
+            abs_tol=tolerance,
+        )
 
 
 def test_phase6_matrix_freezes_scale_budget_and_exactness_gates() -> None:
@@ -103,9 +215,12 @@ def test_phase6_matrix_has_valid_sensitivity_and_oos_design() -> None:
     assert "endogenous_reserve" in out_of_sample["policies"]
     required_metrics = {
         "plan_oos_status",
+        "total_scenario_count",
+        "optimal_evaluation_rate",
         "recourse_feasibility_rate",
         "infeasible_scenario_count",
         "solver_failure_count",
+        "zero_reserve_flag",
     }
     assert required_metrics.issubset(out_of_sample["metrics"])
     assert (
@@ -124,6 +239,21 @@ def test_phase6_matrix_has_valid_sensitivity_and_oos_design() -> None:
         ]
         is None
     )
+    accounting = out_of_sample["status_accounting"]
+    assert accounting["mutually_exclusive_terminal_categories"] == [
+        "optimal",
+        "infeasible",
+        "solver_failure",
+    ]
+    assert (
+        accounting["count_identity"]
+        == "total_scenario_count_equals_optimal_scenario_count_plus_infeasible_scenario_count_plus_solver_failure_count"
+    )
+    assert accounting["count_identity_must_hold_before_reporting"] is True
+    assert (
+        out_of_sample["metric_definitions"]["reported_service_level"]["aggregation"]
+        == "demand_weighted_across_all_scenarios"
+    )
 
 
 def test_phase6_matrix_freezes_clustered_inference_and_completion_reporting() -> None:
@@ -138,6 +268,14 @@ def test_phase6_matrix_freezes_clustered_inference_and_completion_reporting() ->
     assert (
         reporting["six_budget_summary_inference"]["cluster_unit"]
         == "entire_budget_sequence_within_training_seed"
+    )
+    assert (
+        reporting["six_budget_summary_inference"]["within_seed_statistic"]
+        == "median_log_cold_time_divided_by_warm_time_over_jointly_completed_budgets"
+    )
+    assert (
+        reporting["six_budget_summary_inference"]["primary_across_seed_statistic"]
+        == "median_of_within_seed_statistics"
     )
     assert reporting["extreme_tiers"]["P3"] == "descriptive_only"
     assert reporting["extreme_tiers"]["P4"] == "descriptive_only"
@@ -158,17 +296,48 @@ def test_phase6_matrix_freezes_clustered_inference_and_completion_reporting() ->
         reporting["H5_scene_similarity_analysis"]["confidence_interval"]
         == "cluster_bootstrap_by_training_seed"
     )
+    uncertainty = reporting["uncertainty"]
+    assert uncertainty["confidence_interval_method"] == "percentile"
+    assert uncertainty["bootstrap_resamples"] == 10000
+    assert len(set(uncertainty["bootstrap_random_seeds"].values())) == 3
+    wilcoxon = reporting["optional_nonparametric_test"]
+    assert wilcoxon["name"] == "wilcoxon_signed_rank"
+    assert wilcoxon["seed_budget_rows_must_not_be_treated_as_independent"] is True
+    assert (
+        wilcoxon["fixed_budget_input"]
+        == "one_paired_technical_median_per_training_seed"
+    )
+    assert (
+        wilcoxon["six_budget_input"]
+        == "one_within_seed_median_log_speedup_per_training_seed"
+    )
 
 
 def test_phase6_matrix_freezes_seed_selection_combined_scale_gates_and_timeouts() -> None:
     matrix = _load_matrix()
     tiers = {tier["id"]: tier for tier in matrix["scale_tiers"]}
-    global_gate = matrix["scale_advancement"]["all_conditions"]
+    advancement = matrix["scale_advancement"]
+    global_gate = advancement["all_conditions"]
 
     assert tiers["P3"]["formal_seed_selector"] == "first_5_formal_training_seeds"
     assert tiers["P4"]["formal_seed_selector"] == "first_3_formal_training_seeds"
-    assert tiers["P3"]["activation_gate"]["all_conditions"] == global_gate
-    assert tiers["P4"]["activation_gate"]["all_conditions"] == global_gate
+    assert tiers["P3"]["activation_gate"]["rule_reference"] == "scale_advancement"
+    assert tiers["P4"]["activation_gate"]["rule_reference"] == "scale_advancement"
+    assert global_gate == {
+        "joint_pair_completion_rate_minimum": 0.80,
+        "max_algorithm_median_runtime_fraction_maximum": 0.75,
+    }
+    runtime_gate = advancement["runtime_fraction"]
+    assert runtime_gate["eligible_pairs"] == "jointly_optimal_pairs_only"
+    assert (
+        runtime_gate["denominator"]
+        == "tier_ccg_budget_wall_seconds_for_one_algorithm"
+    )
+    assert (
+        runtime_gate["gate_statistic"]
+        == "maximum_of_cold_statistic_and_warm_statistic"
+    )
+    assert runtime_gate["no_jointly_optimal_pairs"] == "gate_fails"
 
     timeout = matrix["timeout_protocol"]
     assert (

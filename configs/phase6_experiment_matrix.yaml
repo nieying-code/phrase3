@@ -1,5 +1,5 @@
-schema_version: "1.1"
-matrix_id: phase6_formal_experiments_v1_1
+schema_version: "1.2"
+matrix_id: phase6_formal_experiments_v1_2
 status: candidate_for_freeze_pending_review
 initial_draft_on: "2026-07-24"
 revised_on: "2026-07-27"
@@ -20,7 +20,7 @@ data_tracks:
     role: external_calibration_with_independent_resampling
     required_for_phase6_final_claims: true
     status: awaiting_separate_calibration_protocol
-    included_in_v1_1_compute_total: false
+    included_in_v1_2_compute_total: false
     execution_gate: provenance_and_calibration_report_approved
   historical_case:
     role: interpretable_case_study
@@ -65,6 +65,100 @@ controlled_synthetic_baseline:
       shelf_life_periods: 1
   tier_item_rule: use_first_k_archetypes
 
+generator_protocol:
+  protocol_id: phase6_controlled_synthetic_v1_0
+  numeric_precision: IEEE_754_binary64
+  rounding_before_output_forbidden: true
+  tier_resolution_must_be_deterministic: true
+  legacy_D0:
+    source: configs/base.yaml
+    canonical_lf_sha256: 7da2c1866bd054fa6fa210feab8e864eab8bb1db564a7814fc1cc0ba11761e6a
+    use_source_values_without_phase6_overrides: true
+  applies_to_tiers:
+    - V1
+    - V2
+    - P1
+    - P2
+    - P3
+    - P4
+  tier_resolution:
+    item_selection: first_k_controlled_synthetic_baseline_item_archetypes
+    period_count: scale_tier_periods
+    training_scenario_count: scale_tier_training_scenarios
+    item_order: controlled_synthetic_baseline_item_archetype_order
+    period_index_origin: 0
+    scenario_id_format: "s{zero_based_index:04d}"
+  deterministic_baselines:
+    first_item_base_demand_per_period: 100.0
+    base_emergency_supply_ratio: 1.35
+    initial_inventory:
+      rule: zero_for_every_item_and_age
+      value: 0.0
+    storage_capacity:
+      rule: capacity_t_equals_factor_times_sum_item_theoretical_mean_demand_t
+      factor: 1.50
+    demand_seasonality:
+      applicable_period_counts: [6, 12, 24]
+      raw_formula: 1_plus_sine_amplitude_times_sin_2pi_t_over_T_plus_cosine_amplitude_times_cos_4pi_t_over_T
+      sine_amplitude: 0.20
+      cosine_amplitude: 0.10
+      normalization: divide_each_raw_value_by_arithmetic_mean_over_all_periods
+    regular_price:
+      base_first_item: 2.0
+      formula: base_times_item_multiplier_times_1_plus_trend_slope_times_t_divided_by_T_minus_1_plus_sine_amplitude_times_sin_2pi_t_over_T
+      trend_slope: 0.05
+      trend_denominator: T_minus_1
+      sine_amplitude: 0.025
+  random_number_generation:
+    engine: numpy_Generator_PCG64DXSM
+    numpy_version: 2.5.1
+    normal_distribution: standard_normal_location_0_scale_1
+    normal_dtype: float64
+    seed: seed_plan_selected_seed
+    draw_order_per_scenario:
+      - one_common_disaster_factor
+      - one_item_factor_per_item_in_item_order
+      - one_period_factor_per_period_in_period_order
+      - demand_price_supply_idiosyncratic_normals_per_item_then_period
+  latent_factor_model:
+    independent_standard_normal_components: true
+    demand_variance_loadings:
+      common_disaster: 0.45
+      item: 0.20
+      period: 0.20
+      idiosyncratic: 0.15
+    demand_latent_formula: sum_square_root_variance_loading_times_corresponding_standard_normal
+    price_latent_formula: demand_price_correlation_times_demand_latent_plus_sqrt_1_minus_correlation_squared_times_price_idiosyncratic
+    supply_latent_formula: demand_supply_correlation_times_demand_latent_plus_sqrt_1_minus_correlation_squared_times_supply_idiosyncratic
+  scenario_transformations:
+    theoretical_mean_demand:
+      formula: first_item_base_demand_times_item_demand_multiplier_times_normalized_seasonality_t
+    demand:
+      family: mean_corrected_lognormal
+      log_sigma_formula: sqrt_log_1_plus_demand_cv_squared
+      formula: theoretical_mean_times_exp_log_sigma_times_demand_latent_minus_half_log_sigma_squared
+      truncation: none
+    emergency_price_markup:
+      family: lower_truncated_affine_normal
+      formula: max_lower_bound_and_markup_mean_plus_markup_sd_times_price_latent
+      lower_bound: 0.05
+    emergency_price:
+      formula: regular_price_times_1_plus_emergency_price_markup
+    emergency_supply_factor:
+      family: two_sided_clipped_affine_normal
+      formula: clip_1_minus_supply_reduction_mean_plus_supply_shock_sd_times_supply_latent
+      lower_bound: 0.05
+      upper_bound: 1.50
+    emergency_supply:
+      formula: theoretical_mean_demand_times_base_emergency_supply_ratio_times_emergency_supply_factor
+  penalty_protocol:
+    maximum_reference_emergency_price:
+      formula: maximum_regular_price_times_1_plus_markup_mean_plus_3_times_markup_sd
+    shortage_penalty:
+      formula: shortage_penalty_multiplier_times_item_maximum_reference_emergency_price
+    waste_penalty:
+      formula: waste_penalty_multiplier_times_item_maximum_regular_price
+
 seed_plan:
   development_seed: 20260723
   pilot_training_seeds:
@@ -100,6 +194,17 @@ budget_plan:
   reference_formula: sum_over_items_and_periods_of_regular_price_times_expected_demand
   expectation_source: frozen_generator_theoretical_expectation
   training_sample_mean_forbidden: true
+  reference_budget_by_tier:
+    D0: 853.5
+    V1: 1230.3215390309174
+    V2: 1230.3215390309174
+    P1: 6522.665525847212
+    P2: 9783.998288770817
+    P3: 19571.120219897657
+    P4: 19571.120219897657
+  reference_budget_validation:
+    recompute_from_generator_protocol_required: true
+    absolute_tolerance: 1.0e-9
   formal_factors:
     - 0.75
     - 0.90
@@ -211,9 +316,7 @@ scale_tiers:
     timing_repetitions: 1
     activation_gate:
       prior_tier: P2
-      all_conditions:
-        completed_pair_rate_minimum: 0.80
-        median_runtime_fraction_of_budget_wall_maximum: 0.75
+      rule_reference: scale_advancement
   - id: P4
     label: stretch_limit
     items: 5
@@ -230,9 +333,7 @@ scale_tiers:
     timing_repetitions: 1
     activation_gate:
       prior_tier: P3
-      all_conditions:
-        completed_pair_rate_minimum: 0.80
-        median_runtime_fraction_of_budget_wall_maximum: 0.75
+      rule_reference: scale_advancement
 
 model_comparison:
   tiers:
@@ -457,6 +558,12 @@ out_of_sample_evaluation:
     infeasible_scenario_count_required: true
     solver_failure_count_required: true
     solver_failures_are_not_infeasibility: true
+    mutually_exclusive_terminal_categories:
+      - optimal
+      - infeasible
+      - solver_failure
+    count_identity: total_scenario_count_equals_optimal_scenario_count_plus_infeasible_scenario_count_plus_solver_failure_count
+    count_identity_must_hold_before_reporting: true
     recourse_feasibility_rate:
       formula_when_solver_failure_count_is_zero: optimal_scenario_count_divided_by_total_scenario_count
       value_when_solver_failure_count_is_positive: null
@@ -480,6 +587,11 @@ out_of_sample_evaluation:
     shortage_probability: fraction_of_scenarios_with_total_shortage_above_tolerance
     scenario_service_level: one_minus_total_shortage_divided_by_total_demand
     zero_total_demand_service_level: 1.0
+    reported_service_level:
+      aggregation: demand_weighted_across_all_scenarios
+      formula: one_minus_sum_shortage_over_all_scenarios_divided_by_sum_demand_over_all_scenarios
+      zero_total_demand_value: 1.0
+      arithmetic_mean_of_scenario_service_levels_is_not_primary: true
     empirical_quantile_method: linear_type_7
     empirical_cvar95: average_worst_five_percent_with_fractional_boundary_weight
     reserve_utilization:
@@ -489,7 +601,9 @@ out_of_sample_evaluation:
       zero_reserve_flag_required: true
   metrics:
     - plan_oos_status
+    - total_scenario_count
     - optimal_scenario_count
+    - optimal_evaluation_rate
     - recourse_feasibility_rate
     - infeasible_scenario_count
     - solver_failure_count
@@ -506,6 +620,7 @@ out_of_sample_evaluation:
     - mean_waste
     - mean_emergency_spend
     - reserve_utilization
+    - zero_reserve_flag
 
 performance_metrics:
   - total_wall_time
@@ -530,10 +645,18 @@ statistical_reporting:
   fixed_budget_inference:
     resampling_unit: training_seed
     pair_key: same_tier_training_seed_and_budget
+    primary_effect: log_cold_time_divided_by_warm_time
   six_budget_summary_inference:
     method: cluster_paired_bootstrap
     cluster_unit: entire_budget_sequence_within_training_seed
     resample_all_six_budgets_together: true
+    within_seed_statistic: median_log_cold_time_divided_by_warm_time_over_jointly_completed_budgets
+    primary_across_seed_statistic: median_of_within_seed_statistics
+    reported_speedup: exp_primary_across_seed_statistic
+    secondary_statistic: median_cold_minus_warm_time_within_seed_then_median_across_seeds
+    seed_with_no_jointly_completed_budget:
+      primary_effect_value: null
+      retained_in_completion_rate_denominator: true
   extreme_tiers:
     P3: descriptive_only
     P4: descriptive_only
@@ -562,7 +685,17 @@ statistical_reporting:
     method: paired_bootstrap
     confidence_level: 0.95
     bootstrap_resamples: 10000
-  optional_nonparametric_test: wilcoxon_signed_rank
+    confidence_interval_method: percentile
+    random_engine: numpy_Generator_PCG64DXSM
+    bootstrap_random_seeds:
+      fixed_budget: 2026090601
+      six_budget_cluster: 2026090602
+      H5_cluster: 2026090603
+  optional_nonparametric_test:
+    name: wilcoxon_signed_rank
+    fixed_budget_input: one_paired_technical_median_per_training_seed
+    six_budget_input: one_within_seed_median_log_speedup_per_training_seed
+    seed_budget_rows_must_not_be_treated_as_independent: true
   multiple_comparison_rule: report_effect_sizes_and_adjusted_p_values_when_used
   runtime_primary_statistic: median
   H5_scene_similarity_analysis:
@@ -580,8 +713,20 @@ statistical_reporting:
 
 scale_advancement:
   all_conditions:
-    completed_pair_rate_minimum: 0.80
-    median_runtime_fraction_of_budget_wall_maximum: 0.75
+    joint_pair_completion_rate_minimum: 0.80
+    max_algorithm_median_runtime_fraction_maximum: 0.75
+  joint_pair_completion_rate:
+    numerator: cold_and_warm_both_optimal_pair_count
+    denominator: all_planned_pairs_including_timeout_failure_and_not_run_after_sequence_failure
+  runtime_fraction:
+    eligible_pairs: jointly_optimal_pairs_only
+    runtime_input_after_technical_repetitions: median_wall_time_for_each_algorithm_tier_seed_budget
+    denominator: tier_ccg_budget_wall_seconds_for_one_algorithm
+    cold_statistic: median_cold_runtime_divided_by_budget_wall_over_eligible_pairs
+    warm_statistic: median_warm_runtime_divided_by_budget_wall_over_eligible_pairs
+    gate_statistic: maximum_of_cold_statistic_and_warm_statistic
+    timeout_failure_and_not_run_handling: excluded_from_runtime_medians_but_retained_in_joint_completion_denominator
+    no_jointly_optimal_pairs: gate_fails
   stop_rule: report_largest_verified_tier_before_algorithmic_expansion
   failures_must_remain_in_denominators: true
 
