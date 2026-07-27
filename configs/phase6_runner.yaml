@@ -1,0 +1,26 @@
+matrix_path: configs/phase6_experiment_matrix.yaml
+
+solver:
+  preference:
+    - highs
+    - gurobi
+  threads: 1
+  feasibility_tolerance: 1.0e-7
+  optimality_tolerance: 1.0e-7
+  tee: false
+
+ccg:
+  absolute_tolerance: 1.0e-6
+  relative_tolerance: 1.0e-6
+
+runner:
+  active_scenario_tolerance: 1.0e-6
+  checkpoint_after_each_completed_budget_pair: true
+  atomic_output_replacement: true
+  retain_worker_requests_and_results: true
+  formal_status_gate: frozen_for_formal_execution
+  pilot_projection_required_tiers:
+    - V1
+    - V2
+    - P1
+    - P2

@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from math import inf, isfinite, sqrt
 from time import perf_counter
-from typing import Any, Iterable, Sequence
+from typing import Any, Callable, Iterable, Sequence
 
 from .evaluation import EvaluationResult, evaluate_first_stage
 from .extensive_model import MasterSolution, build_restricted_master, solve_master
@@ -108,14 +108,20 @@ def _argmax(
     scenario_names: Sequence[str],
     values: dict[str, float],
 ) -> str:
-    return max(scenario_names, key=lambda name: (values[name], -scenario_names.index(name)))
+    return max(
+        scenario_names,
+        key=lambda name: (values[name], -scenario_names.index(name)),
+    )
 
 
 def _argmin(
     scenario_names: Sequence[str],
     values: dict[str, float],
 ) -> str:
-    return min(scenario_names, key=lambda name: (values[name], scenario_names.index(name)))
+    return min(
+        scenario_names,
+        key=lambda name: (values[name], scenario_names.index(name)),
+    )
 
 
 def select_initial_scenarios(data: ProcurementData) -> tuple[str, ...]:
@@ -178,9 +184,11 @@ def run_standard_ccg(
     max_iterations: int = 200,
     solver_preference: Iterable[str] = ("gurobi", "highs"),
     time_limit_seconds: float = 600.0,
+    solver_threads: int | None = None,
     feasibility_tolerance: float | None = None,
     optimality_tolerance: float | None = None,
     tee: bool = False,
+    progress_callback: Callable[[dict[str, Any]], None] | None = None,
 ) -> CCGResult:
     """Run serial finite-scenario C&CG with exact recourse enumeration."""
 
@@ -221,6 +229,7 @@ def run_standard_ccg(
             build_restricted_master(data, selected),
             solver_preference=solver_preference,
             time_limit_seconds=time_limit_seconds,
+            solver_threads=solver_threads,
             feasibility_tolerance=feasibility_tolerance,
             optimality_tolerance=optimality_tolerance,
             tee=tee,
@@ -238,6 +247,7 @@ def run_standard_ccg(
             float(master.reserve),
             solver_preference=solver_preference,
             time_limit_seconds=time_limit_seconds,
+            solver_threads=solver_threads,
             feasibility_tolerance=feasibility_tolerance,
             optimality_tolerance=optimality_tolerance,
             tee=tee,
@@ -308,12 +318,35 @@ def run_standard_ccg(
                 worst_scenario=worst_scenario,
             )
         )
+        if progress_callback is not None:
+            progress_callback(
+                {
+                    "status": "running",
+                    "iteration": iteration,
+                    "termination_status": termination_status,
+                    "converged": converged,
+                    "initial_scenario_set": list(initial),
+                    "current_scenario_set": list(selected),
+                    "lower_bound": (
+                        global_lb if isfinite(global_lb) else None
+                    ),
+                    "upper_bound": (
+                        global_ub if isfinite(global_ub) else None
+                    ),
+                    "gap": gap,
+                    "worst_scenario": worst_scenario,
+                    "iteration_log": [row.as_dict() for row in log],
+                }
+            )
         if converged or termination_status not in {
             "max_iterations",
         }:
             if added is None:
                 break
-            if termination_status.startswith("inconsistent") or termination_status == "oracle_failure":
+            if (
+                termination_status.startswith("inconsistent")
+                or termination_status == "oracle_failure"
+            ):
                 break
 
     if incumbent_master is None or incumbent_evaluation is None:

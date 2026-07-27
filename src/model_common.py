@@ -68,6 +68,7 @@ def solve_with_status(
     *,
     solver_preference: Iterable[str] = ("gurobi", "highs"),
     time_limit_seconds: float = 600.0,
+    solver_threads: int | None = None,
     feasibility_tolerance: float | None = None,
     optimality_tolerance: float | None = None,
     tee: bool = False,
@@ -87,6 +88,14 @@ def solve_with_status(
                 termination_condition="invalid_solver_option",
                 message=f"{name} must be positive",
             )
+    if solver_threads is not None and int(solver_threads) <= 0:
+        return SolveRecord(
+            status="solver_error",
+            solver="unavailable",
+            runtime_seconds=perf_counter() - started,
+            termination_condition="invalid_solver_option",
+            message="solver_threads must be positive",
+        )
     try:
         solver_name, solver = select_solver(solver_preference)
     except Exception as exc:
@@ -100,6 +109,8 @@ def solve_with_status(
 
     if solver_name in {"appsi_highs", "highs"}:
         solver.options["time_limit"] = float(time_limit_seconds)
+        if solver_threads is not None:
+            solver.options["threads"] = int(solver_threads)
         if feasibility_tolerance is not None:
             solver.options["primal_feasibility_tolerance"] = float(
                 feasibility_tolerance
@@ -113,6 +124,8 @@ def solve_with_status(
             )
     elif solver_name == "gurobi":
         solver.options["TimeLimit"] = float(time_limit_seconds)
+        if solver_threads is not None:
+            solver.options["Threads"] = int(solver_threads)
         if feasibility_tolerance is not None:
             solver.options["FeasibilityTol"] = float(feasibility_tolerance)
         if optimality_tolerance is not None:

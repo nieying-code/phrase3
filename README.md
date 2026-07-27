@@ -113,6 +113,23 @@ tests/
 outputs/
 ```
 
+## Phase 6 runner（正式实验前基础设施）
+
+阶段6现已提供受控生成器、三层时限、冷/热配对运行、原子 checkpoint、
+非终态断点恢复、逐迭代 heartbeat、全程单 run 排他锁、跨进程汇总锁和带
+科学配置/runner 配置/E3 组件三类稳定指纹的试运行投影。
+失败终态不可恢复覆盖，诊断重试使用独立运行及父运行标识。入口为：
+
+```powershell
+python -m src.run_phase6 --config configs/phase6_runner.yaml `
+  --output outputs --tier V1 --seed 2026072001 --mode pilot `
+  --run-id pilot_v1_2026072001
+```
+
+当前矩阵仍为候选状态，而且必需试运行仅完成 V1 的三个种子；正式种子会被
+运行器拒绝。E1/E2/E4/E5 执行器未完成前，计算投影保持
+`projection_incomplete`。完整说明见 `docs/phase6_runner_and_pilot.md`。
+
 ## 建模口径
 
 - 内生储备模型使用 `regular_cost + R = B`，使储备比例可识别。

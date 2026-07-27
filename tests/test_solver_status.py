@@ -121,6 +121,7 @@ def test_time_limit_and_configured_highs_tolerances(monkeypatch) -> None:
     record = model_common.solve_with_status(
         _empty_model(),
         time_limit_seconds=12.0,
+        solver_threads=1,
         feasibility_tolerance=2.0e-7,
         optimality_tolerance=3.0e-7,
     )
@@ -129,7 +130,19 @@ def test_time_limit_and_configured_highs_tolerances(monkeypatch) -> None:
     assert solver.solve_kwargs["load_solutions"] is False
     assert solver.options == {
         "time_limit": 12.0,
+        "threads": 1,
         "primal_feasibility_tolerance": 2.0e-7,
         "mip_feasibility_tolerance": 2.0e-7,
         "dual_feasibility_tolerance": 3.0e-7,
     }
+
+
+def test_nonpositive_solver_thread_count_is_rejected() -> None:
+    record = model_common.solve_with_status(
+        _empty_model(),
+        solver_threads=0,
+    )
+
+    assert record.status == "solver_error"
+    assert record.termination_condition == "invalid_solver_option"
+    assert "solver_threads" in record.message
