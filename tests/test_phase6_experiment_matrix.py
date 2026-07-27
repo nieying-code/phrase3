@@ -111,6 +111,20 @@ def test_phase6_generator_protocol_resolves_every_tier_and_reference_budget() ->
         hashlib.sha256(canonical_base.encode("utf-8")).hexdigest()
         == protocol["legacy_D0"]["canonical_lf_sha256"]
     )
+    assert (
+        protocol["legacy_D0"]["reference_budget_convention"]
+        == "legacy_nominal_demand_baseline"
+    )
+    assert (
+        protocol["legacy_D0"]["zero_truncation_expectation_correction_applied"]
+        is False
+    )
+    assert (
+        protocol["legacy_D0"][
+            "strict_distribution_theoretical_expectation_claim_forbidden"
+        ]
+        is True
+    )
 
     supported_periods = set(
         protocol["deterministic_baselines"]["demand_seasonality"][
@@ -168,9 +182,17 @@ def test_phase6_matrix_freezes_scale_budget_and_exactness_gates() -> None:
     formal_budgets = matrix["budget_plan"]["formal_factors"]
     assert formal_budgets == sorted(set(formal_budgets))
     assert len(formal_budgets) == 6
+    expectation_sources = matrix["budget_plan"]["expectation_source_by_tier"]
+    assert expectation_sources["D0"] == "legacy_nominal_demand_baseline"
     assert (
-        matrix["budget_plan"]["expectation_source"]
+        expectation_sources["V1_to_P4"]
         == "frozen_generator_theoretical_expectation"
+    )
+    assert (
+        matrix["budget_plan"][
+            "D0_is_not_strict_distribution_theoretical_expectation"
+        ]
+        is True
     )
     assert matrix["budget_plan"]["training_sample_mean_forbidden"] is True
 

@@ -1,5 +1,5 @@
-schema_version: "1.2"
-matrix_id: phase6_formal_experiments_v1_2
+schema_version: "1.3"
+matrix_id: phase6_formal_experiments_v1_3
 status: candidate_for_freeze_pending_review
 initial_draft_on: "2026-07-24"
 revised_on: "2026-07-27"
@@ -20,7 +20,7 @@ data_tracks:
     role: external_calibration_with_independent_resampling
     required_for_phase6_final_claims: true
     status: awaiting_separate_calibration_protocol
-    included_in_v1_2_compute_total: false
+    included_in_v1_3_compute_total: false
     execution_gate: provenance_and_calibration_report_approved
   historical_case:
     role: interpretable_case_study
@@ -74,6 +74,9 @@ generator_protocol:
     source: configs/base.yaml
     canonical_lf_sha256: 7da2c1866bd054fa6fa210feab8e864eab8bb1db564a7814fc1cc0ba11761e6a
     use_source_values_without_phase6_overrides: true
+    reference_budget_convention: legacy_nominal_demand_baseline
+    zero_truncation_expectation_correction_applied: false
+    strict_distribution_theoretical_expectation_claim_forbidden: true
   applies_to_tiers:
     - V1
     - V2
@@ -192,7 +195,11 @@ seed_plan:
 
 budget_plan:
   reference_formula: sum_over_items_and_periods_of_regular_price_times_expected_demand
-  expectation_source: frozen_generator_theoretical_expectation
+  expectation_source_by_tier:
+    D0: legacy_nominal_demand_baseline
+    V1_to_P4: frozen_generator_theoretical_expectation
+  D0_nominal_reference_formula: sum_regular_price_times_base_demand_times_legacy_seasonality_without_zero_truncation_expectation_correction
+  D0_is_not_strict_distribution_theoretical_expectation: true
   training_sample_mean_forbidden: true
   reference_budget_by_tier:
     D0: 853.5
