@@ -135,6 +135,29 @@ def test_ccg_accepts_generator_solver_preference() -> None:
     assert set(ccg.exact_scenario_costs) == set(data.scenarios)
 
 
+def test_ccg_reports_atomic_progress_payload_after_each_iteration() -> None:
+    data = unique_two_scenario_data()
+    progress: list[dict[str, object]] = []
+
+    ccg = run_standard_ccg(
+        data,
+        initial_scenarios=("low",),
+        solver_preference=("highs",),
+        max_iterations=10,
+        progress_callback=progress.append,
+    )
+
+    assert ccg.converged
+    assert len(progress) == ccg.iterations
+    assert progress[-1]["iteration"] == ccg.iterations
+    assert progress[-1]["termination_status"] == "optimal"
+    assert progress[-1]["converged"] is True
+    assert progress[-1]["current_scenario_set"] == list(
+        ccg.final_scenario_set
+    )
+    assert len(progress[-1]["iteration_log"]) == ccg.iterations
+
+
 def test_fixed_seed_reproduces_scenarios() -> None:
     config = load_config("configs/phase3.yaml")
     first = generate_synthetic_data(config)

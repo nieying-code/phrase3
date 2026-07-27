@@ -1,7 +1,13 @@
+import csv
+import json
 from pathlib import Path
 from typing import Any
 
+import pytest
+
+from src import phase6_runner
 from src.phase6_runner import run_phase6_sequence
+from src.phase6_protocol import Phase6ProtocolError
 
 
 MATRIX_PATH = Path("configs/phase6_experiment_matrix.yaml")
@@ -153,7 +159,141 @@ def test_phase6_runner_checkpoints_every_pair_and_alternates_order(
     assert result["reporting"]["formal_execution_authorized"] is False
 
 
-def test_phase6_runner_resumes_from_last_completed_budget(tmp_path: Path) -> None:
+def test_formal_projection_is_checked_before_scenario_generation(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    generated = False
+
+    def reject_projection(**kwargs):
+        raise ValueError("pilot compute gate has not passed")
+
+    def forbidden_generation(*args, **kwargs):
+        nonlocal generated
+        generated = True
+        raise AssertionError("scenario generation must not start")
+
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_execution_seed",
+        lambda *args, **kwargs: None,
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_formal_projection",
+        reject_projection,
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "generate_phase6_data",
+        forbidden_generation,
+    )
+
+    with pytest.raises(ValueError, match="compute gate"):
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="V1",
+            seed=2026072401,
+            execution_mode="formal",
+            run_id="formal_gate",
+            worker_executor=lambda *args: {},
+        )
+    assert generated is False
+
+
+def test_budget_watchdog_retains_latest_worker_progress(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    class FakeProcess:
+        returncode = -9
+        pid = 99999
+
+        def __init__(self, command, **kwargs):
+            request_path = Path(
+                command[command.index("--request") + 1]
+            )
+            request = json.loads(
+                request_path.read_text(encoding="utf-8")
+            )
+            Path(request["progress_path"]).write_text(
+                json.dumps(
+                    {
+                        "status": "running",
+                        "iteration": 3,
+                        "current_scenario_set": ["s0000", "s0007"],
+                        "lower_bound": 120.0,
+                        "upper_bound": 125.0,
+                        "worst_scenario": "s0007",
+                        "iteration_log": [{"iteration": 3}],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+        def poll(self):
+            return None
+
+        def kill(self):
+            return None
+
+        def communicate(self):
+            return "", ""
+
+    class FakeMonitored:
+        def __init__(self, pid):
+            self.pid = pid
+
+        def children(self, recursive=True):
+            return []
+
+        def kill(self):
+            return None
+
+    monkeypatch.setattr(
+        phase6_runner.subprocess,
+        "Popen",
+        FakeProcess,
+    )
+    monkeypatch.setattr(
+        phase6_runner.psutil,
+        "Process",
+        FakeMonitored,
+    )
+    monkeypatch.setattr(
+        phase6_runner.psutil,
+        "wait_procs",
+        lambda processes, timeout: (processes, []),
+    )
+
+    payload = phase6_runner._default_worker_executor(
+        {
+            "attempt": 1,
+            "budget_index": 0,
+            "algorithm": "cold",
+            "repetition": 1,
+            "tier_id": "V1",
+            "seed": 2026072001,
+            "budget": 1000.0,
+        },
+        1.0e-9,
+        tmp_path,
+    )
+
+    assert payload["status"] == "budget_wall_timeout"
+    assert payload["partial_progress"]["iteration"] == 3
+    assert payload["partial_progress"]["lower_bound"] == 120.0
+    assert payload["partial_progress"]["upper_bound"] == 125.0
+    result_path = tmp_path / "a01_b00_cold_r01_result.json"
+    saved = json.loads(result_path.read_text(encoding="utf-8"))
+    assert saved["partial_progress"]["worst_scenario"] == "s0007"
+
+
+def test_terminal_failure_is_immutable_and_retry_has_lineage(
+    tmp_path: Path,
+) -> None:
     first_calls: list[int] = []
 
     def failing_executor(
@@ -179,8 +319,112 @@ def test_phase6_runner_resumes_from_last_completed_budget(tmp_path: Path) -> Non
         run_id="pilot_v1_resume",
         worker_executor=failing_executor,
     )
-    assert failed["status"] == "algorithm_failure"
+    assert failed["status"] == "solver_error"
     assert failed["completed_budget_count"] == 1
+
+    def successful_executor(
+        request: dict[str, Any],
+        timeout_seconds: float,
+        work_directory: Path,
+    ) -> dict[str, Any]:
+        return _fake_result(request)
+
+    with pytest.raises(
+        Phase6ProtocolError,
+        match="running or interrupted",
+    ):
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="V1",
+            seed=2026072001,
+            execution_mode="pilot",
+            run_id="pilot_v1_resume",
+            resume=True,
+            worker_executor=successful_executor,
+        )
+
+    diagnostic = run_phase6_sequence(
+        matrix_path=MATRIX_PATH,
+        runner_config_path=RUNNER_CONFIG_PATH,
+        output_root=tmp_path,
+        tier_id="V1",
+        seed=2026072001,
+        execution_mode="pilot",
+        run_id="pilot_v1_diagnostic",
+        parent_run_id="pilot_v1_resume",
+        worker_executor=successful_executor,
+    )
+    assert diagnostic["status"] == "optimal"
+    assert diagnostic["parent_run_id"] == "pilot_v1_resume"
+
+    registry_path = (
+        tmp_path / "experiments" / "phase6" / "run_registry.csv"
+    )
+    with registry_path.open(
+        "r",
+        encoding="utf-8-sig",
+        newline="",
+    ) as handle:
+        rows = {row["run_id"]: row for row in csv.DictReader(handle)}
+    assert rows["pilot_v1_resume"]["status"] == "solver_error"
+    assert rows["pilot_v1_diagnostic"]["parent_run_id"] == (
+        "pilot_v1_resume"
+    )
+    projection = json.loads(
+        (
+            tmp_path
+            / "experiments"
+            / "phase6"
+            / "pilot_throughput_projection.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert projection["failed_primary_runs"][0]["run_id"] == (
+        "pilot_v1_resume"
+    )
+    assert projection["diagnostic_attempts"][0]["run_id"] == (
+        "pilot_v1_diagnostic"
+    )
+
+
+def test_interrupted_checkpoint_can_resume_from_completed_prefix(
+    tmp_path: Path,
+) -> None:
+    def interrupted_executor(
+        request: dict[str, Any],
+        timeout_seconds: float,
+        work_directory: Path,
+    ) -> dict[str, Any]:
+        if (
+            int(request["budget_index"]) == 1
+            and request["algorithm"] == "warm"
+        ):
+            raise RuntimeError("synthetic process interruption")
+        return _fake_result(request)
+
+    with pytest.raises(RuntimeError, match="process interruption"):
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="V1",
+            seed=2026072001,
+            execution_mode="pilot",
+            run_id="pilot_v1_interrupted",
+            worker_executor=interrupted_executor,
+        )
+    checkpoint_path = (
+        tmp_path
+        / "experiments"
+        / "phase6"
+        / "runs"
+        / "pilot_v1_interrupted"
+        / "checkpoint.json"
+    )
+    checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+    assert checkpoint["status"] == "running"
+    assert len(checkpoint["comparisons"]) == 1
 
     resumed_calls: list[int] = []
 
@@ -199,13 +443,10 @@ def test_phase6_runner_resumes_from_last_completed_budget(tmp_path: Path) -> Non
         tier_id="V1",
         seed=2026072001,
         execution_mode="pilot",
-        run_id="pilot_v1_resume",
+        run_id="pilot_v1_interrupted",
         resume=True,
         worker_executor=successful_executor,
     )
     assert resumed["status"] == "optimal"
     assert resumed["completed_budget_count"] == 6
     assert min(resumed_calls) == 1
-    assert [row["budget_index"] for row in resumed["comparisons"]] == list(
-        range(6)
-    )
