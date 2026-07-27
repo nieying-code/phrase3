@@ -12,7 +12,7 @@
 - Base branch: `main`
 - Base commit: `93f042a3673519ecd29130db0bd37dbd1e6c6cba`
 - Review-fix implementation snapshot:
-  `6c52725cc2d9fd6ffbf7549c8106fedd8bd22457`
+  `28340e5182affb18bd778bc9dc6420b966e71a96`
 - PR: https://github.com/nieying-code/phrase3/pull/5
 - PR mode: Draft
 - CI: Actions run
@@ -149,18 +149,30 @@ python -m src.run_phase6 --config configs/phase6_runner.yaml `
   --run-id pilot_v1_reviewfix_<pilot-seed>
 ```
 
-三个种子 `2026072001/2026072002/2026072003` 均为 `optimal`，共完成
+三个种子 `2026072001/2026072002/2026072003` 使用 run ID
+`pilot_v1_audit2_<seed>`，均为 `optimal`，共完成
 `18/18` 个预算配对和 `108/108` 次算法执行。最大冷/热目标差为
 `1.8189894035458565e-12`。代表运行的冷启动迭代总数分别为
 `59/44/55`，热启动为 `16/12/14`。
 
 当前 V1 三种子的中位观测速率：
 
-- 主问题求解：`3917.619 次/小时`
-- 补救 LP：`195880.955 次/小时`
-- 算法执行：`681.475 次/小时`
-- 完成预算配对：`113.579 对/小时`
-- 峰值内存：`76.883 MB`
+- 主问题求解：`3939.795 次/小时`
+- 补救 LP：`196989.736 次/小时`
+- 算法执行：`687.371 次/小时`
+- 完成预算配对：`114.562 对/小时`
+- 峰值内存：`77.285 MB`
+
+本轮稳定指纹：
+
+- 原始矩阵文件 SHA-256：
+  `18a2a9eb26127486c09a659225ee6c95400e1946f71314d7b723bcf9262efa80`
+- 科学配置 SHA-256：
+  `7d9e0df1b299fb11cff8268a01a557493bbf32e038ae056c8ff203d1d7e2f0c2`
+- runner 配置 SHA-256：
+  `dafa74de0426996e04aebd4d18b6b17922460124484c195de7d10b2feb4ce121`
+- E3 组件 SHA-256：
+  `1f622db5e87e592568d86e8a5467aab8493344cb6abc9252f3597f3fba1d831d`
 
 试运行投影状态：
 
