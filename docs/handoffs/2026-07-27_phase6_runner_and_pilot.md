@@ -16,9 +16,9 @@
 - PR: https://github.com/nieying-code/phrase3/pull/5
 - PR mode: Draft
 - CI: Actions run
-  [30270232066](https://github.com/nieying-code/phrase3/actions/runs/30270232066)
-  succeeded on review-fix head
-  `c32c1bece422709c71427571626bfa568908212b`
+  [30274166247](https://github.com/nieying-code/phrase3/actions/runs/30274166247)
+  succeeded on review-fix test head
+  `fbc5843c648500b508caaa6b7ca2e695ec0e42ad`
 
 ## 修改内容
 
@@ -120,12 +120,12 @@
 实际执行：
 
 - `python -m compileall -q src tests`：通过。
-- `python -m pytest -q`：`68 passed in 35.53s`。
+- `python -m pytest -q`：`68 passed in 35.56s`。
 - `git diff --check`：通过；仅显示 Windows 工作树 LF/CRLF 转换提示。
 - 候选矩阵下用正式种子调用 `--mode formal`：写出
   `runner_exception.json`，失败阶段为 `phase6_sequence`，进程退出码为 `1`。
-- GitHub Actions run `30270232066`：普通回归 `58 passed in 19.41s`，
-  Phase 5 端到端 `6 passed in 11.89s`。
+- GitHub Actions run `30274166247`：普通回归 `62 passed in 20.92s`，
+  Phase 5 端到端 `6 passed in 10.49s`。
 
 D0 开发回归：
 
