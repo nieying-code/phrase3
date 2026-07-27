@@ -1,10 +1,11 @@
 pyomo>=6.8
 highspy>=1.8
-numpy>=2.0
+numpy==2.5.1
 pandas>=2.2
 PyYAML>=6.0
 matplotlib>=3.9
 pytest>=8.0
+psutil>=6.0
 
 # 可选商业求解器；有许可证时取消下一行注释。
 # gurobipy>=12.0
