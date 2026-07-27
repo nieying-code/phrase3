@@ -11,8 +11,8 @@
 - Branch: `agent/phase6-experiment-runner`
 - Base branch: `main`
 - Base commit: `93f042a3673519ecd29130db0bd37dbd1e6c6cba`
-- Commit SHA: `pending`
-- PR: `pending`
+- Validated implementation snapshot: `f6746c70590398bbc094d157267369b05ea3718e`
+- PR: https://github.com/nieying-code/phrase3/pull/5
 - PR mode: Draft
 
 ## 修改内容
