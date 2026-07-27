@@ -14,6 +14,9 @@
 - Validated implementation snapshot: `f6746c70590398bbc094d157267369b05ea3718e`
 - PR: https://github.com/nieying-code/phrase3/pull/5
 - PR mode: Draft
+- CI: Actions run
+  [30264431046](https://github.com/nieying-code/phrase3/actions/runs/30264431046)
+  succeeded on head `127b8b7bae0df6af2d77bfdee80a3fe539d1fa27`
 
 ## 修改内容
 
@@ -91,6 +94,8 @@
 - `git diff --check`：通过；仅显示 Windows 工作树 LF/CRLF 转换提示。
 - 候选矩阵下用正式种子调用 `--mode formal`：写出
   `runner_exception.json`，失败阶段为 `phase6_sequence`，进程退出码为 `1`。
+- GitHub Actions run `30264431046`：普通回归 `50 passed in 18.82s`，
+  Phase 5 端到端 `6 passed in 11.86s`。
 
 D0 开发回归：
 
