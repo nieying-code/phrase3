@@ -36,6 +36,7 @@ def run(
     execution_mode: str,
     run_id: str,
     resume: bool = False,
+    parent_run_id: str | None = None,
 ) -> dict[str, Any]:
     """Execute one guarded Phase 6 sequence and retain runner exceptions."""
 
@@ -55,6 +56,7 @@ def run(
             execution_mode=execution_mode,
             run_id=run_id,
             resume=resume,
+            parent_run_id=parent_run_id,
         )
     except Exception as exc:
         checkpoint_path = (
@@ -80,6 +82,7 @@ def run(
                 checkpoint_status = "unreadable"
         payload = {
             "run_id": run_id,
+            "parent_run_id": parent_run_id,
             "status": "runner_exception",
             "execution_mode": execution_mode,
             "tier_id": tier_id,
@@ -122,6 +125,10 @@ def main() -> None:
     )
     parser.add_argument("--run-id")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument(
+        "--parent-run-id",
+        help="Failed terminal run that this diagnostic retry investigates",
+    )
     args = parser.parse_args()
     run_id = args.run_id or _default_run_id(args.mode, args.tier, args.seed)
     result = run(
@@ -132,6 +139,7 @@ def main() -> None:
         execution_mode=args.mode,
         run_id=run_id,
         resume=args.resume,
+        parent_run_id=args.parent_run_id,
     )
     print(
         json.dumps(

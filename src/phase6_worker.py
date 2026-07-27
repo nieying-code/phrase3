@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
@@ -22,6 +23,10 @@ def _atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
         encoding="utf-8",
     )
     os.replace(temporary, path)
+
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
 def _state_from_dict(payload: dict[str, Any] | None) -> ScenarioPoolState | None:
@@ -48,6 +53,11 @@ def execute_worker_request(request: dict[str, Any]) -> dict[str, Any]:
     started = perf_counter()
     stage = "request_validation"
     mode = str(request["algorithm"])
+    progress_path = (
+        Path(request["progress_path"])
+        if request.get("progress_path")
+        else None
+    )
     if mode not in {"cold", "warm"}:
         raise ValueError("algorithm must be cold or warm")
     matrix_path = Path(request["matrix_path"])
@@ -72,6 +82,41 @@ def execute_worker_request(request: dict[str, Any]) -> dict[str, Any]:
                 _state_from_dict(request.get("previous_state")),
             )
         pool_seconds = perf_counter() - pool_started
+        if progress_path is not None:
+            _atomic_write_json(
+                progress_path,
+                {
+                    "status": "initialized",
+                    "updated_at_utc": _utc_now(),
+                    "algorithm": mode,
+                    "tier_id": generated.tier.id,
+                    "seed": generated.seed,
+                    "budget": generated.budget,
+                    "initial_scenario_set": list(initial),
+                    "current_scenario_set": list(initial),
+                    "iteration": 0,
+                    "iteration_log": [],
+                    "lower_bound": None,
+                    "upper_bound": None,
+                    "gap": None,
+                    "worst_scenario": None,
+                },
+            )
+
+        def write_progress(progress: dict[str, Any]) -> None:
+            if progress_path is None:
+                return
+            _atomic_write_json(
+                progress_path,
+                {
+                    **progress,
+                    "updated_at_utc": _utc_now(),
+                    "algorithm": mode,
+                    "tier_id": generated.tier.id,
+                    "seed": generated.seed,
+                    "budget": generated.budget,
+                },
+            )
 
         stage = "ccg"
         solver = request["solver"]
@@ -90,7 +135,28 @@ def execute_worker_request(request: dict[str, Any]) -> dict[str, Any]:
             feasibility_tolerance=float(solver["feasibility_tolerance"]),
             optimality_tolerance=float(solver["optimality_tolerance"]),
             tee=bool(solver.get("tee", False)),
+            progress_callback=write_progress,
         )
+        if progress_path is not None:
+            write_progress(
+                {
+                    "status": "completed",
+                    "iteration": result.iterations,
+                    "termination_status": result.termination_status,
+                    "converged": result.converged,
+                    "initial_scenario_set": list(
+                        result.initial_scenario_set
+                    ),
+                    "current_scenario_set": list(result.final_scenario_set),
+                    "lower_bound": result.lower_bound,
+                    "upper_bound": result.upper_bound,
+                    "gap": result.gap,
+                    "worst_scenario": result.worst_scenario,
+                    "iteration_log": [
+                        row.as_dict() for row in result.iteration_log
+                    ],
+                }
+            )
         return {
             "status": (
                 "optimal"
@@ -112,6 +178,25 @@ def execute_worker_request(request: dict[str, Any]) -> dict[str, Any]:
             "failure": None,
         }
     except Exception as exc:
+        if progress_path is not None:
+            try:
+                existing = (
+                    json.loads(progress_path.read_text(encoding="utf-8"))
+                    if progress_path.exists()
+                    else {}
+                )
+                _atomic_write_json(
+                    progress_path,
+                    {
+                        **existing,
+                        "status": "worker_exception",
+                        "updated_at_utc": _utc_now(),
+                        "failure_stage": stage,
+                        "failure_message": f"{type(exc).__name__}: {exc}",
+                    },
+                )
+            except Exception:
+                pass
         return {
             "status": "worker_exception",
             "algorithm": mode,

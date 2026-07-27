@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import csv
 from datetime import datetime, timezone
+import hashlib
 import json
 import math
 import os
@@ -25,16 +26,20 @@ from .phase6_protocol import (
     resolve_tier,
     validate_execution_seed,
 )
+from .phase6_locking import exclusive_file_lock
 from .reproducibility import capture_runtime_context, sha256_file
 from .scenario_generator import write_scenarios_csv
 from .phase6_reporting import (
+    append_failure_registry,
     update_algorithm_performance,
     update_pilot_projection,
+    validate_formal_projection,
 )
 
 
 REGISTRY_FIELDS = (
     "run_id",
+    "parent_run_id",
     "status",
     "execution_mode",
     "tier_id",
@@ -42,6 +47,7 @@ REGISTRY_FIELDS = (
     "matrix_id",
     "matrix_sha256",
     "runner_config_sha256",
+    "runner_code_sha256",
     "planned_budget_count",
     "completed_budget_count",
     "started_at_utc",
@@ -129,19 +135,44 @@ def _atomic_write_csv(
 
 
 def _upsert_registry(path: Path, row: dict[str, Any]) -> None:
-    existing: list[dict[str, Any]] = []
-    if path.exists():
-        with path.open("r", encoding="utf-8-sig", newline="") as handle:
-            existing = list(csv.DictReader(handle))
-    replaced = False
-    for index, current in enumerate(existing):
-        if current["run_id"] == str(row["run_id"]):
-            existing[index] = {name: row.get(name) for name in REGISTRY_FIELDS}
-            replaced = True
-            break
-    if not replaced:
-        existing.append({name: row.get(name) for name in REGISTRY_FIELDS})
-    _atomic_write_csv(path, REGISTRY_FIELDS, existing)
+    lock_path = path.parent / ".aggregate.lock"
+    with exclusive_file_lock(lock_path):
+        existing: list[dict[str, Any]] = []
+        if path.exists():
+            with path.open(
+                "r",
+                encoding="utf-8-sig",
+                newline="",
+            ) as handle:
+                existing = list(csv.DictReader(handle))
+        replaced = False
+        for index, current in enumerate(existing):
+            if current["run_id"] == str(row["run_id"]):
+                existing[index] = {
+                    name: row.get(name) for name in REGISTRY_FIELDS
+                }
+                replaced = True
+                break
+        if not replaced:
+            existing.append(
+                {name: row.get(name) for name in REGISTRY_FIELDS}
+            )
+        _atomic_write_csv(path, REGISTRY_FIELDS, existing)
+
+
+def _runner_code_sha256(project_root: Path) -> str:
+    """Hash all Python sources and the dependency specification."""
+
+    paths = sorted((project_root / "src").glob("*.py"))
+    paths.append(project_root / "requirements.txt")
+    digest = hashlib.sha256()
+    for path in paths:
+        relative = path.relative_to(project_root).as_posix()
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
 
 
 def load_phase6_runner_config(path: str | Path) -> dict[str, Any]:
@@ -181,9 +212,13 @@ def _default_worker_executor(
     )
     request_path = work_directory / f"{suffix}_request.json"
     result_path = work_directory / f"{suffix}_result.json"
+    progress_path = work_directory / f"{suffix}_progress.json"
+    request = {**request, "progress_path": str(progress_path)}
     _atomic_write_json(request_path, request)
     if result_path.exists():
         result_path.unlink()
+    if progress_path.exists():
+        progress_path.unlink()
 
     environment = os.environ.copy()
     environment.update(
@@ -246,13 +281,26 @@ def _default_worker_executor(
     stdout, stderr = process.communicate()
     elapsed = perf_counter() - started
     if timed_out:
-        return {
+        partial_progress = None
+        if progress_path.exists():
+            try:
+                partial_progress = json.loads(
+                    progress_path.read_text(encoding="utf-8")
+                )
+            except (OSError, json.JSONDecodeError):
+                partial_progress = {
+                    "status": "unreadable_progress_file",
+                    "path": str(progress_path),
+                }
+        payload = {
             "status": "budget_wall_timeout",
             "algorithm": request["algorithm"],
             "tier_id": request["tier_id"],
             "seed": request["seed"],
             "budget": request["budget"],
             "ccg_result": None,
+            "partial_progress": partial_progress,
+            "progress_path": str(progress_path),
             "failure": {
                 "stage": "external_budget_watchdog",
                 "exception_type": "TimeoutExpired",
@@ -266,6 +314,8 @@ def _default_worker_executor(
             "stdout": stdout,
             "stderr": stderr,
         }
+        _atomic_write_json(result_path, payload)
+        return payload
     if result_path.exists():
         payload = json.loads(result_path.read_text(encoding="utf-8"))
     else:
@@ -289,6 +339,7 @@ def _default_worker_executor(
             "return_code": process.returncode,
             "stdout": stdout,
             "stderr": stderr,
+            "progress_path": str(progress_path),
         }
     )
     return payload
@@ -393,14 +444,18 @@ def _checkpoint_fingerprint(
     seed: int,
     execution_mode: str,
     budgets: tuple[float, ...],
+    runner_code_sha256: str,
+    parent_run_id: str | None,
 ) -> dict[str, Any]:
     return {
         "matrix_id": matrix["matrix_id"],
         "matrix_sha256": sha256_file(matrix_path),
         "runner_config_sha256": sha256_file(runner_config_path),
+        "runner_code_sha256": runner_code_sha256,
         "tier_id": tier_id,
         "seed": int(seed),
         "execution_mode": execution_mode,
+        "parent_run_id": parent_run_id,
         "budgets": list(budgets),
     }
 
@@ -480,6 +535,7 @@ def run_phase6_sequence(
     execution_mode: str,
     run_id: str,
     resume: bool = False,
+    parent_run_id: str | None = None,
     worker_executor: WorkerExecutor | None = None,
 ) -> dict[str, Any]:
     """Run or resume one tier-seed budget sequence with atomic checkpoints."""
@@ -501,6 +557,7 @@ def run_phase6_sequence(
         tier_id,
         matrix_path=matrix_path,
     )
+    code_sha256 = _runner_code_sha256(matrix_path.parent.parent)
     fingerprint = _checkpoint_fingerprint(
         matrix_path=matrix_path,
         runner_config_path=runner_config_path,
@@ -509,7 +566,25 @@ def run_phase6_sequence(
         seed=seed,
         execution_mode=execution_mode,
         budgets=budgets,
+        runner_code_sha256=code_sha256,
+        parent_run_id=parent_run_id,
     )
+
+    if execution_mode == "formal":
+        validate_formal_projection(
+            projection_path=(
+                output_root
+                / "experiments"
+                / "phase6"
+                / "pilot_throughput_projection.json"
+            ),
+            matrix_id=str(matrix["matrix_id"]),
+            matrix_sha256=str(fingerprint["matrix_sha256"]),
+            runner_config_sha256=str(
+                fingerprint["runner_config_sha256"]
+            ),
+            runner_code_sha256=str(fingerprint["runner_code_sha256"]),
+        )
 
     run_directory = output_root / "experiments" / "phase6" / "runs" / run_id
     worker_directory = run_directory / "workers"
@@ -524,12 +599,39 @@ def run_phase6_sequence(
     }
     started_at = _utc_now()
     attempt = 1
+    if parent_run_id == run_id:
+        raise Phase6ProtocolError("diagnostic retry must use a new run_id")
+    if parent_run_id is not None:
+        parent_result_path = (
+            output_root
+            / "experiments"
+            / "phase6"
+            / "runs"
+            / parent_run_id
+            / "result.json"
+        )
+        if not parent_result_path.exists():
+            raise Phase6ProtocolError(
+                f"parent run result does not exist: {parent_run_id}"
+            )
+        parent_result = json.loads(
+            parent_result_path.read_text(encoding="utf-8")
+        )
+        if parent_result.get("status") == "optimal":
+            raise Phase6ProtocolError(
+                "diagnostic retry parent must be a failed terminal run"
+            )
     if checkpoint_path.exists():
         if not resume:
             raise FileExistsError(
                 f"checkpoint already exists for {run_id}; use resume=True"
             )
         checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+        if checkpoint.get("status") not in {"running", "interrupted"}:
+            raise Phase6ProtocolError(
+                "resume is allowed only for running or interrupted "
+                f"checkpoints; found {checkpoint.get('status')!r}"
+            )
         if checkpoint["fingerprint"] != fingerprint:
             raise Phase6ProtocolError(
                 "checkpoint fingerprint does not match the requested run"
@@ -553,6 +655,7 @@ def run_phase6_sequence(
     resolved_run_path = run_directory / "resolved_run.json"
     resolved_run = {
         "run_id": run_id,
+        "parent_run_id": parent_run_id,
         "fingerprint": fingerprint,
         "tier": tier.__dict__,
         "budgets": list(budgets),
@@ -585,6 +688,7 @@ def run_phase6_sequence(
             {
                 "status": status,
                 "run_id": run_id,
+                "parent_run_id": parent_run_id,
                 "fingerprint": fingerprint,
                 "started_at_utc": started_at,
                 "updated_at_utc": _utc_now(),
@@ -601,6 +705,7 @@ def run_phase6_sequence(
         registry_path,
         {
             "run_id": run_id,
+            "parent_run_id": parent_run_id,
             "status": "running",
             "execution_mode": execution_mode,
             "tier_id": tier_id,
@@ -608,6 +713,7 @@ def run_phase6_sequence(
             "matrix_id": matrix["matrix_id"],
             "matrix_sha256": fingerprint["matrix_sha256"],
             "runner_config_sha256": fingerprint["runner_config_sha256"],
+            "runner_code_sha256": fingerprint["runner_code_sha256"],
             "planned_budget_count": len(budgets),
             "completed_budget_count": completed_count,
             "started_at_utc": started_at,
@@ -712,8 +818,20 @@ def run_phase6_sequence(
                     "representative": _median_repetition(repetitions),
                 }
             else:
+                nonoptimal = next(
+                    (
+                        row
+                        for row in repetitions
+                        if row["status"] != "optimal"
+                    ),
+                    None,
+                )
                 failure = {
-                    "status": "algorithm_failure",
+                    "status": (
+                        str(nonoptimal["status"])
+                        if nonoptimal is not None
+                        else "technical_repetition_inconsistent"
+                    ),
                     "stage": mode,
                     "budget_index": budget_index,
                     "budget": budget,
@@ -788,6 +906,7 @@ def run_phase6_sequence(
             registry_path,
             {
                 "run_id": run_id,
+                "parent_run_id": parent_run_id,
                 "status": "running",
                 "execution_mode": execution_mode,
                 "tier_id": tier_id,
@@ -795,6 +914,9 @@ def run_phase6_sequence(
                 "matrix_id": matrix["matrix_id"],
                 "matrix_sha256": fingerprint["matrix_sha256"],
                 "runner_config_sha256": fingerprint["runner_config_sha256"],
+                "runner_code_sha256": fingerprint[
+                    "runner_code_sha256"
+                ],
                 "planned_budget_count": len(budgets),
                 "completed_budget_count": len(comparisons),
                 "started_at_utc": started_at,
@@ -810,6 +932,7 @@ def run_phase6_sequence(
     finished_at = _utc_now()
     result = {
         "run_id": run_id,
+        "parent_run_id": parent_run_id,
         "status": status,
         "execution_mode": execution_mode,
         "tier_id": tier_id,
@@ -844,10 +967,12 @@ def run_phase6_sequence(
         run_directory / "manifest.json",
         {
             "run_id": run_id,
+            "parent_run_id": parent_run_id,
             "matrix_path": str(matrix_path),
             "matrix_sha256": fingerprint["matrix_sha256"],
             "runner_config_path": str(runner_config_path),
             "runner_config_sha256": fingerprint["runner_config_sha256"],
+            "runner_code_sha256": fingerprint["runner_code_sha256"],
             "resolved_run_path": str(resolved_run_path),
             "resolved_run_sha256": sha256_file(resolved_run_path),
             "training_scenarios_path": str(scenarios_path),
@@ -860,6 +985,7 @@ def run_phase6_sequence(
         registry_path,
         {
             "run_id": run_id,
+            "parent_run_id": parent_run_id,
             "status": status,
             "execution_mode": execution_mode,
             "tier_id": tier_id,
@@ -867,6 +993,7 @@ def run_phase6_sequence(
             "matrix_id": matrix["matrix_id"],
             "matrix_sha256": fingerprint["matrix_sha256"],
             "runner_config_sha256": fingerprint["runner_config_sha256"],
+            "runner_code_sha256": fingerprint["runner_code_sha256"],
             "planned_budget_count": len(budgets),
             "completed_budget_count": len(comparisons),
             "started_at_utc": started_at,
@@ -886,6 +1013,9 @@ def run_phase6_sequence(
         output_root=output_root,
         matrix=matrix,
         runner_config=config,
+        matrix_sha256=str(fingerprint["matrix_sha256"]),
+        runner_config_sha256=str(fingerprint["runner_config_sha256"]),
+        runner_code_sha256=str(fingerprint["runner_code_sha256"]),
     )
     result["reporting"] = {
         "algorithm_performance_path": str(performance_path),
@@ -903,28 +1033,11 @@ def run_phase6_sequence(
     _atomic_write_json(result_path, result)
     if failure is not None:
         failure_path = output_root / "experiments" / "phase6" / "failure_registry.csv"
-        existing: list[dict[str, Any]] = []
-        fields = (
-            "run_id",
-            "tier_id",
-            "seed",
-            "budget_index",
-            "budget",
-            "stage",
-            "status",
-            "message",
-            "recorded_at_utc",
-        )
-        if failure_path.exists():
-            with failure_path.open(
-                "r",
-                encoding="utf-8-sig",
-                newline="",
-            ) as handle:
-                existing = list(csv.DictReader(handle))
-        existing.append(
+        append_failure_registry(
+            failure_path,
             {
                 "run_id": run_id,
+                "parent_run_id": parent_run_id,
                 "tier_id": tier_id,
                 "seed": seed,
                 "budget_index": failure.get("budget_index"),
@@ -933,7 +1046,6 @@ def run_phase6_sequence(
                 "status": failure["status"],
                 "message": failure["message"],
                 "recorded_at_utc": finished_at,
-            }
+            },
         )
-        _atomic_write_csv(failure_path, fields, existing)
     return result
