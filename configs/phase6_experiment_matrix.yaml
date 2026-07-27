@@ -1,0 +1,764 @@
+schema_version: "1.3"
+matrix_id: phase6_formal_experiments_v1_3
+status: candidate_for_freeze_pending_review
+initial_draft_on: "2026-07-24"
+revised_on: "2026-07-27"
+
+objectives:
+  - validate_endogenous_reserve_value
+  - validate_standard_ccg_scalability
+  - validate_spw_ccg_exactness_and_speed
+  - evaluate_out_of_sample_performance
+  - identify_sensitivity_and_failure_regions
+
+data_tracks:
+  controlled_synthetic:
+    role: correctness_scalability_and_mechanism_identification
+    generator_family: correlated_finite_scenarios
+    required: true
+  real_calibrated_synthetic:
+    role: external_calibration_with_independent_resampling
+    required_for_phase6_final_claims: true
+    status: awaiting_separate_calibration_protocol
+    included_in_v1_3_compute_total: false
+    execution_gate: provenance_and_calibration_report_approved
+  historical_case:
+    role: interpretable_case_study
+    required: false
+    execution_gate: demand_price_and_supply_proxies_are_traceable
+
+controlled_synthetic_baseline:
+  legacy_D0_uses_phase3_parameters_unchanged: true
+  common_disaster_factor_across_items: true
+  item_specific_noise: true
+  period_specific_noise: true
+  demand_cv: 0.30
+  emergency_price_markup_mean: 0.35
+  emergency_price_markup_sd: 0.15
+  supply_reduction_mean: 0.20
+  supply_shock_sd: 0.20
+  demand_price_correlation: 0.60
+  demand_supply_correlation: -0.45
+  shortage_penalty_multiplier: 12.0
+  waste_penalty_multiplier: 0.25
+  seasonality_rule: deterministic_periodic_profile_normalized_to_mean_one
+  item_archetypes:
+    - id: relief_food_1
+      demand_multiplier: 1.00
+      regular_price_multiplier: 1.00
+      shelf_life_periods: 6
+    - id: relief_food_2
+      demand_multiplier: 0.75
+      regular_price_multiplier: 1.20
+      shelf_life_periods: 4
+    - id: relief_food_3
+      demand_multiplier: 0.50
+      regular_price_multiplier: 1.50
+      shelf_life_periods: 3
+    - id: relief_food_4
+      demand_multiplier: 0.35
+      regular_price_multiplier: 2.00
+      shelf_life_periods: 2
+    - id: relief_food_5
+      demand_multiplier: 0.25
+      regular_price_multiplier: 2.50
+      shelf_life_periods: 1
+  tier_item_rule: use_first_k_archetypes
+
+generator_protocol:
+  protocol_id: phase6_controlled_synthetic_v1_0
+  numeric_precision: IEEE_754_binary64
+  rounding_before_output_forbidden: true
+  tier_resolution_must_be_deterministic: true
+  legacy_D0:
+    source: configs/base.yaml
+    canonical_lf_sha256: 7da2c1866bd054fa6fa210feab8e864eab8bb1db564a7814fc1cc0ba11761e6a
+    use_source_values_without_phase6_overrides: true
+    reference_budget_convention: legacy_nominal_demand_baseline
+    zero_truncation_expectation_correction_applied: false
+    strict_distribution_theoretical_expectation_claim_forbidden: true
+  applies_to_tiers:
+    - V1
+    - V2
+    - P1
+    - P2
+    - P3
+    - P4
+  tier_resolution:
+    item_selection: first_k_controlled_synthetic_baseline_item_archetypes
+    period_count: scale_tier_periods
+    training_scenario_count: scale_tier_training_scenarios
+    item_order: controlled_synthetic_baseline_item_archetype_order
+    period_index_origin: 0
+    scenario_id_format: "s{zero_based_index:04d}"
+  deterministic_baselines:
+    first_item_base_demand_per_period: 100.0
+    base_emergency_supply_ratio: 1.35
+    initial_inventory:
+      rule: zero_for_every_item_and_age
+      value: 0.0
+    storage_capacity:
+      rule: capacity_t_equals_factor_times_sum_item_theoretical_mean_demand_t
+      factor: 1.50
+    demand_seasonality:
+      applicable_period_counts: [6, 12, 24]
+      raw_formula: 1_plus_sine_amplitude_times_sin_2pi_t_over_T_plus_cosine_amplitude_times_cos_4pi_t_over_T
+      sine_amplitude: 0.20
+      cosine_amplitude: 0.10
+      normalization: divide_each_raw_value_by_arithmetic_mean_over_all_periods
+    regular_price:
+      base_first_item: 2.0
+      formula: base_times_item_multiplier_times_1_plus_trend_slope_times_t_divided_by_T_minus_1_plus_sine_amplitude_times_sin_2pi_t_over_T
+      trend_slope: 0.05
+      trend_denominator: T_minus_1
+      sine_amplitude: 0.025
+  random_number_generation:
+    engine: numpy_Generator_PCG64DXSM
+    numpy_version: 2.5.1
+    normal_distribution: standard_normal_location_0_scale_1
+    normal_dtype: float64
+    seed: seed_plan_selected_seed
+    draw_order_per_scenario:
+      - one_common_disaster_factor
+      - one_item_factor_per_item_in_item_order
+      - one_period_factor_per_period_in_period_order
+      - demand_price_supply_idiosyncratic_normals_per_item_then_period
+  latent_factor_model:
+    independent_standard_normal_components: true
+    demand_variance_loadings:
+      common_disaster: 0.45
+      item: 0.20
+      period: 0.20
+      idiosyncratic: 0.15
+    demand_latent_formula: sum_square_root_variance_loading_times_corresponding_standard_normal
+    price_latent_formula: demand_price_correlation_times_demand_latent_plus_sqrt_1_minus_correlation_squared_times_price_idiosyncratic
+    supply_latent_formula: demand_supply_correlation_times_demand_latent_plus_sqrt_1_minus_correlation_squared_times_supply_idiosyncratic
+  scenario_transformations:
+    theoretical_mean_demand:
+      formula: first_item_base_demand_times_item_demand_multiplier_times_normalized_seasonality_t
+    demand:
+      family: mean_corrected_lognormal
+      log_sigma_formula: sqrt_log_1_plus_demand_cv_squared
+      formula: theoretical_mean_times_exp_log_sigma_times_demand_latent_minus_half_log_sigma_squared
+      truncation: none
+    emergency_price_markup:
+      family: lower_truncated_affine_normal
+      formula: max_lower_bound_and_markup_mean_plus_markup_sd_times_price_latent
+      lower_bound: 0.05
+    emergency_price:
+      formula: regular_price_times_1_plus_emergency_price_markup
+    emergency_supply_factor:
+      family: two_sided_clipped_affine_normal
+      formula: clip_1_minus_supply_reduction_mean_plus_supply_shock_sd_times_supply_latent
+      lower_bound: 0.05
+      upper_bound: 1.50
+    emergency_supply:
+      formula: theoretical_mean_demand_times_base_emergency_supply_ratio_times_emergency_supply_factor
+  penalty_protocol:
+    maximum_reference_emergency_price:
+      formula: maximum_regular_price_times_1_plus_markup_mean_plus_3_times_markup_sd
+    shortage_penalty:
+      formula: shortage_penalty_multiplier_times_item_maximum_reference_emergency_price
+    waste_penalty:
+      formula: waste_penalty_multiplier_times_item_maximum_regular_price
+
+seed_plan:
+  development_seed: 20260723
+  pilot_training_seeds:
+    - 2026072001
+    - 2026072002
+    - 2026072003
+  formal_training_seeds:
+    - 2026072401
+    - 2026072402
+    - 2026072403
+    - 2026072404
+    - 2026072405
+    - 2026072406
+    - 2026072407
+    - 2026072408
+    - 2026072409
+    - 2026072410
+  formal_test_seeds:
+    - 2026082401
+    - 2026082402
+    - 2026082403
+    - 2026082404
+    - 2026082405
+    - 2026082406
+    - 2026082407
+    - 2026082408
+    - 2026082409
+    - 2026082410
+  pairing_rule: pair_training_and_test_seeds_by_list_position
+  tuning_rule: formal_training_and_test_seeds_must_not_be_used_for_tuning
+
+budget_plan:
+  reference_formula: sum_over_items_and_periods_of_regular_price_times_expected_demand
+  expectation_source_by_tier:
+    D0: legacy_nominal_demand_baseline
+    V1_to_P4: frozen_generator_theoretical_expectation
+  D0_nominal_reference_formula: sum_regular_price_times_base_demand_times_legacy_seasonality_without_zero_truncation_expectation_correction
+  D0_is_not_strict_distribution_theoretical_expectation: true
+  training_sample_mean_forbidden: true
+  reference_budget_by_tier:
+    D0: 853.5
+    V1: 1230.3215390309174
+    V2: 1230.3215390309174
+    P1: 6522.665525847212
+    P2: 9783.998288770817
+    P3: 19571.120219897657
+    P4: 19571.120219897657
+  reference_budget_validation:
+    recompute_from_generator_protocol_required: true
+    absolute_tolerance: 1.0e-9
+  formal_factors:
+    - 0.75
+    - 0.90
+    - 1.00
+    - 1.10
+    - 1.25
+    - 1.40
+  sensitivity_factors:
+    - 0.90
+    - 1.10
+    - 1.30
+  legacy_absolute_budgets:
+    - 700.0
+    - 800.0
+    - 900.0
+    - 1000.0
+    - 1100.0
+    - 1200.0
+  ordering: ascending
+  pilot_nondegeneracy_gate:
+    minimum_distinct_reserve_regimes: 2
+    rule: adjust_factors_only_before_formal_seed_execution_and_version_the_matrix
+
+scale_tiers:
+  - id: D0
+    label: legacy_debug
+    items: 1
+    periods: 4
+    training_scenarios: 20
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 1
+    formal_seed_selector: development_seed_only
+    extensive_required: true
+    time_limits:
+      solver_call_seconds: 60
+      ccg_budget_wall_seconds: 300
+      six_budget_sequence_wall_seconds: 1800
+    timing_repetitions: 1
+  - id: V1
+    label: small_gold_standard
+    items: 1
+    periods: 6
+    training_scenarios: 50
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 10
+    formal_seed_selector: all_formal_training_seeds
+    extensive_required: true
+    time_limits:
+      solver_call_seconds: 120
+      ccg_budget_wall_seconds: 600
+      six_budget_sequence_wall_seconds: 3600
+    timing_repetitions: 3
+  - id: V2
+    label: upper_gold_standard
+    items: 1
+    periods: 6
+    training_scenarios: 100
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 10
+    formal_seed_selector: all_formal_training_seeds
+    extensive_required: true
+    time_limits:
+      solver_call_seconds: 180
+      ccg_budget_wall_seconds: 900
+      six_budget_sequence_wall_seconds: 5400
+    timing_repetitions: 3
+  - id: P1
+    label: medium_performance
+    items: 3
+    periods: 12
+    training_scenarios: 500
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 10
+    formal_seed_selector: all_formal_training_seeds
+    extensive_required: false
+    extensive_optional_solver_call_limit_seconds: 1800
+    time_limits:
+      solver_call_seconds: 300
+      ccg_budget_wall_seconds: 1800
+      six_budget_sequence_wall_seconds: 10800
+    timing_repetitions: 3
+  - id: P2
+    label: large_performance
+    items: 5
+    periods: 12
+    training_scenarios: 1000
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 10
+    formal_seed_selector: all_formal_training_seeds
+    extensive_required: false
+    time_limits:
+      solver_call_seconds: 600
+      ccg_budget_wall_seconds: 3600
+      six_budget_sequence_wall_seconds: 21600
+    timing_repetitions: 1
+  - id: P3
+    label: very_large_performance
+    items: 5
+    periods: 24
+    training_scenarios: 2500
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 5
+    formal_seed_selector: first_5_formal_training_seeds
+    extensive_required: false
+    time_limits:
+      solver_call_seconds: 900
+      ccg_budget_wall_seconds: 7200
+      six_budget_sequence_wall_seconds: 43200
+    timing_repetitions: 1
+    activation_gate:
+      prior_tier: P2
+      rule_reference: scale_advancement
+  - id: P4
+    label: stretch_limit
+    items: 5
+    periods: 24
+    training_scenarios: 5000
+    out_of_sample_scenarios: 5000
+    formal_seed_count: 3
+    formal_seed_selector: first_3_formal_training_seeds
+    extensive_required: false
+    time_limits:
+      solver_call_seconds: 900
+      ccg_budget_wall_seconds: 7200
+      six_budget_sequence_wall_seconds: 43200
+    timing_repetitions: 1
+    activation_gate:
+      prior_tier: P3
+      rule_reference: scale_advancement
+
+model_comparison:
+  tiers:
+    - V1
+    - V2
+    - P1
+  policies:
+    - deterministic_mean
+    - zero_reserve
+    - fixed_reserve_0_10
+    - fixed_reserve_0_20
+    - fixed_reserve_0_30
+    - fixed_reserve_0_40
+    - fixed_reserve_0_50
+    - endogenous_reserve
+  training_budget_factors:
+    - 0.75
+    - 0.90
+    - 1.00
+    - 1.10
+    - 1.25
+    - 1.40
+  out_of_sample_common_random_numbers: true
+  training_exact_evaluation:
+    required_for_all_policies: true
+    candidate_scenarios: complete_training_set
+    comparison_objective: regular_cost_plus_maximum_exact_recourse_cost
+    native_deterministic_objective_must_not_be_compared_directly: true
+  endogenous_dominance_check:
+    role: structural_correctness_gate
+    empirical_innovation_claim: false
+    tolerance_absolute: 1.0e-5
+    tolerance_relative: 1.0e-7
+
+algorithm_comparison:
+  tiers:
+    - V1
+    - V2
+    - P1
+    - P2
+    - P3
+    - P4
+  algorithms:
+    - standard_ccg_cold
+    - spw_ccg_warm
+  full_candidate_oracle_required: true
+  alternate_execution_order: true
+  solver_threads: 1
+  serial_recourse: true
+  max_iterations: 200
+  objective_absolute_tolerance: 1.0e-5
+  objective_relative_tolerance: 1.0e-7
+  paired_timing: true
+  technical_repetition_aggregation: median_before_statistical_analysis
+
+timeout_protocol:
+  solver_call_limit:
+    enforcement: pass_to_each_solver_invocation
+    time_limit_is_not_infeasibility: true
+  ccg_budget_wall_limit:
+    enforcement: external_runner_watchdog
+    includes:
+      - initialization
+      - all_master_solves
+      - all_oracle_recourse_solves
+      - result_extraction
+  six_budget_sequence_wall_limit:
+    enforcement: external_runner_watchdog
+    applies_separately_to:
+      - standard_ccg_cold_six_budget_sequence
+      - spw_ccg_warm_six_budget_sequence
+    includes_all_six_budget_initialization_and_solves: true
+  paired_sequence_failure_rule:
+    stop_pair_sequence_when_either_algorithm_is_nonoptimal: true
+    remaining_budget_status: not_run_after_pair_sequence_failure
+    transfer_partial_warm_pool: false
+    only_optimal_budget_state_may_transfer: true
+  partial_result_retention:
+    preserve_completed_budget_pairs: true
+    preserve_current_partial_iteration_log: true
+    preserve_current_scenario_pool_and_bounds: true
+    preserve_timeout_scope_and_elapsed_time: true
+    command_line_exit_nonzero: true
+    automatic_retry_in_primary_results: false
+
+workload_estimation:
+  E3_algorithm_executions: 1296
+  E3_recourse_lp_calls_at_10_iterations_estimate: 6840000
+  E3_recourse_lp_calls_at_200_iterations_upper_bound: 136800000
+  E3_serial_budget_wall_upper_bound_hours: 642
+  pilot_throughput_gate:
+    required_before_formal_seed_execution: true
+    pilot_seeds: all_pilot_training_seeds
+    measure:
+      - master_solves_per_hour
+      - recourse_lp_solves_per_hour
+      - completed_budget_pairs_per_hour
+      - peak_memory_mb
+    project_total_for:
+      - E1
+      - E2
+      - E3
+      - E4
+      - E5
+    maximum_projected_total_wall_hours: 720
+    maximum_projected_single_family_wall_hours: 336
+    on_gate_failure: revise_and_version_matrix_before_any_formal_seed_run
+
+exactness_gates:
+  extensive_vs_standard_ccg:
+    tiers:
+      - D0
+      - V1
+      - V2
+    objective_absolute_tolerance: 1.0e-5
+    objective_relative_tolerance: 1.0e-7
+    all_exact_recourse_evaluations_must_be_optimal: true
+  cold_vs_warm:
+    objective_absolute_tolerance: 1.0e-5
+    objective_relative_tolerance: 1.0e-7
+    final_first_stage_feasibility_required: true
+    failed_pair_excluded_from_speed_claim_but_retained_in_failure_table: true
+
+sensitivity:
+  design: one_factor_at_a_time_plus_screening_factorial
+  tier: V2
+  training_seed_count: 10
+  baseline_source: independent_E5_baseline_overrides_V2_item_shelf_life
+  baseline_config:
+    demand_cv: 0.30
+    emergency_price_markup_mean: 0.35
+    emergency_price_markup_sd: 0.15
+    supply_reduction_mean: 0.20
+    supply_shock_sd: 0.20
+    demand_price_correlation: 0.60
+    demand_supply_correlation: -0.45
+    shelf_life_periods: 3
+    storage_capacity_to_expected_period_demand: 3.00
+    shortage_penalty_multiplier: 12.0
+    waste_penalty_multiplier: 0.25
+  budget_factors:
+    - 0.90
+    - 1.10
+    - 1.30
+  one_factor_at_a_time:
+    demand_cv:
+      values: [0.15, 0.30, 0.45]
+      baseline: 0.30
+    emergency_price_markup_mean:
+      values: [0.15, 0.35, 0.55]
+      baseline: 0.35
+    emergency_price_markup_sd:
+      values: [0.05, 0.15, 0.25]
+      baseline: 0.15
+    supply_reduction_mean:
+      values: [0.05, 0.20, 0.40]
+      baseline: 0.20
+    supply_shock_sd:
+      values: [0.10, 0.20, 0.35]
+      baseline: 0.20
+    demand_price_correlation:
+      values: [0.30, 0.60, 0.90]
+      baseline: 0.60
+    demand_supply_correlation:
+      values: [-0.20, -0.45, -0.70]
+      baseline: -0.45
+    shelf_life_periods:
+      values: [1, 3, 6]
+      baseline: 3
+    storage_capacity_to_expected_period_demand:
+      values: [0.50, 1.50, 3.00]
+      baseline: 3.00
+    shortage_penalty_multiplier:
+      values: [6.0, 12.0, 24.0]
+      baseline: 12.0
+    waste_penalty_multiplier:
+      values: [0.10, 0.25, 0.50]
+      baseline: 0.25
+  screening_factorial:
+    training_seed_count: 5
+    factors:
+      budget_factor: [0.90, 1.30]
+      demand_cv: [0.15, 0.45]
+      emergency_price_markup_mean: [0.15, 0.55]
+      supply_reduction_mean: [0.05, 0.40]
+    full_factorial_runs_per_seed: 16
+  inventory_market_interaction:
+    design: two_by_two
+    tier: V2
+    training_seed_count: 5
+    budget_factor: 1.10
+    factors:
+      shelf_life_periods: [1, 6]
+      supply_reduction_mean: [0.05, 0.40]
+    runs_per_seed: 4
+    total_runs: 20
+
+out_of_sample_evaluation:
+  tiers:
+    - V2
+  training_seed_count: 5
+  budget_factors:
+    - 0.90
+    - 1.10
+    - 1.30
+  policies:
+    - deterministic_mean
+    - zero_reserve
+    - fixed_reserve_0_10
+    - fixed_reserve_0_20
+    - fixed_reserve_0_30
+    - fixed_reserve_0_40
+    - fixed_reserve_0_50
+    - endogenous_reserve
+  scenarios_per_training_seed: 5000
+  independent_from_training: true
+  common_test_set_across_policies: true
+  reoptimization_on_test_set_forbidden: true
+  status_accounting:
+    total_scenario_count_required: true
+    optimal_scenario_count_required: true
+    infeasible_scenario_count_required: true
+    solver_failure_count_required: true
+    solver_failures_are_not_infeasibility: true
+    mutually_exclusive_terminal_categories:
+      - optimal
+      - infeasible
+      - solver_failure
+    count_identity: total_scenario_count_equals_optimal_scenario_count_plus_infeasible_scenario_count_plus_solver_failure_count
+    count_identity_must_hold_before_reporting: true
+    recourse_feasibility_rate:
+      formula_when_solver_failure_count_is_zero: optimal_scenario_count_divided_by_total_scenario_count
+      value_when_solver_failure_count_is_positive: null
+    optimal_evaluation_rate:
+      formula: optimal_scenario_count_divided_by_total_scenario_count
+    plan_oos_status:
+      complete_feasible: all_scenarios_optimal
+      contains_infeasible_recourse: infeasible_count_positive_and_solver_failure_count_zero
+      incomplete_solver_failure: solver_failure_count_positive_and_infeasible_count_zero
+      incomplete_solver_failure_and_infeasible: solver_failure_count_positive_and_infeasible_count_positive
+  aggregate_metric_rule:
+    required_status: complete_feasible
+    on_any_infeasible_or_solver_failure: set_all_cost_shortage_service_waste_and_spend_aggregates_to_null
+    conditional_success_only_aggregates_forbidden: true
+    arbitrary_big_m_cost_forbidden: true
+    noncomplete_plans_retained_in_feasibility_and_failure_tables: true
+  metric_definitions:
+    total_cost: regular_purchase_cost_plus_exact_scenario_recourse_cost
+    reserve_is_not_added_to_total_cost: true
+    shortage_tolerance: 1.0e-7
+    shortage_probability: fraction_of_scenarios_with_total_shortage_above_tolerance
+    scenario_service_level: one_minus_total_shortage_divided_by_total_demand
+    zero_total_demand_service_level: 1.0
+    reported_service_level:
+      aggregation: demand_weighted_across_all_scenarios
+      formula: one_minus_sum_shortage_over_all_scenarios_divided_by_sum_demand_over_all_scenarios
+      zero_total_demand_value: 1.0
+      arithmetic_mean_of_scenario_service_levels_is_not_primary: true
+    empirical_quantile_method: linear_type_7
+    empirical_cvar95: average_worst_five_percent_with_fractional_boundary_weight
+    reserve_utilization:
+      formula_when_reserve_above_tolerance: scenario_emergency_spend_divided_by_reserve_then_mean
+      reserve_tolerance: 1.0e-9
+      value_when_reserve_at_or_below_tolerance: null
+      zero_reserve_flag_required: true
+  metrics:
+    - plan_oos_status
+    - total_scenario_count
+    - optimal_scenario_count
+    - optimal_evaluation_rate
+    - recourse_feasibility_rate
+    - infeasible_scenario_count
+    - solver_failure_count
+    - mean_total_cost
+    - median_total_cost
+    - total_cost_p90
+    - total_cost_p95
+    - total_cost_p99
+    - total_cost_cvar95
+    - maximum_total_cost
+    - mean_shortage
+    - shortage_probability
+    - service_level
+    - mean_waste
+    - mean_emergency_spend
+    - reserve_utilization
+    - zero_reserve_flag
+
+performance_metrics:
+  - total_wall_time
+  - master_time
+  - oracle_time
+  - initialization_time
+  - iterations
+  - initial_scenario_count
+  - final_scenario_count
+  - scenario_reuse_rate
+  - adjacent_active_set_jaccard
+  - peak_memory_mb
+  - termination_status
+  - speedup_cold_over_warm
+
+statistical_reporting:
+  independent_experimental_unit: training_seed
+  technical_repetitions:
+    unit: same_algorithm_tier_training_seed_and_budget
+    aggregation_before_inference: median
+    never_count_as_independent_samples: true
+  fixed_budget_inference:
+    resampling_unit: training_seed
+    pair_key: same_tier_training_seed_and_budget
+    primary_effect: log_cold_time_divided_by_warm_time
+  six_budget_summary_inference:
+    method: cluster_paired_bootstrap
+    cluster_unit: entire_budget_sequence_within_training_seed
+    resample_all_six_budgets_together: true
+    within_seed_statistic: median_log_cold_time_divided_by_warm_time_over_jointly_completed_budgets
+    primary_across_seed_statistic: median_of_within_seed_statistics
+    reported_speedup: exp_primary_across_seed_statistic
+    secondary_statistic: median_cold_minus_warm_time_within_seed_then_median_across_seeds
+    seed_with_no_jointly_completed_budget:
+      primary_effect_value: null
+      retained_in_completion_rate_denominator: true
+  extreme_tiers:
+    P3: descriptive_only
+    P4: descriptive_only
+    confidence_intervals_and_significance_tests_forbidden: true
+  paired_completion_reporting:
+    required:
+      - cold_completion_rate
+      - warm_completion_rate
+      - joint_pair_completion_rate
+      - conditional_speedup_on_jointly_completed_pairs
+    denominator: all_planned_budget_runs_or_pairs_including_timeout_failure_and_skipped_after_sequence_failure
+    formulas:
+      cold_completion_rate: optimal_cold_runs_divided_by_planned_cold_runs
+      warm_completion_rate: optimal_warm_runs_divided_by_planned_warm_runs
+      joint_pair_completion_rate: jointly_optimal_pairs_divided_by_planned_pairs
+    conditional_speedup_must_not_be_reported_without_all_three_completion_rates: true
+  descriptive_statistics:
+    - count
+    - mean
+    - standard_deviation
+    - median
+    - interquartile_range
+    - minimum
+    - maximum
+  uncertainty:
+    method: paired_bootstrap
+    confidence_level: 0.95
+    bootstrap_resamples: 10000
+    confidence_interval_method: percentile
+    random_engine: numpy_Generator_PCG64DXSM
+    bootstrap_random_seeds:
+      fixed_budget: 2026090601
+      six_budget_cluster: 2026090602
+      H5_cluster: 2026090603
+  optional_nonparametric_test:
+    name: wilcoxon_signed_rank
+    fixed_budget_input: one_paired_technical_median_per_training_seed
+    six_budget_input: one_within_seed_median_log_speedup_per_training_seed
+    seed_budget_rows_must_not_be_treated_as_independent: true
+  multiple_comparison_rule: report_effect_sizes_and_adjusted_p_values_when_used
+  runtime_primary_statistic: median
+  H5_scene_similarity_analysis:
+    tiers:
+      - V1
+      - V2
+      - P1
+      - P2
+    observation: adjacent_budget_transition_within_seed
+    similarity_metric: active_scenario_set_jaccard
+    outcome_metric: log_cold_time_divided_by_warm_time
+    association_statistic: spearman_rank_correlation
+    confidence_interval: cluster_bootstrap_by_training_seed
+    causal_language_forbidden: true
+
+scale_advancement:
+  all_conditions:
+    joint_pair_completion_rate_minimum: 0.80
+    max_algorithm_median_runtime_fraction_maximum: 0.75
+  joint_pair_completion_rate:
+    numerator: cold_and_warm_both_optimal_pair_count
+    denominator: all_planned_pairs_including_timeout_failure_and_not_run_after_sequence_failure
+  runtime_fraction:
+    eligible_pairs: jointly_optimal_pairs_only
+    runtime_input_after_technical_repetitions: median_wall_time_for_each_algorithm_tier_seed_budget
+    denominator: tier_ccg_budget_wall_seconds_for_one_algorithm
+    cold_statistic: median_cold_runtime_divided_by_budget_wall_over_eligible_pairs
+    warm_statistic: median_warm_runtime_divided_by_budget_wall_over_eligible_pairs
+    gate_statistic: maximum_of_cold_statistic_and_warm_statistic
+    timeout_failure_and_not_run_handling: excluded_from_runtime_medians_but_retained_in_joint_completion_denominator
+    no_jointly_optimal_pairs: gate_fails
+  stop_rule: report_largest_verified_tier_before_algorithmic_expansion
+  failures_must_remain_in_denominators: true
+
+reproducibility:
+  save_resolved_config: true
+  save_training_scenarios: true
+  save_test_scenarios: true
+  save_content_hashes: true
+  save_git_commit: true
+  save_python_and_package_versions: true
+  save_solver_and_version: true
+  save_hardware_and_thread_count: true
+  save_run_start_and_end_time: true
+  save_failure_diagnostics: true
+  raw_data_is_immutable: true
+
+required_outputs:
+  - outputs/experiments/phase6/run_registry.csv
+  - outputs/experiments/phase6/model_comparison.csv
+  - outputs/experiments/phase6/algorithm_performance.csv
+  - outputs/experiments/phase6/out_of_sample_evaluation.csv
+  - outputs/experiments/phase6/out_of_sample_feasibility.csv
+  - outputs/experiments/phase6/sensitivity_results.csv
+  - outputs/experiments/phase6/failure_registry.csv
+  - outputs/experiments/phase6/pilot_throughput_projection.json
+  - outputs/experiments/phase6/real_data_calibration_protocol.json
+  - outputs/experiments/phase6/manifests
+  - outputs/figures/phase6
