@@ -46,8 +46,9 @@ REGISTRY_FIELDS = (
     "seed",
     "matrix_id",
     "matrix_sha256",
+    "scientific_config_sha256",
     "runner_config_sha256",
-    "runner_code_sha256",
+    "e3_component_sha256",
     "planned_budget_count",
     "completed_budget_count",
     "started_at_utc",
@@ -64,6 +65,10 @@ BUDGET_FIELDS = (
     "budget_factor",
     "execution_order",
     "status",
+    "cold_status",
+    "warm_status",
+    "failure_stage",
+    "failure_message",
     "objective_difference",
     "cold_objective",
     "warm_objective",
@@ -105,6 +110,38 @@ ITERATION_FIELDS = (
 
 WorkerExecutor = Callable[[dict[str, Any], float, Path], dict[str, Any]]
 
+PHASE6_E3_COMPONENT_FILES = (
+    "src/phase6_protocol.py",
+    "src/model_data.py",
+    "src/scenario_generator.py",
+    "src/model_common.py",
+    "src/inventory_model.py",
+    "src/recourse_model.py",
+    "src/evaluation.py",
+    "src/extensive_model.py",
+    "src/ccg.py",
+    "src/spw_ccg.py",
+    "src/phase6_worker.py",
+    "src/phase6_runner.py",
+)
+
+PHASE6_E3_DEPENDENCY_NAMES = (
+    "filelock",
+    "highspy",
+    "numpy",
+    "psutil",
+    "pyomo",
+    "pyyaml",
+)
+
+SCIENTIFIC_CONFIG_EXCLUDED_ROOT_FIELDS = (
+    "status",
+    "initial_draft_on",
+    "revised_on",
+)
+
+RUN_LOCK_TIMEOUT_SECONDS = 0.0
+
 
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -144,7 +181,13 @@ def _upsert_registry(path: Path, row: dict[str, Any]) -> None:
                 encoding="utf-8-sig",
                 newline="",
             ) as handle:
-                existing = list(csv.DictReader(handle))
+                existing = [
+                    {
+                        name: row.get(name)
+                        for name in REGISTRY_FIELDS
+                    }
+                    for row in csv.DictReader(handle)
+                ]
         replaced = False
         for index, current in enumerate(existing):
             if current["run_id"] == str(row["run_id"]):
@@ -160,18 +203,52 @@ def _upsert_registry(path: Path, row: dict[str, Any]) -> None:
         _atomic_write_csv(path, REGISTRY_FIELDS, existing)
 
 
-def _runner_code_sha256(project_root: Path) -> str:
-    """Hash all Python sources and the dependency specification."""
+def _scientific_config_sha256(matrix: dict[str, Any]) -> str:
+    """Hash scientific matrix content while excluding lifecycle metadata."""
 
-    paths = sorted((project_root / "src").glob("*.py"))
-    paths.append(project_root / "requirements.txt")
+    scientific = {
+        key: value
+        for key, value in matrix.items()
+        if key not in SCIENTIFIC_CONFIG_EXCLUDED_ROOT_FIELDS
+    }
+    encoded = json.dumps(
+        scientific,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _e3_component_code_sha256(project_root: Path) -> str:
+    """Hash only code and dependencies that can change E3 scientific runs."""
+
+    paths = [project_root / relative for relative in PHASE6_E3_COMPONENT_FILES]
     digest = hashlib.sha256()
     for path in paths:
+        if not path.is_file():
+            raise FileNotFoundError(f"E3 component file is missing: {path}")
         relative = path.relative_to(project_root).as_posix()
         digest.update(relative.encode("utf-8"))
         digest.update(b"\0")
         digest.update(path.read_bytes())
         digest.update(b"\0")
+    requirement_lines = (
+        project_root / "requirements.txt"
+    ).read_text(encoding="utf-8").splitlines()
+    e3_requirements = sorted(
+        line.strip()
+        for line in requirement_lines
+        if line.strip()
+        and not line.lstrip().startswith("#")
+        and line.split(";", maxsplit=1)[0]
+        .strip()
+        .lower()
+        .startswith(PHASE6_E3_DEPENDENCY_NAMES)
+    )
+    digest.update(b"e3-requirements\0")
+    digest.update("\n".join(e3_requirements).encode("utf-8"))
+    digest.update(b"\0")
     return digest.hexdigest()
 
 
@@ -444,14 +521,15 @@ def _checkpoint_fingerprint(
     seed: int,
     execution_mode: str,
     budgets: tuple[float, ...],
-    runner_code_sha256: str,
+    e3_component_sha256: str,
     parent_run_id: str | None,
 ) -> dict[str, Any]:
     return {
         "matrix_id": matrix["matrix_id"],
         "matrix_sha256": sha256_file(matrix_path),
+        "scientific_config_sha256": _scientific_config_sha256(matrix),
         "runner_config_sha256": sha256_file(runner_config_path),
-        "runner_code_sha256": runner_code_sha256,
+        "e3_component_sha256": e3_component_sha256,
         "tier_id": tier_id,
         "seed": int(seed),
         "execution_mode": execution_mode,
@@ -460,39 +538,192 @@ def _checkpoint_fingerprint(
     }
 
 
+def _completed_budget_count(comparisons: list[dict[str, Any]]) -> int:
+    return sum(row.get("status") == "optimal" for row in comparisons)
+
+
+def _not_run_mode(status: str) -> dict[str, Any]:
+    return {
+        "status": status,
+        "repetitions": [],
+        "representative": None,
+        "unexecuted_status": status,
+    }
+
+
+def _terminal_budget_records(
+    *,
+    completed: list[dict[str, Any]],
+    budgets: tuple[float, ...],
+    failure: dict[str, Any],
+    current_modes: dict[str, dict[str, Any]],
+    current_execution_order: tuple[str, str],
+    planned_repetitions: int,
+    alternate_execution_order: bool,
+) -> list[dict[str, Any]]:
+    """Add the failed pair and every planned-but-unrun later budget."""
+
+    failure_index = int(failure["budget_index"])
+    records = list(completed)
+    failed_algorithm = failure.get("algorithm")
+    for algorithm in ("cold", "warm"):
+        if algorithm in current_modes:
+            payload = current_modes[algorithm]
+            payload.setdefault(
+                "status",
+                (
+                    "optimal"
+                    if payload.get("representative") is not None
+                    else str(failure["status"])
+                ),
+            )
+            payload.setdefault(
+                "unexecuted_status",
+                (
+                    "not_run_after_algorithm_failure"
+                    if algorithm == failed_algorithm
+                    else None
+                ),
+            )
+        elif algorithm == failed_algorithm:
+            repetitions = list(failure.get("partial_repetitions", ()))
+            current_modes[algorithm] = {
+                "status": str(failure["status"]),
+                "repetitions": repetitions,
+                "representative": None,
+                "unexecuted_status": "not_run_after_algorithm_failure",
+            }
+        else:
+            current_modes[algorithm] = _not_run_mode(
+                "not_run_after_pair_failure"
+            )
+    records.append(
+        {
+            "status": str(failure["status"]),
+            "budget_index": failure_index,
+            "budget": float(budgets[failure_index]),
+            "execution_order": list(current_execution_order),
+            "planned_repetitions": planned_repetitions,
+            "objective_difference": None,
+            "consistency_tolerance": None,
+            "cold": current_modes["cold"],
+            "warm": current_modes["warm"],
+            "transferred_state": None,
+            "failure_stage": failure["stage"],
+            "failure_message": failure["message"],
+        }
+    )
+    for budget_index in range(failure_index + 1, len(budgets)):
+        execution_order = (
+            ("cold", "warm")
+            if (
+                not alternate_execution_order
+                or budget_index % 2 == 0
+            )
+            else ("warm", "cold")
+        )
+        records.append(
+            {
+                "status": "not_run_after_pair_sequence_failure",
+                "budget_index": budget_index,
+                "budget": float(budgets[budget_index]),
+                "execution_order": list(execution_order),
+                "planned_repetitions": planned_repetitions,
+                "objective_difference": None,
+                "consistency_tolerance": None,
+                "cold": _not_run_mode(
+                    "not_run_after_pair_sequence_failure"
+                ),
+                "warm": _not_run_mode(
+                    "not_run_after_pair_sequence_failure"
+                ),
+                "transferred_state": None,
+                "failure_stage": "pair_sequence",
+                "failure_message": (
+                    "not run because an earlier budget pair failed"
+                ),
+            }
+        )
+    return records
+
+
 def _budget_rows(comparisons: list[dict[str, Any]]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for row in comparisons:
-        cold = row["cold"]["representative"]
-        warm = row["warm"]["representative"]
+        cold = row["cold"].get("representative")
+        warm = row["warm"].get("representative")
         state = row["transferred_state"]
+        cold_ccg = None if cold is None else cold.get("ccg_result")
+        warm_ccg = None if warm is None else warm.get("ccg_result")
         rows.append(
             {
                 "budget_index": row["budget_index"],
                 "budget": row["budget"],
-                "budget_factor": cold.get("budget_factor"),
+                "budget_factor": (
+                    cold.get("budget_factor") if cold is not None else None
+                ),
                 "execution_order": "->".join(row["execution_order"]),
                 "status": row["status"],
+                "cold_status": row["cold"].get("status"),
+                "warm_status": row["warm"].get("status"),
+                "failure_stage": row.get("failure_stage"),
+                "failure_message": row.get("failure_message"),
                 "objective_difference": row["objective_difference"],
-                "cold_objective": cold["ccg_result"]["objective"],
-                "warm_objective": warm["ccg_result"]["objective"],
-                "cold_iterations": cold["ccg_result"]["iterations"],
-                "warm_iterations": warm["ccg_result"]["iterations"],
-                "cold_median_seconds": cold["subprocess_wall_seconds"],
-                "warm_median_seconds": warm["subprocess_wall_seconds"],
+                "cold_objective": (
+                    cold_ccg.get("objective")
+                    if cold_ccg is not None
+                    else None
+                ),
+                "warm_objective": (
+                    warm_ccg.get("objective")
+                    if warm_ccg is not None
+                    else None
+                ),
+                "cold_iterations": (
+                    cold_ccg.get("iterations")
+                    if cold_ccg is not None
+                    else None
+                ),
+                "warm_iterations": (
+                    warm_ccg.get("iterations")
+                    if warm_ccg is not None
+                    else None
+                ),
+                "cold_median_seconds": (
+                    cold.get("subprocess_wall_seconds")
+                    if cold is not None
+                    else None
+                ),
+                "warm_median_seconds": (
+                    warm.get("subprocess_wall_seconds")
+                    if warm is not None
+                    else None
+                ),
                 "cold_peak_memory_mb": max(
-                    value["peak_memory_mb"]
-                    for value in row["cold"]["repetitions"]
+                    (
+                        value.get("peak_memory_mb", 0.0)
+                        for value in row["cold"]["repetitions"]
+                    ),
+                    default=None,
                 ),
                 "warm_peak_memory_mb": max(
-                    value["peak_memory_mb"]
-                    for value in row["warm"]["repetitions"]
+                    (
+                        value.get("peak_memory_mb", 0.0)
+                        for value in row["warm"]["repetitions"]
+                    ),
+                    default=None,
                 ),
                 "cold_repetitions": len(row["cold"]["repetitions"]),
                 "warm_repetitions": len(row["warm"]["repetitions"]),
-                "active_scenario_count": len(state["active_scenarios"]),
-                "historical_adversarial_count": len(
-                    state["historical_adversarial_scenarios"]
+                "active_scenario_count": (
+                    len(state["active_scenarios"])
+                    if state is not None
+                    else None
+                ),
+                "historical_adversarial_count": (
+                    len(state["historical_adversarial_scenarios"])
+                    if state is not None
+                    else None
                 ),
             }
         )
@@ -538,7 +769,44 @@ def run_phase6_sequence(
     parent_run_id: str | None = None,
     worker_executor: WorkerExecutor | None = None,
 ) -> dict[str, Any]:
-    """Run or resume one tier-seed budget sequence with atomic checkpoints."""
+    """Run one sequence while holding a full-lifecycle per-run lock."""
+
+    resolved_output = output_root.resolve()
+    run_directory = (
+        resolved_output / "experiments" / "phase6" / "runs" / run_id
+    )
+    with exclusive_file_lock(
+        run_directory / ".run.lock",
+        timeout_seconds=RUN_LOCK_TIMEOUT_SECONDS,
+    ):
+        return _run_phase6_sequence_locked(
+            matrix_path=matrix_path,
+            runner_config_path=runner_config_path,
+            output_root=resolved_output,
+            tier_id=tier_id,
+            seed=seed,
+            execution_mode=execution_mode,
+            run_id=run_id,
+            resume=resume,
+            parent_run_id=parent_run_id,
+            worker_executor=worker_executor,
+        )
+
+
+def _run_phase6_sequence_locked(
+    *,
+    matrix_path: Path,
+    runner_config_path: Path,
+    output_root: Path,
+    tier_id: str,
+    seed: int,
+    execution_mode: str,
+    run_id: str,
+    resume: bool = False,
+    parent_run_id: str | None = None,
+    worker_executor: WorkerExecutor | None = None,
+) -> dict[str, Any]:
+    """Run or resume a locked tier-seed sequence with atomic checkpoints."""
 
     matrix_path = matrix_path.resolve()
     runner_config_path = runner_config_path.resolve()
@@ -557,7 +825,7 @@ def run_phase6_sequence(
         tier_id,
         matrix_path=matrix_path,
     )
-    code_sha256 = _runner_code_sha256(matrix_path.parent.parent)
+    code_sha256 = _e3_component_code_sha256(matrix_path.parent.parent)
     fingerprint = _checkpoint_fingerprint(
         matrix_path=matrix_path,
         runner_config_path=runner_config_path,
@@ -566,7 +834,7 @@ def run_phase6_sequence(
         seed=seed,
         execution_mode=execution_mode,
         budgets=budgets,
-        runner_code_sha256=code_sha256,
+        e3_component_sha256=code_sha256,
         parent_run_id=parent_run_id,
     )
 
@@ -579,11 +847,15 @@ def run_phase6_sequence(
                 / "pilot_throughput_projection.json"
             ),
             matrix_id=str(matrix["matrix_id"]),
-            matrix_sha256=str(fingerprint["matrix_sha256"]),
+            scientific_config_sha256=str(
+                fingerprint["scientific_config_sha256"]
+            ),
             runner_config_sha256=str(
                 fingerprint["runner_config_sha256"]
             ),
-            runner_code_sha256=str(fingerprint["runner_code_sha256"]),
+            e3_component_sha256=str(
+                fingerprint["e3_component_sha256"]
+            ),
         )
 
     run_directory = output_root / "experiments" / "phase6" / "runs" / run_id
@@ -673,7 +945,7 @@ def run_phase6_sequence(
     relative_tolerance = float(exactness["objective_relative_tolerance"])
     active_tolerance = float(config["runner"]["active_scenario_tolerance"])
     failure: dict[str, Any] | None = None
-    completed_count = len(comparisons)
+    completed_count = _completed_budget_count(comparisons)
     if comparisons:
         expected_prefix = list(budgets[:completed_count])
         actual_prefix = [float(row["budget"]) for row in comparisons]
@@ -712,8 +984,11 @@ def run_phase6_sequence(
             "seed": seed,
             "matrix_id": matrix["matrix_id"],
             "matrix_sha256": fingerprint["matrix_sha256"],
+            "scientific_config_sha256": fingerprint[
+                "scientific_config_sha256"
+            ],
             "runner_config_sha256": fingerprint["runner_config_sha256"],
-            "runner_code_sha256": fingerprint["runner_code_sha256"],
+            "e3_component_sha256": fingerprint["e3_component_sha256"],
             "planned_budget_count": len(budgets),
             "completed_budget_count": completed_count,
             "started_at_utc": started_at,
@@ -725,6 +1000,8 @@ def run_phase6_sequence(
         },
     )
 
+    failed_mode_payloads: dict[str, dict[str, Any]] = {}
+    failed_execution_order = ("cold", "warm")
     for budget_index in range(completed_count, len(budgets)):
         budget = budgets[budget_index]
         execution_order = (
@@ -814,8 +1091,10 @@ def run_phase6_sequence(
             )
             if valid:
                 mode_payloads[mode] = {
+                    "status": "optimal",
                     "repetitions": repetitions,
                     "representative": _median_repetition(repetitions),
+                    "unexecuted_status": None,
                 }
             else:
                 nonoptimal = next(
@@ -839,6 +1118,16 @@ def run_phase6_sequence(
                     "message": repetition_error,
                     "partial_repetitions": repetitions,
                 }
+                mode_payloads[mode] = {
+                    "status": str(failure["status"]),
+                    "repetitions": repetitions,
+                    "representative": None,
+                    "unexecuted_status": (
+                        "not_run_after_algorithm_failure"
+                    ),
+                }
+                failed_mode_payloads = mode_payloads
+                failed_execution_order = execution_order
                 break
         if failure is not None:
             save_checkpoint("failed")
@@ -867,6 +1156,8 @@ def run_phase6_sequence(
                 ),
                 "partial_repetitions": mode_payloads,
             }
+            failed_mode_payloads = mode_payloads
+            failed_execution_order = execution_order
             save_checkpoint("failed")
             break
         try:
@@ -886,6 +1177,8 @@ def run_phase6_sequence(
                 "message": f"{type(exc).__name__}: {exc}",
                 "partial_repetitions": mode_payloads,
             }
+            failed_mode_payloads = mode_payloads
+            failed_execution_order = execution_order
             save_checkpoint("failed")
             break
         comparison = {
@@ -893,11 +1186,14 @@ def run_phase6_sequence(
             "budget_index": budget_index,
             "budget": budget,
             "execution_order": list(execution_order),
+            "planned_repetitions": tier.timing_repetitions,
             "objective_difference": difference,
             "consistency_tolerance": consistency_limit,
             "cold": mode_payloads["cold"],
             "warm": mode_payloads["warm"],
             "transferred_state": transferred_state,
+            "failure_stage": None,
+            "failure_message": None,
         }
         comparisons.append(comparison)
         previous_state = transferred_state
@@ -913,12 +1209,17 @@ def run_phase6_sequence(
                 "seed": seed,
                 "matrix_id": matrix["matrix_id"],
                 "matrix_sha256": fingerprint["matrix_sha256"],
+                "scientific_config_sha256": fingerprint[
+                    "scientific_config_sha256"
+                ],
                 "runner_config_sha256": fingerprint["runner_config_sha256"],
-                "runner_code_sha256": fingerprint[
-                    "runner_code_sha256"
+                "e3_component_sha256": fingerprint[
+                    "e3_component_sha256"
                 ],
                 "planned_budget_count": len(budgets),
-                "completed_budget_count": len(comparisons),
+                "completed_budget_count": _completed_budget_count(
+                    comparisons
+                ),
                 "started_at_utc": started_at,
                 "updated_at_utc": _utc_now(),
                 "failure_stage": None,
@@ -928,6 +1229,18 @@ def run_phase6_sequence(
             },
         )
 
+    if failure is not None:
+        comparisons = _terminal_budget_records(
+            completed=comparisons,
+            budgets=budgets,
+            failure=failure,
+            current_modes=failed_mode_payloads,
+            current_execution_order=failed_execution_order,
+            planned_repetitions=tier.timing_repetitions,
+            alternate_execution_order=bool(
+                algorithm["alternate_execution_order"]
+            ),
+        )
     status = "optimal" if failure is None else str(failure["status"])
     finished_at = _utc_now()
     result = {
@@ -939,7 +1252,7 @@ def run_phase6_sequence(
         "seed": seed,
         "matrix_id": matrix["matrix_id"],
         "budgets": list(budgets),
-        "completed_budget_count": len(comparisons),
+        "completed_budget_count": _completed_budget_count(comparisons),
         "planned_budget_count": len(budgets),
         "started_at_utc": started_at,
         "finished_at_utc": finished_at,
@@ -970,9 +1283,12 @@ def run_phase6_sequence(
             "parent_run_id": parent_run_id,
             "matrix_path": str(matrix_path),
             "matrix_sha256": fingerprint["matrix_sha256"],
+            "scientific_config_sha256": fingerprint[
+                "scientific_config_sha256"
+            ],
             "runner_config_path": str(runner_config_path),
             "runner_config_sha256": fingerprint["runner_config_sha256"],
-            "runner_code_sha256": fingerprint["runner_code_sha256"],
+            "e3_component_sha256": fingerprint["e3_component_sha256"],
             "resolved_run_path": str(resolved_run_path),
             "resolved_run_sha256": sha256_file(resolved_run_path),
             "training_scenarios_path": str(scenarios_path),
@@ -992,10 +1308,13 @@ def run_phase6_sequence(
             "seed": seed,
             "matrix_id": matrix["matrix_id"],
             "matrix_sha256": fingerprint["matrix_sha256"],
+            "scientific_config_sha256": fingerprint[
+                "scientific_config_sha256"
+            ],
             "runner_config_sha256": fingerprint["runner_config_sha256"],
-            "runner_code_sha256": fingerprint["runner_code_sha256"],
+            "e3_component_sha256": fingerprint["e3_component_sha256"],
             "planned_budget_count": len(budgets),
-            "completed_budget_count": len(comparisons),
+            "completed_budget_count": _completed_budget_count(comparisons),
             "started_at_utc": started_at,
             "updated_at_utc": finished_at,
             "failure_stage": (
@@ -1014,8 +1333,11 @@ def run_phase6_sequence(
         matrix=matrix,
         runner_config=config,
         matrix_sha256=str(fingerprint["matrix_sha256"]),
+        scientific_config_sha256=str(
+            fingerprint["scientific_config_sha256"]
+        ),
         runner_config_sha256=str(fingerprint["runner_config_sha256"]),
-        runner_code_sha256=str(fingerprint["runner_code_sha256"]),
+        e3_component_sha256=str(fingerprint["e3_component_sha256"]),
     )
     result["reporting"] = {
         "algorithm_performance_path": str(performance_path),

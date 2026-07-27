@@ -79,11 +79,31 @@ def update_algorithm_performance(
         run_id = str(result["run_id"])
         existing = [row for row in existing if row["run_id"] != run_id]
         for comparison in result["comparisons"]:
+            planned_repetitions = int(
+                comparison.get(
+                    "planned_repetitions",
+                    max(
+                        len(comparison["cold"]["repetitions"]),
+                        len(comparison["warm"]["repetitions"]),
+                    ),
+                )
+            )
             for algorithm in ("cold", "warm"):
-                for repetition_index, repetition in enumerate(
-                    comparison[algorithm]["repetitions"],
-                    start=1,
-                ):
+                mode = comparison[algorithm]
+                actual = list(mode["repetitions"])
+                unexecuted_status = mode.get("unexecuted_status")
+                for repetition_index in range(1, planned_repetitions + 1):
+                    repetition = (
+                        actual[repetition_index - 1]
+                        if repetition_index <= len(actual)
+                        else {
+                            "status": (
+                                unexecuted_status
+                                or "not_run_after_algorithm_failure"
+                            ),
+                            "ccg_result": None,
+                        }
+                    )
                     ccg = repetition.get("ccg_result")
                     existing.append(
                         {
@@ -153,7 +173,11 @@ def _run_throughput(result: Mapping[str, Any]) -> dict[str, float]:
         "recourse_lp_solves_per_hour": recourse_lp_solves / hours,
         "algorithm_executions_per_hour": algorithm_executions / hours,
         "completed_budget_pairs_per_hour": (
-            len(result["comparisons"]) / hours
+            sum(
+                row.get("status") == "optimal"
+                for row in result["comparisons"]
+            )
+            / hours
         ),
         "peak_memory_mb": peak_memory,
     }
@@ -165,8 +189,9 @@ def update_pilot_projection(
     matrix: Mapping[str, Any],
     runner_config: Mapping[str, Any],
     matrix_sha256: str,
+    scientific_config_sha256: str,
     runner_config_sha256: str,
-    runner_code_sha256: str,
+    e3_component_sha256: str,
 ) -> dict[str, Any]:
     """Rebuild fingerprinted pilot coverage without unit-invalid estimates."""
 
@@ -200,11 +225,12 @@ def update_pilot_projection(
                 row["execution_mode"] == "pilot"
                 and row["tier_id"] in required_tiers
                 and int(row["seed"]) in required_seeds
-                and row["matrix_sha256"] == matrix_sha256
+                and row.get("scientific_config_sha256", "")
+                == scientific_config_sha256
                 and row["runner_config_sha256"]
                 == runner_config_sha256
-                and row.get("runner_code_sha256", "")
-                == runner_code_sha256
+                and row.get("e3_component_sha256", "")
+                == e3_component_sha256
             )
         ]
         primaries: dict[tuple[str, int], list[dict[str, str]]] = {}
@@ -304,8 +330,9 @@ def update_pilot_projection(
             "matrix_id": matrix["matrix_id"],
             "matrix_status": matrix.get("status"),
             "matrix_sha256": matrix_sha256,
+            "scientific_config_sha256": scientific_config_sha256,
             "runner_config_sha256": runner_config_sha256,
-            "runner_code_sha256": runner_code_sha256,
+            "e3_component_sha256": e3_component_sha256,
             "required_tiers": required_tiers,
             "required_seeds": required_seeds,
             "completed_run_count": len(runs),
@@ -398,9 +425,9 @@ def validate_formal_projection(
     *,
     projection_path: Path,
     matrix_id: str,
-    matrix_sha256: str,
+    scientific_config_sha256: str,
     runner_config_sha256: str,
-    runner_code_sha256: str,
+    e3_component_sha256: str,
 ) -> dict[str, Any]:
     """Require a complete, current, explicitly authorized projection."""
 
@@ -409,9 +436,9 @@ def validate_formal_projection(
     payload = json.loads(projection_path.read_text(encoding="utf-8"))
     expected = {
         "matrix_id": matrix_id,
-        "matrix_sha256": matrix_sha256,
+        "scientific_config_sha256": scientific_config_sha256,
         "runner_config_sha256": runner_config_sha256,
-        "runner_code_sha256": runner_code_sha256,
+        "e3_component_sha256": e3_component_sha256,
     }
     mismatches = {
         name: {"expected": value, "actual": payload.get(name)}
@@ -437,10 +464,6 @@ def validate_formal_projection(
     if payload.get("status") != "passed":
         raise ValueError(
             f"pilot projection status is not passed: {payload.get('status')}"
-        )
-    if payload.get("matrix_status") != "frozen_for_formal_execution":
-        raise ValueError(
-            "pilot projection was not produced from a formally frozen matrix"
         )
     if payload.get("compute_gate_passed") is not True:
         raise ValueError("pilot compute gate has not passed")

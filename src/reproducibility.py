@@ -25,6 +25,7 @@ PACKAGE_NAMES = (
     "PyYAML",
     "matplotlib",
     "psutil",
+    "filelock",
     "pytest",
 )
 

@@ -1,7 +1,9 @@
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
+from copy import deepcopy
 import csv
 import json
 from pathlib import Path
+import shutil
 
 import pytest
 
@@ -11,8 +13,10 @@ from src.phase6_reporting import (
     validate_formal_projection,
 )
 from src.phase6_runner import (
+    PHASE6_E3_COMPONENT_FILES,
     REGISTRY_FIELDS,
-    _runner_code_sha256,
+    _e3_component_code_sha256,
+    _scientific_config_sha256,
     _upsert_registry,
     load_phase6_runner_config,
 )
@@ -30,8 +34,9 @@ def _registry_row(
     seed: int,
     result_path: Path,
     matrix_sha256: str,
+    scientific_config_sha256: str,
     runner_config_sha256: str,
-    runner_code_sha256: str,
+    e3_component_sha256: str,
     status: str = "optimal",
     parent_run_id: str | None = None,
 ) -> dict[str, object]:
@@ -44,8 +49,9 @@ def _registry_row(
         "seed": seed,
         "matrix_id": "phase6_formal_experiments_v1_3",
         "matrix_sha256": matrix_sha256,
+        "scientific_config_sha256": scientific_config_sha256,
         "runner_config_sha256": runner_config_sha256,
-        "runner_code_sha256": runner_code_sha256,
+        "e3_component_sha256": e3_component_sha256,
         "planned_budget_count": 6,
         "completed_budget_count": 6 if status == "optimal" else 1,
         "started_at_utc": "2026-07-27T00:00:00+00:00",
@@ -95,14 +101,28 @@ def _write_fake_result(
     )
 
 
+def _write_registry_process(arguments: tuple[str, int]) -> None:
+    path_text, index = arguments
+    row = {name: "" for name in REGISTRY_FIELDS}
+    row.update(
+        {
+            "run_id": f"run_{index:03d}",
+            "status": "running",
+            "seed": index,
+        }
+    )
+    _upsert_registry(Path(path_text), row)
+
+
 def test_projection_is_fingerprinted_and_incomplete_without_family_runners(
     tmp_path: Path,
 ) -> None:
     matrix = load_phase6_matrix(MATRIX_PATH)
     runner_config = load_phase6_runner_config(RUNNER_CONFIG_PATH)
     matrix_hash = sha256_file(MATRIX_PATH)
+    scientific_hash = _scientific_config_sha256(matrix)
     config_hash = sha256_file(RUNNER_CONFIG_PATH)
-    code_hash = _runner_code_sha256(MATRIX_PATH.parent.parent)
+    code_hash = _e3_component_code_sha256(MATRIX_PATH.parent.parent)
     registry_path = (
         tmp_path / "experiments" / "phase6" / "run_registry.csv"
     )
@@ -131,8 +151,9 @@ def test_projection_is_fingerprinted_and_incomplete_without_family_runners(
                     seed=seed,
                     result_path=result_path,
                     matrix_sha256=matrix_hash,
+                    scientific_config_sha256=scientific_hash,
                     runner_config_sha256=config_hash,
-                    runner_code_sha256=code_hash,
+                    e3_component_sha256=code_hash,
                 ),
             )
     _upsert_registry(
@@ -143,8 +164,9 @@ def test_projection_is_fingerprinted_and_incomplete_without_family_runners(
             seed=2026072001,
             result_path=tmp_path / "unused.json",
             matrix_sha256="stale-matrix",
+            scientific_config_sha256="stale-scientific",
             runner_config_sha256=config_hash,
-            runner_code_sha256=code_hash,
+            e3_component_sha256=code_hash,
             status="algorithm_failure",
         ),
     )
@@ -154,8 +176,9 @@ def test_projection_is_fingerprinted_and_incomplete_without_family_runners(
         matrix=matrix,
         runner_config=runner_config,
         matrix_sha256=matrix_hash,
+        scientific_config_sha256=scientific_hash,
         runner_config_sha256=config_hash,
-        runner_code_sha256=code_hash,
+        e3_component_sha256=code_hash,
     )
 
     assert projection["completed_run_count"] == 12
@@ -178,8 +201,9 @@ def test_formal_projection_gate_rejects_stale_or_unapproved_file(
         "matrix_id": "matrix",
         "matrix_status": "frozen_for_formal_execution",
         "matrix_sha256": "matrix-hash",
+        "scientific_config_sha256": "scientific-hash",
         "runner_config_sha256": "config-hash",
-        "runner_code_sha256": "code-hash",
+        "e3_component_sha256": "code-hash",
         "required_run_count": 12,
         "completed_run_count": 12,
         "missing_runs": [],
@@ -195,17 +219,17 @@ def test_formal_projection_gate_rejects_stale_or_unapproved_file(
         validate_formal_projection(
             projection_path=path,
             matrix_id="matrix",
-            matrix_sha256="matrix-hash",
+            scientific_config_sha256="scientific-hash",
             runner_config_sha256="config-hash",
-            runner_code_sha256="code-hash",
+            e3_component_sha256="code-hash",
         )
     with pytest.raises(ValueError, match="fingerprint mismatch"):
         validate_formal_projection(
             projection_path=path,
             matrix_id="matrix",
-            matrix_sha256="stale",
+            scientific_config_sha256="stale",
             runner_config_sha256="config-hash",
-            runner_code_sha256="code-hash",
+            e3_component_sha256="code-hash",
         )
 
     payload.update(
@@ -219,9 +243,9 @@ def test_formal_projection_gate_rejects_stale_or_unapproved_file(
     accepted = validate_formal_projection(
         projection_path=path,
         matrix_id="matrix",
-        matrix_sha256="matrix-hash",
+        scientific_config_sha256="scientific-hash",
         runner_config_sha256="config-hash",
-        runner_code_sha256="code-hash",
+        e3_component_sha256="code-hash",
     )
     assert accepted["formal_execution_authorized"] is True
 
@@ -231,19 +255,13 @@ def test_registry_upserts_are_serialized_across_concurrent_writers(
 ) -> None:
     path = tmp_path / "experiments" / "phase6" / "run_registry.csv"
 
-    def write(index: int) -> None:
-        row = {name: "" for name in REGISTRY_FIELDS}
-        row.update(
-            {
-                "run_id": f"run_{index:03d}",
-                "status": "running",
-                "seed": index,
-            }
+    with ProcessPoolExecutor(max_workers=4) as executor:
+        list(
+            executor.map(
+                _write_registry_process,
+                [(str(path), index) for index in range(40)],
+            )
         )
-        _upsert_registry(path, row)
-
-    with ThreadPoolExecutor(max_workers=8) as executor:
-        list(executor.map(write, range(40)))
 
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         rows = list(csv.DictReader(handle))
@@ -251,4 +269,81 @@ def test_registry_upserts_are_serialized_across_concurrent_writers(
     assert {row["run_id"] for row in rows} == {
         f"run_{index:03d}" for index in range(40)
     }
-    assert not (path.parent / ".aggregate.lock").exists()
+
+
+def test_registry_schema_migrates_legacy_fingerprint_columns(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "experiments" / "phase6" / "run_registry.csv"
+    path.parent.mkdir(parents=True)
+    legacy_fields = tuple(
+        "runner_code_sha256"
+        if name == "e3_component_sha256"
+        else name
+        for name in REGISTRY_FIELDS
+        if name != "scientific_config_sha256"
+    )
+    with path.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=legacy_fields)
+        writer.writeheader()
+        writer.writerow(
+            {
+                **{name: "" for name in legacy_fields},
+                "run_id": "legacy",
+                "runner_code_sha256": "legacy-code",
+            }
+        )
+    row = {name: "" for name in REGISTRY_FIELDS}
+    row.update({"run_id": "new", "e3_component_sha256": "current"})
+    _upsert_registry(path, row)
+
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        rows = list(reader)
+        assert tuple(reader.fieldnames or ()) == REGISTRY_FIELDS
+    assert {item["run_id"] for item in rows} == {"legacy", "new"}
+    assert rows[0]["scientific_config_sha256"] == ""
+
+
+def test_scientific_hash_excludes_lifecycle_but_includes_parameters() -> None:
+    matrix = load_phase6_matrix(MATRIX_PATH)
+    baseline = _scientific_config_sha256(matrix)
+    lifecycle_only = deepcopy(matrix)
+    lifecycle_only["status"] = "frozen_for_formal_execution"
+    lifecycle_only["revised_on"] = "2099-01-01"
+    assert _scientific_config_sha256(lifecycle_only) == baseline
+
+    scientific_change = deepcopy(matrix)
+    scientific_change["algorithm_comparison"]["max_iterations"] += 1
+    assert _scientific_config_sha256(scientific_change) != baseline
+
+
+def test_e3_component_hash_scope_is_explicit(tmp_path: Path) -> None:
+    project_root = MATRIX_PATH.parent.parent
+    assert "src/phase6_runner.py" in PHASE6_E3_COMPONENT_FILES
+    assert "src/phase6_worker.py" in PHASE6_E3_COMPONENT_FILES
+    assert "src/ccg.py" in PHASE6_E3_COMPONENT_FILES
+    assert "src/phase6_reporting.py" not in PHASE6_E3_COMPONENT_FILES
+    assert "src/run_phase6.py" not in PHASE6_E3_COMPONENT_FILES
+    baseline = _e3_component_code_sha256(project_root)
+    assert len(baseline) == 64
+
+    copied_root = tmp_path / "project"
+    for relative in (*PHASE6_E3_COMPONENT_FILES, "requirements.txt"):
+        source = project_root / relative
+        destination = copied_root / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
+    with (copied_root / "requirements.txt").open(
+        "a",
+        encoding="utf-8",
+    ) as handle:
+        handle.write("\nplotly>=6.0\n")
+    assert _e3_component_code_sha256(copied_root) == baseline
+
+    with (copied_root / "src" / "ccg.py").open(
+        "a",
+        encoding="utf-8",
+    ) as handle:
+        handle.write("\n# scientific change\n")
+    assert _e3_component_code_sha256(copied_root) != baseline

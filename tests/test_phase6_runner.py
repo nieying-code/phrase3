@@ -1,17 +1,26 @@
+from concurrent.futures import ProcessPoolExecutor
 import csv
 import json
 from pathlib import Path
+from time import monotonic, sleep
 from typing import Any
 
 import pytest
 
 from src import phase6_runner
+from src.phase6_locking import exclusive_file_lock
 from src.phase6_runner import run_phase6_sequence
 from src.phase6_protocol import Phase6ProtocolError
 
 
 MATRIX_PATH = Path("configs/phase6_experiment_matrix.yaml")
 RUNNER_CONFIG_PATH = Path("configs/phase6_runner.yaml")
+
+
+def _hold_run_lock(lock_path: str, marker_path: str) -> None:
+    with exclusive_file_lock(Path(lock_path), timeout_seconds=5.0):
+        Path(marker_path).write_text("locked", encoding="utf-8")
+        sleep(1.0)
 
 
 def _fake_result(request: dict[str, Any], *, status: str = "optimal") -> dict[str, Any]:
@@ -321,6 +330,53 @@ def test_terminal_failure_is_immutable_and_retry_has_lineage(
     )
     assert failed["status"] == "solver_error"
     assert failed["completed_budget_count"] == 1
+    assert len(failed["comparisons"]) == 6
+    assert [row["status"] for row in failed["comparisons"]] == [
+        "optimal",
+        "solver_error",
+        "not_run_after_pair_sequence_failure",
+        "not_run_after_pair_sequence_failure",
+        "not_run_after_pair_sequence_failure",
+        "not_run_after_pair_sequence_failure",
+    ]
+    assert failed["comparisons"][1]["warm"]["status"] == "solver_error"
+    assert failed["comparisons"][1]["cold"]["status"] == (
+        "not_run_after_pair_failure"
+    )
+    run_directory = (
+        tmp_path
+        / "experiments"
+        / "phase6"
+        / "runs"
+        / "pilot_v1_resume"
+    )
+    with (run_directory / "budget_comparison.csv").open(
+        "r",
+        encoding="utf-8-sig",
+        newline="",
+    ) as handle:
+        budget_rows = list(csv.DictReader(handle))
+    assert len(budget_rows) == 6
+    assert budget_rows[1]["warm_status"] == "solver_error"
+    assert budget_rows[2]["status"] == (
+        "not_run_after_pair_sequence_failure"
+    )
+    with (
+        tmp_path
+        / "experiments"
+        / "phase6"
+        / "algorithm_performance.csv"
+    ).open("r", encoding="utf-8-sig", newline="") as handle:
+        performance_rows = [
+            row
+            for row in csv.DictReader(handle)
+            if row["run_id"] == "pilot_v1_resume"
+        ]
+    assert len(performance_rows) == 6 * 2 * 3
+    statuses = {row["status"] for row in performance_rows}
+    assert "solver_error" in statuses
+    assert "not_run_after_pair_failure" in statuses
+    assert "not_run_after_pair_sequence_failure" in statuses
 
     def successful_executor(
         request: dict[str, Any],
@@ -450,3 +506,35 @@ def test_interrupted_checkpoint_can_resume_from_completed_prefix(
     assert resumed["status"] == "optimal"
     assert resumed["completed_budget_count"] == 6
     assert min(resumed_calls) == 1
+
+
+def test_same_run_id_is_exclusive_across_processes(tmp_path: Path) -> None:
+    run_id = "pilot_v1_locked"
+    run_directory = (
+        tmp_path / "experiments" / "phase6" / "runs" / run_id
+    )
+    lock_path = run_directory / ".run.lock"
+    marker_path = tmp_path / "lock_ready.txt"
+    with ProcessPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(
+            _hold_run_lock,
+            str(lock_path),
+            str(marker_path),
+        )
+        deadline = monotonic() + 5.0
+        while not marker_path.exists() and monotonic() < deadline:
+            sleep(0.02)
+        assert marker_path.exists()
+        with pytest.raises(TimeoutError, match="Phase 6 lock"):
+            run_phase6_sequence(
+                matrix_path=MATRIX_PATH,
+                runner_config_path=RUNNER_CONFIG_PATH,
+                output_root=tmp_path,
+                tier_id="V1",
+                seed=2026072001,
+                execution_mode="pilot",
+                run_id=run_id,
+                worker_executor=lambda *args: {},
+            )
+        future.result(timeout=5.0)
+    assert not (run_directory / "checkpoint.json").exists()
