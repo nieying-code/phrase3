@@ -2,6 +2,7 @@ from concurrent.futures import ProcessPoolExecutor
 from copy import deepcopy
 import csv
 import json
+import multiprocessing
 from pathlib import Path
 import shutil
 
@@ -255,7 +256,10 @@ def test_registry_upserts_are_serialized_across_concurrent_writers(
 ) -> None:
     path = tmp_path / "experiments" / "phase6" / "run_registry.csv"
 
-    with ProcessPoolExecutor(max_workers=4) as executor:
+    with ProcessPoolExecutor(
+        max_workers=4,
+        mp_context=multiprocessing.get_context("spawn"),
+    ) as executor:
         list(
             executor.map(
                 _write_registry_process,

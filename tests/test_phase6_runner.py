@@ -1,6 +1,7 @@
 from concurrent.futures import ProcessPoolExecutor
 import csv
 import json
+import multiprocessing
 from pathlib import Path
 from time import monotonic, sleep
 from typing import Any
@@ -515,7 +516,10 @@ def test_same_run_id_is_exclusive_across_processes(tmp_path: Path) -> None:
     )
     lock_path = run_directory / ".run.lock"
     marker_path = tmp_path / "lock_ready.txt"
-    with ProcessPoolExecutor(max_workers=1) as executor:
+    with ProcessPoolExecutor(
+        max_workers=1,
+        mp_context=multiprocessing.get_context("spawn"),
+    ) as executor:
         future = executor.submit(
             _hold_run_lock,
             str(lock_path),
