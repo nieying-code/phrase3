@@ -116,7 +116,8 @@ outputs/
 ## Phase 6 runner（正式实验前基础设施）
 
 阶段6现已提供受控生成器、三层时限、冷/热配对运行、原子 checkpoint、
-断点恢复、运行注册和试运行吞吐投影。入口为：
+非终态断点恢复、逐迭代 heartbeat、跨进程汇总锁和带三类指纹的试运行投影。
+失败终态不可恢复覆盖，诊断重试使用独立运行及父运行标识。入口为：
 
 ```powershell
 python -m src.run_phase6 --config configs/phase6_runner.yaml `
@@ -125,7 +126,8 @@ python -m src.run_phase6 --config configs/phase6_runner.yaml `
 ```
 
 当前矩阵仍为候选状态，而且必需试运行仅完成 V1 的三个种子；正式种子会被
-运行器拒绝。完整说明见 `docs/phase6_runner_and_pilot.md`。
+运行器拒绝。E1/E2/E4/E5 执行器未完成前，计算投影保持
+`projection_incomplete`。完整说明见 `docs/phase6_runner_and_pilot.md`。
 
 ## 建模口径
 
