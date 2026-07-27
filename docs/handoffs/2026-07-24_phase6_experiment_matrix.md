@@ -13,6 +13,7 @@
 - Base merge commit: `cb6b4c785407efaae7715f40f423540f7fb709e8`
 - Matrix commit SHA: `44a356577e9e91c9b37bd7b4d2a8db707b1e90a5`
 - Initial handoff commit SHA: `ee03d236400ba280e924d901903c8d4636226cdb`
+- First-review fix commit SHA: `0bfb425075a5532a9372a030860c5702aa44bb43`
 - PR: https://github.com/nieying-code/phrase3/pull/4
 
 ## 修改内容
@@ -83,7 +84,7 @@
 - `python -m pytest tests/test_phase6_experiment_matrix.py -q`：`6 passed in 0.15s`。
 - `python -m compileall -q src tests`：通过。
 - `python -m pytest -q`：`47 passed in 26.74s`。
-- 第一轮复审修复后的 CI：pending。
+- 第一轮复审修复后的 CI：https://github.com/nieying-code/phrase3/actions/runs/30254918571，成功；普通回归 `41 passed in 17.32s`，Phase 5 端到端及失败诊断 `6 passed in 11.54s`，语法检查通过。
 
 ## 已知限制
 
