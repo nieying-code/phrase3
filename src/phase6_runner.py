@@ -18,6 +18,7 @@ from typing import Any
 import psutil
 import yaml
 
+from .model_common import validate_gurobi_runtime
 from .phase6_protocol import (
     Phase6ProtocolError,
     budget_values_for_tier,
@@ -817,6 +818,7 @@ def _run_phase6_sequence_locked(
     output_root = output_root.resolve()
     matrix = load_phase6_matrix(matrix_path)
     config = load_phase6_runner_config(runner_config_path)
+    validate_gurobi_runtime()
     tier = resolve_tier(matrix, tier_id)
     validate_execution_seed(
         matrix,

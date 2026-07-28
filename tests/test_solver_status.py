@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import pyomo.environ as pyo
 from pyomo.opt import SolverStatus, TerminationCondition
+import pytest
 
 from src import model_common
 
@@ -145,6 +146,46 @@ def test_non_gurobi_solver_preference_is_rejected() -> None:
     assert record.status == "solver_error"
     assert record.termination_condition == "solver_unavailable"
     assert "Gurobi-only" in str(record.message)
+
+
+def test_gurobipy_distribution_version_mismatch_is_rejected(
+    monkeypatch,
+) -> None:
+    model_common.validate_gurobi_runtime.cache_clear()
+    monkeypatch.setattr(
+        model_common.metadata,
+        "version",
+        lambda name: "13.0.1",
+    )
+    try:
+        with pytest.raises(RuntimeError, match="gurobipy version mismatch"):
+            model_common.validate_gurobi_runtime()
+    finally:
+        model_common.validate_gurobi_runtime.cache_clear()
+
+
+def test_gurobi_optimizer_version_mismatch_is_rejected(
+    monkeypatch,
+) -> None:
+    model_common.validate_gurobi_runtime.cache_clear()
+    monkeypatch.setattr(
+        model_common.metadata,
+        "version",
+        lambda name: "13.0.2",
+    )
+    monkeypatch.setattr(
+        model_common,
+        "_loaded_gurobi_optimizer_version",
+        lambda: (13, 0, 1),
+    )
+    try:
+        with pytest.raises(
+            RuntimeError,
+            match="Gurobi Optimizer version mismatch",
+        ):
+            model_common.validate_gurobi_runtime()
+    finally:
+        model_common.validate_gurobi_runtime.cache_clear()
 
 
 def test_nonpositive_solver_thread_count_is_rejected() -> None:

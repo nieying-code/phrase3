@@ -23,6 +23,8 @@
 - 公共求解入口只接受严格的 `("gurobi",)`，通过 Pyomo
   `gurobi_direct` 使用 Python 接口；其他求解器或回退列表在求解前
   返回明确错误。
+- 运行时同时强制 `gurobipy` 发行版和实际加载的 Gurobi Optimizer
+  等于 13.0.2；版本不匹配时拒绝创建求解器。
 - Gurobi 的单次时限、线程数、可行性容差和最优性容差分别映射到
   `TimeLimit`、`Threads`、`FeasibilityTol` 和 `OptimalityTol`。
 - 环境检查和可复现 manifest 只记录 Gurobi，不再探测或运行 HiGHS。
@@ -31,6 +33,7 @@
 ### Phase 6
 
 - runner 在加载配置时强制 `preference == [gurobi]`，早于场景生成。
+- runner 在场景生成前执行 Gurobi 发行版与 Optimizer 双重版本预检。
 - 更新遗留 D0 配置的规范化文件哈希，使冻结协议能够检测本次正式
   求解环境变更。
 - 旧 HiGHS pilot 的科学/runner/组件指纹不再满足新的正式推进门槛。
@@ -39,6 +42,7 @@
 
 - 所有活跃求解测试改为 Gurobi。
 - 新增非 Gurobi 求解器拒绝测试及 Phase 6 非 Gurobi 配置拒绝测试。
+- 新增 Python 包版本、Optimizer 版本以及 Phase 6 预检顺序测试。
 - 新增 `docs/gurobi_only_policy.md`，记录历史结果边界和重跑规则。
 - 历史 handoff 不改写，继续如实保留当时使用 HiGHS 的事实。
 
@@ -60,7 +64,7 @@ python -m compileall -q src tests
 结果：通过
 
 python -m pytest -q
-结果：70 passed in 50.22s
+结果：73 passed in 31.70s
 
 python -m src.run_phase3 --config configs/phase3.yaml \
   --output outputs/gurobi_validation/phase3
@@ -82,9 +86,10 @@ python -m src.run_phase5 --config configs/phase5.yaml \
   total_iteration_reduction = 13
 ```
 
-CI：GitHub Actions
-[run #30375454030](https://github.com/nieying-code/phrase3/actions/runs/30375454030)
+基线最终 CI：GitHub Actions
+[run #30375599593](https://github.com/nieying-code/phrase3/actions/runs/30375599593)
 成功；普通回归和 Phase 5 端到端验证均使用 Gurobi-only 依赖完成。
+版本强制复审修复的提交与 CI 将在本节下方追加。
 
 ## 既有结果处置
 
@@ -115,9 +120,10 @@ CI：GitHub Actions
 
 1. 是否存在任何活跃 HiGHS 首选、回退或执行路径；
 2. `select_solver()` 是否只能返回 `gurobi_direct`；
-3. 非 Gurobi 配置是否在场景生成与求解前失败；
-4. Gurobi 时限、线程和容差参数映射是否正确；
-5. Phase 6 指纹是否包含 `gurobipy` 和本次组件变更；
-6. 旧 HiGHS pilot 是否被排除在新推进门槛之外；
-7. 历史结果保留与正式性能统计边界是否清楚；
-8. CI 是否没有提交、打印或依赖私人许可证。
+3. `gurobipy` 和实际 Optimizer 是否都严格锁定到 13.0.2；
+4. 非 Gurobi 配置或错误版本是否在场景生成与求解前失败；
+5. Gurobi 时限、线程和容差参数映射是否正确；
+6. Phase 6 指纹是否包含 `gurobipy` 和本次组件变更；
+7. 旧 HiGHS pilot 是否被排除在新推进门槛之外；
+8. 历史结果保留与正式性能统计边界是否清楚；
+9. CI 是否没有提交、打印或依赖私人许可证。

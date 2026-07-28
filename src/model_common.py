@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
+from importlib import metadata
 from time import perf_counter
 from typing import Any, Iterable, Mapping, Sequence
 
@@ -31,6 +33,8 @@ TIME_LIMIT_TERMINATIONS = {
     TerminationCondition.maxIterations,
 }
 GUROBI_ONLY_PREFERENCE = ("gurobi",)
+REQUIRED_GUROBIPY_VERSION = "13.0.2"
+REQUIRED_GUROBI_VERSION = (13, 0, 2)
 
 
 @dataclass(frozen=True)
@@ -42,6 +46,41 @@ class SolveRecord:
     runtime_seconds: float
     termination_condition: str
     message: str | None = None
+
+
+def _loaded_gurobi_optimizer_version() -> tuple[int, ...]:
+    import gurobipy as gp
+
+    return tuple(int(value) for value in gp.gurobi.version())
+
+
+@lru_cache(maxsize=1)
+def validate_gurobi_runtime() -> dict[str, str]:
+    """Reject any Gurobi Python package or optimizer version drift."""
+
+    try:
+        distribution_version = metadata.version("gurobipy")
+    except metadata.PackageNotFoundError as exc:
+        raise RuntimeError("gurobipy 13.0.2 is required but not installed") from exc
+    if distribution_version != REQUIRED_GUROBIPY_VERSION:
+        raise RuntimeError(
+            "gurobipy version mismatch: required "
+            f"{REQUIRED_GUROBIPY_VERSION}, found {distribution_version}"
+        )
+    try:
+        optimizer_version = _loaded_gurobi_optimizer_version()
+    except Exception as exc:
+        raise RuntimeError("unable to load the Gurobi optimizer runtime") from exc
+    if optimizer_version != REQUIRED_GUROBI_VERSION:
+        found = ".".join(str(value) for value in optimizer_version)
+        required = ".".join(str(value) for value in REQUIRED_GUROBI_VERSION)
+        raise RuntimeError(
+            f"Gurobi Optimizer version mismatch: required {required}, found {found}"
+        )
+    return {
+        "gurobipy": distribution_version,
+        "optimizer": ".".join(str(value) for value in optimizer_version),
+    }
 
 
 def select_solver(preference: Iterable[str]) -> tuple[str, Any]:
@@ -57,6 +96,7 @@ def select_solver(preference: Iterable[str]) -> tuple[str, Any]:
             "this project is Gurobi-only; solver_preference must be "
             "exactly ('gurobi',)"
         )
+    validate_gurobi_runtime()
     solver_name = "gurobi_direct"
     solver = pyo.SolverFactory(solver_name)
     try:
