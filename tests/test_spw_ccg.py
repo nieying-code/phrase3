@@ -23,7 +23,7 @@ def three_budget_result():
     result = run_spw_ccg_budget_sequence(
         data,
         (900.0, 1000.0, 1100.0),
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
         time_limit_seconds=60.0,
         feasibility_tolerance=1.0e-7,
         optimality_tolerance=1.0e-7,
@@ -135,7 +135,7 @@ def test_inconsistent_objectives_cannot_report_optimal(
     inconsistent = run_spw_ccg_budget_sequence(
         data,
         (900.0,),
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
         objective_absolute_tolerance=0.0,
         objective_relative_tolerance=0.0,
     )
@@ -163,7 +163,7 @@ def test_solver_exception_is_returned_as_failure(monkeypatch) -> None:
     failed = run_spw_ccg_budget_sequence(
         data,
         (900.0,),
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
     )
 
     assert failed.status == "cold_exception"
@@ -178,7 +178,7 @@ def test_budget_sequence_must_be_strictly_increasing() -> None:
         run_spw_ccg_budget_sequence(
             _phase3_data(),
             (1000.0, 900.0),
-            solver_preference=("highs",),
+            solver_preference=("gurobi",),
         )
 
 
@@ -187,13 +187,13 @@ def test_solver_preference_generator_is_reusable() -> None:
 
     standard = run_standard_ccg(
         data,
-        solver_preference=(name for name in ("highs",)),
+        solver_preference=(name for name in ("gurobi",)),
         time_limit_seconds=60.0,
     )
     warm_started = run_spw_ccg_budget_sequence(
         data,
         (900.0, 1000.0),
-        solver_preference=(name for name in ("highs",)),
+        solver_preference=(name for name in ("gurobi",)),
         time_limit_seconds=60.0,
     )
 

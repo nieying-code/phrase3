@@ -127,7 +127,7 @@ PHASE6_E3_COMPONENT_FILES = (
 
 PHASE6_E3_DEPENDENCY_NAMES = (
     "filelock",
-    "highspy",
+    "gurobipy",
     "numpy",
     "psutil",
     "pyomo",
@@ -260,9 +260,13 @@ def load_phase6_runner_config(path: str | Path) -> dict[str, Any]:
     if not isinstance(config, dict):
         raise ValueError("phase 6 runner config root must be a mapping")
     solver = config["solver"]
-    preference = tuple(str(value) for value in solver["preference"])
-    if not preference:
-        raise ValueError("solver preference must not be empty")
+    preference = tuple(
+        str(value).strip().lower() for value in solver["preference"]
+    )
+    if preference != ("gurobi",):
+        raise ValueError(
+            "Phase 6 is Gurobi-only; solver preference must be [gurobi]"
+        )
     if int(solver["threads"]) != 1:
         raise ValueError("Phase 6 primary runs require exactly one solver thread")
     for name in ("feasibility_tolerance", "optimality_tolerance"):

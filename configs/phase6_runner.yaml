@@ -2,7 +2,6 @@ matrix_path: configs/phase6_experiment_matrix.yaml
 
 solver:
   preference:
-    - highs
     - gurobi
   threads: 1
   feasibility_tolerance: 1.0e-7

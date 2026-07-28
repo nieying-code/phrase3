@@ -52,7 +52,7 @@ def tiny_data(
 def test_deterministic_model_is_optimal_and_budget_balances() -> None:
     data = tiny_data()
     model = build_deterministic_model(data)
-    solution = solve_model(model, solver_preference=("highs",))
+    solution = solve_model(model, solver_preference=("gurobi",))
     assert math.isfinite(solution.objective)
     assert abs(solution.regular_cost + solution.reserve - data.budget) <= 1.0e-6
     assert sum(solution.shortage["mean"]["food"]) <= 1.0e-7
@@ -62,7 +62,7 @@ def test_fixed_reserve_ratio_is_enforced() -> None:
     data = tiny_data()
     solution = solve_model(
         build_fixed_reserve_model(data, 0.25),
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
     )
     assert abs(solution.reserve - 5.0) <= 1.0e-7
     assert solution.regular_cost <= 15.0 + 1.0e-7
@@ -72,7 +72,7 @@ def test_zero_reserve_forces_zero_emergency_purchase() -> None:
     data = tiny_data()
     solution = solve_model(
         build_fixed_reserve_model(data, 0.0),
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
     )
     for scenario in data.scenarios:
         assert sum(solution.emergency_purchase[scenario]["food"]) <= 1.0e-7
@@ -86,7 +86,7 @@ def test_shelf_life_one_expires_leftover_without_carrying_inventory() -> None:
         initial_inventory=(5.0,),
     )
     model = build_fixed_reserve_model(data, 1.0)
-    solution = solve_model(model, solver_preference=("highs",))
+    solution = solve_model(model, solver_preference=("gurobi",))
     assert abs(solution.waste["base"]["food"][0] - 5.0) <= 1.0e-7
     assert abs(pyo.value(model.inventory["base", "food", 0, 0])) <= 1.0e-7
 
@@ -94,7 +94,7 @@ def test_shelf_life_one_expires_leftover_without_carrying_inventory() -> None:
 def test_age_flow_conservation() -> None:
     data = tiny_data()
     model = build_fixed_reserve_model(data, 0.5)
-    solve_model(model, solver_preference=("highs",))
+    solve_model(model, solver_preference=("gurobi",))
     for scenario in data.scenarios:
         for t in range(data.periods):
             for age in range(data.shelf_life["food"]):

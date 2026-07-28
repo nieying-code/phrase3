@@ -82,7 +82,7 @@ def build_fixed_reserve_model(
 def solve_model(
     model: pyo.ConcreteModel,
     *,
-    solver_preference: Iterable[str] = ("gurobi", "highs"),
+    solver_preference: Iterable[str] = ("gurobi",),
     time_limit_seconds: float = 600.0,
     solver_threads: int | None = None,
     feasibility_tolerance: float | None = None,

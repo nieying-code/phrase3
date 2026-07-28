@@ -15,27 +15,27 @@ def _empty_model() -> pyo.ConcreteModel:
     return model
 
 
-def test_highs_infeasibility_uses_termination_condition() -> None:
+def test_gurobi_infeasibility_uses_termination_condition() -> None:
     model = _empty_model()
     model.lower = pyo.Constraint(expr=model.x >= 1.0)
     model.upper = pyo.Constraint(expr=model.x <= 0.0)
 
     record = model_common.solve_with_status(
         model,
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
     )
 
     assert record.status == "infeasible"
     assert record.termination_condition == "infeasible"
 
 
-def test_highs_unbounded_model_is_classified_explicitly() -> None:
+def test_gurobi_unbounded_model_is_classified_explicitly() -> None:
     model = _empty_model()
     model.objective.set_value(-model.x)
 
     record = model_common.solve_with_status(
         model,
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
     )
 
     assert record.status == "unbounded"
@@ -61,7 +61,7 @@ def test_infeasible_or_unbounded_is_not_collapsed_to_solver_error(
     monkeypatch.setattr(
         model_common,
         "select_solver",
-        lambda preference: ("appsi_highs", AmbiguousSolver()),
+        lambda preference: ("gurobi_direct", AmbiguousSolver()),
     )
 
     record = model_common.solve_with_status(_empty_model())
@@ -87,7 +87,7 @@ def test_no_feasible_solution_exception_is_not_guessed_infeasible(
     monkeypatch.setattr(
         model_common,
         "select_solver",
-        lambda preference: ("appsi_highs", RaisingSolver()),
+        lambda preference: ("gurobi_direct", RaisingSolver()),
     )
 
     record = model_common.solve_with_status(_empty_model())
@@ -96,7 +96,7 @@ def test_no_feasible_solution_exception_is_not_guessed_infeasible(
     assert record.termination_condition == "NoFeasibleSolutionError"
 
 
-def test_time_limit_and_configured_highs_tolerances(monkeypatch) -> None:
+def test_time_limit_and_configured_gurobi_tolerances(monkeypatch) -> None:
     class RecordingSolver:
         def __init__(self) -> None:
             self.options: dict[str, float] = {}
@@ -115,7 +115,7 @@ def test_time_limit_and_configured_highs_tolerances(monkeypatch) -> None:
     monkeypatch.setattr(
         model_common,
         "select_solver",
-        lambda preference: ("appsi_highs", solver),
+        lambda preference: ("gurobi_direct", solver),
     )
 
     record = model_common.solve_with_status(
@@ -129,12 +129,22 @@ def test_time_limit_and_configured_highs_tolerances(monkeypatch) -> None:
     assert record.status == "time_limit"
     assert solver.solve_kwargs["load_solutions"] is False
     assert solver.options == {
-        "time_limit": 12.0,
-        "threads": 1,
-        "primal_feasibility_tolerance": 2.0e-7,
-        "mip_feasibility_tolerance": 2.0e-7,
-        "dual_feasibility_tolerance": 3.0e-7,
+        "TimeLimit": 12.0,
+        "Threads": 1,
+        "FeasibilityTol": 2.0e-7,
+        "OptimalityTol": 3.0e-7,
     }
+
+
+def test_non_gurobi_solver_preference_is_rejected() -> None:
+    record = model_common.solve_with_status(
+        _empty_model(),
+        solver_preference=("highs",),
+    )
+
+    assert record.status == "solver_error"
+    assert record.termination_condition == "solver_unavailable"
+    assert "Gurobi-only" in str(record.message)
 
 
 def test_nonpositive_solver_thread_count_is_rejected() -> None:

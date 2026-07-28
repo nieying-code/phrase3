@@ -30,6 +30,7 @@ TIME_LIMIT_TERMINATIONS = {
     TerminationCondition.maxTimeLimit,
     TerminationCondition.maxIterations,
 }
+GUROBI_ONLY_PREFERENCE = ("gurobi",)
 
 
 @dataclass(frozen=True)
@@ -44,29 +45,32 @@ class SolveRecord:
 
 
 def select_solver(preference: Iterable[str]) -> tuple[str, Any]:
-    """Return the first available solver in the requested order."""
+    """Return the mandatory Gurobi Python-interface solver.
 
-    aliases = {
-        "highs": ("appsi_highs", "highs"),
-        "gurobi": ("gurobi",),
-    }
-    attempted: list[str] = []
-    for requested in preference:
-        for name in aliases.get(str(requested), (str(requested),)):
-            attempted.append(name)
-            solver = pyo.SolverFactory(name)
-            try:
-                if solver is not None and solver.available(exception_flag=False):
-                    return name, solver
-            except Exception:
-                continue
-    raise RuntimeError(f"no requested solver is available; attempted {attempted}")
+    Alternative solvers and fallbacks are rejected so experiments cannot
+    silently mix solver engines.
+    """
+
+    requested = tuple(str(name).strip().lower() for name in preference)
+    if requested != GUROBI_ONLY_PREFERENCE:
+        raise ValueError(
+            "this project is Gurobi-only; solver_preference must be "
+            "exactly ('gurobi',)"
+        )
+    solver_name = "gurobi_direct"
+    solver = pyo.SolverFactory(solver_name)
+    try:
+        if solver is not None and solver.available(exception_flag=False):
+            return solver_name, solver
+    except Exception as exc:
+        raise RuntimeError("Gurobi Python interface is unavailable") from exc
+    raise RuntimeError("Gurobi Python interface is unavailable")
 
 
 def solve_with_status(
     model: pyo.ConcreteModel,
     *,
-    solver_preference: Iterable[str] = ("gurobi", "highs"),
+    solver_preference: Iterable[str] = GUROBI_ONLY_PREFERENCE,
     time_limit_seconds: float = 600.0,
     solver_threads: int | None = None,
     feasibility_tolerance: float | None = None,
@@ -107,22 +111,7 @@ def solve_with_status(
             message=str(exc),
         )
 
-    if solver_name in {"appsi_highs", "highs"}:
-        solver.options["time_limit"] = float(time_limit_seconds)
-        if solver_threads is not None:
-            solver.options["threads"] = int(solver_threads)
-        if feasibility_tolerance is not None:
-            solver.options["primal_feasibility_tolerance"] = float(
-                feasibility_tolerance
-            )
-            solver.options["mip_feasibility_tolerance"] = float(
-                feasibility_tolerance
-            )
-        if optimality_tolerance is not None:
-            solver.options["dual_feasibility_tolerance"] = float(
-                optimality_tolerance
-            )
-    elif solver_name == "gurobi":
+    if solver_name == "gurobi_direct":
         solver.options["TimeLimit"] = float(time_limit_seconds)
         if solver_threads is not None:
             solver.options["Threads"] = int(solver_threads)
@@ -133,10 +122,8 @@ def solve_with_status(
 
     try:
         # Do not ask Pyomo to load a solution before inspecting termination.
-        # In particular, appsi_highs raises NoFeasibleSolutionError for both
-        # true infeasibility and time limits with no incumbent when automatic
-        # loading is enabled.  The termination condition is the authoritative
-        # distinction.
+        # Inspect termination before loading a solution so failures, time
+        # limits, infeasibility, and unboundedness remain distinguishable.
         result = solver.solve(model, tee=tee, load_solutions=False)
     except Exception as exc:
         return SolveRecord(

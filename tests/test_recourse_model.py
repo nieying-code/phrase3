@@ -47,7 +47,7 @@ def test_exact_recourse_manual_objective_and_balances() -> None:
         {"food": [2.0]},
         reserve=4.0,
     )
-    result = solve_recourse_model(model, solver_preference=("highs",))
+    result = solve_recourse_model(model, solver_preference=("gurobi",))
     assert result.status == "optimal"
     assert math.isclose(float(result.objective), 14.0, abs_tol=1.0e-7)
     assert math.isclose(float(result.emergency_spend), 4.0, abs_tol=1.0e-7)
@@ -70,7 +70,7 @@ def test_zero_reserve_forces_zero_emergency_purchase() -> None:
     data = one_scenario_data()
     result = solve_recourse_model(
         build_recourse_model(data, "s0", {"food": [0.0]}, reserve=0.0),
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
     )
     assert result.status == "optimal"
     assert sum(result.emergency_purchase["food"]) <= 1.0e-8
@@ -88,7 +88,7 @@ def test_shelf_life_one_cannot_carry_inventory() -> None:
         {"food": [0.0]},
         reserve=0.0,
     )
-    result = solve_recourse_model(model, solver_preference=("highs",))
+    result = solve_recourse_model(model, solver_preference=("gurobi",))
     assert result.status == "optimal"
     assert math.isclose(result.waste["food"][0], 5.0, abs_tol=1.0e-7)
     assert math.isclose(
@@ -107,7 +107,7 @@ def test_recourse_reports_true_infeasibility() -> None:
     )
     result = solve_recourse_model(
         build_recourse_model(data, "s0", {"food": [1.0]}, reserve=0.0),
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
     )
     assert result.status == "infeasible"
     assert result.objective is None

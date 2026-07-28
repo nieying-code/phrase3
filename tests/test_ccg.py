@@ -70,13 +70,13 @@ def test_ccg_matches_extensive_and_unique_first_stage() -> None:
     data = unique_two_scenario_data()
     extensive = solve_endogenous_extensive(
         data,
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
         consistency_tolerance=1.0e-7,
     )
     ccg = run_standard_ccg(
         data,
         initial_scenarios=("low",),
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
         absolute_tolerance=1.0e-7,
         relative_tolerance=1.0e-7,
         max_iterations=10,
@@ -108,7 +108,7 @@ def test_ccg_identifies_and_adds_infeasible_recourse_scenario() -> None:
     ccg = run_standard_ccg(
         data,
         initial_scenarios=("high",),
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
         max_iterations=10,
     )
     assert ccg.converged
@@ -126,7 +126,7 @@ def test_ccg_accepts_generator_solver_preference() -> None:
     ccg = run_standard_ccg(
         data,
         initial_scenarios=("low",),
-        solver_preference=(name for name in ("highs",)),
+        solver_preference=(name for name in ("gurobi",)),
         max_iterations=10,
     )
 
@@ -142,7 +142,7 @@ def test_ccg_reports_atomic_progress_payload_after_each_iteration() -> None:
     ccg = run_standard_ccg(
         data,
         initial_scenarios=("low",),
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
         max_iterations=10,
         progress_callback=progress.append,
     )

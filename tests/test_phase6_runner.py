@@ -18,6 +18,18 @@ MATRIX_PATH = Path("configs/phase6_experiment_matrix.yaml")
 RUNNER_CONFIG_PATH = Path("configs/phase6_runner.yaml")
 
 
+def test_runner_config_is_gurobi_only(tmp_path: Path) -> None:
+    config = RUNNER_CONFIG_PATH.read_text(encoding="utf-8")
+    invalid = tmp_path / "invalid_runner.yaml"
+    invalid.write_text(
+        config.replace("    - gurobi", "    - highs"),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="Gurobi-only"):
+        phase6_runner.load_phase6_runner_config(invalid)
+
+
 def _hold_run_lock(lock_path: str, marker_path: str) -> None:
     with exclusive_file_lock(Path(lock_path), timeout_seconds=5.0):
         Path(marker_path).write_text("locked", encoding="utf-8")
@@ -83,7 +95,7 @@ def _fake_result(request: dict[str, Any], *, status: str = "optimal") -> dict[st
             "total_runtime_seconds": 0.1,
             "master_runtime_seconds": 0.04,
             "oracle_runtime_seconds": 0.06,
-            "solver": "appsi_highs",
+            "solver": "gurobi_direct",
             "iteration_log": [
                 {
                     "iteration": 1,

@@ -41,7 +41,7 @@ def test_extensive_objective_equals_regular_plus_max_exact_recourse() -> None:
     data = unique_two_scenario_data()
     solution = solve_endogenous_extensive(
         data,
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
         consistency_tolerance=1.0e-7,
     )
     assert solution.status == "optimal"
@@ -65,7 +65,7 @@ def test_endogenous_model_not_worse_than_tested_fixed_ratios() -> None:
     data = unique_two_scenario_data()
     endogenous = solve_endogenous_extensive(
         data,
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
         consistency_tolerance=1.0e-7,
     )
     assert endogenous.status == "optimal"
@@ -73,13 +73,13 @@ def test_endogenous_model_not_worse_than_tested_fixed_ratios() -> None:
     for ratio in (0.0, 0.2, 0.5, 0.8):
         fixed = solve_model(
             build_fixed_reserve_model(data, ratio),
-            solver_preference=("highs",),
+            solver_preference=("gurobi",),
         )
         evaluation = evaluate_first_stage(
             data,
             fixed.regular_purchase,
             fixed.reserve,
-            solver_preference=("highs",),
+            solver_preference=("gurobi",),
         )
         assert evaluation.status == "optimal"
         fixed_objectives.append(float(evaluation.robust_objective))
@@ -90,7 +90,7 @@ def test_evaluate_first_stage_accepts_generator_solver_preference() -> None:
     data = unique_two_scenario_data()
     solution = solve_endogenous_extensive(
         data,
-        solver_preference=("highs",),
+        solver_preference=("gurobi",),
     )
     assert solution.status == "optimal"
 
@@ -98,7 +98,7 @@ def test_evaluate_first_stage_accepts_generator_solver_preference() -> None:
         data,
         solution.master.regular_purchase,
         float(solution.master.reserve),
-        solver_preference=(name for name in ("highs",)),
+        solver_preference=(name for name in ("gurobi",)),
     )
 
     assert evaluation.status == "optimal"
@@ -111,7 +111,7 @@ def test_extensive_accepts_generator_solver_preference() -> None:
 
     solution = solve_endogenous_extensive(
         data,
-        solver_preference=(name for name in ("highs",)),
+        solver_preference=(name for name in ("gurobi",)),
         consistency_tolerance=1.0e-7,
     )
 
