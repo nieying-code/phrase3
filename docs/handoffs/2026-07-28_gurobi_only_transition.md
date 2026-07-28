@@ -12,6 +12,7 @@
 - Base branch：`main`
 - Base commit：`11ad04d6d1cb5f95239b83e7a9b31eea7885bc92`
 - Implementation commit：`c3f62f224add53963b4438fc6d16768ec2fb151c`
+- Runtime-version review fix：`4d67ee2fd8b4b6bb67fe82f8290db523977ee68b`
 - PR：[https://github.com/nieying-code/phrase3/pull/6](https://github.com/nieying-code/phrase3/pull/6)
 
 ## 修改内容
@@ -89,7 +90,12 @@ python -m src.run_phase5 --config configs/phase5.yaml \
 基线最终 CI：GitHub Actions
 [run #30375599593](https://github.com/nieying-code/phrase3/actions/runs/30375599593)
 成功；普通回归和 Phase 5 端到端验证均使用 Gurobi-only 依赖完成。
-版本强制复审修复的提交与 CI 将在本节下方追加。
+
+运行时版本强制修复提交
+`4d67ee2fd8b4b6bb67fe82f8290db523977ee68b` 对应 GitHub Actions
+[run #30377025334](https://github.com/nieying-code/phrase3/actions/runs/30377025334)
+成功：普通回归 `67 passed`，Phase 5 端到端 `6 passed`。后续 handoff
+链接更新属于纯文档提交；受验证的代码状态明确固定在上述 SHA。
 
 ## 既有结果处置
 
