@@ -11,8 +11,8 @@
 - Branch：`agent/gurobi-only`
 - Base branch：`main`
 - Base commit：`11ad04d6d1cb5f95239b83e7a9b31eea7885bc92`
-- Commit SHA：pending
-- PR：pending
+- Implementation commit：`c3f62f224add53963b4438fc6d16768ec2fb151c`
+- PR：[https://github.com/nieying-code/phrase3/pull/6](https://github.com/nieying-code/phrase3/pull/6)
 
 ## 修改内容
 
