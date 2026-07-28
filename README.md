@@ -16,7 +16,7 @@ PR #1 的代码标签沿用了“阶段3”，但实际同时完成了原计划�
 
 ## 环境
 
-推荐 Python 3.12、Pyomo 和 HiGHS：
+推荐 Python 3.12、Pyomo 和 Gurobi 13.0.2：
 
 ```powershell
 python -m venv .venv
@@ -30,7 +30,8 @@ python -m pip install -r requirements.txt
 python -m src.environment_check --smoke-test
 ```
 
-求解器优先顺序由配置控制，默认先尝试 Gurobi，再使用开源 HiGHS。
+本项目采用 Gurobi-only 求解策略。配置、运行时校验和测试均禁止
+HiGHS 或其他求解器作为首选或回退；正式实验需要有效的 Gurobi 许可证。
 
 ## 测试
 

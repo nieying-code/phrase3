@@ -18,6 +18,60 @@ MATRIX_PATH = Path("configs/phase6_experiment_matrix.yaml")
 RUNNER_CONFIG_PATH = Path("configs/phase6_runner.yaml")
 
 
+def test_runner_config_is_gurobi_only(tmp_path: Path) -> None:
+    config = RUNNER_CONFIG_PATH.read_text(encoding="utf-8")
+    invalid = tmp_path / "invalid_runner.yaml"
+    invalid.write_text(
+        config.replace("    - gurobi", "    - highs"),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="Gurobi-only"):
+        phase6_runner.load_phase6_runner_config(invalid)
+
+
+def test_gurobi_version_preflight_precedes_scenario_generation(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    generated = False
+
+    def reject_version() -> None:
+        raise RuntimeError(
+            "Gurobi Optimizer version mismatch: required 13.0.2, found 13.0.1"
+        )
+
+    def forbidden_generation(*args, **kwargs):
+        nonlocal generated
+        generated = True
+        raise AssertionError("scenario generation must not start")
+
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_gurobi_runtime",
+        reject_version,
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "generate_phase6_data",
+        forbidden_generation,
+    )
+
+    with pytest.raises(RuntimeError, match="version mismatch"):
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="V1",
+            seed=2026072001,
+            execution_mode="pilot",
+            run_id="pilot_v1_wrong_gurobi_version",
+            worker_executor=lambda *args, **kwargs: {},
+        )
+
+    assert generated is False
+
+
 def _hold_run_lock(lock_path: str, marker_path: str) -> None:
     with exclusive_file_lock(Path(lock_path), timeout_seconds=5.0):
         Path(marker_path).write_text("locked", encoding="utf-8")
@@ -83,7 +137,7 @@ def _fake_result(request: dict[str, Any], *, status: str = "optimal") -> dict[st
             "total_runtime_seconds": 0.1,
             "master_runtime_seconds": 0.04,
             "oracle_runtime_seconds": 0.06,
-            "solver": "appsi_highs",
+            "solver": "gurobi_direct",
             "iteration_log": [
                 {
                     "iteration": 1,

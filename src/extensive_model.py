@@ -115,7 +115,7 @@ def build_endogenous_extensive_model(
 def solve_master(
     model: pyo.ConcreteModel,
     *,
-    solver_preference: Iterable[str] = ("gurobi", "highs"),
+    solver_preference: Iterable[str] = ("gurobi",),
     time_limit_seconds: float = 600.0,
     solver_threads: int | None = None,
     feasibility_tolerance: float | None = None,
@@ -176,7 +176,7 @@ def solve_master(
 def solve_endogenous_extensive(
     data: ProcurementData,
     *,
-    solver_preference: Iterable[str] = ("gurobi", "highs"),
+    solver_preference: Iterable[str] = ("gurobi",),
     time_limit_seconds: float = 600.0,
     solver_threads: int | None = None,
     feasibility_tolerance: float | None = None,

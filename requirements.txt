@@ -1,5 +1,5 @@
 pyomo>=6.8
-highspy>=1.8
+gurobipy==13.0.2
 numpy==2.5.1
 pandas>=2.2
 PyYAML>=6.0
@@ -9,4 +9,3 @@ psutil>=6.0
 filelock>=3.16
 
 # 可选商业求解器；有许可证时取消下一行注释。
-# gurobipy>=12.0

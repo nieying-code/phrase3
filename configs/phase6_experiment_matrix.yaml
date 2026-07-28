@@ -72,7 +72,7 @@ generator_protocol:
   tier_resolution_must_be_deterministic: true
   legacy_D0:
     source: configs/base.yaml
-    canonical_lf_sha256: 7da2c1866bd054fa6fa210feab8e864eab8bb1db564a7814fc1cc0ba11761e6a
+    canonical_lf_sha256: 943b8e414fbd3c04cc43e6bfe5f229623d869cd4c1be809b0b4d4ff30b81344a
     use_source_values_without_phase6_overrides: true
     reference_budget_convention: legacy_nominal_demand_baseline
     zero_truncation_expectation_correction_applied: false

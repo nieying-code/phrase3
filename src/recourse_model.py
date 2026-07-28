@@ -65,7 +65,7 @@ def build_recourse_model(
 def solve_recourse_model(
     model: pyo.ConcreteModel,
     *,
-    solver_preference: Iterable[str] = ("gurobi", "highs"),
+    solver_preference: Iterable[str] = ("gurobi",),
     time_limit_seconds: float = 600.0,
     solver_threads: int | None = None,
     feasibility_tolerance: float | None = None,
@@ -156,7 +156,7 @@ def solve_recourse(
     regular_purchase: Mapping[str, Sequence[float]],
     reserve: float,
     *,
-    solver_preference: Iterable[str] = ("gurobi", "highs"),
+    solver_preference: Iterable[str] = ("gurobi",),
     time_limit_seconds: float = 600.0,
     solver_threads: int | None = None,
     feasibility_tolerance: float | None = None,

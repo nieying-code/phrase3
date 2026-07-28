@@ -18,6 +18,7 @@ from typing import Any
 import psutil
 import yaml
 
+from .model_common import validate_gurobi_runtime
 from .phase6_protocol import (
     Phase6ProtocolError,
     budget_values_for_tier,
@@ -127,7 +128,7 @@ PHASE6_E3_COMPONENT_FILES = (
 
 PHASE6_E3_DEPENDENCY_NAMES = (
     "filelock",
-    "highspy",
+    "gurobipy",
     "numpy",
     "psutil",
     "pyomo",
@@ -260,9 +261,13 @@ def load_phase6_runner_config(path: str | Path) -> dict[str, Any]:
     if not isinstance(config, dict):
         raise ValueError("phase 6 runner config root must be a mapping")
     solver = config["solver"]
-    preference = tuple(str(value) for value in solver["preference"])
-    if not preference:
-        raise ValueError("solver preference must not be empty")
+    preference = tuple(
+        str(value).strip().lower() for value in solver["preference"]
+    )
+    if preference != ("gurobi",):
+        raise ValueError(
+            "Phase 6 is Gurobi-only; solver preference must be [gurobi]"
+        )
     if int(solver["threads"]) != 1:
         raise ValueError("Phase 6 primary runs require exactly one solver thread")
     for name in ("feasibility_tolerance", "optimality_tolerance"):
@@ -813,6 +818,7 @@ def _run_phase6_sequence_locked(
     output_root = output_root.resolve()
     matrix = load_phase6_matrix(matrix_path)
     config = load_phase6_runner_config(runner_config_path)
+    validate_gurobi_runtime()
     tier = resolve_tier(matrix, tier_id)
     validate_execution_seed(
         matrix,

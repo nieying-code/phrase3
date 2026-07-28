@@ -68,7 +68,7 @@ def test_phase6_worker_writes_iteration_heartbeat(
             "previous_state": None,
             "progress_path": str(progress_path),
             "solver": {
-                "preference": ["highs"],
+                "preference": ["gurobi"],
                 "call_time_limit_seconds": 60.0,
                 "threads": 1,
                 "feasibility_tolerance": 1.0e-7,

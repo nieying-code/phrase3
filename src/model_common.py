@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
+from importlib import metadata
 from time import perf_counter
 from typing import Any, Iterable, Mapping, Sequence
 
@@ -30,6 +32,9 @@ TIME_LIMIT_TERMINATIONS = {
     TerminationCondition.maxTimeLimit,
     TerminationCondition.maxIterations,
 }
+GUROBI_ONLY_PREFERENCE = ("gurobi",)
+REQUIRED_GUROBIPY_VERSION = "13.0.2"
+REQUIRED_GUROBI_VERSION = (13, 0, 2)
 
 
 @dataclass(frozen=True)
@@ -43,30 +48,69 @@ class SolveRecord:
     message: str | None = None
 
 
-def select_solver(preference: Iterable[str]) -> tuple[str, Any]:
-    """Return the first available solver in the requested order."""
+def _loaded_gurobi_optimizer_version() -> tuple[int, ...]:
+    import gurobipy as gp
 
-    aliases = {
-        "highs": ("appsi_highs", "highs"),
-        "gurobi": ("gurobi",),
+    return tuple(int(value) for value in gp.gurobi.version())
+
+
+@lru_cache(maxsize=1)
+def validate_gurobi_runtime() -> dict[str, str]:
+    """Reject any Gurobi Python package or optimizer version drift."""
+
+    try:
+        distribution_version = metadata.version("gurobipy")
+    except metadata.PackageNotFoundError as exc:
+        raise RuntimeError("gurobipy 13.0.2 is required but not installed") from exc
+    if distribution_version != REQUIRED_GUROBIPY_VERSION:
+        raise RuntimeError(
+            "gurobipy version mismatch: required "
+            f"{REQUIRED_GUROBIPY_VERSION}, found {distribution_version}"
+        )
+    try:
+        optimizer_version = _loaded_gurobi_optimizer_version()
+    except Exception as exc:
+        raise RuntimeError("unable to load the Gurobi optimizer runtime") from exc
+    if optimizer_version != REQUIRED_GUROBI_VERSION:
+        found = ".".join(str(value) for value in optimizer_version)
+        required = ".".join(str(value) for value in REQUIRED_GUROBI_VERSION)
+        raise RuntimeError(
+            f"Gurobi Optimizer version mismatch: required {required}, found {found}"
+        )
+    return {
+        "gurobipy": distribution_version,
+        "optimizer": ".".join(str(value) for value in optimizer_version),
     }
-    attempted: list[str] = []
-    for requested in preference:
-        for name in aliases.get(str(requested), (str(requested),)):
-            attempted.append(name)
-            solver = pyo.SolverFactory(name)
-            try:
-                if solver is not None and solver.available(exception_flag=False):
-                    return name, solver
-            except Exception:
-                continue
-    raise RuntimeError(f"no requested solver is available; attempted {attempted}")
+
+
+def select_solver(preference: Iterable[str]) -> tuple[str, Any]:
+    """Return the mandatory Gurobi Python-interface solver.
+
+    Alternative solvers and fallbacks are rejected so experiments cannot
+    silently mix solver engines.
+    """
+
+    requested = tuple(str(name).strip().lower() for name in preference)
+    if requested != GUROBI_ONLY_PREFERENCE:
+        raise ValueError(
+            "this project is Gurobi-only; solver_preference must be "
+            "exactly ('gurobi',)"
+        )
+    validate_gurobi_runtime()
+    solver_name = "gurobi_direct"
+    solver = pyo.SolverFactory(solver_name)
+    try:
+        if solver is not None and solver.available(exception_flag=False):
+            return solver_name, solver
+    except Exception as exc:
+        raise RuntimeError("Gurobi Python interface is unavailable") from exc
+    raise RuntimeError("Gurobi Python interface is unavailable")
 
 
 def solve_with_status(
     model: pyo.ConcreteModel,
     *,
-    solver_preference: Iterable[str] = ("gurobi", "highs"),
+    solver_preference: Iterable[str] = GUROBI_ONLY_PREFERENCE,
     time_limit_seconds: float = 600.0,
     solver_threads: int | None = None,
     feasibility_tolerance: float | None = None,
@@ -107,22 +151,7 @@ def solve_with_status(
             message=str(exc),
         )
 
-    if solver_name in {"appsi_highs", "highs"}:
-        solver.options["time_limit"] = float(time_limit_seconds)
-        if solver_threads is not None:
-            solver.options["threads"] = int(solver_threads)
-        if feasibility_tolerance is not None:
-            solver.options["primal_feasibility_tolerance"] = float(
-                feasibility_tolerance
-            )
-            solver.options["mip_feasibility_tolerance"] = float(
-                feasibility_tolerance
-            )
-        if optimality_tolerance is not None:
-            solver.options["dual_feasibility_tolerance"] = float(
-                optimality_tolerance
-            )
-    elif solver_name == "gurobi":
+    if solver_name == "gurobi_direct":
         solver.options["TimeLimit"] = float(time_limit_seconds)
         if solver_threads is not None:
             solver.options["Threads"] = int(solver_threads)
@@ -133,10 +162,8 @@ def solve_with_status(
 
     try:
         # Do not ask Pyomo to load a solution before inspecting termination.
-        # In particular, appsi_highs raises NoFeasibleSolutionError for both
-        # true infeasibility and time limits with no incumbent when automatic
-        # loading is enabled.  The termination condition is the authoritative
-        # distinction.
+        # Inspect termination before loading a solution so failures, time
+        # limits, infeasibility, and unboundedness remain distinguishable.
         result = solver.solve(model, tee=tee, load_solutions=False)
     except Exception as exc:
         return SolveRecord(

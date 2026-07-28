@@ -44,8 +44,8 @@ def test_formal_run_enforces_acceptance_and_writes_reproducibility(
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert manifest["scenario_generator_version"] == "1.0"
     assert manifest["packages"]["pyomo"]
-    assert manifest["packages"]["highspy"]
-    assert manifest["solver"]["selected"] in {"appsi_highs", "highs"}
+    assert manifest["packages"]["gurobipy"]
+    assert manifest["solver"]["selected"] == "gurobi_direct"
     assert manifest["formal_acceptance"]["passed"]
     assert manifest["scenarios_sha256"] == hashlib.sha256(
         scenarios_path.read_bytes()

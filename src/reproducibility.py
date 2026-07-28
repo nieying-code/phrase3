@@ -19,7 +19,7 @@ from .scenario_generator import SCENARIO_GENERATOR_VERSION
 
 PACKAGE_NAMES = (
     "pyomo",
-    "highspy",
+    "gurobipy",
     "numpy",
     "pandas",
     "PyYAML",

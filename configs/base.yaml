@@ -41,7 +41,7 @@ scenario_generation:
   supply_shock_sd: 0.20
 
 solver:
-  preference: [gurobi, highs]
+  preference: [gurobi]
   time_limit_seconds: 600
   feasibility_tolerance: 1.0e-7
   optimality_tolerance: 1.0e-7
