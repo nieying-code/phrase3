@@ -82,7 +82,9 @@ python -m src.run_phase5 --config configs/phase5.yaml \
   total_iteration_reduction = 13
 ```
 
-CI：pending。
+CI：GitHub Actions
+[run #30375454030](https://github.com/nieying-code/phrase3/actions/runs/30375454030)
+成功；普通回归和 Phase 5 端到端验证均使用 Gurobi-only 依赖完成。
 
 ## 既有结果处置
 
