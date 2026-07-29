@@ -134,6 +134,7 @@ PHASE6_E3_DEPENDENCY_NAMES = (
     "pyomo",
     "pyyaml",
 )
+PHASE6_E3_REQUIREMENTS_FILE = "requirements-gurobi-lock.txt"
 
 SCIENTIFIC_CONFIG_EXCLUDED_ROOT_FIELDS = (
     "status",
@@ -234,9 +235,14 @@ def _e3_component_code_sha256(project_root: Path) -> str:
         digest.update(b"\0")
         digest.update(path.read_bytes())
         digest.update(b"\0")
-    requirement_lines = (
-        project_root / "requirements.txt"
-    ).read_text(encoding="utf-8").splitlines()
+    requirements_path = project_root / PHASE6_E3_REQUIREMENTS_FILE
+    if not requirements_path.is_file():
+        raise FileNotFoundError(
+            f"E3 dependency lock is missing: {requirements_path}"
+        )
+    requirement_lines = requirements_path.read_text(
+        encoding="utf-8"
+    ).splitlines()
     e3_requirements = sorted(
         line.strip()
         for line in requirement_lines
@@ -247,7 +253,8 @@ def _e3_component_code_sha256(project_root: Path) -> str:
         .lower()
         .startswith(PHASE6_E3_DEPENDENCY_NAMES)
     )
-    digest.update(b"e3-requirements\0")
+    digest.update(PHASE6_E3_REQUIREMENTS_FILE.encode("utf-8"))
+    digest.update(b"\0")
     digest.update("\n".join(e3_requirements).encode("utf-8"))
     digest.update(b"\0")
     return digest.hexdigest()
@@ -1023,7 +1030,7 @@ def _run_phase6_sequence_locked(
             repetitions: list[dict[str, Any]] = []
             for repetition in range(tier.timing_repetitions):
                 sequence_remaining = (
-                    tier.six_budget_sequence_wall_seconds
+                    tier.budget_sequence_wall_seconds
                     - float(sequence_elapsed[mode][repetition])
                 )
                 effective_wall = min(
@@ -1045,7 +1052,7 @@ def _run_phase6_sequence_locked(
                             "exception_type": "TimeoutExpired",
                             "message": (
                                 f"{mode} repetition {repetition + 1} exhausted "
-                                "its six-budget wall allowance"
+                                "its budget-sequence wall allowance"
                             ),
                         },
                     }

@@ -15,6 +15,7 @@ from src.phase6_reporting import (
 )
 from src.phase6_runner import (
     PHASE6_E3_COMPONENT_FILES,
+    PHASE6_E3_REQUIREMENTS_FILE,
     REGISTRY_FIELDS,
     _e3_component_code_sha256,
     _scientific_config_sha256,
@@ -329,16 +330,20 @@ def test_e3_component_hash_scope_is_explicit(tmp_path: Path) -> None:
     assert "src/ccg.py" in PHASE6_E3_COMPONENT_FILES
     assert "src/phase6_reporting.py" not in PHASE6_E3_COMPONENT_FILES
     assert "src/run_phase6.py" not in PHASE6_E3_COMPONENT_FILES
+    assert PHASE6_E3_REQUIREMENTS_FILE == "requirements-gurobi-lock.txt"
     baseline = _e3_component_code_sha256(project_root)
     assert len(baseline) == 64
 
     copied_root = tmp_path / "project"
-    for relative in (*PHASE6_E3_COMPONENT_FILES, "requirements.txt"):
+    for relative in (
+        *PHASE6_E3_COMPONENT_FILES,
+        PHASE6_E3_REQUIREMENTS_FILE,
+    ):
         source = project_root / relative
         destination = copied_root / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
-    with (copied_root / "requirements.txt").open(
+    with (copied_root / PHASE6_E3_REQUIREMENTS_FILE).open(
         "a",
         encoding="utf-8",
     ) as handle:

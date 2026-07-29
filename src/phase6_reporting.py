@@ -353,7 +353,7 @@ def update_pilot_projection(
                 },
                 "E2": {
                     "status": "unavailable",
-                    "reason": "eight_policy_and_oos_runner_not_implemented",
+                    "reason": "six_policy_model_comparison_runner_not_implemented",
                 },
                 "E3": {
                     "status": (
@@ -365,7 +365,7 @@ def update_pilot_projection(
                 },
                 "E4": {
                     "status": "unavailable",
-                    "reason": "mechanism_analysis_runner_not_implemented",
+                    "reason": "out_of_sample_runner_not_implemented",
                 },
                 "E5": {
                     "status": "unavailable",

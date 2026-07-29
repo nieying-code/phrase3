@@ -78,6 +78,8 @@ def test_phase6_matrix_has_disjoint_reproducible_seed_sets() -> None:
     testing = set(seeds["formal_test_seeds"])
 
     assert matrix["status"] == "candidate_for_freeze_pending_review"
+    assert matrix["schema_version"] == "2.0"
+    assert matrix["matrix_id"] == "phase6_streamlined_experiments_v2_0"
     assert len(pilot) == 3
     assert len(training) == 10
     assert len(testing) == 10
@@ -162,10 +164,28 @@ def test_phase6_matrix_freezes_scale_budget_and_exactness_gates() -> None:
     tier_ids = [tier["id"] for tier in tiers]
     training_scenarios = [tier["training_scenarios"] for tier in tiers]
 
-    assert tier_ids == ["D0", "V1", "V2", "P1", "P2", "P3", "P4"]
+    assert tier_ids == ["D0", "V1", "V2", "P1", "P2"]
+    assert matrix["generator_protocol"]["applies_to_tiers"] == [
+        "V1",
+        "V2",
+        "P1",
+        "P2",
+    ]
+    assert set(matrix["budget_plan"]["reference_budget_by_tier"]) == set(
+        tier_ids
+    )
     assert len(tier_ids) == len(set(tier_ids))
     assert training_scenarios == sorted(training_scenarios)
-    assert all(tier["out_of_sample_scenarios"] >= 5000 for tier in tiers)
+    assert all(tier["out_of_sample_scenarios"] == 2000 for tier in tiers)
+    assert {
+        tier["id"]: tier["formal_seed_count"] for tier in tiers
+    } == {
+        "D0": 1,
+        "V1": 3,
+        "V2": 10,
+        "P1": 5,
+        "P2": 3,
+    }
     assert all(
         tier["formal_seed_count"]
         <= len(matrix["seed_plan"]["formal_training_seeds"])
@@ -174,18 +194,22 @@ def test_phase6_matrix_freezes_scale_budget_and_exactness_gates() -> None:
     for tier in tiers:
         limits = tier["time_limits"]
         assert limits["solver_call_seconds"] < limits["ccg_budget_wall_seconds"]
-        assert (
-            limits["six_budget_sequence_wall_seconds"]
-            == 6 * limits["ccg_budget_wall_seconds"]
+        planned_budget_count = (
+            len(matrix["budget_plan"]["legacy_absolute_budgets"])
+            if tier["id"] == "D0"
+            else len(matrix["budget_plan"]["formal_factors"])
+        )
+        assert limits["budget_sequence_wall_seconds"] == (
+            planned_budget_count * limits["ccg_budget_wall_seconds"]
         )
 
     formal_budgets = matrix["budget_plan"]["formal_factors"]
     assert formal_budgets == sorted(set(formal_budgets))
-    assert len(formal_budgets) == 6
+    assert formal_budgets == [0.90, 1.10, 1.30]
     expectation_sources = matrix["budget_plan"]["expectation_source_by_tier"]
     assert expectation_sources["D0"] == "legacy_nominal_demand_baseline"
     assert (
-        expectation_sources["V1_to_P4"]
+        expectation_sources["V1_to_P2"]
         == "frozen_generator_theoretical_expectation"
     )
     assert (
@@ -200,6 +224,15 @@ def test_phase6_matrix_freezes_scale_budget_and_exactness_gates() -> None:
     assert gates["extensive_vs_standard_ccg"]["objective_absolute_tolerance"] == 1e-5
     assert gates["cold_vs_warm"]["objective_relative_tolerance"] == 1e-7
     assert matrix["algorithm_comparison"]["full_candidate_oracle_required"] is True
+    assert matrix["algorithm_comparison"]["tiers"] == [
+        "V1",
+        "V2",
+        "P1",
+        "P2",
+    ]
+    real_track = matrix["data_tracks"]["real_calibrated_synthetic"]
+    assert real_track["required_for_core_method_claims"] is False
+    assert real_track["optional_for_external_validity_extension"] is True
 
 
 def test_phase6_matrix_has_valid_sensitivity_and_oos_design() -> None:
@@ -215,7 +248,22 @@ def test_phase6_matrix_has_valid_sensitivity_and_oos_design() -> None:
         assert baseline == sensitivity_baseline[factor]
         assert len(values) == 3
         unique_configurations += len(values) - 1
-    assert unique_configurations == 23
+    assert unique_configurations == 11
+    assert matrix["sensitivity"]["unique_ofat_configuration_count"] == 11
+    assert set(ofat) == {
+        "demand_cv",
+        "emergency_price_markup_mean",
+        "supply_reduction_mean",
+        "shelf_life_periods",
+        "storage_capacity_to_expected_period_demand",
+    }
+    assert matrix["sensitivity"]["budget_factors"] == [1.10]
+    assert matrix["sensitivity"]["training_seed_count"] == 5
+    assert (
+        matrix["sensitivity"]["training_seed_selector"]
+        == "first_5_formal_training_seeds"
+    )
+    assert "screening_factorial" not in matrix["sensitivity"]
     assert (
         matrix["sensitivity"]["baseline_source"]
         == "independent_E5_baseline_overrides_V2_item_shelf_life"
@@ -229,12 +277,27 @@ def test_phase6_matrix_has_valid_sensitivity_and_oos_design() -> None:
     )
 
     out_of_sample = matrix["out_of_sample_evaluation"]
-    assert out_of_sample["scenarios_per_training_seed"] >= 5000
+    assert out_of_sample["scenarios_per_training_seed"] == 2000
     assert out_of_sample["independent_from_training"] is True
     assert out_of_sample["common_test_set_across_policies"] is True
     assert out_of_sample["reoptimization_on_test_set_forbidden"] is True
     assert out_of_sample["training_seed_count"] == 5
-    assert "endogenous_reserve" in out_of_sample["policies"]
+    assert (
+        out_of_sample["training_seed_selector"]
+        == "first_5_formal_training_seeds"
+    )
+    assert (
+        out_of_sample["test_seed_selector"]
+        == "paired_first_5_formal_test_seeds"
+    )
+    assert out_of_sample["policies"] == [
+        "deterministic_mean",
+        "zero_reserve",
+        "fixed_reserve_0_10",
+        "fixed_reserve_0_30",
+        "fixed_reserve_0_50",
+        "endogenous_reserve",
+    ]
     required_metrics = {
         "plan_oos_status",
         "total_scenario_count",
@@ -288,19 +351,26 @@ def test_phase6_matrix_freezes_clustered_inference_and_completion_reporting() ->
         == "median"
     )
     assert (
-        reporting["six_budget_summary_inference"]["cluster_unit"]
+        reporting["budget_sequence_summary_inference"]["cluster_unit"]
         == "entire_budget_sequence_within_training_seed"
     )
     assert (
-        reporting["six_budget_summary_inference"]["within_seed_statistic"]
+        reporting["budget_sequence_summary_inference"]["within_seed_statistic"]
         == "median_log_cold_time_divided_by_warm_time_over_jointly_completed_budgets"
     )
     assert (
-        reporting["six_budget_summary_inference"]["primary_across_seed_statistic"]
+        reporting["budget_sequence_summary_inference"][
+            "primary_across_seed_statistic"
+        ]
         == "median_of_within_seed_statistics"
     )
-    assert reporting["extreme_tiers"]["P3"] == "descriptive_only"
-    assert reporting["extreme_tiers"]["P4"] == "descriptive_only"
+    assert reporting["tier_reporting_roles"] == {
+        "V1": "correctness_only",
+        "V2": "primary_inferential",
+        "P1": "limited_inferential",
+        "P2": "descriptive_only",
+        "significance_tests_for_correctness_and_descriptive_tiers_forbidden": True,
+    }
     completion_metrics = set(
         reporting["paired_completion_reporting"]["required"]
     )
@@ -310,18 +380,11 @@ def test_phase6_matrix_freezes_clustered_inference_and_completion_reporting() ->
         "joint_pair_completion_rate",
         "conditional_speedup_on_jointly_completed_pairs",
     } == completion_metrics
-    assert (
-        reporting["H5_scene_similarity_analysis"]["association_statistic"]
-        == "spearman_rank_correlation"
-    )
-    assert (
-        reporting["H5_scene_similarity_analysis"]["confidence_interval"]
-        == "cluster_bootstrap_by_training_seed"
-    )
+    assert "H5_scene_similarity_analysis" not in reporting
     uncertainty = reporting["uncertainty"]
     assert uncertainty["confidence_interval_method"] == "percentile"
     assert uncertainty["bootstrap_resamples"] == 10000
-    assert len(set(uncertainty["bootstrap_random_seeds"].values())) == 3
+    assert len(set(uncertainty["bootstrap_random_seeds"].values())) == 2
     wilcoxon = reporting["optional_nonparametric_test"]
     assert wilcoxon["name"] == "wilcoxon_signed_rank"
     assert wilcoxon["seed_budget_rows_must_not_be_treated_as_independent"] is True
@@ -330,7 +393,7 @@ def test_phase6_matrix_freezes_clustered_inference_and_completion_reporting() ->
         == "one_paired_technical_median_per_training_seed"
     )
     assert (
-        wilcoxon["six_budget_input"]
+        wilcoxon["budget_sequence_input"]
         == "one_within_seed_median_log_speedup_per_training_seed"
     )
 
@@ -341,10 +404,12 @@ def test_phase6_matrix_freezes_seed_selection_combined_scale_gates_and_timeouts(
     advancement = matrix["scale_advancement"]
     global_gate = advancement["all_conditions"]
 
-    assert tiers["P3"]["formal_seed_selector"] == "first_5_formal_training_seeds"
-    assert tiers["P4"]["formal_seed_selector"] == "first_3_formal_training_seeds"
-    assert tiers["P3"]["activation_gate"]["rule_reference"] == "scale_advancement"
-    assert tiers["P4"]["activation_gate"]["rule_reference"] == "scale_advancement"
+    assert tiers["V1"]["formal_seed_selector"] == "first_n_formal_training_seeds"
+    assert tiers["V2"]["formal_seed_selector"] == "all_formal_training_seeds"
+    assert tiers["P1"]["formal_seed_selector"] == "first_n_formal_training_seeds"
+    assert tiers["P2"]["formal_seed_selector"] == "first_n_formal_training_seeds"
+    assert tiers["P2"]["activation_gate"]["prior_tier"] == "P1"
+    assert tiers["P2"]["activation_gate"]["rule_reference"] == "scale_advancement"
     assert global_gate == {
         "joint_pair_completion_rate_minimum": 0.80,
         "max_algorithm_median_runtime_fraction_maximum": 0.75,
@@ -379,7 +444,119 @@ def test_phase6_matrix_freezes_seed_selection_combined_scale_gates_and_timeouts(
         is True
     )
     workload = matrix["workload_estimation"]
-    assert workload["E3_algorithm_executions"] == 1296
+    algorithm_tiers = set(matrix["algorithm_comparison"]["tiers"])
+    formal_budget_count = len(matrix["budget_plan"]["formal_factors"])
+    calculated_executions = sum(
+        tier["formal_seed_count"]
+        * formal_budget_count
+        * len(matrix["algorithm_comparison"]["algorithms"])
+        * tier["timing_repetitions"]
+        for tier in matrix["scale_tiers"]
+        if tier["id"] in algorithm_tiers
+    )
+    calculated_ten_iteration_recourse = sum(
+        tier["formal_seed_count"]
+        * formal_budget_count
+        * len(matrix["algorithm_comparison"]["algorithms"])
+        * tier["timing_repetitions"]
+        * tier["training_scenarios"]
+        * 10
+        for tier in matrix["scale_tiers"]
+        if tier["id"] in algorithm_tiers
+    )
+    calculated_upper_recourse = calculated_ten_iteration_recourse * 20
+    calculated_wall_hours = sum(
+        tier["formal_seed_count"]
+        * formal_budget_count
+        * len(matrix["algorithm_comparison"]["algorithms"])
+        * tier["timing_repetitions"]
+        * tier["time_limits"]["ccg_budget_wall_seconds"]
+        / 3600.0
+        for tier in matrix["scale_tiers"]
+        if tier["id"] in algorithm_tiers
+    )
+    assert calculated_executions == 246
+    assert calculated_ten_iteration_recourse == 519000
+    assert calculated_upper_recourse == 10380000
+    assert calculated_wall_hours == 81
+    assert workload["E3_algorithm_executions"] == calculated_executions
+    assert (
+        workload["E3_recourse_lp_calls_at_10_iterations_estimate"]
+        == calculated_ten_iteration_recourse
+    )
+    assert (
+        workload["E3_recourse_lp_calls_at_200_iterations_upper_bound"]
+        == calculated_upper_recourse
+    )
+    assert (
+        workload["E3_serial_budget_wall_upper_bound_hours"]
+        == calculated_wall_hours
+    )
+    calculated_pilot_executions = (
+        len(matrix["seed_plan"]["pilot_training_seeds"])
+        * sum(
+            formal_budget_count
+            * len(matrix["algorithm_comparison"]["algorithms"])
+            * tier["timing_repetitions"]
+            for tier in matrix["scale_tiers"]
+            if tier["id"] in algorithm_tiers
+        )
+    )
+    assert (
+        workload["E3_pilot_algorithm_executions"]
+        == calculated_pilot_executions
+        == 108
+    )
+    tiers_by_id = {
+        tier["id"]: tier for tier in matrix["scale_tiers"]
+    }
+    exactness_plan_count = (
+        len(matrix["budget_plan"]["legacy_absolute_budgets"])
+        + sum(
+            tiers_by_id[tier_id]["formal_seed_count"]
+            * formal_budget_count
+            for tier_id in matrix["exactness_gates"][
+                "extensive_vs_standard_ccg"
+            ]["tiers"]
+            if tier_id != "D0"
+        )
+    )
+    policy_plan_count = (
+        tiers_by_id["V2"]["formal_seed_count"]
+        * formal_budget_count
+        * len(matrix["model_comparison"]["policies"])
+    )
+    oos = matrix["out_of_sample_evaluation"]
+    oos_plan_count = (
+        oos["training_seed_count"]
+        * len(oos["budget_factors"])
+        * len(oos["policies"])
+    )
+    sensitivity = matrix["sensitivity"]
+    ofat_executions = (
+        sensitivity["unique_ofat_configuration_count"]
+        * sensitivity["training_seed_count"]
+        * len(sensitivity["budget_factors"])
+    )
+    assert workload["E1_exactness_plan_count"] == exactness_plan_count == 45
+    assert (
+        workload["E1_extensive_and_standard_ccg_executions"]
+        == 2 * exactness_plan_count
+        == 90
+    )
+    assert workload["E2_policy_plan_count"] == policy_plan_count == 180
+    assert workload["E2_training_exact_recourse_evaluations"] == (
+        policy_plan_count * tiers_by_id["V2"]["training_scenarios"]
+    )
+    assert workload["E4_out_of_sample_plan_count"] == oos_plan_count == 90
+    assert workload["E4_out_of_sample_recourse_evaluations"] == (
+        oos_plan_count * oos["scenarios_per_training_seed"]
+    )
+    assert workload["E5_ofat_model_executions"] == ofat_executions == 55
+    assert workload["E5_interaction_model_executions"] == (
+        sensitivity["inventory_market_interaction"]["total_runs"]
+    )
+    assert workload["E5_total_model_executions"] == 75
     assert (
         workload["pilot_throughput_gate"][
             "required_before_formal_seed_execution"
@@ -397,6 +574,15 @@ def test_phase6_matrix_requires_exact_policy_evaluation_and_inventory_interactio
     assert exact["candidate_scenarios"] == "complete_training_set"
     assert exact["native_deterministic_objective_must_not_be_compared_directly"] is True
     assert comparison["endogenous_dominance_check"]["empirical_innovation_claim"] is False
+    assert comparison["tiers"] == ["V2"]
+    assert comparison["policies"] == [
+        "deterministic_mean",
+        "zero_reserve",
+        "fixed_reserve_0_10",
+        "fixed_reserve_0_30",
+        "fixed_reserve_0_50",
+        "endogenous_reserve",
+    ]
 
     interaction = matrix["sensitivity"]["inventory_market_interaction"]
     assert set(interaction["factors"]) == {

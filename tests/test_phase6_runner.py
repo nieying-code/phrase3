@@ -195,8 +195,8 @@ def test_phase6_runner_checkpoints_every_pair_and_alternates_order(
     )
 
     assert result["status"] == "optimal"
-    assert result["completed_budget_count"] == 6
-    assert len(calls) == 6 * 2 * 3
+    assert result["completed_budget_count"] == 3
+    assert len(calls) == 3 * 2
     assert result["comparisons"][0]["execution_order"] == ["cold", "warm"]
     assert result["comparisons"][1]["execution_order"] == ["warm", "cold"]
     checkpoint = (
@@ -385,13 +385,10 @@ def test_terminal_failure_is_immutable_and_retry_has_lineage(
     )
     assert failed["status"] == "solver_error"
     assert failed["completed_budget_count"] == 1
-    assert len(failed["comparisons"]) == 6
+    assert len(failed["comparisons"]) == 3
     assert [row["status"] for row in failed["comparisons"]] == [
         "optimal",
         "solver_error",
-        "not_run_after_pair_sequence_failure",
-        "not_run_after_pair_sequence_failure",
-        "not_run_after_pair_sequence_failure",
         "not_run_after_pair_sequence_failure",
     ]
     assert failed["comparisons"][1]["warm"]["status"] == "solver_error"
@@ -411,7 +408,7 @@ def test_terminal_failure_is_immutable_and_retry_has_lineage(
         newline="",
     ) as handle:
         budget_rows = list(csv.DictReader(handle))
-    assert len(budget_rows) == 6
+    assert len(budget_rows) == 3
     assert budget_rows[1]["warm_status"] == "solver_error"
     assert budget_rows[2]["status"] == (
         "not_run_after_pair_sequence_failure"
@@ -427,7 +424,7 @@ def test_terminal_failure_is_immutable_and_retry_has_lineage(
             for row in csv.DictReader(handle)
             if row["run_id"] == "pilot_v1_resume"
         ]
-    assert len(performance_rows) == 6 * 2 * 3
+    assert len(performance_rows) == 3 * 2
     statuses = {row["status"] for row in performance_rows}
     assert "solver_error" in statuses
     assert "not_run_after_pair_failure" in statuses
@@ -559,7 +556,7 @@ def test_interrupted_checkpoint_can_resume_from_completed_prefix(
         worker_executor=successful_executor,
     )
     assert resumed["status"] == "optimal"
-    assert resumed["completed_budget_count"] == 6
+    assert resumed["completed_budget_count"] == 3
     assert min(resumed_calls) == 1
 
 

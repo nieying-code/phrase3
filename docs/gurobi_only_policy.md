@@ -1,28 +1,40 @@
-# Gurobi-only 求解策略
+# Gurobi-only求解策略
 
-自 2026-07-28 起，本项目的开发、测试、试运行和正式实验只允许使用
-Gurobi 13.0.2。`solver_preference` 必须严格等于 `("gurobi",)`，Pyomo
-通过 `gurobi_direct` 调用已安装在项目隔离依赖目录中的 `gurobipy`。
-任何其他求解器名称或回退列表都会在求解前失败。
+自2026-07-28起，本项目的开发、测试、pilot和正式实验只允许：
 
-运行时还会同时核验 `gurobipy` 发行版和实际加载的 Gurobi Optimizer
-均严格等于 13.0.2。Phase 6 在场景生成前执行该预检，因此版本漂移
-不会产生可被 pilot 门槛接受的场景或结果。
+```text
+gurobipy 13.0.2
+Gurobi Optimizer 13.0.2
+Pyomo gurobi_direct
+Threads = 1
+```
 
-正式运行固定为单线程，并继续使用实验矩阵规定的可行性容差、最优性
-容差和三层时限。正式运行环境必须具有有效的 Gurobi 许可证；许可证
-文件不得提交到 Git。
+`solver_preference`必须严格等于`("gurobi",)`。代码同时核验
+`gurobipy`发行版和实际加载的Optimizer版本；版本不符时在场景生成前
+失败。禁止HiGHS、其他求解器名称和自动回退。
+
+正式环境：
+
+```text
+D:\新建文件夹\项目交付\阶段3-4修复同步\phrase3\.venv-gurobi\Scripts\python.exe
+```
+
+许可证文件不得提交Git。所有正式计时使用单线程和串行runner。
 
 ## 历史结果边界
 
-阶段 1–5 的模型、算法、测试和 HiGHS 数值验证继续保留，不修改历史
-handoff。它们可用于证明既有实现曾通过独立求解器验证，但 HiGHS
-运行时间、迭代次数和吞吐率不得进入 Gurobi 正式统计。
+阶段1–5的历史HiGHS验证继续保留，不改写历史handoff；但HiGHS运行时间、
+迭代和吞吐量不得进入Gurobi正式统计。
 
-切换后先执行阶段 3/4 全场景模型与标准 C&CG、阶段 5 冷热算法的
-代表性交叉验证。Phase 6 的 V1、V2、P1、P2 各三个 pilot seed 必须
-全部使用新的 Gurobi-only 指纹和新 run ID 重跑。此前完成的 HiGHS
-V1/V2 只作为历史对照；已中断的 P1 只作为诊断记录。
+阶段3/4扩展式与标准C&CG、阶段5冷/热算法已经用Gurobi进行代表性交叉
+验证。阶段6正式种子尚未开始。
 
-Phase 6 正式种子尚未开始，因此不存在需要废弃的正式结果。只有新的
-12/12 Gurobi pilot、计算量投影和推进门槛通过后，才能启动正式实验。
+精简阶段6矩阵仍要求：
+
+```text
+V1/V2/P1/P2 × 3 pilot seeds = 12条当前指纹pilot
+```
+
+但V1–P2每条序列已由六个预算缩减为三个预算，且除V2外只执行一次技术
+重复。只有当前矩阵、runner、E3代码和`.venv-gurobi`环境生成的pilot，
+以及完整的计算量投影和推进门槛通过后，才能授权正式实验。

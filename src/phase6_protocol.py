@@ -16,7 +16,7 @@ from .model_data import ProcurementData
 from .scenario_generator import generate_synthetic_data
 
 
-SUPPORTED_MATRIX_ID = "phase6_formal_experiments_v1_3"
+SUPPORTED_MATRIX_ID = "phase6_streamlined_experiments_v2_0"
 SUPPORTED_GENERATOR_PROTOCOL = "phase6_controlled_synthetic_v1_0"
 FORMAL_EXECUTION_STATUS = "frozen_for_formal_execution"
 
@@ -38,7 +38,7 @@ class TierSpec:
     formal_seed_selector: str
     solver_call_seconds: float
     ccg_budget_wall_seconds: float
-    six_budget_sequence_wall_seconds: float
+    budget_sequence_wall_seconds: float
     timing_repetitions: int
 
 
@@ -121,6 +121,30 @@ def _validate_matrix(matrix: Mapping[str, Any], matrix_path: Path) -> None:
 
     for tier_id in tier_ids:
         tier = resolve_tier(matrix, tier_id)
+        formal_seed_count = len(
+            matrix["seed_plan"]["formal_training_seeds"]
+        )
+        if tier.formal_seed_selector == "all_formal_training_seeds":
+            if tier.formal_seed_count != formal_seed_count:
+                raise Phase6ProtocolError(
+                    f"{tier.id} must select all {formal_seed_count} "
+                    "formal training seeds"
+                )
+        elif tier.formal_seed_selector == "first_n_formal_training_seeds":
+            if not 0 < tier.formal_seed_count <= formal_seed_count:
+                raise Phase6ProtocolError(
+                    f"{tier.id} has an invalid first-n formal seed count"
+                )
+        elif tier.formal_seed_selector == "development_seed_only":
+            if tier.formal_seed_count != 1:
+                raise Phase6ProtocolError(
+                    f"{tier.id} development-only seed count must be one"
+                )
+        else:
+            raise Phase6ProtocolError(
+                f"unsupported formal seed selector for {tier.id}: "
+                f"{tier.formal_seed_selector!r}"
+            )
         if tier.id != "D0":
             supported_periods = {
                 int(value)
@@ -145,6 +169,26 @@ def _validate_matrix(matrix: Mapping[str, Any], matrix_path: Path) -> None:
             raise Phase6ProtocolError(
                 f"reference budget mismatch for {tier.id}: {actual} != {expected}"
             )
+        planned_budget_count = len(
+            matrix["budget_plan"][
+                "legacy_absolute_budgets"
+                if tier.id == "D0"
+                else "formal_factors"
+            ]
+        )
+        expected_sequence_limit = (
+            planned_budget_count * tier.ccg_budget_wall_seconds
+        )
+        if not math.isclose(
+            tier.budget_sequence_wall_seconds,
+            expected_sequence_limit,
+            rel_tol=0.0,
+            abs_tol=1.0e-9,
+        ):
+            raise Phase6ProtocolError(
+                f"{tier.id} budget sequence limit must equal "
+                "planned budget count times the single-budget limit"
+            )
 
 
 def resolve_tier(matrix: Mapping[str, Any], tier_id: str) -> TierSpec:
@@ -167,8 +211,8 @@ def resolve_tier(matrix: Mapping[str, Any], tier_id: str) -> TierSpec:
         formal_seed_selector=str(raw["formal_seed_selector"]),
         solver_call_seconds=float(limits["solver_call_seconds"]),
         ccg_budget_wall_seconds=float(limits["ccg_budget_wall_seconds"]),
-        six_budget_sequence_wall_seconds=float(
-            limits["six_budget_sequence_wall_seconds"]
+        budget_sequence_wall_seconds=float(
+            limits["budget_sequence_wall_seconds"]
         ),
         timing_repetitions=int(raw["timing_repetitions"]),
     )
@@ -184,7 +228,7 @@ def resolve_tier(matrix: Mapping[str, Any], tier_id: str) -> TierSpec:
         0.0
         < result.solver_call_seconds
         < result.ccg_budget_wall_seconds
-        <= result.six_budget_sequence_wall_seconds
+        <= result.budget_sequence_wall_seconds
     ):
         raise Phase6ProtocolError(f"tier {tier_id} has invalid time limits")
     return result
@@ -236,7 +280,7 @@ def compute_reference_budget(
     *,
     matrix_path: str | Path,
 ) -> float:
-    """Compute D0 nominal or V1-P4 theoretical reference budget."""
+    """Compute D0 nominal or V1-P2 theoretical reference budget."""
 
     tier = resolve_tier(matrix, tier_id)
     if tier.id == "D0":
@@ -327,10 +371,21 @@ def validate_execution_seed(
         formal = [
             int(value) for value in seed_plan["formal_training_seeds"]
         ]
-        if tier.formal_seed_selector == "first_5_formal_training_seeds":
-            formal = formal[:5]
-        elif tier.formal_seed_selector == "first_3_formal_training_seeds":
-            formal = formal[:3]
+        if tier.formal_seed_selector == "all_formal_training_seeds":
+            if tier.formal_seed_count != len(formal):
+                raise Phase6ProtocolError(
+                    f"{tier.id} formal_seed_count must equal the complete "
+                    "formal seed list for all_formal_training_seeds"
+                )
+        elif tier.formal_seed_selector == "first_n_formal_training_seeds":
+            formal = formal[: tier.formal_seed_count]
+        elif tier.formal_seed_selector == "development_seed_only":
+            formal = [int(seed_plan["development_seed"])]
+        else:
+            raise Phase6ProtocolError(
+                f"unsupported formal seed selector for {tier.id}: "
+                f"{tier.formal_seed_selector!r}"
+            )
         allowed = set(formal)
     else:
         raise Phase6ProtocolError(
