@@ -12,6 +12,7 @@
 - Environment and safe-status commit: `9fc2730`
 - Streamlined-matrix commit: `f13dfba`
 - Initial handoff commit: `8b98ed9`
+- PR-link update commit: `0a6bc9e`
 - PR: https://github.com/nieying-code/phrase3/pull/7
 
 ## 修改内容
@@ -105,6 +106,19 @@ Pyomo 6.10.1
 gurobipy 13.0.2
 Gurobi Optimizer 13.0.2
 ```
+
+GitHub Actions：
+
+```text
+Run: 30459661231
+Head: 0a6bc9ee3583e77ea82c4d53d19981c2b3b186eb
+普通回归: 70 passed
+Phase 5 端到端: 6 passed
+Status: success
+```
+
+记录上述 CI 结果的最终文档提交会再次触发同一套检查；PR 的最终 CI
+状态以 GitHub 上最新 head 为准。
 
 本次没有运行任何 Phase 6 pilot、formal seed、P3 或 P4。
 
