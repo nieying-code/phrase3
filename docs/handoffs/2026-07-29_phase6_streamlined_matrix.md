@@ -13,6 +13,7 @@
 - Streamlined-matrix commit: `f13dfba`
 - Initial handoff commit: `8b98ed9`
 - PR-link update commit: `0a6bc9e`
+- First-review fixes: `2e4b33e`
 - PR: https://github.com/nieying-code/phrase3/pull/7
 
 ## 修改内容
@@ -133,6 +134,16 @@ PR #7首轮复审修复后的本地完整回归：
 
 ```text
 82 passed in 34.40s
+```
+
+首轮复审修复提交对应的GitHub Actions：
+
+```text
+Run: 30462355022
+Head: 2e4b33eabb3455e9a7f959d165b1e08969521135
+普通回归: 76 passed
+Phase 5端到端: 6 passed
+Status: success
 ```
 
 记录上述 CI 结果的最终文档提交会再次触发同一套检查；PR 的最终 CI
