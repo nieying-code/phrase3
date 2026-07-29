@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from .phase6_runner import load_phase6_runner_config, run_phase6_sequence
+from .phase6_status import build_compact_status_payload
 
 
 def _default_run_id(mode: str, tier: str, seed: int) -> str:
@@ -105,6 +106,10 @@ def run(
             / "runner_exception.json"
         )
         _atomic_write_json(diagnostic, payload)
+        _atomic_write_json(
+            diagnostic.with_name("status_summary.json"),
+            build_compact_status_payload(payload),
+        )
         return payload
 
 

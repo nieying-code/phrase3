@@ -6,6 +6,37 @@ from src import phase6_worker
 from src.phase6_worker import execute_worker_request
 
 
+def test_atomic_write_retries_transient_windows_permission_error(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    target = tmp_path / "progress.json"
+    real_replace = phase6_worker.os.replace
+    calls = 0
+
+    def transient_replace(source, destination):
+        nonlocal calls
+        calls += 1
+        if calls < 3:
+            raise PermissionError(5, "transient Windows file lock")
+        real_replace(source, destination)
+
+    monkeypatch.setattr(phase6_worker.os, "replace", transient_replace)
+    monkeypatch.setattr(
+        phase6_worker,
+        "ATOMIC_REPLACE_RETRY_SECONDS",
+        0.0,
+    )
+
+    phase6_worker._atomic_write_json(target, {"status": "running"})
+
+    assert calls == 3
+    assert json.loads(target.read_text(encoding="utf-8")) == {
+        "status": "running"
+    }
+    assert not list(tmp_path.glob("*.tmp-*"))
+
+
 def test_phase6_worker_writes_iteration_heartbeat(
     tmp_path: Path,
     monkeypatch,

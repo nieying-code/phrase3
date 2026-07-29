@@ -7,12 +7,16 @@ from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
-from time import perf_counter
+from time import perf_counter, sleep
 from typing import Any
 
 from .ccg import run_standard_ccg, select_initial_scenarios
 from .phase6_protocol import generate_phase6_data, load_phase6_matrix
 from .spw_ccg import ScenarioPoolState, build_warm_initial_scenarios
+
+
+ATOMIC_REPLACE_MAX_ATTEMPTS = 20
+ATOMIC_REPLACE_RETRY_SECONDS = 0.05
 
 
 def _atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -22,7 +26,21 @@ def _atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
         json.dumps(payload, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    os.replace(temporary, path)
+    try:
+        for attempt in range(ATOMIC_REPLACE_MAX_ATTEMPTS):
+            try:
+                os.replace(temporary, path)
+                return
+            except PermissionError:
+                if attempt + 1 == ATOMIC_REPLACE_MAX_ATTEMPTS:
+                    raise
+                sleep(ATOMIC_REPLACE_RETRY_SECONDS)
+    finally:
+        if temporary.exists():
+            try:
+                temporary.unlink()
+            except OSError:
+                pass
 
 
 def _utc_now() -> str:

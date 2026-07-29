@@ -31,3 +31,9 @@ def test_missing_runner_config_writes_minimum_diagnostic(
     assert diagnostic.exists()
     saved = json.loads(diagnostic.read_text(encoding="utf-8"))
     assert saved["failure"]["exception_type"] == "FileNotFoundError"
+    status_summary = diagnostic.with_name("status_summary.json")
+    assert status_summary.exists()
+    compact = json.loads(status_summary.read_text(encoding="utf-8"))
+    assert compact["status"] == "runner_exception"
+    assert compact["failure"]["stage"] == "runner_config_load"
+    assert compact["metrics"]["comparison_count"] == 0
