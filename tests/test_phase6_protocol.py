@@ -43,7 +43,7 @@ def test_phase6_protocol_resolves_all_tiers_and_reference_budgets() -> None:
             tier_id,
             matrix_path=MATRIX_PATH,
         )
-        assert len(budgets) == 6
+        assert len(budgets) == (6 if tier_id == "D0" else 3)
         assert list(budgets) == sorted(budgets)
 
 
@@ -124,6 +124,51 @@ def test_phase6_execution_seed_gate_blocks_formal_candidate_matrix() -> None:
             tier_id="D0",
             seed=2026072001,
             execution_mode="pilot",
+        )
+
+
+def test_phase6_formal_seed_selectors_use_declared_tier_counts() -> None:
+    matrix = load_phase6_matrix(MATRIX_PATH)
+    matrix["status"] = "frozen_for_formal_execution"
+
+    allowed_by_tier = {
+        "V1": matrix["seed_plan"]["formal_training_seeds"][:3],
+        "V2": matrix["seed_plan"]["formal_training_seeds"],
+        "P1": matrix["seed_plan"]["formal_training_seeds"][:5],
+        "P2": matrix["seed_plan"]["formal_training_seeds"][:3],
+    }
+    for tier_id, allowed in allowed_by_tier.items():
+        for seed in allowed:
+            validate_execution_seed(
+                matrix,
+                tier_id=tier_id,
+                seed=seed,
+                execution_mode="formal",
+            )
+        first_disallowed = next(
+            seed
+            for seed in matrix["seed_plan"]["formal_training_seeds"]
+            if seed not in allowed
+        ) if len(allowed) < 10 else 99999999
+        with pytest.raises(Phase6ProtocolError, match="is not allowed"):
+            validate_execution_seed(
+                matrix,
+                tier_id=tier_id,
+                seed=first_disallowed,
+                execution_mode="formal",
+            )
+    validate_execution_seed(
+        matrix,
+        tier_id="D0",
+        seed=matrix["seed_plan"]["development_seed"],
+        execution_mode="formal",
+    )
+    with pytest.raises(Phase6ProtocolError, match="is not allowed"):
+        validate_execution_seed(
+            matrix,
+            tier_id="D0",
+            seed=matrix["seed_plan"]["formal_training_seeds"][0],
+            execution_mode="formal",
         )
 
 

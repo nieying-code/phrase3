@@ -1,8 +1,8 @@
-schema_version: "1.3"
-matrix_id: phase6_formal_experiments_v1_3
+schema_version: "2.0"
+matrix_id: phase6_streamlined_experiments_v2_0
 status: candidate_for_freeze_pending_review
 initial_draft_on: "2026-07-24"
-revised_on: "2026-07-27"
+revised_on: "2026-07-29"
 
 objectives:
   - validate_endogenous_reserve_value
@@ -18,9 +18,10 @@ data_tracks:
     required: true
   real_calibrated_synthetic:
     role: external_calibration_with_independent_resampling
-    required_for_phase6_final_claims: true
+    required_for_core_method_claims: false
+    optional_for_external_validity_extension: true
     status: awaiting_separate_calibration_protocol
-    included_in_v1_3_compute_total: false
+    included_in_v2_0_compute_total: false
     execution_gate: provenance_and_calibration_report_approved
   historical_case:
     role: interpretable_case_study
@@ -82,8 +83,6 @@ generator_protocol:
     - V2
     - P1
     - P2
-    - P3
-    - P4
   tier_resolution:
     item_selection: first_k_controlled_synthetic_baseline_item_archetypes
     period_count: scale_tier_periods
@@ -197,7 +196,7 @@ budget_plan:
   reference_formula: sum_over_items_and_periods_of_regular_price_times_expected_demand
   expectation_source_by_tier:
     D0: legacy_nominal_demand_baseline
-    V1_to_P4: frozen_generator_theoretical_expectation
+    V1_to_P2: frozen_generator_theoretical_expectation
   D0_nominal_reference_formula: sum_regular_price_times_base_demand_times_legacy_seasonality_without_zero_truncation_expectation_correction
   D0_is_not_strict_distribution_theoretical_expectation: true
   training_sample_mean_forbidden: true
@@ -207,18 +206,13 @@ budget_plan:
     V2: 1230.3215390309174
     P1: 6522.665525847212
     P2: 9783.998288770817
-    P3: 19571.120219897657
-    P4: 19571.120219897657
   reference_budget_validation:
     recompute_from_generator_protocol_required: true
     absolute_tolerance: 1.0e-9
   formal_factors:
-    - 0.75
     - 0.90
-    - 1.00
     - 1.10
-    - 1.25
-    - 1.40
+    - 1.30
   sensitivity_factors:
     - 0.90
     - 1.10
@@ -241,128 +235,90 @@ scale_tiers:
     items: 1
     periods: 4
     training_scenarios: 20
-    out_of_sample_scenarios: 5000
+    out_of_sample_scenarios: 2000
     formal_seed_count: 1
     formal_seed_selector: development_seed_only
     extensive_required: true
     time_limits:
       solver_call_seconds: 60
       ccg_budget_wall_seconds: 300
-      six_budget_sequence_wall_seconds: 1800
+      budget_sequence_wall_seconds: 1800
     timing_repetitions: 1
   - id: V1
     label: small_gold_standard
     items: 1
     periods: 6
     training_scenarios: 50
-    out_of_sample_scenarios: 5000
-    formal_seed_count: 10
-    formal_seed_selector: all_formal_training_seeds
+    out_of_sample_scenarios: 2000
+    formal_seed_count: 3
+    formal_seed_selector: first_n_formal_training_seeds
     extensive_required: true
     time_limits:
       solver_call_seconds: 120
       ccg_budget_wall_seconds: 600
-      six_budget_sequence_wall_seconds: 3600
-    timing_repetitions: 3
+      budget_sequence_wall_seconds: 1800
+    timing_repetitions: 1
   - id: V2
     label: upper_gold_standard
     items: 1
     periods: 6
     training_scenarios: 100
-    out_of_sample_scenarios: 5000
+    out_of_sample_scenarios: 2000
     formal_seed_count: 10
     formal_seed_selector: all_formal_training_seeds
     extensive_required: true
     time_limits:
       solver_call_seconds: 180
       ccg_budget_wall_seconds: 900
-      six_budget_sequence_wall_seconds: 5400
+      budget_sequence_wall_seconds: 2700
     timing_repetitions: 3
   - id: P1
     label: medium_performance
     items: 3
     periods: 12
     training_scenarios: 500
-    out_of_sample_scenarios: 5000
-    formal_seed_count: 10
-    formal_seed_selector: all_formal_training_seeds
+    out_of_sample_scenarios: 2000
+    formal_seed_count: 5
+    formal_seed_selector: first_n_formal_training_seeds
     extensive_required: false
     extensive_optional_solver_call_limit_seconds: 1800
     time_limits:
       solver_call_seconds: 300
       ccg_budget_wall_seconds: 1800
-      six_budget_sequence_wall_seconds: 10800
-    timing_repetitions: 3
+      budget_sequence_wall_seconds: 5400
+    timing_repetitions: 1
   - id: P2
     label: large_performance
     items: 5
     periods: 12
     training_scenarios: 1000
-    out_of_sample_scenarios: 5000
-    formal_seed_count: 10
-    formal_seed_selector: all_formal_training_seeds
+    out_of_sample_scenarios: 2000
+    formal_seed_count: 3
+    formal_seed_selector: first_n_formal_training_seeds
     extensive_required: false
     time_limits:
       solver_call_seconds: 600
       ccg_budget_wall_seconds: 3600
-      six_budget_sequence_wall_seconds: 21600
-    timing_repetitions: 1
-  - id: P3
-    label: very_large_performance
-    items: 5
-    periods: 24
-    training_scenarios: 2500
-    out_of_sample_scenarios: 5000
-    formal_seed_count: 5
-    formal_seed_selector: first_5_formal_training_seeds
-    extensive_required: false
-    time_limits:
-      solver_call_seconds: 900
-      ccg_budget_wall_seconds: 7200
-      six_budget_sequence_wall_seconds: 43200
+      budget_sequence_wall_seconds: 10800
     timing_repetitions: 1
     activation_gate:
-      prior_tier: P2
-      rule_reference: scale_advancement
-  - id: P4
-    label: stretch_limit
-    items: 5
-    periods: 24
-    training_scenarios: 5000
-    out_of_sample_scenarios: 5000
-    formal_seed_count: 3
-    formal_seed_selector: first_3_formal_training_seeds
-    extensive_required: false
-    time_limits:
-      solver_call_seconds: 900
-      ccg_budget_wall_seconds: 7200
-      six_budget_sequence_wall_seconds: 43200
-    timing_repetitions: 1
-    activation_gate:
-      prior_tier: P3
+      prior_tier: P1
       rule_reference: scale_advancement
 
 model_comparison:
   tiers:
-    - V1
     - V2
-    - P1
   policies:
     - deterministic_mean
     - zero_reserve
     - fixed_reserve_0_10
-    - fixed_reserve_0_20
     - fixed_reserve_0_30
-    - fixed_reserve_0_40
     - fixed_reserve_0_50
     - endogenous_reserve
   training_budget_factors:
-    - 0.75
     - 0.90
-    - 1.00
     - 1.10
-    - 1.25
-    - 1.40
+    - 1.30
   out_of_sample_common_random_numbers: true
   training_exact_evaluation:
     required_for_all_policies: true
@@ -381,8 +337,6 @@ algorithm_comparison:
     - V2
     - P1
     - P2
-    - P3
-    - P4
   algorithms:
     - standard_ccg_cold
     - spw_ccg_warm
@@ -407,12 +361,12 @@ timeout_protocol:
       - all_master_solves
       - all_oracle_recourse_solves
       - result_extraction
-  six_budget_sequence_wall_limit:
+  budget_sequence_wall_limit:
     enforcement: external_runner_watchdog
     applies_separately_to:
-      - standard_ccg_cold_six_budget_sequence
-      - spw_ccg_warm_six_budget_sequence
-    includes_all_six_budget_initialization_and_solves: true
+      - standard_ccg_cold_budget_sequence
+      - spw_ccg_warm_budget_sequence
+    includes_all_planned_budget_initialization_and_solves: true
   paired_sequence_failure_rule:
     stop_pair_sequence_when_either_algorithm_is_nonoptimal: true
     remaining_budget_status: not_run_after_pair_sequence_failure
@@ -427,10 +381,21 @@ timeout_protocol:
     automatic_retry_in_primary_results: false
 
 workload_estimation:
-  E3_algorithm_executions: 1296
-  E3_recourse_lp_calls_at_10_iterations_estimate: 6840000
-  E3_recourse_lp_calls_at_200_iterations_upper_bound: 136800000
-  E3_serial_budget_wall_upper_bound_hours: 642
+  E1_exactness_plan_count: 45
+  E1_extensive_and_standard_ccg_executions: 90
+  E2_policy_plan_count: 180
+  E2_training_exact_recourse_evaluations: 18000
+  E3_algorithm_executions: 246
+  E3_recourse_lp_calls_at_10_iterations_estimate: 519000
+  E3_recourse_lp_calls_at_200_iterations_upper_bound: 10380000
+  E3_serial_budget_wall_upper_bound_hours: 81
+  reduction_from_v1_3_algorithm_executions_fraction: 0.8101851851851852
+  E3_pilot_algorithm_executions: 108
+  E4_out_of_sample_plan_count: 90
+  E4_out_of_sample_recourse_evaluations: 180000
+  E5_ofat_model_executions: 55
+  E5_interaction_model_executions: 20
+  E5_total_model_executions: 75
   pilot_throughput_gate:
     required_before_formal_seed_execution: true
     pilot_seeds: all_pilot_training_seeds
@@ -445,8 +410,8 @@ workload_estimation:
       - E3
       - E4
       - E5
-    maximum_projected_total_wall_hours: 720
-    maximum_projected_single_family_wall_hours: 336
+    maximum_projected_total_wall_hours: 168
+    maximum_projected_single_family_wall_hours: 72
     on_gate_failure: revise_and_version_matrix_before_any_formal_seed_run
 
 exactness_gates:
@@ -465,9 +430,10 @@ exactness_gates:
     failed_pair_excluded_from_speed_claim_but_retained_in_failure_table: true
 
 sensitivity:
-  design: one_factor_at_a_time_plus_screening_factorial
+  design: streamlined_one_factor_at_a_time_plus_inventory_market_interaction
   tier: V2
-  training_seed_count: 10
+  training_seed_count: 5
+  training_seed_selector: first_5_formal_training_seeds
   baseline_source: independent_E5_baseline_overrides_V2_item_shelf_life
   baseline_config:
     demand_cv: 0.30
@@ -482,9 +448,7 @@ sensitivity:
     shortage_penalty_multiplier: 12.0
     waste_penalty_multiplier: 0.25
   budget_factors:
-    - 0.90
     - 1.10
-    - 1.30
   one_factor_at_a_time:
     demand_cv:
       values: [0.15, 0.30, 0.45]
@@ -492,41 +456,16 @@ sensitivity:
     emergency_price_markup_mean:
       values: [0.15, 0.35, 0.55]
       baseline: 0.35
-    emergency_price_markup_sd:
-      values: [0.05, 0.15, 0.25]
-      baseline: 0.15
     supply_reduction_mean:
       values: [0.05, 0.20, 0.40]
       baseline: 0.20
-    supply_shock_sd:
-      values: [0.10, 0.20, 0.35]
-      baseline: 0.20
-    demand_price_correlation:
-      values: [0.30, 0.60, 0.90]
-      baseline: 0.60
-    demand_supply_correlation:
-      values: [-0.20, -0.45, -0.70]
-      baseline: -0.45
     shelf_life_periods:
       values: [1, 3, 6]
       baseline: 3
     storage_capacity_to_expected_period_demand:
       values: [0.50, 1.50, 3.00]
       baseline: 3.00
-    shortage_penalty_multiplier:
-      values: [6.0, 12.0, 24.0]
-      baseline: 12.0
-    waste_penalty_multiplier:
-      values: [0.10, 0.25, 0.50]
-      baseline: 0.25
-  screening_factorial:
-    training_seed_count: 5
-    factors:
-      budget_factor: [0.90, 1.30]
-      demand_cv: [0.15, 0.45]
-      emergency_price_markup_mean: [0.15, 0.55]
-      supply_reduction_mean: [0.05, 0.40]
-    full_factorial_runs_per_seed: 16
+  unique_ofat_configuration_count: 11
   inventory_market_interaction:
     design: two_by_two
     tier: V2
@@ -541,7 +480,17 @@ sensitivity:
 out_of_sample_evaluation:
   tiers:
     - V2
+  evidence_role: limited_descriptive_out_of_sample
+  independent_training_seed_count_is_five: true
+  strong_significance_claims_forbidden: true
+  reporting_scope:
+    - paired_effect_sizes
+    - descriptive_uncertainty_intervals
+    - feasibility_and_tail_risk_profiles
+  not_a_substitute_for_V2_algorithm_timing_inference: true
   training_seed_count: 5
+  training_seed_selector: first_5_formal_training_seeds
+  test_seed_selector: paired_first_5_formal_test_seeds
   budget_factors:
     - 0.90
     - 1.10
@@ -550,12 +499,10 @@ out_of_sample_evaluation:
     - deterministic_mean
     - zero_reserve
     - fixed_reserve_0_10
-    - fixed_reserve_0_20
     - fixed_reserve_0_30
-    - fixed_reserve_0_40
     - fixed_reserve_0_50
     - endogenous_reserve
-  scenarios_per_training_seed: 5000
+  scenarios_per_training_seed: 2000
   independent_from_training: true
   common_test_set_across_policies: true
   reoptimization_on_test_set_forbidden: true
@@ -638,7 +585,6 @@ performance_metrics:
   - initial_scenario_count
   - final_scenario_count
   - scenario_reuse_rate
-  - adjacent_active_set_jaccard
   - peak_memory_mb
   - termination_status
   - speedup_cold_over_warm
@@ -653,10 +599,10 @@ statistical_reporting:
     resampling_unit: training_seed
     pair_key: same_tier_training_seed_and_budget
     primary_effect: log_cold_time_divided_by_warm_time
-  six_budget_summary_inference:
+  budget_sequence_summary_inference:
     method: cluster_paired_bootstrap
     cluster_unit: entire_budget_sequence_within_training_seed
-    resample_all_six_budgets_together: true
+    resample_all_planned_budgets_together: true
     within_seed_statistic: median_log_cold_time_divided_by_warm_time_over_jointly_completed_budgets
     primary_across_seed_statistic: median_of_within_seed_statistics
     reported_speedup: exp_primary_across_seed_statistic
@@ -664,10 +610,12 @@ statistical_reporting:
     seed_with_no_jointly_completed_budget:
       primary_effect_value: null
       retained_in_completion_rate_denominator: true
-  extreme_tiers:
-    P3: descriptive_only
-    P4: descriptive_only
-    confidence_intervals_and_significance_tests_forbidden: true
+  tier_reporting_roles:
+    V1: correctness_only
+    V2: primary_inferential
+    P1: limited_inferential
+    P2: descriptive_only
+    significance_tests_for_correctness_and_descriptive_tiers_forbidden: true
   paired_completion_reporting:
     required:
       - cold_completion_rate
@@ -696,27 +644,14 @@ statistical_reporting:
     random_engine: numpy_Generator_PCG64DXSM
     bootstrap_random_seeds:
       fixed_budget: 2026090601
-      six_budget_cluster: 2026090602
-      H5_cluster: 2026090603
+      budget_sequence_cluster: 2026090602
   optional_nonparametric_test:
     name: wilcoxon_signed_rank
     fixed_budget_input: one_paired_technical_median_per_training_seed
-    six_budget_input: one_within_seed_median_log_speedup_per_training_seed
+    budget_sequence_input: one_within_seed_median_log_speedup_per_training_seed
     seed_budget_rows_must_not_be_treated_as_independent: true
   multiple_comparison_rule: report_effect_sizes_and_adjusted_p_values_when_used
   runtime_primary_statistic: median
-  H5_scene_similarity_analysis:
-    tiers:
-      - V1
-      - V2
-      - P1
-      - P2
-    observation: adjacent_budget_transition_within_seed
-    similarity_metric: active_scenario_set_jaccard
-    outcome_metric: log_cold_time_divided_by_warm_time
-    association_statistic: spearman_rank_correlation
-    confidence_interval: cluster_bootstrap_by_training_seed
-    causal_language_forbidden: true
 
 scale_advancement:
   all_conditions:
@@ -759,6 +694,7 @@ required_outputs:
   - outputs/experiments/phase6/sensitivity_results.csv
   - outputs/experiments/phase6/failure_registry.csv
   - outputs/experiments/phase6/pilot_throughput_projection.json
+  - outputs/experiments/phase6/scale_advancement.json
   - outputs/experiments/phase6/real_data_calibration_protocol.json
   - outputs/experiments/phase6/manifests
   - outputs/figures/phase6

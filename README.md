@@ -82,7 +82,7 @@ python -m src.run_phase5 --config configs/phase5.yaml --output outputs
 
 ## 阶段6实验矩阵
 
-阶段6正式运行前先审查并冻结 `configs/phase6_experiment_matrix.yaml`。矩阵规定唯一受控场景生成协议与参考预算、规模档位、三层时限、训练/测试种子、模型与算法对照、独立样本外评价、敏感性参数、可复现簇统计方案、无歧义逐级扩展门槛和失败保留规则。D0保留历史名义需求参考预算，V1–P4使用冻结生成器理论期望。完整说明见 `docs/phase6_experiment_matrix.md`。当前状态为待复审冻结候选，不实现或执行阶段6正式实验。
+阶段6正式运行前先审查并冻结 `configs/phase6_experiment_matrix.yaml`。精简版矩阵以 V2 为主统计档、P1 为多物资中规模验证、P2 为描述性压力测试、V1 为正确性金标准，并删除 P3/P4。V1–P2 使用三个正式预算，策略、敏感性和样本外场景数也按论文充分性缩减。矩阵仍保留唯一生成协议、三层时限、完整 oracle、失败保留、簇统计和双重正式授权门槛。完整说明见 `docs/phase6_experiment_matrix.md`。当前状态为待复审冻结候选，不执行阶段6正式实验。
 
 ## 目录
 

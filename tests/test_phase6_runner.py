@@ -72,6 +72,42 @@ def test_gurobi_version_preflight_precedes_scenario_generation(
     assert generated is False
 
 
+def test_locked_environment_preflight_precedes_scenario_generation(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    generated = False
+
+    def reject_environment(*args, **kwargs):
+        raise RuntimeError(
+            "Phase 6 locked environment mismatch: pyomo required 6.10.1"
+        )
+
+    def forbidden_generation(*args, **kwargs):
+        nonlocal generated
+        generated = True
+        raise AssertionError("scenario generation must not start")
+
+    monkeypatch.setattr(
+        phase6_runner, "validate_locked_environment", reject_environment
+    )
+    monkeypatch.setattr(
+        phase6_runner, "generate_phase6_data", forbidden_generation
+    )
+    with pytest.raises(RuntimeError, match="locked environment mismatch"):
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="V1",
+            seed=2026072001,
+            execution_mode="pilot",
+            run_id="pilot_wrong_environment",
+            worker_executor=lambda *args, **kwargs: {},
+        )
+    assert generated is False
+
+
 def _hold_run_lock(lock_path: str, marker_path: str) -> None:
     with exclusive_file_lock(Path(lock_path), timeout_seconds=5.0):
         Path(marker_path).write_text("locked", encoding="utf-8")
@@ -195,8 +231,8 @@ def test_phase6_runner_checkpoints_every_pair_and_alternates_order(
     )
 
     assert result["status"] == "optimal"
-    assert result["completed_budget_count"] == 6
-    assert len(calls) == 6 * 2 * 3
+    assert result["completed_budget_count"] == 3
+    assert len(calls) == 3 * 2
     assert result["comparisons"][0]["execution_order"] == ["cold", "warm"]
     assert result["comparisons"][1]["execution_order"] == ["warm", "cold"]
     checkpoint = (
@@ -263,6 +299,52 @@ def test_formal_projection_is_checked_before_scenario_generation(
             execution_mode="formal",
             run_id="formal_gate",
             worker_executor=lambda *args: {},
+        )
+    assert generated is False
+
+
+def test_p2_scale_gate_is_checked_before_scenario_generation(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    generated = False
+
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_execution_seed",
+        lambda *args, **kwargs: None,
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_formal_projection",
+        lambda **kwargs: {"formal_execution_authorized": True},
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_scale_advancement",
+        lambda **kwargs: (_ for _ in ()).throw(
+            ValueError("P1 scale advancement gate has not passed")
+        ),
+    )
+
+    def forbidden_generation(*args, **kwargs):
+        nonlocal generated
+        generated = True
+        raise AssertionError("scenario generation must not start")
+
+    monkeypatch.setattr(
+        phase6_runner, "generate_phase6_data", forbidden_generation
+    )
+    with pytest.raises(ValueError, match="scale advancement"):
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="P2",
+            seed=2026072401,
+            execution_mode="formal",
+            run_id="formal_p2_blocked",
+            worker_executor=lambda *args, **kwargs: {},
         )
     assert generated is False
 
@@ -385,13 +467,10 @@ def test_terminal_failure_is_immutable_and_retry_has_lineage(
     )
     assert failed["status"] == "solver_error"
     assert failed["completed_budget_count"] == 1
-    assert len(failed["comparisons"]) == 6
+    assert len(failed["comparisons"]) == 3
     assert [row["status"] for row in failed["comparisons"]] == [
         "optimal",
         "solver_error",
-        "not_run_after_pair_sequence_failure",
-        "not_run_after_pair_sequence_failure",
-        "not_run_after_pair_sequence_failure",
         "not_run_after_pair_sequence_failure",
     ]
     assert failed["comparisons"][1]["warm"]["status"] == "solver_error"
@@ -411,7 +490,7 @@ def test_terminal_failure_is_immutable_and_retry_has_lineage(
         newline="",
     ) as handle:
         budget_rows = list(csv.DictReader(handle))
-    assert len(budget_rows) == 6
+    assert len(budget_rows) == 3
     assert budget_rows[1]["warm_status"] == "solver_error"
     assert budget_rows[2]["status"] == (
         "not_run_after_pair_sequence_failure"
@@ -427,7 +506,7 @@ def test_terminal_failure_is_immutable_and_retry_has_lineage(
             for row in csv.DictReader(handle)
             if row["run_id"] == "pilot_v1_resume"
         ]
-    assert len(performance_rows) == 6 * 2 * 3
+    assert len(performance_rows) == 3 * 2
     statuses = {row["status"] for row in performance_rows}
     assert "solver_error" in statuses
     assert "not_run_after_pair_failure" in statuses
@@ -559,7 +638,7 @@ def test_interrupted_checkpoint_can_resume_from_completed_prefix(
         worker_executor=successful_executor,
     )
     assert resumed["status"] == "optimal"
-    assert resumed["completed_budget_count"] == 6
+    assert resumed["completed_budget_count"] == 3
     assert min(resumed_calls) == 1
 
 

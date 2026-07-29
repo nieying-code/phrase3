@@ -1,6 +1,8 @@
 __pycache__/
 *.py[cod]
 .venv/
+.venv-gurobi/
+.idea/
 .deps/
 .codex_deps/
 .phase6_deps/
