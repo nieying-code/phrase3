@@ -13,7 +13,8 @@
 - Base commit: `fb0c44a1dd2d183f5ea571441e0992f19b95d74d`
 - Fix commit: `0f175efb6537709aecb3f7218ee72793a37cc623`
 - PR: [#8](https://github.com/nieying-code/phrase3/pull/8)
-- CI: pending
+- CI: [run 30464697426](https://github.com/nieying-code/phrase3/actions/runs/30464697426),
+  success
 
 ## Pilot 执行结果
 
