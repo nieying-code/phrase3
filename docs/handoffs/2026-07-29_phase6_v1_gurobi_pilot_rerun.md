@@ -13,7 +13,7 @@
 - Base commit: `7295d1b14b9a2b90c8686137c032cab5c320565f`
 - Results handoff commit: `4474d8d2491721d44b6e04420921593a61dc8bb4`
 - PR: [#9](https://github.com/nieying-code/phrase3/pull/9)
-- CI: pending
+- CI: [run 30466649427](https://github.com/nieying-code/phrase3/actions/runs/30466649427), success (`77 passed + 6 passed`)
 
 ## 固定运行环境
 
