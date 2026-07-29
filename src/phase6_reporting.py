@@ -472,6 +472,182 @@ def validate_formal_projection(
     return payload
 
 
+def update_scale_advancement(
+    *,
+    output_root: Path,
+    matrix: Mapping[str, Any],
+    scientific_config_sha256: str,
+    runner_config_sha256: str,
+    e3_component_sha256: str,
+    source_tier: str = "P1",
+    target_tier: str = "P2",
+) -> dict[str, Any]:
+    """Rebuild the fingerprinted P1-to-P2 formal advancement decision."""
+
+    base = output_root / "experiments" / "phase6"
+    destination = base / "scale_advancement.json"
+    registry_path = base / "run_registry.csv"
+    formal_seeds = [
+        int(value) for value in matrix["seed_plan"]["formal_training_seeds"]
+    ]
+    tier_raw = next(
+        item for item in matrix["scale_tiers"] if item["id"] == source_tier
+    )
+    expected_seeds = formal_seeds[: int(tier_raw["formal_seed_count"])]
+    budget_count = len(matrix["budget_plan"]["formal_factors"])
+    expected_pairs = len(expected_seeds) * budget_count
+    rows: list[dict[str, str]] = []
+    if registry_path.exists():
+        with registry_path.open(
+            "r", encoding="utf-8-sig", newline=""
+        ) as handle:
+            rows = list(csv.DictReader(handle))
+    matching = [
+        row
+        for row in rows
+        if (
+            row.get("execution_mode") == "formal"
+            and row.get("tier_id") == source_tier
+            and int(row.get("seed") or -1) in expected_seeds
+            and not row.get("parent_run_id", "").strip()
+            and row.get("scientific_config_sha256")
+            == scientific_config_sha256
+            and row.get("runner_config_sha256") == runner_config_sha256
+            and row.get("e3_component_sha256") == e3_component_sha256
+        )
+    ]
+    grouped: dict[int, list[dict[str, str]]] = {}
+    for row in matching:
+        grouped.setdefault(int(row["seed"]), []).append(row)
+    missing = [seed for seed in expected_seeds if not grouped.get(seed)]
+    duplicates = [
+        seed for seed in expected_seeds if len(grouped.get(seed, [])) > 1
+    ]
+    failed = [
+        seed
+        for seed in expected_seeds
+        if len(grouped.get(seed, [])) == 1
+        and grouped[seed][0].get("status") != "optimal"
+    ]
+    joint_pairs = 0
+    cold_fractions: list[float] = []
+    warm_fractions: list[float] = []
+    budget_wall = float(tier_raw["time_limits"]["ccg_budget_wall_seconds"])
+    if not missing and not duplicates and not failed:
+        for seed in expected_seeds:
+            result = json.loads(
+                Path(grouped[seed][0]["result_path"]).read_text(
+                    encoding="utf-8"
+                )
+            )
+            for comparison in result.get("comparisons", []):
+                times: dict[str, float] = {}
+                jointly_optimal = comparison.get("status") == "optimal"
+                for algorithm in ("cold", "warm"):
+                    repetitions = comparison.get(algorithm, {}).get(
+                        "repetitions", []
+                    )
+                    valid = [
+                        float(item["subprocess_wall_seconds"])
+                        for item in repetitions
+                        if item.get("status") == "optimal"
+                        and item.get("subprocess_wall_seconds") is not None
+                    ]
+                    if len(valid) != int(
+                        comparison.get("planned_repetitions", len(valid))
+                    ):
+                        jointly_optimal = False
+                    elif valid:
+                        times[algorithm] = statistics.median(valid)
+                if jointly_optimal and set(times) == {"cold", "warm"}:
+                    joint_pairs += 1
+                    cold_fractions.append(times["cold"] / budget_wall)
+                    warm_fractions.append(times["warm"] / budget_wall)
+    completion_rate = (
+        joint_pairs / expected_pairs if expected_pairs else 0.0
+    )
+    cold_median = (
+        statistics.median(cold_fractions) if cold_fractions else None
+    )
+    warm_median = (
+        statistics.median(warm_fractions) if warm_fractions else None
+    )
+    maximum_runtime_fraction = (
+        max(cold_median, warm_median)
+        if cold_median is not None and warm_median is not None
+        else None
+    )
+    rules = matrix["scale_advancement"]["all_conditions"]
+    coverage_complete = not missing and not duplicates and not failed
+    passed = (
+        coverage_complete
+        and completion_rate
+        >= float(rules["joint_pair_completion_rate_minimum"])
+        and maximum_runtime_fraction is not None
+        and maximum_runtime_fraction
+        <= float(rules["max_algorithm_median_runtime_fraction_maximum"])
+    )
+    payload = {
+        "matrix_id": matrix["matrix_id"],
+        "scientific_config_sha256": scientific_config_sha256,
+        "runner_config_sha256": runner_config_sha256,
+        "e3_component_sha256": e3_component_sha256,
+        "source_tier": source_tier,
+        "target_tier": target_tier,
+        "expected_seeds": expected_seeds,
+        "missing_seeds": missing,
+        "duplicate_seeds": duplicates,
+        "failed_seeds": failed,
+        "planned_pair_count": expected_pairs,
+        "jointly_optimal_pair_count": joint_pairs,
+        "joint_pair_completion_rate": completion_rate,
+        "cold_median_runtime_fraction": cold_median,
+        "warm_median_runtime_fraction": warm_median,
+        "maximum_algorithm_median_runtime_fraction": (
+            maximum_runtime_fraction
+        ),
+        "gate_passed": passed,
+        "status": "passed" if passed else "not_passed",
+    }
+    _atomic_write_json(destination, payload)
+    return payload
+
+
+def validate_scale_advancement(
+    *,
+    advancement_path: Path,
+    matrix_id: str,
+    scientific_config_sha256: str,
+    runner_config_sha256: str,
+    e3_component_sha256: str,
+    source_tier: str,
+    target_tier: str,
+) -> dict[str, Any]:
+    """Reject a target-tier formal run unless its prior-tier gate passed."""
+
+    if not advancement_path.exists():
+        raise ValueError("P2 formal execution requires scale advancement")
+    payload = json.loads(advancement_path.read_text(encoding="utf-8"))
+    expected = {
+        "matrix_id": matrix_id,
+        "scientific_config_sha256": scientific_config_sha256,
+        "runner_config_sha256": runner_config_sha256,
+        "e3_component_sha256": e3_component_sha256,
+        "source_tier": source_tier,
+        "target_tier": target_tier,
+    }
+    mismatches = {
+        key: {"expected": value, "actual": payload.get(key)}
+        for key, value in expected.items()
+        if payload.get(key) != value
+    }
+    if mismatches:
+        raise ValueError(f"scale advancement fingerprint mismatch: {mismatches}")
+    if payload.get("status") != "passed" or payload.get("gate_passed") is not True:
+        raise ValueError("P1 scale advancement gate has not passed")
+    return payload
+
+
 def append_failure_registry(
     path: Path,
     row: Mapping[str, Any],

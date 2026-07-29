@@ -278,6 +278,12 @@ def test_phase6_matrix_has_valid_sensitivity_and_oos_design() -> None:
 
     out_of_sample = matrix["out_of_sample_evaluation"]
     assert out_of_sample["scenarios_per_training_seed"] == 2000
+    assert out_of_sample["evidence_role"] == "limited_descriptive_out_of_sample"
+    assert out_of_sample["strong_significance_claims_forbidden"] is True
+    assert (
+        out_of_sample["not_a_substitute_for_V2_algorithm_timing_inference"]
+        is True
+    )
     assert out_of_sample["independent_from_training"] is True
     assert out_of_sample["common_test_set_across_policies"] is True
     assert out_of_sample["reoptimization_on_test_set_forbidden"] is True

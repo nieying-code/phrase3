@@ -150,6 +150,14 @@ outputs/experiments/phase6/
 Manifest保存矩阵、科学配置、runner和E3代码指纹，以及Git、Python、
 依赖、Gurobi、线程和硬件信息。原始实验输出默认不提交Git。
 
+Phase 6在场景生成前逐项读取`requirements-gurobi-lock.txt`，并用已安装
+发行版元数据核验所有精确版本。任一包缺失或版本不一致都会在生成场景前
+拒绝运行；CI也直接从该锁文件安装依赖。
+
+正式P2还必须读取`scale_advancement.json`，验证P1来源、P2目标、科学
+配置、runner和E3组件指纹，以及完成率和运行时间两项门槛。该检查发生在
+P2场景生成之前。
+
 ## 安全状态查询
 
 不得用PowerShell `ConvertFrom-Json`读取大型结果。统一使用：
@@ -160,7 +168,10 @@ Manifest保存矩阵、科学配置、runner和E3代码指纹，以及Git、Pyth
   --run-id <RUN_ID>
 ```
 
-该命令只输出有硬上限的摘要。
+runner每次保存checkpoint或最终结果时同步写入小型
+`status_summary.json`。状态工具只读取该sidecar、manifest和CSV元数据，
+不解析大型result/checkpoint；失败摘要只保留白名单字段并截断消息。该命令
+只输出有硬上限的摘要。
 
 ## 旧试运行的处理
 

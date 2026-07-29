@@ -72,6 +72,42 @@ def test_gurobi_version_preflight_precedes_scenario_generation(
     assert generated is False
 
 
+def test_locked_environment_preflight_precedes_scenario_generation(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    generated = False
+
+    def reject_environment(*args, **kwargs):
+        raise RuntimeError(
+            "Phase 6 locked environment mismatch: pyomo required 6.10.1"
+        )
+
+    def forbidden_generation(*args, **kwargs):
+        nonlocal generated
+        generated = True
+        raise AssertionError("scenario generation must not start")
+
+    monkeypatch.setattr(
+        phase6_runner, "validate_locked_environment", reject_environment
+    )
+    monkeypatch.setattr(
+        phase6_runner, "generate_phase6_data", forbidden_generation
+    )
+    with pytest.raises(RuntimeError, match="locked environment mismatch"):
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="V1",
+            seed=2026072001,
+            execution_mode="pilot",
+            run_id="pilot_wrong_environment",
+            worker_executor=lambda *args, **kwargs: {},
+        )
+    assert generated is False
+
+
 def _hold_run_lock(lock_path: str, marker_path: str) -> None:
     with exclusive_file_lock(Path(lock_path), timeout_seconds=5.0):
         Path(marker_path).write_text("locked", encoding="utf-8")
@@ -263,6 +299,52 @@ def test_formal_projection_is_checked_before_scenario_generation(
             execution_mode="formal",
             run_id="formal_gate",
             worker_executor=lambda *args: {},
+        )
+    assert generated is False
+
+
+def test_p2_scale_gate_is_checked_before_scenario_generation(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    generated = False
+
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_execution_seed",
+        lambda *args, **kwargs: None,
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_formal_projection",
+        lambda **kwargs: {"formal_execution_authorized": True},
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_scale_advancement",
+        lambda **kwargs: (_ for _ in ()).throw(
+            ValueError("P1 scale advancement gate has not passed")
+        ),
+    )
+
+    def forbidden_generation(*args, **kwargs):
+        nonlocal generated
+        generated = True
+        raise AssertionError("scenario generation must not start")
+
+    monkeypatch.setattr(
+        phase6_runner, "generate_phase6_data", forbidden_generation
+    )
+    with pytest.raises(ValueError, match="scale advancement"):
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="P2",
+            seed=2026072401,
+            execution_mode="formal",
+            run_id="formal_p2_blocked",
+            worker_executor=lambda *args, **kwargs: {},
         )
     assert generated is False
 

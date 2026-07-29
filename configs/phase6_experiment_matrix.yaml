@@ -480,6 +480,14 @@ sensitivity:
 out_of_sample_evaluation:
   tiers:
     - V2
+  evidence_role: limited_descriptive_out_of_sample
+  independent_training_seed_count_is_five: true
+  strong_significance_claims_forbidden: true
+  reporting_scope:
+    - paired_effect_sizes
+    - descriptive_uncertainty_intervals
+    - feasibility_and_tail_risk_profiles
+  not_a_substitute_for_V2_algorithm_timing_inference: true
   training_seed_count: 5
   training_seed_selector: first_5_formal_training_seeds
   test_seed_selector: paired_first_5_formal_test_seeds
@@ -686,6 +694,7 @@ required_outputs:
   - outputs/experiments/phase6/sensitivity_results.csv
   - outputs/experiments/phase6/failure_registry.csv
   - outputs/experiments/phase6/pilot_throughput_projection.json
+  - outputs/experiments/phase6/scale_advancement.json
   - outputs/experiments/phase6/real_data_calibration_protocol.json
   - outputs/experiments/phase6/manifests
   - outputs/figures/phase6

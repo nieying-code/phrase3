@@ -17,6 +17,18 @@
 
 ## 修改内容
 
+### PR #7 首轮复审修复
+
+- 新增带科学配置、runner和E3组件指纹的
+  `scale_advancement.json`；正式P2在场景生成前强制验证P1完成率和运行
+  时间门槛。
+- 明确E4的5个训练种子只提供有限、描述性的样本外证据；禁止强显著性
+  结论，不与V2的10种子算法计时主要推断混用。
+- Phase 6在场景生成前逐包验证`requirements-gurobi-lock.txt`与实际安装
+  发行版完全一致，CI也改为直接安装该锁文件。
+- runner为checkpoint和最终结果写入小型`status_summary.json`；状态工具
+  不再读取大型result/checkpoint，失败对象只保留白名单字段并截断消息。
+
 ### 实验档位
 
 - 保留 `D0` 作为遗留回归档，不用于论文推断。
@@ -115,6 +127,12 @@ Head: 0a6bc9ee3583e77ea82c4d53d19981c2b3b186eb
 普通回归: 70 passed
 Phase 5 端到端: 6 passed
 Status: success
+```
+
+PR #7首轮复审修复后的本地完整回归：
+
+```text
+82 passed in 34.40s
 ```
 
 记录上述 CI 结果的最终文档提交会再次触发同一套检查；PR 的最终 CI

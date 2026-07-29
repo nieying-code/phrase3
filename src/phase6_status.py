@@ -13,14 +13,33 @@ import psutil
 
 
 MAX_SUMMARY_BYTES = 16_384
+MAX_STATUS_INPUT_BYTES = 65_536
+MAX_FAILURE_MESSAGE_CHARS = 1_000
 
 
 def _read_json(path: Path) -> dict[str, Any]:
+    if path.stat().st_size > MAX_STATUS_INPUT_BYTES:
+        raise ValueError(f"bounded status file is too large: {path}")
     with path.open("r", encoding="utf-8") as handle:
         payload = json.load(handle)
     if not isinstance(payload, dict):
         raise ValueError(f"expected a JSON object in {path}")
     return payload
+
+
+def compact_failure(value: Any) -> dict[str, Any] | None:
+    """Retain only bounded diagnostic fields from an arbitrary failure."""
+
+    if not isinstance(value, Mapping):
+        return None
+    message = str(value.get("message", ""))
+    if len(message) > MAX_FAILURE_MESSAGE_CHARS:
+        message = message[:MAX_FAILURE_MESSAGE_CHARS] + "…[truncated]"
+    return {
+        key: value.get(key)
+        for key in ("status", "stage", "budget_index", "algorithm")
+        if value.get(key) is not None
+    } | ({"message": message} if message else {})
 
 
 def _registry_row(base: Path, run_id: str) -> dict[str, str] | None:
@@ -104,6 +123,23 @@ def _result_metrics(result: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def build_compact_status_payload(
+    payload: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Build the small sidecar written beside large checkpoints/results."""
+
+    return {
+        "run_id": payload.get("run_id"),
+        "status": payload.get("status"),
+        "tier_id": payload.get("tier_id"),
+        "seed": payload.get("seed"),
+        "planned_budget_count": payload.get("planned_budget_count"),
+        "completed_budget_count": payload.get("completed_budget_count"),
+        "failure": compact_failure(payload.get("failure")),
+        "metrics": _result_metrics(payload),
+    }
+
+
 def summarize_run(
     output_root: Path,
     run_id: str,
@@ -114,11 +150,13 @@ def summarize_run(
 
     base = output_root.resolve() / "experiments" / "phase6"
     run_directory = base / "runs" / run_id
-    candidates = (
+    large_candidates = (
         ("result", run_directory / "result.json"),
         ("checkpoint", run_directory / "checkpoint.json"),
         ("runner_exception", run_directory / "runner_exception.json"),
     )
+    status_path = run_directory / "status_summary.json"
+    candidates = (("status_summary", status_path), *large_candidates)
     files = {
         name: {
             "path": str(path),
@@ -129,15 +167,14 @@ def summarize_run(
     }
     registry = _registry_row(base, run_id)
     source_name = next(
-        (name for name, path in candidates if path.exists()),
+        (name for name, path in large_candidates if path.exists()),
         None,
     )
     payload: dict[str, Any] = {}
     read_error = None
-    if source_name is not None:
-        source_path = dict(candidates)[source_name]
+    if status_path.exists():
         try:
-            payload = _read_json(source_path)
+            payload = _read_json(status_path)
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             read_error = f"{type(exc).__name__}: {exc}"
 
@@ -185,8 +222,16 @@ def summarize_run(
             "completed_budget_count",
             registry.get("completed_budget_count") if registry else None,
         ),
-        "failure": payload.get("failure"),
-        "metrics": _result_metrics(payload),
+        "failure": compact_failure(payload.get("failure"))
+        or compact_failure(
+            {
+                "stage": registry.get("failure_stage"),
+                "message": registry.get("failure_message"),
+            }
+            if registry
+            else None
+        ),
+        "metrics": payload.get("metrics") or _result_metrics({}),
         "runtime": runtime,
         "processes": (
             _matching_processes(run_id) if inspect_processes else []

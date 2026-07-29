@@ -3,7 +3,13 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.phase6_status import MAX_SUMMARY_BYTES, render_summary, summarize_run
+from src.phase6_status import (
+    MAX_FAILURE_MESSAGE_CHARS,
+    MAX_SUMMARY_BYTES,
+    build_compact_status_payload,
+    render_summary,
+    summarize_run,
+)
 
 
 def test_phase6_status_is_bounded_and_omits_large_solver_payload(
@@ -56,6 +62,10 @@ def test_phase6_status_is_bounded_and_omits_large_solver_payload(
         json.dumps(result),
         encoding="utf-8",
     )
+    (run_directory / "status_summary.json").write_text(
+        json.dumps(build_compact_status_payload(result)),
+        encoding="utf-8",
+    )
     manifest = {
         "python": {"version": "3.12.10", "executable": "project-python"},
         "packages": {"gurobipy": "13.0.2"},
@@ -105,6 +115,10 @@ def test_phase6_status_reads_incomplete_checkpoint(tmp_path: Path) -> None:
         json.dumps(checkpoint),
         encoding="utf-8",
     )
+    (run_directory / "status_summary.json").write_text(
+        json.dumps(build_compact_status_payload(checkpoint)),
+        encoding="utf-8",
+    )
 
     summary = summarize_run(
         tmp_path,
@@ -115,3 +129,45 @@ def test_phase6_status_reads_incomplete_checkpoint(tmp_path: Path) -> None:
     assert summary["source"] == "checkpoint"
     assert summary["status"] == "running"
     assert summary["completed_budget_count"] == 2
+
+
+def test_phase6_status_truncates_large_failure_payload(tmp_path: Path) -> None:
+    run_id = "failed_large_payload"
+    run_directory = (
+        tmp_path / "experiments" / "phase6" / "runs" / run_id
+    )
+    run_directory.mkdir(parents=True)
+    failure = {
+        "status": "oracle_failure",
+        "stage": "warm",
+        "budget_index": 1,
+        "algorithm": "warm",
+        "message": "x" * 100_000,
+        "partial_repetitions": [{"iteration_log": list(range(100_000))}],
+    }
+    result = {
+        "run_id": run_id,
+        "status": "oracle_failure",
+        "tier_id": "P1",
+        "seed": 1,
+        "planned_budget_count": 3,
+        "completed_budget_count": 1,
+        "failure": failure,
+        "comparisons": [],
+    }
+    (run_directory / "result.json").write_text(
+        json.dumps(result), encoding="utf-8"
+    )
+    sidecar = build_compact_status_payload(result)
+    (run_directory / "status_summary.json").write_text(
+        json.dumps(sidecar), encoding="utf-8"
+    )
+
+    summary = summarize_run(tmp_path, run_id, inspect_processes=False)
+    rendered = render_summary(summary)
+
+    assert len(rendered.encode("utf-8")) < MAX_SUMMARY_BYTES
+    assert "partial_repetitions" not in rendered
+    assert len(summary["failure"]["message"]) <= (
+        MAX_FAILURE_MESSAGE_CHARS + len("…[truncated]")
+    )

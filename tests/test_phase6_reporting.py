@@ -11,7 +11,9 @@ import pytest
 from src.phase6_protocol import load_phase6_matrix
 from src.phase6_reporting import (
     update_pilot_projection,
+    update_scale_advancement,
     validate_formal_projection,
+    validate_scale_advancement,
 )
 from src.phase6_runner import (
     PHASE6_E3_COMPONENT_FILES,
@@ -21,6 +23,7 @@ from src.phase6_runner import (
     _scientific_config_sha256,
     _upsert_registry,
     load_phase6_runner_config,
+    validate_locked_environment,
 )
 from src.reproducibility import sha256_file
 
@@ -328,7 +331,7 @@ def test_e3_component_hash_scope_is_explicit(tmp_path: Path) -> None:
     assert "src/phase6_runner.py" in PHASE6_E3_COMPONENT_FILES
     assert "src/phase6_worker.py" in PHASE6_E3_COMPONENT_FILES
     assert "src/ccg.py" in PHASE6_E3_COMPONENT_FILES
-    assert "src/phase6_reporting.py" not in PHASE6_E3_COMPONENT_FILES
+    assert "src/phase6_reporting.py" in PHASE6_E3_COMPONENT_FILES
     assert "src/run_phase6.py" not in PHASE6_E3_COMPONENT_FILES
     assert PHASE6_E3_REQUIREMENTS_FILE == "requirements-gurobi-lock.txt"
     baseline = _e3_component_code_sha256(project_root)
@@ -356,3 +359,123 @@ def test_e3_component_hash_scope_is_explicit(tmp_path: Path) -> None:
     ) as handle:
         handle.write("\n# scientific change\n")
     assert _e3_component_code_sha256(copied_root) != baseline
+
+
+def test_locked_environment_rejects_installed_version_mismatch(
+    tmp_path: Path,
+) -> None:
+    (tmp_path / PHASE6_E3_REQUIREMENTS_FILE).write_text(
+        "pyomo==0.0.0\n", encoding="utf-8"
+    )
+    with pytest.raises(RuntimeError, match="locked environment mismatch"):
+        validate_locked_environment(tmp_path)
+
+
+def test_scale_advancement_rejects_failed_or_stale_gate(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "scale_advancement.json"
+    payload = {
+        "matrix_id": "matrix",
+        "scientific_config_sha256": "science",
+        "runner_config_sha256": "runner",
+        "e3_component_sha256": "code",
+        "source_tier": "P1",
+        "target_tier": "P2",
+        "status": "not_passed",
+        "gate_passed": False,
+    }
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="has not passed"):
+        validate_scale_advancement(
+            advancement_path=path,
+            matrix_id="matrix",
+            scientific_config_sha256="science",
+            runner_config_sha256="runner",
+            e3_component_sha256="code",
+            source_tier="P1",
+            target_tier="P2",
+        )
+    payload.update({"status": "passed", "gate_passed": True})
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="fingerprint mismatch"):
+        validate_scale_advancement(
+            advancement_path=path,
+            matrix_id="matrix",
+            scientific_config_sha256="stale",
+            runner_config_sha256="runner",
+            e3_component_sha256="code",
+            source_tier="P1",
+            target_tier="P2",
+        )
+
+
+def test_scale_advancement_computes_p1_gate_from_formal_runs(
+    tmp_path: Path,
+) -> None:
+    matrix = load_phase6_matrix(MATRIX_PATH)
+    scientific = _scientific_config_sha256(matrix)
+    runner_hash = sha256_file(RUNNER_CONFIG_PATH)
+    code_hash = _e3_component_code_sha256(MATRIX_PATH.parent.parent)
+    registry = tmp_path / "experiments" / "phase6" / "run_registry.csv"
+    seeds = matrix["seed_plan"]["formal_training_seeds"][:5]
+    for seed in seeds:
+        run_id = f"formal_P1_{seed}"
+        result_path = (
+            tmp_path
+            / "experiments"
+            / "phase6"
+            / "runs"
+            / run_id
+            / "result.json"
+        )
+        result_path.parent.mkdir(parents=True)
+        mode = {
+            "repetitions": [
+                {"status": "optimal", "subprocess_wall_seconds": 100.0}
+            ]
+        }
+        result_path.write_text(
+            json.dumps(
+                {
+                    "comparisons": [
+                        {
+                            "status": "optimal",
+                            "planned_repetitions": 1,
+                            "cold": mode,
+                            "warm": mode,
+                        }
+                        for _ in range(3)
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
+        row = {name: "" for name in REGISTRY_FIELDS}
+        row.update(
+            {
+                "run_id": run_id,
+                "status": "optimal",
+                "execution_mode": "formal",
+                "tier_id": "P1",
+                "seed": seed,
+                "scientific_config_sha256": scientific,
+                "runner_config_sha256": runner_hash,
+                "e3_component_sha256": code_hash,
+                "result_path": str(result_path),
+            }
+        )
+        _upsert_registry(registry, row)
+
+    decision = update_scale_advancement(
+        output_root=tmp_path,
+        matrix=matrix,
+        scientific_config_sha256=scientific,
+        runner_config_sha256=runner_hash,
+        e3_component_sha256=code_hash,
+    )
+
+    assert decision["status"] == "passed"
+    assert decision["jointly_optimal_pair_count"] == 15
+    assert decision["joint_pair_completion_rate"] == 1.0
+    assert decision["maximum_algorithm_median_runtime_fraction"] < 0.75
