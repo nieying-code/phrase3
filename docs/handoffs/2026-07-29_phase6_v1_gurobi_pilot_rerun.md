@@ -11,8 +11,8 @@
 - Branch: `agent/phase6-v1-gurobi-pilots-rerun`
 - Base branch: `main`
 - Base commit: `7295d1b14b9a2b90c8686137c032cab5c320565f`
-- Commit SHA: pending
-- PR: pending
+- Results handoff commit: `4474d8d2491721d44b6e04420921593a61dc8bb4`
+- PR: [#9](https://github.com/nieying-code/phrase3/pull/9)
 - CI: pending
 
 ## 固定运行环境
