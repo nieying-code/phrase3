@@ -11,8 +11,8 @@
 - Branch: `agent/phase6-v1-streamlined-pilots`
 - Base branch: `main`
 - Base commit: `fb0c44a1dd2d183f5ea571441e0992f19b95d74d`
-- Commit SHA: pending
-- PR: pending
+- Fix commit: `0f175efb6537709aecb3f7218ee72793a37cc623`
+- PR: [#8](https://github.com/nieying-code/phrase3/pull/8)
 - CI: pending
 
 ## Pilot 执行结果
@@ -145,4 +145,3 @@ ChatGPT 复审时请重点检查：
 3. 使用三个全新 run ID 严格串行重跑 V1；
 4. 核验3/3种子、每个种子3/3预算、冷热目标一致和环境指纹；
 5. 再决定是否进入精简矩阵的后续执行器与 pilot 工作。
-
