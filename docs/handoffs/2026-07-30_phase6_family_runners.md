@@ -1,0 +1,183 @@
+# Phase 6 E1/E2/E4/E5 Runner Handoff
+
+## 任务目标
+
+补齐精简版 Phase 6 实验矩阵的 E1、E2、E4、E5 执行器、失败保留、独立工作量投影和正式运行门槛，同时保持已完成 V1 E3 pilot 的科学指纹有效。
+
+## 分支和提交
+
+- Branch: `agent/phase6-experiment-runners`
+- Base branch: `main`
+- Base SHA: `c0eda012ccacee282e499b93751daf6a4b3f2e6b`
+- Implementation SHA: `088f384625a5bc22c3249dfd61c0a1e90ca05c70`
+- Test SHA: `f3e5e0bd94e577dd2c34d7891aba02fbe7ecc4bd`
+- Pre-link-update head SHA: `968468295bb3cb1443446a9040fe2791e63c09b7`
+- Review-fix SHA: `563209b0ddbcb0b210ca6790d3596a985bddd779`
+- Registry-integrity SHA: `dcd76e8074dff8480d47bef53538c90159d6d039`
+- PR: https://github.com/nieying-code/phrase3/pull/10
+
+## 修改内容
+
+### 配置
+
+- 新增 `configs/phase6_family_runner.yaml`；
+- 固定 family pilot 的 E1 → E2 → E4 → E5 顺序、每类代表工作单位和计划墙钟时限；
+- 只允许 `gurobi`、`gurobi_direct` 和 `Threads=1`。
+
+### 执行器
+
+- E1：扩展式与标准 C&CG 完整精确一致性门槛；
+- E2：六种策略统一训练场景独立补救重评和内生储备结构优势检查；
+- E4：复用已完成 E2 第一阶段方案，不在测试集重新优化；
+- E5：11 个 OFAT 与 4 个库存—市场交互配置的正式计划枚举。
+
+### 工程
+
+- 每个 family run 使用全生命周期排他锁；
+- 每个计划使用独立受监控子进程和外部墙钟；
+- 原子写入针对 Windows `PermissionError` 做有界重试；
+- 失败终态不可覆盖，失败后的计划显式标记未运行；
+- 新增不会读取大型结果文件的 `phase6_family_status`；
+- manifest 在最终结果写入后计算结果文件 SHA-256。
+
+### PR #10 复审修复
+
+- family 代码指纹现在覆盖全部直接和传递求解依赖，包括 `ccg.py`、`evaluation.py`、`extensive_model.py`、`inventory_model.py`、`model_common.py`、`model_data.py`、`phase6_protocol.py` 和 `recourse_model.py`；
+- 每个纳入范围的依赖都有独立变更测试，任一文件字节变化都会改变 family 组件指纹；
+- family 制品严格按“最终 `result.json` → 带结果哈希的 `manifest.json` → 不可变 registry 登记 → projection”顺序最终化；
+- projection 会重新核验 manifest、最终状态、结果文件字节哈希、工作量和四类指纹，不再只信任 CSV；
+- E4 同时核验 E2 主结果及具体策略结果哈希，并在 worker 实际读取前再次核验源策略文件；
+- 相同 run ID 在出现终态、失败、preflight 失败、checkpoint 或任何已开始制品后均不可复用；
+- preflight 诊断与主 runner 共用 run 生命周期排他锁，不会覆盖已有状态摘要；
+- 状态摘要只保存失败白名单字段并统一截断长消息，状态命令输出始终不超过 16 KiB。
+- 最终完整性复审补齐 `execution_mode`、`seed`、`parent_run_id`、`wall_seconds` 和 `tier_id` 与哈希保护结果的交叉核验；
+- projection 会先核验同指纹候选制品，再识别 primary pilot，CSV 篡改不能通过筛选绕过制品校验；
+- 五类字段分别篡改时，family 前序门槛均拒绝记录，projection 均报告 `family_pilot_failure`，正式授权保持 `false`。
+
+### 投影
+
+- E1、E2、E4、E5 按完整 family 计划/小时投影；
+- 每类要求三个冻结 pilot 种子恰好各有一条完整最优主运行；
+- 缺失、失败、重复、科学配置/runner/代码/环境指纹不一致均阻止授权；
+- 与现有 E3 投影合并后才计算总工时门槛。
+
+## 关键实现决策
+
+- 新 family 文件不加入 `PHASE6_E3_COMPONENT_FILES`，避免无关代码使 V1 E3 pilot 失效；
+- E2 所有策略均使用独立补救模型重评，避免解释扩展式内部非最坏场景变量；
+- E4 补救不可行是科学结果而非 runner 异常，但聚合成本指标必须为空；
+- E4 求解器失败是工程失败，会停止当前 family run；
+- family pilot 必须按同一种子的 E1 → E2 → E4 → E5 顺序运行；
+- 矩阵仍为候选状态，本提交不授权任何正式种子。
+
+## 修改文件
+
+- `configs/phase6_family_runner.yaml`
+- `src/phase6_families.py`
+- `src/phase6_family_runner.py`
+- `src/phase6_family_worker.py`
+- `src/phase6_family_status.py`
+- `src/run_phase6_family.py`
+- `tests/test_phase6_families.py`
+- `tests/test_phase6_family_runner.py`
+- `docs/phase6_family_runners.md`
+- 本 handoff
+
+## 验证结果
+
+实际执行：
+
+```text
+.\.venv-gurobi\Scripts\python.exe -m compileall -q src tests
+结果：通过
+
+.\.venv-gurobi\Scripts\python.exe -m pytest -q tests/test_phase6_families.py tests/test_phase6_family_runner.py
+结果：26 passed in 6.27s
+
+.\.venv-gurobi\Scripts\python.exe -m pytest -q --ignore=tests/test_run_phase5.py
+结果：103 passed in 50.09s
+
+.\.venv-gurobi\Scripts\python.exe -m pytest -q tests/test_run_phase5.py
+结果：6 passed in 20.56s
+```
+
+复审修复没有执行任何 family pilot、V2/P1/P2 E3 pilot、P3/P4 或正式种子。
+
+真实 Gurobi 开发级烟雾验证：
+
+```text
+Gurobi Optimizer / gurobipy: 13.0.2
+Pyomo interface: gurobi_direct
+Threads: 1
+D0 extensive objective: 6364.75854901043
+D0 standard C&CG objective: 6364.75854901043
+objective difference: 0.0
+C&CG iterations: 4
+V2 E5 baseline status: optimal
+V2 E5 baseline objective: 18381.98119768014
+```
+
+V1 E3 保留检查：
+
+```text
+3/3 post-PR #8 V1 runs: optimal
+9/9 budget pairs: optimal
+18/18 cold/warm algorithm executions: optimal
+maximum cold/warm objective difference: 1.8189894035458565e-12
+current E3 component SHA-256:
+bce43075dd91053b5b2c4fa2942fa84bea02654be17d2f10c99df08176248342
+all three V1 manifests use the same E3 and scientific fingerprints: yes
+```
+
+没有运行新的 family pilot、V2/P1/P2 E3 pilot、P3/P4 或正式种子。
+
+## CI 状态
+
+- Draft PR: #10
+- Initial implementation-head CI:
+  https://github.com/nieying-code/phrase3/actions/runs/30503054675
+- 结果：success；普通回归 88 项、Phase 5 端到端 6 项
+- Review-fix local validation：普通回归 98 项、Phase 5 端到端 6 项；
+- Review-fix CI:
+  https://github.com/nieying-code/phrase3/actions/runs/30543586174
+- 结果：success；普通回归 98 项、Phase 5 端到端 6 项；
+- 本 CI 链接对应包含全部代码修复与首轮 handoff 更新的 `efa9c76`；记录 CI 的纯文档提交会再次触发检查，最终状态以 PR checks 为准。
+- Registry-integrity local validation：专项 26 项、普通回归 103 项、Phase 5 端到端 6 项；
+- Registry-integrity 推送将触发新的最终 CI；最终状态仍以 PR checks 为准。
+
+## 已知限制
+
+- 当前矩阵状态仍为 `candidate_for_freeze_pending_review`；
+- E1/E2/E4/E5 三种子 pilot 尚未执行；
+- V2/P1/P2 E3 pilot 尚未执行；
+- 完整计算量投影和正式授权仍应为 `projection_incomplete` / `false`；
+- 真实校准轨道仍等待独立协议；
+- 不实现 P3/P4、并行 oracle、严格二进制 FIFO 或自动合并。
+
+## 风险点
+
+ChatGPT 复审时应重点检查：
+
+1. E2 六策略是否确实使用同一完整训练场景独立重评；
+2. E4 是否严格禁止测试集重优化及静默删除失败场景；
+3. E4 不可行与求解失败的状态语义是否正确；
+4. family 投影的工作单位是否有量纲一致；
+5. 三种子缺失、失败和重复是否都会阻止授权；
+6. E4 是否只能解析唯一、同指纹的 E2 方案；
+7. formal gate 是否在计划解析和场景生成前生效；
+8. family 代码是否确实不改变 E3 指纹；
+9. family 指纹是否覆盖全部共享求解依赖；
+10. manifest、registry 与 projection 的最终化顺序和哈希复核是否闭环；
+11. E4 是否同时核验 E2 主结果和具体策略结果；
+12. 同一 run ID 的成功、失败、preflight 和中断状态是否都不可覆盖；
+13. 超长失败消息下状态工具是否仍能在 16 KiB 内输出；
+14. 当前代码是否可能绕过 Gurobi-only 或单线程约束。
+
+## 下一步建议
+
+1. 复审并合并本 Draft PR；
+2. 通过独立受审提交把矩阵状态改为 `frozen_for_formal_execution`；
+3. 固定本 family 代码和配置指纹；
+4. 串行运行三个种子的 E1 → E2 → E4 → E5 family pilot；
+5. 串行运行 V2、P1、P2 的 E3 pilot，保留已通过的 V1；
+6. 审查完整投影；仅在门槛通过后申请正式种子授权。

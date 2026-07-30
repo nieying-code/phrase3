@@ -1,0 +1,59 @@
+matrix_path: configs/phase6_experiment_matrix.yaml
+
+solver:
+  preference:
+    - gurobi
+  threads: 1
+  feasibility_tolerance: 1.0e-7
+  optimality_tolerance: 1.0e-7
+  tee: false
+
+ccg:
+  absolute_tolerance: 1.0e-6
+  relative_tolerance: 1.0e-6
+  max_iterations: 200
+
+family_pilot_protocol:
+  protocol_id: phase6_family_pilot_v1_0
+  seed_source: seed_plan.pilot_training_seeds
+  execution_order:
+    - E1
+    - E2
+    - E4
+    - E5
+  E1:
+    tier: V1
+    budget_factor: 1.1
+    work_units_per_seed: 1
+  E2:
+    tier: V2
+    budget_factor: 1.1
+    policies:
+      - deterministic_mean
+      - zero_reserve
+      - fixed_reserve_0_10
+      - fixed_reserve_0_30
+      - fixed_reserve_0_50
+      - endogenous_reserve
+  E4:
+    tier: V2
+    budget_factor: 1.1
+    policies:
+      - endogenous_reserve
+    independent_test_seed_offset: 10000000
+  E5:
+    tier: V2
+    budget_factor: 1.1
+    configurations:
+      - baseline
+      - interaction_life_1_supply_0.4
+
+runner:
+  checkpoint_after_each_plan: true
+  atomic_output_replacement: true
+  retain_worker_requests_and_results: true
+  plan_wall_seconds:
+    E1: 1800
+    E2: 1800
+    E4: 3600
+    E5: 1800
