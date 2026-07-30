@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 from dataclasses import replace
 import json
 from pathlib import Path
@@ -10,11 +11,16 @@ import pytest
 from src.evaluation import EvaluationResult
 from src.phase6_families import (
     FAMILY_COMPONENT_FILES,
+    FAMILY_REGISTRY_FIELDS,
     aggregate_oos_evaluation,
     enumerate_family_plans,
     family_code_sha256,
     sensitivity_configurations,
     update_family_projection,
+)
+from src.phase6_family_runner import (
+    _validate_family_pilot_order,
+    load_family_runner_config,
 )
 from src.phase6_protocol import generate_phase6_data, load_phase6_matrix
 from src.recourse_model import RecourseResult
@@ -22,6 +28,7 @@ from src.reproducibility import sha256_file
 
 
 MATRIX_PATH = Path("configs/phase6_experiment_matrix.yaml").resolve()
+FAMILY_CONFIG_PATH = Path("configs/phase6_family_runner.yaml").resolve()
 
 
 def test_formal_family_plan_counts_match_frozen_matrix() -> None:
@@ -238,10 +245,15 @@ def test_projection_filters_family_runner_configuration_hash(
                     {
                         "run_id": run_id,
                         "family": family,
+                        "execution_mode": "pilot",
+                        "tier_ids": ["V1"],
+                        "seed": seed,
+                        "parent_run_id": None,
                         "status": "optimal",
                         "finalized": True,
                         "planned_work_units": 1,
                         "completed_work_units": 1,
+                        "wall_seconds": 3600.0,
                         "fingerprints": {
                             "scientific_config_sha256": "science",
                             "family_config_sha256": "config",
@@ -340,10 +352,15 @@ def test_projection_rejects_tampered_result_bytes(tmp_path: Path) -> None:
             result = {
                 "run_id": run_id,
                 "family": family,
+                "execution_mode": "pilot",
+                "tier_ids": ["V1"],
+                "seed": seed,
+                "parent_run_id": None,
                 "status": "optimal",
                 "finalized": True,
                 "planned_work_units": 1,
                 "completed_work_units": 1,
+                "wall_seconds": 3600.0,
                 "fingerprints": {
                     "scientific_config_sha256": "science",
                     "family_config_sha256": "config",
@@ -386,3 +403,150 @@ def test_projection_rejects_tampered_result_bytes(tmp_path: Path) -> None:
     e1 = projection["family_projection"]["E1"]
     assert e1["status"] == "family_pilot_failure"
     assert tampered_run in e1["artifact_errors"]
+
+
+@pytest.mark.parametrize(
+    ("field", "tampered_value"),
+    (
+        ("execution_mode", "formal"),
+        ("seed", "2026072999"),
+        ("parent_run_id", "diagnostic_parent"),
+        ("wall_seconds", "7200.0"),
+        ("tier_id", "V2"),
+    ),
+)
+def test_registry_field_tampering_blocks_order_and_projection(
+    tmp_path: Path,
+    field: str,
+    tampered_value: str,
+) -> None:
+    matrix = load_phase6_matrix(MATRIX_PATH)
+    config = load_family_runner_config(FAMILY_CONFIG_PATH)
+    base = tmp_path / "experiments" / "phase6"
+    base.mkdir(parents=True)
+    (base / "pilot_throughput_projection.json").write_text(
+        json.dumps(
+            {
+                "completed_run_count": 12,
+                "required_run_count": 12,
+                "missing_runs": [],
+                "failed_primary_runs": [],
+                "duplicate_primary_runs": [],
+                "family_projection": {
+                    family: (
+                        {
+                            "status": "projected",
+                            "projected_wall_hours": 1.0,
+                        }
+                        if family == "E3"
+                        else {"status": "unavailable"}
+                    )
+                    for family in ("E1", "E2", "E3", "E4", "E5")
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    registry_rows: list[dict[str, object]] = []
+    target_run_id = "E1_2026072001"
+    fingerprints = {
+        "scientific_config_sha256": "science",
+        "family_config_sha256": "config",
+        "family_code_sha256": "code",
+        "environment_sha256": "environment",
+    }
+    for family in ("E1", "E2", "E4", "E5"):
+        for seed in (2026072001, 2026072002, 2026072003):
+            run_id = f"{family}_{seed}"
+            directory = base / "family_runs" / run_id
+            directory.mkdir(parents=True)
+            result_path = directory / "result.json"
+            manifest_path = directory / "manifest.json"
+            result = {
+                "run_id": run_id,
+                "parent_run_id": None,
+                "family": family,
+                "execution_mode": "pilot",
+                "tier_ids": ["V1"],
+                "seed": seed,
+                "status": "optimal",
+                "finalized": True,
+                "planned_work_units": 1,
+                "completed_work_units": 1,
+                "wall_seconds": 3600.0,
+                "fingerprints": fingerprints,
+            }
+            result_path.write_text(json.dumps(result), encoding="utf-8")
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "artifact_state": "finalized",
+                        "run_id": run_id,
+                        "family": family,
+                        "result_path": str(result_path.resolve()),
+                        "result_sha256": sha256_file(result_path),
+                        **fingerprints,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            row: dict[str, object] = {
+                "run_id": run_id,
+                "parent_run_id": "",
+                "family": family,
+                "execution_mode": "pilot",
+                "tier_id": "V1",
+                "seed": seed,
+                "status": "optimal",
+                "planned_work_units": 1,
+                "completed_work_units": 1,
+                "wall_seconds": 3600.0,
+                "peak_memory_mb": 1.0,
+                **fingerprints,
+                "started_at_utc": "",
+                "updated_at_utc": "",
+                "failure_stage": "",
+                "failure_message": "",
+                "result_path": str(result_path.resolve()),
+                "manifest_path": str(manifest_path.resolve()),
+            }
+            if run_id == target_run_id:
+                row[field] = tampered_value
+            registry_rows.append(row)
+    registry_path = base / "family_run_registry.csv"
+    with registry_path.open(
+        "w",
+        encoding="utf-8-sig",
+        newline="",
+    ) as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=FAMILY_REGISTRY_FIELDS,
+        )
+        writer.writeheader()
+        writer.writerows(registry_rows)
+
+    with pytest.raises(ValueError, match="requires prior optimal families"):
+        _validate_family_pilot_order(
+            output_root=tmp_path,
+            config=config,
+            family="E2",
+            seed=2026072001,
+            scientific_hash="science",
+            family_config_hash="config",
+            family_code_hash="code",
+            environment_hash="environment",
+        )
+
+    projection = update_family_projection(
+        output_root=tmp_path,
+        matrix=matrix,
+        scientific_config_hash="science",
+        family_config_hash="config",
+        family_code_hash="code",
+        environment_hash="environment",
+    )
+    e1 = projection["family_projection"]["E1"]
+    assert e1["status"] == "family_pilot_failure"
+    assert target_run_id in e1["artifact_errors"]
+    assert projection["formal_execution_authorized"] is False

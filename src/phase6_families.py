@@ -261,6 +261,53 @@ def validate_family_run_artifacts(
     for name in ("planned_work_units", "completed_work_units"):
         if int(result.get(name, -1)) != int(row.get(name) or -2):
             raise ValueError(f"family result {name} does not match registry")
+    if str(result.get("execution_mode") or "") != str(
+        row.get("execution_mode") or ""
+    ):
+        raise ValueError(
+            "family result execution_mode does not match registry"
+        )
+    try:
+        result_seed = int(result["seed"])
+        registry_seed = int(str(row.get("seed") or ""))
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("family seed is not a valid integer") from exc
+    if result_seed != registry_seed:
+        raise ValueError("family result seed does not match registry")
+    if str(result.get("parent_run_id") or "") != str(
+        row.get("parent_run_id") or ""
+    ):
+        raise ValueError(
+            "family result parent_run_id does not match registry"
+        )
+    try:
+        result_wall_seconds = float(result["wall_seconds"])
+        registry_wall_seconds = float(
+            str(row.get("wall_seconds") or "")
+        )
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError(
+            "family wall_seconds is not a valid number"
+        ) from exc
+    if (
+        not math.isfinite(result_wall_seconds)
+        or not math.isfinite(registry_wall_seconds)
+        or not math.isclose(
+            result_wall_seconds,
+            registry_wall_seconds,
+            rel_tol=1e-12,
+            abs_tol=1e-9,
+        )
+    ):
+        raise ValueError(
+            "family result wall_seconds does not match registry"
+        )
+    tier_ids = result.get("tier_ids")
+    if not isinstance(tier_ids, list) or not tier_ids:
+        raise ValueError("family result tier_ids is missing")
+    result_tier_id = ",".join(str(value) for value in tier_ids)
+    if result_tier_id != str(row.get("tier_id") or ""):
+        raise ValueError("family result tier_ids does not match registry")
     fingerprints = result.get("fingerprints")
     if not isinstance(fingerprints, dict):
         raise ValueError("family result fingerprints are missing")
@@ -812,27 +859,32 @@ def update_family_projection(
                 "r", encoding="utf-8-sig", newline=""
             ) as handle:
                 rows = list(csv.DictReader(handle))
-        matching = [
+        fingerprint_candidates = [
             row for row in rows
             if (
-                row.get("execution_mode") == "pilot"
-                and row.get("scientific_config_sha256")
+                row.get("scientific_config_sha256")
                 == scientific_config_hash
                 and row.get("family_config_sha256")
                 == family_config_hash
                 and row.get("family_code_sha256") == family_code_hash
                 and row.get("environment_sha256") == environment_hash
-                and not row.get("parent_run_id", "").strip()
             )
         ]
         artifact_errors: dict[str, str] = {}
-        for row in matching:
+        for row in fingerprint_candidates:
             try:
                 validate_family_run_artifacts(row)
             except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
                 artifact_errors[str(row.get("run_id"))] = (
                     f"{type(exc).__name__}: {exc}"
                 )
+        matching = [
+            row for row in fingerprint_candidates
+            if (
+                row.get("execution_mode") == "pilot"
+                and not row.get("parent_run_id", "").strip()
+            )
+        ]
         workload = matrix["workload_estimation"]
         work_units = {
             "E1": int(workload["E1_exactness_plan_count"]),
@@ -846,6 +898,16 @@ def update_family_projection(
             for value in matrix["seed_plan"]["pilot_training_seeds"]
         )
         for family in FAMILIES:
+            family_artifact_errors = {
+                str(row.get("run_id")): artifact_errors[
+                    str(row.get("run_id"))
+                ]
+                for row in fingerprint_candidates
+                if (
+                    row.get("family") == family
+                    and str(row.get("run_id")) in artifact_errors
+                )
+            }
             candidates = [
                 row for row in matching if row.get("family") == family
             ]
@@ -886,6 +948,13 @@ def update_family_projection(
             successful = [
                 row for row in unique if row["run_id"] not in failed
             ]
+            if family_artifact_errors:
+                family_projection[family] = {
+                    "status": "family_pilot_failure",
+                    "failed_run_ids": sorted(family_artifact_errors),
+                    "artifact_errors": family_artifact_errors,
+                }
+                continue
             if missing:
                 family_projection[family] = {
                     "status": "awaiting_family_pilot",
