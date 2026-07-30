@@ -107,4 +107,3 @@ family registry 和投影同时核验：
 - 实际锁定依赖版本的环境哈希。
 
 每个 family 必须恰好有三个无父运行标识、完整且最优的 pilot。缺失、失败或重复运行都会阻止投影通过。只有 E1–E5 全部获得有量纲一致的投影、E3 pilot 覆盖完整、总工时与单 family 工时门槛通过且矩阵已冻结时，`formal_execution_authorized` 才能为 `true`。
-
