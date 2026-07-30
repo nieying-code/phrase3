@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
 
 from src import phase6_family_runner
+from src import phase6_family_worker
 from src.phase6_families import _atomic_write_json
 from src.phase6_family_runner import (
     _find_e2_source_plan,
@@ -85,11 +87,44 @@ def _successful_e2_worker(
         "robust_objective": objective,
         "reserve": 1.0,
         "regular_purchase": {"relief_food_1": [0.0] * 6},
+        "exact_training_evaluation": {
+            "status": "optimal",
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+        },
         "wall_seconds": 0.1,
         "peak_memory_mb": 5.0,
         "result_path": str(path),
     }
     _atomic_write_json(path, payload)
+    return payload
+
+
+def _e2_worker_with_infeasible_deterministic_policy(
+    request: dict[str, Any],
+    timeout_seconds: float,
+    work_directory: Path,
+) -> dict[str, Any]:
+    payload = _successful_e2_worker(
+        request,
+        timeout_seconds,
+        work_directory,
+    )
+    policy = request["plan"]["policy"]
+    if policy == "deterministic_mean":
+        payload["robust_objective"] = None
+        payload["exact_training_evaluation"] = {
+            "status": "infeasible_recourse",
+            "infeasible_scenario_count": 1,
+            "solver_failure_count": 0,
+        }
+    else:
+        payload["exact_training_evaluation"] = {
+            "status": "optimal",
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+        }
+    _atomic_write_json(Path(payload["result_path"]), payload)
     return payload
 
 
@@ -246,6 +281,145 @@ def test_e2_runner_checkpoints_all_policies_and_checks_dominance(
             family_config_hash=fingerprints["family_config_sha256"],
             family_code_hash=fingerprints["family_code_sha256"],
             environment_hash=fingerprints["environment_sha256"],
+        )
+
+
+def test_e2_runner_retains_infeasible_deterministic_evaluation(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "validate_gurobi_runtime",
+        lambda: {"gurobipy": "13.0.2", "optimizer": "13.0.2"},
+    )
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "validate_locked_environment",
+        lambda _: {"gurobipy": "13.0.2"},
+    )
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "_validate_family_pilot_order",
+        lambda **_: None,
+    )
+    result = run_family_sequence(
+        matrix_path=MATRIX_PATH,
+        family_config_path=CONFIG_PATH,
+        output_root=tmp_path,
+        family="E2",
+        seed=2026072001,
+        execution_mode="pilot",
+        run_id="pilot_e2_infeasible_deterministic",
+        worker=_e2_worker_with_infeasible_deterministic_policy,
+    )
+    assert result["status"] == "optimal"
+    assert result["completed_work_units"] == 6
+    deterministic = next(
+        row
+        for row in result["plans"]
+        if row["policy"] == "deterministic_mean"
+    )
+    assert deterministic["status"] == "optimal"
+    assert deterministic["robust_objective"] is None
+
+
+def test_e2_worker_retains_exactly_infeasible_deterministic_policy(
+    monkeypatch,
+) -> None:
+    generated = SimpleNamespace(
+        tier=SimpleNamespace(id="V2", solver_call_seconds=60.0),
+        seed=2026072001,
+        budget=100.0,
+        data=SimpleNamespace(budget=100.0),
+    )
+    native = SimpleNamespace(
+        regular_purchase={"relief_food_1": [1.0]},
+        reserve=0.0,
+        objective=90.0,
+        model_name="DeterministicMeanModel",
+    )
+    evaluation = SimpleNamespace(
+        status="infeasible_recourse",
+        regular_cost=90.0,
+        robust_objective=None,
+        worst_scenario=None,
+        worst_recourse_cost=None,
+        scenario_results={
+            "s0001": SimpleNamespace(status="infeasible")
+        },
+        infeasible_scenarios=("s0001",),
+        failed_scenarios=(),
+        runtime_seconds=0.1,
+    )
+    monkeypatch.setattr(
+        phase6_family_worker,
+        "_generate_training",
+        lambda request: generated,
+    )
+    monkeypatch.setattr(
+        phase6_family_worker,
+        "build_deterministic_model",
+        lambda data: object(),
+    )
+    monkeypatch.setattr(
+        phase6_family_worker,
+        "solve_model",
+        lambda model, **kwargs: native,
+    )
+    monkeypatch.setattr(
+        phase6_family_worker,
+        "evaluate_first_stage",
+        lambda *args, **kwargs: evaluation,
+    )
+    result = phase6_family_worker._run_e2(
+        {
+            "plan": {
+                "plan_id": "deterministic_infeasible",
+                "policy": "deterministic_mean",
+                "budget_index": 1,
+            },
+            "solver": {
+                "preference": ["gurobi"],
+                "threads": 1,
+                "feasibility_tolerance": 1.0e-7,
+                "optimality_tolerance": 1.0e-7,
+            },
+        }
+    )
+    assert result["status"] == "optimal"
+    assert result["robust_objective"] is None
+    assert (
+        result["exact_training_evaluation"]["status"]
+        == "infeasible_recourse"
+    )
+    assert (
+        result["exact_training_evaluation"]["infeasible_scenario_count"]
+        == 1
+    )
+    monkeypatch.setattr(
+        phase6_family_worker,
+        "build_fixed_reserve_model",
+        lambda data, ratio: object(),
+    )
+    with pytest.raises(
+        RuntimeError,
+        match="unexpectedly infeasible for robust policy",
+    ):
+        phase6_family_worker._run_e2(
+            {
+                "plan": {
+                    "plan_id": "fixed_infeasible",
+                    "policy": "fixed_reserve_0_10",
+                    "budget_index": 1,
+                },
+                "solver": {
+                    "preference": ["gurobi"],
+                    "threads": 1,
+                    "feasibility_tolerance": 1.0e-7,
+                    "optimality_tolerance": 1.0e-7,
+                },
+            }
         )
 
 

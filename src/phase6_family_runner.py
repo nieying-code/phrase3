@@ -470,11 +470,28 @@ def _validate_e2_dominance(
     }
     if set(by_policy) != set(matrix["model_comparison"]["policies"]):
         raise ValueError("E2 run does not contain all six optimal policies")
+    endogenous_evaluation = by_policy["endogenous_reserve"].get(
+        "exact_training_evaluation"
+    ) or {}
+    if (
+        endogenous_evaluation.get("status") != "optimal"
+        or by_policy["endogenous_reserve"].get("robust_objective") is None
+    ):
+        raise ValueError(
+            "endogenous reserve policy lacks an optimal exact evaluation"
+        )
     endogenous = float(by_policy["endogenous_reserve"]["robust_objective"])
-    fixed = min(
-        float(by_policy[policy]["robust_objective"])
-        for policy in POLICY_RATIOS
-    )
+    fixed_objectives = []
+    for policy in POLICY_RATIOS:
+        evaluation = by_policy[policy].get("exact_training_evaluation") or {}
+        objective = by_policy[policy].get("robust_objective")
+        if evaluation.get("status") != "optimal" or objective is None:
+            raise ValueError(
+                f"fixed reserve policy {policy} lacks an optimal exact "
+                "evaluation"
+            )
+        fixed_objectives.append(float(objective))
+    fixed = min(fixed_objectives)
     gate = matrix["model_comparison"]["endogenous_dominance_check"]
     limit = float(gate["tolerance_absolute"]) + float(
         gate["tolerance_relative"]
