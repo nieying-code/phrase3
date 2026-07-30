@@ -316,7 +316,13 @@ def _solve_policy(
             reserve,
             **solver,
         )
-    if evaluation.status != "optimal" or evaluation.robust_objective is None:
+    if evaluation.status == "infeasible_recourse":
+        if policy != "deterministic_mean":
+            raise RuntimeError(
+                "exact training evaluation unexpectedly infeasible for "
+                f"robust policy={policy}"
+            )
+    elif evaluation.status != "optimal" or evaluation.robust_objective is None:
         raise RuntimeError(
             f"exact training evaluation status={evaluation.status}"
         )
