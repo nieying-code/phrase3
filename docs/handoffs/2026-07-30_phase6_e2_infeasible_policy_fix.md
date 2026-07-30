@@ -9,8 +9,8 @@
 - Branch: `agent/phase6-family-pilots`
 - Base branch: `main`
 - Base commit: `b0b8cac7fb0b931832a4072ae31c26cee7a990a7`
-- Commit SHA: pending
-- PR: pending
+- Implementation commit: `bf8525533a381b146c96b5e6f2b65309cf5992c9`
+- PR: https://github.com/nieying-code/phrase3/pull/12
 
 ## 实际运行证据
 
