@@ -111,6 +111,7 @@ def test_phase6_execution_seed_gate_blocks_formal_candidate_matrix() -> None:
         seed=2026072001,
         execution_mode="pilot",
     )
+    matrix["status"] = "candidate_for_freeze_pending_review"
     with pytest.raises(Phase6ProtocolError, match="formal seeds are blocked"):
         validate_execution_seed(
             matrix,

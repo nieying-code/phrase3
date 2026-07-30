@@ -7,13 +7,13 @@
 ```text
 schema_version = 2.0
 matrix_id = phase6_streamlined_experiments_v2_0
-status = candidate_for_freeze_pending_review
+status = frozen_for_formal_execution
 ```
 
-本版根据论文充分性与计算成本重新设计。它尚未授权正式种子；只有配置、
-代码、测试和PR复审通过，并把状态改为 `frozen_for_formal_execution`
-后，正式运行才可能通过第一层门槛。完整且指纹匹配的pilot投影仍是第二层
-门槛。
+本版根据论文充分性与计算成本重新设计，实验设计状态已经正式冻结。
+`frozen_for_formal_execution` 只满足正式运行的第一层门槛，并不单独授权
+正式种子。完整、成功且指纹匹配的 E3 与 family pilot 投影仍是第二层门槛；
+在投影明确记录 `formal_execution_authorized=true` 前不得运行正式种子。
 
 本次精简不修改阶段1–5的数学模型或算法，只缩减数值实验范围。P3和P4
 从正式矩阵删除，不再作为默认执行任务。

@@ -1,8 +1,8 @@
 schema_version: "2.0"
 matrix_id: phase6_streamlined_experiments_v2_0
-status: candidate_for_freeze_pending_review
+status: frozen_for_formal_execution
 initial_draft_on: "2026-07-24"
-revised_on: "2026-07-29"
+revised_on: "2026-07-30"
 
 objectives:
   - validate_endogenous_reserve_value

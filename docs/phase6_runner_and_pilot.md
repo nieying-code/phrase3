@@ -2,9 +2,10 @@
 
 ## 当前边界
 
-阶段6runner已经实现，但精简矩阵
-`phase6_streamlined_experiments_v2_0`仍处于
-`candidate_for_freeze_pending_review`。不得运行正式种子。
+阶段6runner已经实现，精简矩阵
+`phase6_streamlined_experiments_v2_0` 已处于
+`frozen_for_formal_execution`。这只表示实验设计正式冻结；在完整 pilot
+投影通过并明确授权前，仍不得运行正式种子。
 
 正式授权要求：
 
@@ -12,7 +13,7 @@
 2. V1、V2、P1、P2各三个当前指纹pilot完整；
 3. E1–E5均有量纲一致的实测投影；
 4. 总工时与单实验族门槛通过；
-5. 受审提交把矩阵状态改为`frozen_for_formal_execution`；
+5. 矩阵状态保持为`frozen_for_formal_execution`；
 6. 投影明确记录`formal_execution_authorized=true`。
 
 ## 唯一运行环境
