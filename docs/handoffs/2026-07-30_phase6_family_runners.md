@@ -134,7 +134,10 @@ all three V1 manifests use the same E3 and scientific fingerprints: yes
   https://github.com/nieying-code/phrase3/actions/runs/30503054675
 - 结果：success；普通回归 88 项、Phase 5 端到端 6 项
 - Review-fix local validation：普通回归 98 项、Phase 5 端到端 6 项；
-- Review-fix 推送将触发最终 CI；最终状态以 PR checks 为准。
+- Review-fix CI:
+  https://github.com/nieying-code/phrase3/actions/runs/30543586174
+- 结果：success；普通回归 98 项、Phase 5 端到端 6 项；
+- 本 CI 链接对应包含全部代码修复与首轮 handoff 更新的 `efa9c76`；记录 CI 的纯文档提交会再次触发检查，最终状态以 PR checks 为准。
 
 ## 已知限制
 
