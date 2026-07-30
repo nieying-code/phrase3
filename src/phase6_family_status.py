@@ -9,6 +9,8 @@ from typing import Any
 
 import psutil
 
+from .phase6_families import compact_failure
+
 
 MAX_STATUS_BYTES = 64 * 1024
 MAX_OUTPUT_BYTES = 16 * 1024
@@ -64,20 +66,21 @@ def build_family_status(
             try:
                 loaded = json.loads(status_path.read_text(encoding="utf-8"))
                 payload = {
-                    key: loaded.get(key)
-                    for key in (
-                        "run_id",
-                        "family",
-                        "execution_mode",
-                        "status",
-                        "planned_work_units",
-                        "completed_work_units",
-                        "failure",
-                        "updated_at_utc",
-                    )
+                    "run_id": loaded.get("run_id"),
+                    "family": loaded.get("family"),
+                    "execution_mode": loaded.get("execution_mode"),
+                    "status": loaded.get("status"),
+                    "planned_work_units": loaded.get(
+                        "planned_work_units"
+                    ),
+                    "completed_work_units": loaded.get(
+                        "completed_work_units"
+                    ),
+                    "failure": compact_failure(loaded.get("failure")),
+                    "updated_at_utc": loaded.get("updated_at_utc"),
                 }
             except (OSError, json.JSONDecodeError) as exc:
-                read_error = f"{type(exc).__name__}: {exc}"
+                read_error = f"{type(exc).__name__}: {exc}"[:1000]
     return {
         **payload,
         "run_id": payload.get("run_id") or run_id,
@@ -98,19 +101,64 @@ def build_family_status(
     }
 
 
+def bounded_status_json(payload: dict[str, Any]) -> str:
+    """Serialize status with deterministic reductions and no failure mode."""
+
+    bounded = dict(payload)
+    for name, limit in (
+        ("run_id", 512),
+        ("run_directory", 2000),
+        ("source", 128),
+        ("status", 128),
+        ("read_error", 1000),
+    ):
+        if bounded.get(name) is not None:
+            bounded[name] = str(bounded[name])[:limit]
+    bounded["failure"] = compact_failure(bounded.get("failure"))
+    bounded["processes"] = [
+        {
+            "pid": row.get("pid"),
+            "name": str(row.get("name") or "")[:256],
+            "cpu_percent": row.get("cpu_percent"),
+            "memory_mb": row.get("memory_mb"),
+        }
+        for row in list(bounded.get("processes") or ())[:4]
+    ]
+    bounded["files"] = {
+        str(name)[:128]: {
+            "path": str(info.get("path") or "")[:1500],
+            "exists": bool(info.get("exists")),
+            "size_bytes": info.get("size_bytes"),
+        }
+        for name, info in dict(bounded.get("files") or {}).items()
+    }
+    encoded = json.dumps(bounded, ensure_ascii=False, indent=2)
+    if len(encoded.encode("utf-8")) <= MAX_OUTPUT_BYTES:
+        return encoded
+    bounded["processes"] = []
+    for info in bounded["files"].values():
+        info["path"] = Path(info["path"]).name[:256]
+    encoded = json.dumps(bounded, ensure_ascii=False, indent=2)
+    if len(encoded.encode("utf-8")) <= MAX_OUTPUT_BYTES:
+        return encoded
+    minimal = {
+        "run_id": str(bounded.get("run_id") or "")[:512],
+        "status": str(bounded.get("status") or "unreadable")[:128],
+        "failure": compact_failure(bounded.get("failure"), message_limit=512),
+        "read_error": (
+            str(bounded.get("read_error") or "status output was reduced")[:512]
+        ),
+    }
+    return json.dumps(minimal, ensure_ascii=False, indent=2)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=Path("outputs"))
     parser.add_argument("--run-id", required=True)
     args = parser.parse_args()
     payload = build_family_status(args.output, args.run_id)
-    encoded = json.dumps(payload, ensure_ascii=False, indent=2)
-    if len(encoded.encode("utf-8")) > MAX_OUTPUT_BYTES:
-        payload["processes"] = payload["processes"][:4]
-        encoded = json.dumps(payload, ensure_ascii=False, indent=2)
-    if len(encoded.encode("utf-8")) > MAX_OUTPUT_BYTES:
-        raise RuntimeError("bounded family status output exceeds 16 KiB")
-    print(encoded)
+    print(bounded_status_json(payload))
     return 0
 
 

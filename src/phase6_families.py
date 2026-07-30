@@ -28,6 +28,7 @@ from .phase6_protocol import (
     budget_values_for_tier,
     generate_phase6_data,
 )
+from .reproducibility import sha256_file
 
 
 FAMILIES = ("E1", "E2", "E4", "E5")
@@ -58,6 +59,27 @@ FAMILY_REGISTRY_FIELDS = (
     "failure_stage",
     "failure_message",
     "result_path",
+    "manifest_path",
+)
+FAMILY_COMPONENT_FILES = (
+    "src/ccg.py",
+    "src/evaluation.py",
+    "src/extensive_model.py",
+    "src/inventory_model.py",
+    "src/model_common.py",
+    "src/model_data.py",
+    "src/parameters.py",
+    "src/phase6_locking.py",
+    "src/phase6_protocol.py",
+    "src/phase6_runner.py",
+    "src/recourse_model.py",
+    "src/reproducibility.py",
+    "src/scenario_generator.py",
+    "src/phase6_families.py",
+    "src/phase6_family_runner.py",
+    "src/phase6_family_worker.py",
+    "src/phase6_family_status.py",
+    "src/run_phase6_family.py",
 )
 SCIENTIFIC_CONFIG_EXCLUDED_ROOT_FIELDS = (
     "status",
@@ -149,17 +171,10 @@ def environment_sha256(locked_environment: Mapping[str, str]) -> str:
 
 
 def family_code_sha256(project_root: Path) -> str:
-    """Fingerprint only the independent family implementation."""
+    """Fingerprint every code dependency that can change family results."""
 
-    relatives = (
-        "src/phase6_families.py",
-        "src/phase6_family_runner.py",
-        "src/phase6_family_worker.py",
-        "src/phase6_family_status.py",
-        "src/run_phase6_family.py",
-    )
     digest = hashlib.sha256()
-    for relative in relatives:
+    for relative in FAMILY_COMPONENT_FILES:
         path = project_root / relative
         if not path.is_file():
             raise FileNotFoundError(f"family component file is missing: {path}")
@@ -168,6 +183,118 @@ def family_code_sha256(project_root: Path) -> str:
         digest.update(path.read_bytes())
         digest.update(b"\0")
     return digest.hexdigest()
+
+
+def compact_failure(
+    failure: Mapping[str, Any] | Any | None,
+    *,
+    message_limit: int = 1000,
+) -> dict[str, Any] | None:
+    """Return a bounded whitelist-only failure summary."""
+
+    if failure is None:
+        return None
+    if not isinstance(failure, Mapping):
+        return {"message": str(failure)[:message_limit]}
+    fields = (
+        "status",
+        "stage",
+        "message",
+        "exception_type",
+        "budget_index",
+        "plan_index",
+        "plan_id",
+        "algorithm",
+        "family",
+    )
+    compact: dict[str, Any] = {}
+    for name in fields:
+        value = failure.get(name)
+        if value is None:
+            continue
+        if name == "message":
+            compact[name] = str(value)[:message_limit]
+        elif isinstance(value, str):
+            compact[name] = value[:message_limit]
+        elif isinstance(value, (int, float, bool)):
+            compact[name] = value
+        else:
+            compact[name] = str(value)[:message_limit]
+    return compact
+
+
+def validate_family_run_artifacts(
+    row: Mapping[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Verify a registry row against its finalized result and manifest."""
+
+    result_path = Path(str(row.get("result_path") or ""))
+    manifest_path = Path(str(row.get("manifest_path") or ""))
+    if not result_path.is_file():
+        raise ValueError("family result artifact is missing")
+    if not manifest_path.is_file():
+        raise ValueError("family manifest artifact is missing")
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if result.get("finalized") is not True:
+        raise ValueError("family result is not finalized")
+    if manifest.get("artifact_state") != "finalized":
+        raise ValueError("family manifest is not finalized")
+    if Path(str(manifest.get("result_path") or "")).resolve() != (
+        result_path.resolve()
+    ):
+        raise ValueError("manifest result path does not match registry")
+    if manifest.get("result_sha256") != sha256_file(result_path):
+        raise ValueError("family result SHA-256 does not match manifest")
+    scalar_checks = {
+        "run_id": row.get("run_id"),
+        "family": row.get("family"),
+        "status": row.get("status"),
+    }
+    for name, expected in scalar_checks.items():
+        if str(result.get(name)) != str(expected):
+            raise ValueError(f"family result {name} does not match registry")
+        if name != "status" and str(manifest.get(name)) != str(expected):
+            raise ValueError(
+                f"family manifest {name} does not match registry"
+            )
+    for name in ("planned_work_units", "completed_work_units"):
+        if int(result.get(name, -1)) != int(row.get(name) or -2):
+            raise ValueError(f"family result {name} does not match registry")
+    fingerprints = result.get("fingerprints")
+    if not isinstance(fingerprints, dict):
+        raise ValueError("family result fingerprints are missing")
+    for name in (
+        "scientific_config_sha256",
+        "family_config_sha256",
+        "family_code_sha256",
+        "environment_sha256",
+    ):
+        expected = str(row.get(name) or "")
+        if str(fingerprints.get(name) or "") != expected:
+            raise ValueError(f"family result {name} does not match registry")
+        if str(manifest.get(name) or "") != expected:
+            raise ValueError(f"family manifest {name} does not match registry")
+    return result, manifest
+
+
+def load_verified_plan_result(
+    record: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Load one worker result only when its recorded byte hash matches."""
+
+    result_path = Path(str(record.get("result_path") or ""))
+    expected_hash = str(record.get("result_sha256") or "")
+    if not result_path.is_file() or not expected_hash:
+        raise ValueError("family plan result artifact is incomplete")
+    if sha256_file(result_path) != expected_hash:
+        raise ValueError("family plan result SHA-256 mismatch")
+    payload = json.loads(result_path.read_text(encoding="utf-8"))
+    if payload.get("status") != "optimal":
+        raise ValueError("family plan result is not optimal")
+    if payload.get("plan_id") != record.get("plan_id"):
+        raise ValueError("family plan result ID mismatch")
+    return payload
 
 
 def _formal_seeds(
@@ -650,10 +777,10 @@ def upsert_family_registry(
             ) as handle:
                 existing = list(csv.DictReader(handle))
         run_id = str(row["run_id"])
-        existing = [
-            current for current in existing
-            if current.get("run_id") != run_id
-        ]
+        if any(current.get("run_id") == run_id for current in existing):
+            raise ValueError(
+                f"family registry already contains immutable run_id {run_id}"
+            )
         existing.append(
             {name: row.get(name) for name in FAMILY_REGISTRY_FIELDS}
         )
@@ -698,6 +825,14 @@ def update_family_projection(
                 and not row.get("parent_run_id", "").strip()
             )
         ]
+        artifact_errors: dict[str, str] = {}
+        for row in matching:
+            try:
+                validate_family_run_artifacts(row)
+            except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+                artifact_errors[str(row.get("run_id"))] = (
+                    f"{type(exc).__name__}: {exc}"
+                )
         workload = matrix["workload_estimation"]
         work_units = {
             "E1": int(workload["E1_exactness_plan_count"]),
@@ -740,6 +875,8 @@ def update_family_projection(
                 row["run_id"]
                 for row in unique
                 if (
+                    row["run_id"] in artifact_errors
+                    or
                     row.get("status") != "optimal"
                     or float(row.get("wall_seconds") or 0.0) <= 0.0
                     or int(row.get("completed_work_units") or 0)
@@ -767,6 +904,11 @@ def update_family_projection(
                 family_projection[family] = {
                     "status": "family_pilot_failure",
                     "failed_run_ids": sorted(failed),
+                    "artifact_errors": {
+                        run_id: artifact_errors[run_id]
+                        for run_id in sorted(failed)
+                        if run_id in artifact_errors
+                    },
                 }
                 continue
             rates = [

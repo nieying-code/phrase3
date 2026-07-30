@@ -9,13 +9,17 @@ import pytest
 from src import phase6_family_runner
 from src.phase6_families import _atomic_write_json
 from src.phase6_family_runner import (
+    _find_e2_source_plan,
     load_family_runner_config,
     resolve_family_pilot_plans,
     run_family_sequence,
 )
 from src.phase6_family_status import build_family_status
+from src.phase6_family_status import MAX_OUTPUT_BYTES, bounded_status_json
+from src.phase6_family_worker import _run_e4
 from src.phase6_protocol import Phase6ProtocolError, load_phase6_matrix
 from src.reproducibility import sha256_file
+from src.run_phase6_family import _write_preflight_failure
 
 
 MATRIX_PATH = Path("configs/phase6_experiment_matrix.yaml").resolve()
@@ -89,6 +93,82 @@ def _successful_e2_worker(
     return payload
 
 
+def test_family_finalization_precedes_registry_and_projection(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "validate_gurobi_runtime",
+        lambda: {"gurobipy": "13.0.2", "optimizer": "13.0.2"},
+    )
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "validate_locked_environment",
+        lambda _: {"gurobipy": "13.0.2"},
+    )
+    events: list[str] = []
+
+    def worker(
+        request: dict[str, Any],
+        timeout_seconds: float,
+        work_directory: Path,
+    ) -> dict[str, Any]:
+        path = work_directory / "e1_result.json"
+        payload = {
+            "status": "optimal",
+            "plan_id": request["plan"]["plan_id"],
+            "robust_objective": 100.0,
+            "wall_seconds": min(timeout_seconds, 0.1),
+            "peak_memory_mb": 1.0,
+            "result_path": str(path),
+        }
+        _atomic_write_json(path, payload)
+        return payload
+
+    def register(output_root: Path, row: dict[str, Any]) -> Path:
+        result_path = Path(row["result_path"])
+        manifest_path = Path(row["manifest_path"])
+        assert result_path.is_file()
+        assert manifest_path.is_file()
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        assert manifest["artifact_state"] == "finalized"
+        assert manifest["result_sha256"] == sha256_file(result_path)
+        events.append("registry")
+        return output_root / "experiments" / "phase6" / "registry.csv"
+
+    def project(**kwargs: Any) -> dict[str, Any]:
+        assert events == ["registry"]
+        events.append("projection")
+        return {
+            "status": "projection_incomplete",
+            "formal_execution_authorized": False,
+        }
+
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "upsert_family_registry",
+        register,
+    )
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "update_family_projection",
+        project,
+    )
+    result = run_family_sequence(
+        matrix_path=MATRIX_PATH,
+        family_config_path=CONFIG_PATH,
+        output_root=tmp_path,
+        family="E1",
+        seed=2026072001,
+        execution_mode="pilot",
+        run_id="pilot_e1_order",
+        worker=worker,
+    )
+    assert result["status"] == "optimal"
+    assert events == ["registry", "projection"]
+
+
 def test_e2_runner_checkpoints_all_policies_and_checks_dominance(
     tmp_path: Path,
     monkeypatch,
@@ -142,6 +222,31 @@ def test_e2_runner_checkpoints_all_policies_and_checks_dominance(
     assert manifest["result_sha256"] == sha256_file(
         run_directory / "result.json"
     )
+    first_plan = result["plans"][0]
+    fingerprints = result["fingerprints"]
+    source, source_hash = _find_e2_source_plan(
+        output_root=tmp_path,
+        source_plan_id=first_plan["plan_id"],
+        scientific_hash=fingerprints["scientific_config_sha256"],
+        family_config_hash=fingerprints["family_config_sha256"],
+        family_code_hash=fingerprints["family_code_sha256"],
+        environment_hash=fingerprints["environment_sha256"],
+    )
+    assert source == Path(first_plan["result_path"])
+    assert source_hash == first_plan["result_sha256"]
+    source.write_text(
+        source.read_text(encoding="utf-8") + " ",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="resolved to 0 artifacts"):
+        _find_e2_source_plan(
+            output_root=tmp_path,
+            source_plan_id=first_plan["plan_id"],
+            scientific_hash=fingerprints["scientific_config_sha256"],
+            family_config_hash=fingerprints["family_config_sha256"],
+            family_code_hash=fingerprints["family_code_sha256"],
+            environment_hash=fingerprints["environment_sha256"],
+        )
 
 
 def test_failure_retains_failed_and_not_run_plans(
@@ -176,7 +281,7 @@ def test_failure_retains_failed_and_not_run_plans(
             "result_path": None,
             "failure": {
                 "stage": "external_plan_watchdog",
-                "message": "synthetic timeout",
+                "message": "synthetic timeout" + "x" * 100_000,
             },
         }
 
@@ -195,7 +300,24 @@ def test_failure_retains_failed_and_not_run_plans(
         "plan_wall_timeout",
         "not_run_after_family_failure",
     ]
-    with pytest.raises(ValueError, match="terminal result"):
+    status_path = (
+        tmp_path
+        / "experiments"
+        / "phase6"
+        / "family_runs"
+        / "pilot_e5_failure"
+        / "status_summary.json"
+    )
+    status_payload = json.loads(status_path.read_text(encoding="utf-8"))
+    assert set(status_payload["failure"]) <= {
+        "status",
+        "stage",
+        "message",
+        "plan_index",
+        "plan_id",
+    }
+    assert len(status_payload["failure"]["message"]) == 1000
+    with pytest.raises(ValueError, match="already started"):
         run_family_sequence(
             matrix_path=MATRIX_PATH,
             family_config_path=CONFIG_PATH,
@@ -315,3 +437,123 @@ def test_family_status_never_parses_large_result(
     assert payload["status"] == "running"
     assert payload["files"]["result"]["size_bytes"] > 100_000
     assert payload["read_error"] is None
+
+
+@pytest.mark.parametrize(
+    ("artifact_name", "status"),
+    (
+        ("result.json", "optimal"),
+        ("result.json", "plan_wall_timeout"),
+        ("runner_exception.json", "runner_exception"),
+        ("checkpoint.json", "running"),
+    ),
+)
+def test_preflight_failure_never_overwrites_existing_run_state(
+    tmp_path: Path,
+    artifact_name: str,
+    status: str,
+) -> None:
+    run_id = f"immutable_{artifact_name}_{status}".replace(".", "_")
+    directory = (
+        tmp_path
+        / "experiments"
+        / "phase6"
+        / "family_runs"
+        / run_id
+    )
+    directory.mkdir(parents=True)
+    artifact = directory / artifact_name
+    artifact.write_text(
+        json.dumps({"status": status, "sentinel": "unchanged"}),
+        encoding="utf-8",
+    )
+    summary = directory / "status_summary.json"
+    summary.write_text(
+        json.dumps({"status": status, "sentinel": "unchanged"}),
+        encoding="utf-8",
+    )
+    before_artifact = artifact.read_bytes()
+    before_summary = summary.read_bytes()
+    written = _write_preflight_failure(
+        tmp_path,
+        run_id=run_id,
+        family="E1",
+        execution_mode="pilot",
+        exc=RuntimeError("must not overwrite"),
+    )
+    assert written is False
+    assert artifact.read_bytes() == before_artifact
+    assert summary.read_bytes() == before_summary
+
+
+def test_preflight_failure_is_itself_an_immutable_terminal_state(
+    tmp_path: Path,
+) -> None:
+    arguments = {
+        "run_id": "preflight_terminal",
+        "family": "E1",
+        "execution_mode": "pilot",
+        "exc": RuntimeError("first failure" + "x" * 100_000),
+    }
+    assert _write_preflight_failure(tmp_path, **arguments) is True
+    summary_path = (
+        tmp_path
+        / "experiments"
+        / "phase6"
+        / "family_runs"
+        / "preflight_terminal"
+        / "status_summary.json"
+    )
+    first = summary_path.read_bytes()
+    assert _write_preflight_failure(
+        tmp_path,
+        **{**arguments, "exc": RuntimeError("second failure")},
+    ) is False
+    assert summary_path.read_bytes() == first
+    payload = json.loads(first)
+    assert len(payload["failure"]["message"]) == 1000
+
+
+def test_status_serialization_is_always_bounded_for_long_failure() -> None:
+    payload = {
+        "run_id": "r" * 100_000,
+        "status": "runner_exception",
+        "failure": {
+            "status": "runner_exception",
+            "stage": "runner_preflight",
+            "message": "m" * 1_000_000,
+            "partial_repetitions": ["forbidden"] * 10_000,
+        },
+        "processes": [
+            {"pid": index, "name": "p" * 10_000}
+            for index in range(100)
+        ],
+        "files": {
+            f"file_{index}": {
+                "path": "D:\\" + "x" * 100_000,
+                "exists": True,
+                "size_bytes": index,
+            }
+            for index in range(100)
+        },
+    }
+    encoded = bounded_status_json(payload)
+    assert len(encoded.encode("utf-8")) <= MAX_OUTPUT_BYTES
+    decoded = json.loads(encoded)
+    assert "partial_repetitions" not in (decoded.get("failure") or {})
+    assert len((decoded.get("failure") or {}).get("message", "")) <= 1000
+
+
+def test_e4_worker_rechecks_source_hash_before_loading(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source.json"
+    source.write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="SHA-256 mismatch"):
+        _run_e4(
+            {
+                "plan": {"source_e2_plan_id": "E2_source"},
+                "source_plan_path": str(source),
+                "source_plan_sha256": "0" * 64,
+            }
+        )

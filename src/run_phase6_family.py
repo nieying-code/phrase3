@@ -8,8 +8,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .phase6_families import _atomic_write_json
-from .phase6_family_runner import run_family_sequence
+from .phase6_families import _atomic_write_json, compact_failure
+from .phase6_family_runner import (
+    RUN_LOCK_TIMEOUT_SECONDS,
+    run_family_sequence,
+)
+from .phase6_locking import exclusive_file_lock
 
 
 def _utc_now() -> str:
@@ -23,7 +27,7 @@ def _write_preflight_failure(
     family: str,
     execution_mode: str,
     exc: Exception,
-) -> None:
+) -> bool:
     directory = (
         output_root
         / "experiments"
@@ -31,35 +35,51 @@ def _write_preflight_failure(
         / "family_runs"
         / run_id
     )
-    failure = {
+    failure = compact_failure({
         "stage": "runner_preflight",
         "status": "runner_exception",
-        "message": f"{type(exc).__name__}: {exc}"[:1000],
-    }
-    _atomic_write_json(
-        directory / "runner_exception.json",
-        {
-            "run_id": run_id,
-            "family": family,
-            "execution_mode": execution_mode,
-            "status": "runner_exception",
-            "failure": failure,
-            "updated_at_utc": _utc_now(),
-        },
-    )
-    _atomic_write_json(
-        directory / "status_summary.json",
-        {
-            "run_id": run_id,
-            "family": family,
-            "execution_mode": execution_mode,
-            "status": "runner_exception",
-            "planned_work_units": 0,
-            "completed_work_units": 0,
-            "failure": failure,
-            "updated_at_utc": _utc_now(),
-        },
-    )
+        "message": f"{type(exc).__name__}: {exc}",
+    })
+    directory.mkdir(parents=True, exist_ok=True)
+    try:
+        with exclusive_file_lock(
+            directory / ".run.lock",
+            timeout_seconds=RUN_LOCK_TIMEOUT_SECONDS,
+        ):
+            existing = [
+                path
+                for path in directory.iterdir()
+                if path.name != ".run.lock"
+            ]
+            if existing:
+                return False
+            _atomic_write_json(
+                directory / "runner_exception.json",
+                {
+                    "run_id": run_id,
+                    "family": family,
+                    "execution_mode": execution_mode,
+                    "status": "runner_exception",
+                    "failure": failure,
+                    "updated_at_utc": _utc_now(),
+                },
+            )
+            _atomic_write_json(
+                directory / "status_summary.json",
+                {
+                    "run_id": run_id,
+                    "family": family,
+                    "execution_mode": execution_mode,
+                    "status": "runner_exception",
+                    "planned_work_units": 0,
+                    "completed_work_units": 0,
+                    "failure": failure,
+                    "updated_at_utc": _utc_now(),
+                },
+            )
+            return True
+    except TimeoutError:
+        return False
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -109,6 +129,13 @@ def main(argv: list[str] | None = None) -> int:
             parent_run_id=args.parent_run_id,
         )
     except Exception as exc:
+        failure = compact_failure(
+            {
+                "stage": "runner_preflight",
+                "status": "runner_exception",
+                "message": f"{type(exc).__name__}: {exc}",
+            }
+        )
         _write_preflight_failure(
             args.output,
             run_id=args.run_id,
@@ -122,7 +149,7 @@ def main(argv: list[str] | None = None) -> int:
                     "run_id": args.run_id,
                     "family": args.family,
                     "status": "runner_exception",
-                    "message": f"{type(exc).__name__}: {exc}",
+                    "message": (failure or {}).get("message"),
                 },
                 ensure_ascii=False,
             )

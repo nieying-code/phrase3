@@ -20,13 +20,16 @@ from .phase6_families import (
     FAMILIES,
     POLICY_RATIOS,
     _atomic_write_json,
+    compact_failure,
     enumerate_family_plans,
     environment_sha256,
     family_code_sha256,
+    load_verified_plan_result,
     sensitivity_configurations,
     scientific_config_sha256,
     update_family_projection,
     upsert_family_registry,
+    validate_family_run_artifacts,
 )
 from .phase6_locking import exclusive_file_lock
 from .phase6_protocol import (
@@ -196,7 +199,7 @@ def _find_e2_source_plan(
     family_config_hash: str,
     family_code_hash: str,
     environment_hash: str,
-) -> Path:
+) -> tuple[Path, str]:
     registry_path = (
         output_root
         / "experiments"
@@ -221,19 +224,33 @@ def _find_e2_source_plan(
             and not row.get("parent_run_id", "").strip()
         )
     ]
-    candidates: list[Path] = []
+    candidates: list[tuple[Path, str]] = []
     for row in matching:
-        result_path = Path(row["result_path"])
-        if not result_path.exists():
+        try:
+            payload, _ = validate_family_run_artifacts(row)
+        except (OSError, ValueError, KeyError, json.JSONDecodeError):
             continue
-        payload = json.loads(result_path.read_text(encoding="utf-8"))
         for record in payload.get("plans", ()):
             if (
                 record.get("plan_id") == source_plan_id
                 and record.get("status") == "optimal"
                 and record.get("result_path")
             ):
-                candidates.append(Path(record["result_path"]))
+                try:
+                    load_verified_plan_result(record)
+                except (
+                    OSError,
+                    ValueError,
+                    KeyError,
+                    json.JSONDecodeError,
+                ):
+                    continue
+                candidates.append(
+                    (
+                        Path(record["result_path"]),
+                        str(record["result_sha256"]),
+                    )
+                )
     unique = sorted(set(candidates))
     if len(unique) != 1:
         raise ValueError(
@@ -274,10 +291,9 @@ def _validate_family_pilot_order(
         "r", encoding="utf-8-sig", newline=""
     ) as handle:
         rows = list(csv.DictReader(handle))
-    completed = {
-        row["family"]
-        for row in rows
-        if (
+    completed: set[str] = set()
+    for row in rows:
+        if not (
             row.get("family") in required
             and row.get("execution_mode") == "pilot"
             and int(row.get("seed") or -1) == int(seed)
@@ -289,8 +305,13 @@ def _validate_family_pilot_order(
             and row.get("family_code_sha256") == family_code_hash
             and row.get("environment_sha256") == environment_hash
             and not row.get("parent_run_id", "").strip()
-        )
-    }
+        ):
+            continue
+        try:
+            validate_family_run_artifacts(row)
+        except (OSError, ValueError, KeyError, json.JSONDecodeError):
+            continue
+        completed.add(str(row["family"]))
     missing = [name for name in required if name not in completed]
     if missing:
         raise ValueError(
@@ -634,8 +655,15 @@ def run_family_sequence(
         lock_path,
         timeout_seconds=RUN_LOCK_TIMEOUT_SECONDS,
     ):
-        if result_path.exists():
-            raise ValueError(f"family run_id already has a terminal result: {run_id}")
+        existing_artifacts = [
+            path
+            for path in run_directory.iterdir()
+            if path.name != ".run.lock"
+        ]
+        if existing_artifacts:
+            raise ValueError(
+                f"family run_id already started and is immutable: {run_id}"
+            )
         started_at = _utc_now()
         started = perf_counter()
         records: list[dict[str, Any]] = []
@@ -661,17 +689,16 @@ def run_family_sequence(
             _atomic_write_json(
                 status_path,
                 {
-                    key: payload[key]
-                    for key in (
-                        "run_id",
-                        "family",
-                        "execution_mode",
-                        "status",
-                        "planned_work_units",
-                        "completed_work_units",
-                        "failure",
-                        "updated_at_utc",
-                    )
+                    "run_id": payload["run_id"],
+                    "family": payload["family"],
+                    "execution_mode": payload["execution_mode"],
+                    "status": payload["status"],
+                    "planned_work_units": payload["planned_work_units"],
+                    "completed_work_units": payload[
+                        "completed_work_units"
+                    ],
+                    "failure": compact_failure(payload["failure"]),
+                    "updated_at_utc": payload["updated_at_utc"],
                 },
             )
 
@@ -686,16 +713,16 @@ def run_family_sequence(
                 "ccg": config["ccg"],
             }
             if normalized == "E4":
-                request["source_plan_path"] = str(
-                    _find_e2_source_plan(
-                        output_root=output_root,
-                        source_plan_id=str(plan["source_e2_plan_id"]),
-                        scientific_hash=science_hash,
-                        family_config_hash=config_hash,
-                        family_code_hash=code_hash,
-                        environment_hash=environment_hash,
-                    )
+                source_path, source_hash = _find_e2_source_plan(
+                    output_root=output_root,
+                    source_plan_id=str(plan["source_e2_plan_id"]),
+                    scientific_hash=science_hash,
+                    family_config_hash=config_hash,
+                    family_code_hash=code_hash,
+                    environment_hash=environment_hash,
                 )
+                request["source_plan_path"] = str(source_path)
+                request["source_plan_sha256"] = source_hash
             payload = executor(
                 request,
                 float(
@@ -703,6 +730,24 @@ def run_family_sequence(
                 ),
                 run_directory / "workers",
             )
+            plan_result_path = payload.get("result_path")
+            plan_result_hash = None
+            if payload.get("status") == "optimal":
+                try:
+                    if not plan_result_path:
+                        raise ValueError("worker result path is missing")
+                    plan_result_hash = sha256_file(
+                        Path(str(plan_result_path))
+                    )
+                except (OSError, ValueError) as exc:
+                    payload = {
+                        **payload,
+                        "status": "worker_artifact_invalid",
+                        "failure": {
+                            "stage": "worker_artifact_validation",
+                            "message": f"{type(exc).__name__}: {exc}",
+                        },
+                    }
             record = {
                 "plan_index": index,
                 "plan_id": plan["plan_id"],
@@ -713,6 +758,7 @@ def run_family_sequence(
                 "peak_memory_mb": payload.get("peak_memory_mb"),
                 "robust_objective": payload.get("robust_objective"),
                 "result_path": payload.get("result_path"),
+                "result_sha256": plan_result_hash,
                 "failure": payload.get("failure"),
             }
             records.append(record)
@@ -744,6 +790,7 @@ def run_family_sequence(
                             "peak_memory_mb": None,
                             "robust_objective": None,
                             "result_path": None,
+                            "result_sha256": None,
                             "failure": None,
                         }
                     )
@@ -752,7 +799,7 @@ def run_family_sequence(
         if failure is None and normalized == "E2":
             try:
                 full_results = [
-                    json.loads(Path(row["result_path"]).read_text(encoding="utf-8"))
+                    load_verified_plan_result(row)
                     for row in records
                 ]
                 _validate_e2_dominance(full_results, matrix)
@@ -774,6 +821,7 @@ def run_family_sequence(
             ),
             "seed": int(seed),
             "status": status,
+            "finalized": True,
             "planned_work_units": len(plans),
             "completed_work_units": sum(
                 row.get("status") == "optimal" for row in records
@@ -798,8 +846,29 @@ def run_family_sequence(
                 "environment_sha256": environment_hash,
             },
         }
-        _atomic_write_json(result_path, result)
         save(status)
+        _atomic_write_json(result_path, result)
+        manifest_path = run_directory / "manifest.json"
+        _atomic_write_json(
+            manifest_path,
+            {
+                **result["fingerprints"],
+                "artifact_state": "finalized",
+                "run_id": run_id,
+                "family": normalized,
+                "matrix_path": str(matrix_path.resolve()),
+                "matrix_sha256": sha256_file(matrix_path),
+                "family_config_path": str(family_config_path.resolve()),
+                "result_path": str(result_path.resolve()),
+                "result_sha256": sha256_file(result_path),
+                **capture_runtime_context(
+                    solver_preference=("gurobi",),
+                    project_root=project_root,
+                    solver_threads=1,
+                ),
+                "locked_environment": locked,
+            },
+        )
         upsert_family_registry(
             output_root,
             {
@@ -824,11 +893,13 @@ def run_family_sequence(
                     failure.get("stage") if failure is not None else None
                 ),
                 "failure_message": (
-                    failure.get("message") if failure is not None else None
+                    (compact_failure(failure) or {}).get("message")
                 ),
-                "result_path": str(result_path),
+                "result_path": str(result_path.resolve()),
+                "manifest_path": str(manifest_path.resolve()),
             },
         )
+        returned = dict(result)
         try:
             projection = update_family_projection(
                 output_root=output_root,
@@ -838,32 +909,12 @@ def run_family_sequence(
                 family_code_hash=code_hash,
                 environment_hash=environment_hash,
             )
-            result["projection_status"] = projection["status"]
-            result["formal_execution_authorized"] = projection[
+            returned["projection_status"] = projection["status"]
+            returned["formal_execution_authorized"] = projection[
                 "formal_execution_authorized"
             ]
         except (OSError, ValueError, KeyError) as exc:
-            result["projection_status"] = "e3_projection_unavailable"
-            result["formal_execution_authorized"] = False
-            result["projection_message"] = f"{type(exc).__name__}: {exc}"
-        _atomic_write_json(result_path, result)
-        _atomic_write_json(
-            run_directory / "manifest.json",
-            {
-                **result["fingerprints"],
-                "run_id": run_id,
-                "family": normalized,
-                "matrix_path": str(matrix_path.resolve()),
-                "matrix_sha256": sha256_file(matrix_path),
-                "family_config_path": str(family_config_path.resolve()),
-                "result_path": str(result_path),
-                "result_sha256": sha256_file(result_path),
-                **capture_runtime_context(
-                    solver_preference=("gurobi",),
-                    project_root=project_root,
-                    solver_threads=1,
-                ),
-                "locked_environment": locked,
-            },
-        )
-        return result
+            returned["projection_status"] = "e3_projection_unavailable"
+            returned["formal_execution_authorized"] = False
+            returned["projection_message"] = f"{type(exc).__name__}: {exc}"
+        return returned

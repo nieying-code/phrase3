@@ -365,6 +365,9 @@ def _run_e2(request: Mapping[str, Any]) -> dict[str, Any]:
 def _run_e4(request: Mapping[str, Any]) -> dict[str, Any]:
     plan = request["plan"]
     source_path = Path(request["source_plan_path"])
+    source_hash = hashlib.sha256(source_path.read_bytes()).hexdigest()
+    if source_hash != request.get("source_plan_sha256"):
+        raise ValueError("E4 source E2 plan SHA-256 mismatch at worker read")
     source = json.loads(source_path.read_text(encoding="utf-8"))
     if (
         source.get("status") != "optimal"
@@ -410,9 +413,7 @@ def _run_e4(request: Mapping[str, Any]) -> dict[str, Any]:
         "budget": generated.budget,
         "policy": plan["policy"],
         "source_e2_plan_id": plan["source_e2_plan_id"],
-        "source_e2_result_sha256": hashlib.sha256(
-            source_path.read_bytes()
-        ).hexdigest(),
+        "source_e2_result_sha256": source_hash,
         "metrics": metrics,
         "failure": (
             None
