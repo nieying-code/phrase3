@@ -12,7 +12,7 @@
 - Base branch: `main`
 - Base SHA: `d2f6f1c60c484c734b0795c5d94795b642f70b22`
 - Freeze commit SHA: `6f67e4ea0127c29eb49f5d6e60c9fae0046af70f`
-- PR: `pending`
+- PR: https://github.com/nieying-code/phrase3/pull/11
 
 ## 修改内容
 
