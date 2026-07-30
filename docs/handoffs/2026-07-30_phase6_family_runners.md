@@ -13,6 +13,7 @@
 - Test SHA: `f3e5e0bd94e577dd2c34d7891aba02fbe7ecc4bd`
 - Pre-link-update head SHA: `968468295bb3cb1443446a9040fe2791e63c09b7`
 - Review-fix SHA: `563209b0ddbcb0b210ca6790d3596a985bddd779`
+- Registry-integrity SHA: `dcd76e8074dff8480d47bef53538c90159d6d039`
 - PR: https://github.com/nieying-code/phrase3/pull/10
 
 ## 修改内容
@@ -49,6 +50,9 @@
 - 相同 run ID 在出现终态、失败、preflight 失败、checkpoint 或任何已开始制品后均不可复用；
 - preflight 诊断与主 runner 共用 run 生命周期排他锁，不会覆盖已有状态摘要；
 - 状态摘要只保存失败白名单字段并统一截断长消息，状态命令输出始终不超过 16 KiB。
+- 最终完整性复审补齐 `execution_mode`、`seed`、`parent_run_id`、`wall_seconds` 和 `tier_id` 与哈希保护结果的交叉核验；
+- projection 会先核验同指纹候选制品，再识别 primary pilot，CSV 篡改不能通过筛选绕过制品校验；
+- 五类字段分别篡改时，family 前序门槛均拒绝记录，projection 均报告 `family_pilot_failure`，正式授权保持 `false`。
 
 ### 投影
 
@@ -88,13 +92,13 @@
 结果：通过
 
 .\.venv-gurobi\Scripts\python.exe -m pytest -q tests/test_phase6_families.py tests/test_phase6_family_runner.py
-结果：21 passed in 3.35s
+结果：26 passed in 6.27s
 
 .\.venv-gurobi\Scripts\python.exe -m pytest -q --ignore=tests/test_run_phase5.py
-结果：98 passed in 25.22s
+结果：103 passed in 50.09s
 
 .\.venv-gurobi\Scripts\python.exe -m pytest -q tests/test_run_phase5.py
-结果：6 passed in 9.78s
+结果：6 passed in 20.56s
 ```
 
 复审修复没有执行任何 family pilot、V2/P1/P2 E3 pilot、P3/P4 或正式种子。
@@ -138,6 +142,8 @@ all three V1 manifests use the same E3 and scientific fingerprints: yes
   https://github.com/nieying-code/phrase3/actions/runs/30543586174
 - 结果：success；普通回归 98 项、Phase 5 端到端 6 项；
 - 本 CI 链接对应包含全部代码修复与首轮 handoff 更新的 `efa9c76`；记录 CI 的纯文档提交会再次触发检查，最终状态以 PR checks 为准。
+- Registry-integrity local validation：专项 26 项、普通回归 103 项、Phase 5 端到端 6 项；
+- Registry-integrity 推送将触发新的最终 CI；最终状态仍以 PR checks 为准。
 
 ## 已知限制
 
