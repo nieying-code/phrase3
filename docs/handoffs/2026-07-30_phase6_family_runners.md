@@ -12,6 +12,7 @@
 - Implementation SHA: `088f384625a5bc22c3249dfd61c0a1e90ca05c70`
 - Test SHA: `f3e5e0bd94e577dd2c34d7891aba02fbe7ecc4bd`
 - Pre-link-update head SHA: `968468295bb3cb1443446a9040fe2791e63c09b7`
+- Review-fix SHA: `563209b0ddbcb0b210ca6790d3596a985bddd779`
 - PR: https://github.com/nieying-code/phrase3/pull/10
 
 ## 修改内容
@@ -37,6 +38,17 @@
 - 失败终态不可覆盖，失败后的计划显式标记未运行；
 - 新增不会读取大型结果文件的 `phase6_family_status`；
 - manifest 在最终结果写入后计算结果文件 SHA-256。
+
+### PR #10 复审修复
+
+- family 代码指纹现在覆盖全部直接和传递求解依赖，包括 `ccg.py`、`evaluation.py`、`extensive_model.py`、`inventory_model.py`、`model_common.py`、`model_data.py`、`phase6_protocol.py` 和 `recourse_model.py`；
+- 每个纳入范围的依赖都有独立变更测试，任一文件字节变化都会改变 family 组件指纹；
+- family 制品严格按“最终 `result.json` → 带结果哈希的 `manifest.json` → 不可变 registry 登记 → projection”顺序最终化；
+- projection 会重新核验 manifest、最终状态、结果文件字节哈希、工作量和四类指纹，不再只信任 CSV；
+- E4 同时核验 E2 主结果及具体策略结果哈希，并在 worker 实际读取前再次核验源策略文件；
+- 相同 run ID 在出现终态、失败、preflight 失败、checkpoint 或任何已开始制品后均不可复用；
+- preflight 诊断与主 runner 共用 run 生命周期排他锁，不会覆盖已有状态摘要；
+- 状态摘要只保存失败白名单字段并统一截断长消息，状态命令输出始终不超过 16 KiB。
 
 ### 投影
 
@@ -75,15 +87,17 @@
 .\.venv-gurobi\Scripts\python.exe -m compileall -q src tests
 结果：通过
 
-.\.venv-gurobi\Scripts\python.exe -m pytest -q
-结果：94 passed in 35.02s
+.\.venv-gurobi\Scripts\python.exe -m pytest -q tests/test_phase6_families.py tests/test_phase6_family_runner.py
+结果：21 passed in 3.35s
 
 .\.venv-gurobi\Scripts\python.exe -m pytest -q --ignore=tests/test_run_phase5.py
-结果：88 passed in 25.47s
+结果：98 passed in 25.22s
 
 .\.venv-gurobi\Scripts\python.exe -m pytest -q tests/test_run_phase5.py
-结果：6 passed in 10.64s
+结果：6 passed in 9.78s
 ```
+
+复审修复没有执行任何 family pilot、V2/P1/P2 E3 pilot、P3/P4 或正式种子。
 
 真实 Gurobi 开发级烟雾验证：
 
@@ -119,7 +133,8 @@ all three V1 manifests use the same E3 and scientific fingerprints: yes
 - Initial implementation-head CI:
   https://github.com/nieying-code/phrase3/actions/runs/30503054675
 - 结果：success；普通回归 88 项、Phase 5 端到端 6 项
-- 本链接更新提交将触发一次最终 CI；最终状态以 PR checks 为准。
+- Review-fix local validation：普通回归 98 项、Phase 5 端到端 6 项；
+- Review-fix 推送将触发最终 CI；最终状态以 PR checks 为准。
 
 ## 已知限制
 
@@ -142,8 +157,12 @@ ChatGPT 复审时应重点检查：
 6. E4 是否只能解析唯一、同指纹的 E2 方案；
 7. formal gate 是否在计划解析和场景生成前生效；
 8. family 代码是否确实不改变 E3 指纹；
-9. manifest 的最终结果哈希是否可复核；
-10. 当前代码是否可能绕过 Gurobi-only 或单线程约束。
+9. family 指纹是否覆盖全部共享求解依赖；
+10. manifest、registry 与 projection 的最终化顺序和哈希复核是否闭环；
+11. E4 是否同时核验 E2 主结果和具体策略结果；
+12. 同一 run ID 的成功、失败、preflight 和中断状态是否都不可覆盖；
+13. 超长失败消息下状态工具是否仍能在 16 KiB 内输出；
+14. 当前代码是否可能绕过 Gurobi-only 或单线程约束。
 
 ## 下一步建议
 
