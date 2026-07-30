@@ -391,7 +391,7 @@ def test_formal_family_gate_blocks_before_plan_resolution(
         "enumerate_family_plans",
         forbidden,
     )
-    with pytest.raises(Phase6ProtocolError, match="not frozen"):
+    with pytest.raises(ValueError, match="requires a projection"):
         run_family_sequence(
             matrix_path=MATRIX_PATH,
             family_config_path=CONFIG_PATH,

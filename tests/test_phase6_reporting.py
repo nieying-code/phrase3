@@ -317,8 +317,8 @@ def test_scientific_hash_excludes_lifecycle_but_includes_parameters() -> None:
     matrix = load_phase6_matrix(MATRIX_PATH)
     baseline = _scientific_config_sha256(matrix)
     lifecycle_only = deepcopy(matrix)
-    lifecycle_only["status"] = "frozen_for_formal_execution"
-    lifecycle_only["revised_on"] = "2099-01-01"
+    lifecycle_only["status"] = "candidate_for_freeze_pending_review"
+    lifecycle_only["revised_on"] = "2026-07-29"
     assert _scientific_config_sha256(lifecycle_only) == baseline
 
     scientific_change = deepcopy(matrix)

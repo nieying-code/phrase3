@@ -11,7 +11,7 @@
 
 这些执行器位于独立组件中，不修改 E3 的模型、C&CG、SPW-C&CG、worker 或 runner。因此，已经完成且指纹一致的 V1 E3 pilot 不会因本模块失效。
 
-当前矩阵状态仍为 `candidate_for_freeze_pending_review`。代码完成不等于正式实验获准；在矩阵冻结、全部 pilot 和计算量门槛通过之前，正式种子仍被拒绝。
+当前矩阵状态为 `frozen_for_formal_execution`，表示实验设计已经冻结，但不等于正式实验获准；在全部 pilot 和计算量门槛通过之前，正式种子仍被拒绝。
 
 ## 入口与环境
 
