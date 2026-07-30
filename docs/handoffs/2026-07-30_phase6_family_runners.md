@@ -11,7 +11,8 @@
 - Base SHA: `c0eda012ccacee282e499b93751daf6a4b3f2e6b`
 - Implementation SHA: `088f384625a5bc22c3249dfd61c0a1e90ca05c70`
 - Test SHA: `f3e5e0bd94e577dd2c34d7891aba02fbe7ecc4bd`
-- PR: pending
+- Pre-link-update head SHA: `968468295bb3cb1443446a9040fe2791e63c09b7`
+- PR: https://github.com/nieying-code/phrase3/pull/10
 
 ## 修改内容
 
@@ -114,8 +115,11 @@ all three V1 manifests use the same E3 and scientific fingerprints: yes
 
 ## CI 状态
 
-- Draft PR 创建前：pending
-- GitHub Actions：pending
+- Draft PR: #10
+- Initial implementation-head CI:
+  https://github.com/nieying-code/phrase3/actions/runs/30503054675
+- 结果：success；普通回归 88 项、Phase 5 端到端 6 项
+- 本链接更新提交将触发一次最终 CI；最终状态以 PR checks 为准。
 
 ## 已知限制
 
