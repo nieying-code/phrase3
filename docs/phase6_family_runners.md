@@ -11,7 +11,9 @@
 
 这些执行器位于独立组件中，不修改 E3 的模型、C&CG、SPW-C&CG、worker 或 runner。因此，已经完成且指纹一致的 V1 E3 pilot 不会因本模块失效。
 
-当前矩阵状态为 `frozen_for_formal_execution`，表示实验设计已经冻结，但不等于正式实验获准；在全部 pilot 和计算量门槛通过之前，正式种子仍被拒绝。
+矩阵 v2.1 因相对完全补救科学模型修订恢复为
+`candidate_for_freeze_pending_review`。所有正式种子和新 pilot 在修复
+PR 复审、用户合并并重新冻结之前均被拒绝。
 
 ## 入口与环境
 
@@ -67,6 +69,11 @@ N_total = N_optimal + N_infeasible + N_solver_failure
 ```
 
 只要存在补救不可行或求解失败，总成本均值、分位数和 CVaR 等聚合量即记为不可用，不使用 Big-M 伪成本。服务水平按所有场景总需求加权；零储备时储备利用率为 `null`。
+
+库存退出量分为 `expired_waste`、`early_disposal` 和二者之和
+`total_disposal`。兼容指标 `waste`/`mean_waste` 明确定义为总退出量，
+不得与两个分量再次相加。相对完全补救修订后，有限非负场景原则上应均
+可行；状态分类仍保留，用于发现模型、数据或求解异常。
 
 E5 对每个完整配置重新生成训练场景并求解内生储备扩展式，配置之间不共享被修改的数据对象。
 

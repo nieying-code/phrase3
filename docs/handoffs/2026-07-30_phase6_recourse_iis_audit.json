@@ -49,7 +49,7 @@
         "shortage[s0028,relief_food_1,0]"
       ],
       "iis_file": "docs/handoffs/phase6_recourse_iis/seed_2026072001_s0028.ilp",
-      "iis_file_sha256": "c293bd53507f13196da38202f47150e386d8713bc9f0062d6e08e106780a2a4a"
+      "iis_file_sha256": "e8d95f2770ec45b6022b3bad3096caed27dd168b75e47feafc4f7b935741b760"
     },
     {
       "pilot_seed": 2026072002,
@@ -84,7 +84,7 @@
         "shortage[s0113,relief_food_1,4:5]"
       ],
       "iis_file": "docs/handoffs/phase6_recourse_iis/seed_2026072002_s0113.ilp",
-      "iis_file_sha256": "cd9cee9dfd07e126c9f807bc080405eb9acc50613ff1c2f7cdb3ce9dcf3ad238"
+      "iis_file_sha256": "9ea0450d1bde1b67a952a70da75099f656ef20e4d24c464b39ccf9baa34981ff"
     },
     {
       "pilot_seed": 2026072003,
@@ -119,7 +119,7 @@
         "shortage[s0014,relief_food_1,0:1]"
       ],
       "iis_file": "docs/handoffs/phase6_recourse_iis/seed_2026072003_s0014.ilp",
-      "iis_file_sha256": "f0e990b59996cac1ce97973c9c6cd4aacc34d228eca755e7b9975fe621dcaa47"
+      "iis_file_sha256": "2842c2e16643c84beb55f6276cfaec0ba2e86e655e65672bc4db7d6cb560e17c"
     }
   ],
   "pyomo_mapping": {

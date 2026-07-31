@@ -2,7 +2,7 @@
 \ LP format - for model browsing. Use MPS format to capture full model detail.
 \ Signature: 0xff8780c9f9a00602
 Minimize
- 
+
 Subject To
  x135: x2 - x38 - x74 = 0
  x141: x8 - x44 - x80 = 0

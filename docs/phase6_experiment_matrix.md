@@ -5,18 +5,29 @@
 机器可读配置为 `configs/phase6_experiment_matrix.yaml`，当前版本：
 
 ```text
-schema_version = 2.0
-matrix_id = phase6_streamlined_experiments_v2_0
-status = frozen_for_formal_execution
+schema_version = 2.1
+matrix_id = phase6_streamlined_experiments_v2_1
+status = candidate_for_freeze_pending_review
 ```
 
-本版根据论文充分性与计算成本重新设计，实验设计状态已经正式冻结。
-`frozen_for_formal_execution` 只满足正式运行的第一层门槛，并不单独授权
-正式种子。完整、成功且指纹匹配的 E3 与 family pilot 投影仍是第二层门槛；
-在投影明确记录 `formal_execution_authorized=true` 前不得运行正式种子。
+本版在精简矩阵基础上加入经 IIS 验证的相对完全补救修订，因此恢复为候选
+状态。`candidate_for_freeze_pending_review` 不授权 pilot 或正式种子；
+必须先完成修复 PR 复审、用户手动合并与独立冻结。
 
-本次精简不修改阶段1–5的数学模型或算法，只缩减数值实验范围。P3和P4
-从正式矩阵删除，不再作为默认执行任务。
+本次修订不改变内生储备、C&CG 或 SPW-C&CG 算法逻辑，只在公共第二阶段
+库存平衡中加入有惩罚的提前处置。P3和P4仍不属于默认执行任务。
+
+### 1.1 库存退出协议 v1
+
+非最大库龄剩余库存允许进入 `early_disposal`，最大库龄剩余库存进入
+`expired_waste`。二者均使用既有 `waste_penalty[item]`；
+`total_disposal` 为两者之和，兼容字段 `waste` 是
+`total_disposal` 的别名。E4 同时报告 `mean_expired_waste`、
+`mean_early_disposal` 和 `mean_total_disposal`，不得重复计入成本。
+
+该科学模型修改会改变科学配置、E3 组件和 family 组件指纹。旧 V1 和
+family pilot 只作为历史诊断证据，不进入新门槛；本修复 PR 不运行任何
+新 pilot 或正式种子。
 
 ## 2. 论文必须回答的问题
 

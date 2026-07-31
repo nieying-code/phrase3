@@ -28,13 +28,13 @@ available_{\omega kt0}
 较旧库龄在第一期来自对应初始库存，以后来自上一期期末较新一档库存。非最后库龄满足
 
 \[
-available=consume+inventory,
+available=consume+inventory+early\_disposal,
 \]
 
 最后库龄满足
 
 \[
-available=consume+waste,\qquad inventory=0.
+available=consume+expired\_waste,\qquad inventory=0.
 \]
 
 消费加缺货等于需求。仓储容量在消费和过期处置后计量，只包括仍能结转的期末库存。应急采购受场景供应上限和
@@ -53,7 +53,9 @@ available=consume+waste,\qquad inventory=0.
 Q(y,R,\omega)=
 \sum_{k,t}p_{\omega kt}q_{\omega kt}
 +\sum_{k,t}\pi^s_k shortage_{\omega kt}
-+\sum_{k,t}\pi^w_k waste_{\omega kt}.
++\sum_{k,t}\pi^w_k
+\left(expired\_waste_{\omega kt}
++\sum_{a<L_k-1}early\_disposal_{\omega kta}\right).
 \]
 
 求解状态严格区分 `optimal`、`infeasible`、`time_limit`、`solver_error` 和 `unknown`。求解失败或超时不能解释为不可行。
@@ -120,3 +122,18 @@ C^0(y)+\max_{\omega\in\Omega}Q_{\mathrm{exact}}(y,R,\omega).
 当前连续 LP 不用 Big-M 或二进制变量强制严格 FIFO。在非负浪费成本下至少存在 FIFO 最优解，但退化时求解器可能返回等价的非严格 FIFO 解；因此不把具体库龄消费顺序解释为唯一政策。阶段3仍采用消费和到期处置后的期末仓储容量口径，不限制到货瞬间的临时占用。
 
 阶段5应在阶段4标准 C&CG 一致性验证基础上实现跨预算场景池热启动，并分别统计冷启动和热启动的迭代次数、主问题时间和 oracle 时间。
+
+## 9. 相对完全补救修订
+
+2026-07-31 的 Phase 6 样本外 IIS 诊断确认，旧模型的补救不可行并非由
+高需求造成，而是固定采购在低需求场景下形成未到期剩余库存；旧约束没有
+提前退出通道，导致库龄流转与期末仓储容量冲突。公共构造器现对非最大
+库龄增加 `early_disposal`，最大库龄仍使用 `expired_waste`，并定义
+`total_disposal = expired_waste + sum(early_disposal)`。
+
+两类处置均使用原有 `waste_penalty[item]`。旧输出字段 `waste` 保留为
+`total_disposal` 的兼容别名；新分析必须优先使用三个明确字段。该修改
+没有改变第一阶段预算等式、应急采购预算、C&CG oracle、上下界、终止
+条件或 SPW-C&CG 场景池逻辑。通过令应急采购与消费为零、缺货等于需求、
+期末库存为零，并将所有可用库存按库龄送入提前处置或到期损耗，可以为
+任意非负有限需求构造可行补救解。

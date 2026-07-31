@@ -135,7 +135,12 @@ python -m src.run_phase6 --config configs/phase6_runner.yaml `
 
 - 内生储备模型使用 `regular_cost + R = B`，使储备比例可识别。
 - `R` 是可用应急预算上限，不是已经发生的成本。
-- 最后可用库龄满足 `available = consume + waste`，其期末库存固定为0。
+- 非最后库龄满足 `available = consume + inventory + early_disposal`；
+  提前处置沿用既有正 `waste_penalty`。
+- 最后可用库龄满足 `available = consume + expired_waste`，其期末库存
+  固定为0。
+- `total_disposal = expired_waste + early_disposal`；兼容字段
+  `waste` 表示总库存退出量。
 - 仓储容量只计算消费和到期处置后仍可结转的期末库存。
 - 连续 LP 不用 Big-M 强制严格 FIFO；在非负浪费成本下至少存在 FIFO 最优解，但退化解的具体库龄消费顺序不解释为唯一政策。
 - C&CG 的 `LB` 来自受限主问题，`UB` 来自当前第一阶段解在完整场景集合上的精确评价。

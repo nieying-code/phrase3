@@ -22,7 +22,7 @@
 - `C[t] >= 0`：期末仓储容量。
 - `I0[k,a] >= 0`：计划期开始时的分库龄库存。
 - `pi_s[k] >= 0`：单位缺货惩罚，使用统一货币量纲。
-- `pi_w[k] >= 0`：单位过期浪费惩罚。
+- `pi_w[k] > 0`：单位库存退出惩罚，同时用于提前处置和到期损耗。
 - `gamma_q, gamma_s, gamma_w > 0`：经缩放后的无量纲权重，基础版通常取 1，并通过惩罚参数本身表达相对重要性。
 
 ## 4. 第一阶段变量
@@ -46,7 +46,11 @@ C^0(y)=\sum_{k\in K}\sum_{t\in T} c^0_{kt}y_{kt}.
 - `x[omega,k,t,a] >= 0`：从库龄 `a` 消费的数量。
 - `I[omega,k,t,a] >= 0`：消费、过期处置后的期末分库龄库存；最后可用库龄的 `I` 固定为 0。
 - `s[omega,k,t] >= 0`：缺货量。
-- `w[omega,k,t] >= 0`：期末过期量。
+- `w_exp[omega,k,t] >= 0`：最大库龄库存的到期损耗。
+- `e[omega,k,t,a] >= 0`：非最大库龄库存的提前报废、捐赠、调出或其他
+  现实处置量，仅对 `a<L[k]-1` 定义。
+- `D[omega,k,t] = w_exp[omega,k,t] + sum_a e[omega,k,t,a]`：
+  总库存退出量。
 
 ## 6. 库龄流与需求约束
 
@@ -70,7 +74,7 @@ b_{\omega kta}=\mathbf{1}_{\{t=1\}}I^0_{ka}
 对尚可结转的库龄 `a=0,...,L_k-2`：
 
 ```math
-b_{\omega kta}=x_{\omega kta}+I_{\omega kta},
+b_{\omega kta}=x_{\omega kta}+I_{\omega kta}+e_{\omega kta},
 \qquad \forall \omega,k,t,a<L_k-1.
 ```
 
@@ -78,7 +82,7 @@ b_{\omega kta}=x_{\omega kta}+I_{\omega kta},
 
 ```math
 b_{\omega kt,L_k-1}
-=x_{\omega kt,L_k-1}+w_{\omega kt},
+=x_{\omega kt,L_k-1}+w^{exp}_{\omega kt},
 ```
 
 并固定
@@ -139,7 +143,8 @@ C^0(y)+R=B.
 Q(y,R,\omega)=
 \gamma_q\sum_{k,t}p_{\omega kt}q_{\omega kt}
 +\gamma_s\sum_{k,t}\pi^s_k s_{\omega kt}
-+\gamma_w\sum_{k,t}\pi^w_k w_{\omega kt}.
++\gamma_w\sum_{k,t}\pi^w_k
+\left(w^{exp}_{\omega kt}+\sum_{a<L_k-1}e_{\omega kta}\right).
 ```
 
 所有项先换算到同一货币量纲。缺货惩罚应高于采购与浪费成本，但使用相对单价倍率和敏感性分析，不使用未经缩放的极端大数。
@@ -232,3 +237,36 @@ R=\rho B,\qquad C^0(y)+R\le B.
 4. 最后最大化库龄加权消费以破除非 FIFO 平局。
 
 每一级通过固定前一级最优值并重新求解实现，不依赖求解器专有多目标接口。
+
+## 14. 提前处置与相对完全补救（2026-07-31 修订）
+
+Phase 6 pilot 的 Gurobi IIS 证明：旧模型在“固定灾前采购、样本外低需求、
+有限期末容量”组合下，尚未到期的剩余库存没有退出通道，可能使库龄流转与
+仓储容量同时不可满足。为修复这一结构边界，对所有
+\(a<L_k-1\) 增加
+
+```math
+e_{\omega kta}\ge 0,
+```
+
+表示尚未到期库存的提前报废、捐赠、跨区域调出或其他现实处置。最后库龄
+仍只使用 \(w^{exp}_{\omega kt}\) 表示到期损耗。定义
+
+```math
+D_{\omega kt}
+=w^{exp}_{\omega kt}+\sum_{a=0}^{L_k-2}e_{\omega kta}.
+```
+
+因此，`expired_waste`、`early_disposal` 和 `total_disposal` 分别对应
+\(w^{exp}\)、\(e\) 和 \(D\)。兼容字段 `waste` 明确定义为
+`total_disposal` 的别名，不再仅表示到期损耗。两类退出都沿用已有的
+`waste_penalty[k]`，不存在免费丢弃，也不引入 Big-M。
+
+相对完全补救可由构造法证明。对任意非负有限需求场景，以及任意满足
+第一阶段预算约束的 \(y,R\)，令应急采购和消费为 0、缺货等于需求、
+期末库存为 0；每期尚未到期的全部可用库存进入 \(e\)，最大库龄库存进入
+\(w^{exp}\)。此时应急支出为 0，不超过 \(R\)，仓储使用量为 0，不超过
+任意非负容量，所有库存和需求平衡均成立。因此第二阶段至少存在一个
+可行解。`infeasible` 与求解器失败仍严格区分；若今后再次出现
+`infeasible`，应作为模型或数据异常调查，不能删除场景或用 Big-M
+伪造成本。
