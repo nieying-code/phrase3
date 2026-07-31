@@ -11,10 +11,12 @@
 - Branch: `fix/phase6-relative-complete-recourse`
 - Base branch: `main`
 - Base SHA: `5abb3f907b001871c03ab9e783a33a09f99ab6f6`
-- Model/test commit SHA: pending
-- Final remote SHA: pending
-- Draft PR: pending
-- CI: pending
+- Model/test commit SHA: `70a68ea671a9cf94e0c01671a7b20a1cc83dc9e3`
+- Validated remote head before this handoff-only update:
+  `b3917739fe9ef29e0fb86e2d4b4250f23741905f`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/14
+- CI: https://github.com/nieying-code/phrase3/actions/runs/30603204207
+  (`115 passed` ordinary regression + `6 passed` Phase 5)
 - PR #13: 保持 Draft，未修改、未合并
 
 ## IIS 诊断结论
