@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+from dataclasses import replace
 import json
 from pathlib import Path
 import sys
@@ -25,7 +26,7 @@ def test_formal_phase5_run_writes_complete_outputs(tmp_path: Path) -> None:
         1200.0,
     ]
     assert len(payload["comparisons"]) == 6
-    assert payload["total_iteration_reduction"] == 13
+    assert payload["total_iteration_reduction"] == 3
     assert all(
         row["objectives_consistent"] for row in payload["comparisons"]
     )
@@ -33,7 +34,7 @@ def test_formal_phase5_run_writes_complete_outputs(tmp_path: Path) -> None:
         row["objective_difference"] for row in payload["comparisons"]
     ) == pytest.approx(0.0)
     assert payload["comparisons"][-1]["warm_result"]["reserve"] == pytest.approx(
-        149.0446500844194,
+        149.62909481514055,
         abs=1.0e-6,
     )
 
@@ -89,15 +90,21 @@ def test_failed_budget_writes_partial_diagnostics(
     tmp_path: Path,
     monkeypatch,
 ) -> None:
-    original = run_phase5_module.run_spw_ccg_budget_sequence
+    original = spw_ccg_module.run_standard_ccg
 
-    def force_max_iteration_failure(data, budgets, **kwargs):
-        kwargs["max_iterations"] = 1
-        return original(data, (700.0, 800.0), **kwargs)
+    def force_max_iteration_failure(data, *args, **kwargs):
+        result = original(data, *args, **kwargs)
+        if data.budget == 800.0:
+            return replace(
+                result,
+                converged=False,
+                termination_status="max_iterations",
+            )
+        return result
 
     monkeypatch.setattr(
-        run_phase5_module,
-        "run_spw_ccg_budget_sequence",
+        spw_ccg_module,
+        "run_standard_ccg",
         force_max_iteration_failure,
     )
 

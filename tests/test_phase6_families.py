@@ -85,6 +85,11 @@ def _recourse(
         emergency_spend=spend,
         shortage={"relief_food_1": [shortage, 0.0, 0.0, 0.0]},
         waste={"relief_food_1": [waste, 0.0, 0.0, 0.0]},
+        expired_waste={"relief_food_1": [waste, 0.0, 0.0, 0.0]},
+        early_disposal={
+            "relief_food_1": [[0.0], [0.0], [0.0], [0.0]]
+        },
+        total_disposal={"relief_food_1": [waste, 0.0, 0.0, 0.0]},
         ending_inventory={"relief_food_1": [[0.0]] * 4},
         solver="gurobi_direct",
         runtime_seconds=0.1,
@@ -139,6 +144,10 @@ def test_oos_metrics_use_count_identity_and_demand_weighted_service() -> None:
     assert metrics["infeasible_scenario_count"] == 0
     assert metrics["solver_failure_count"] == 0
     assert metrics["mean_total_cost"] == pytest.approx(115.0)
+    assert metrics["mean_expired_waste"] == pytest.approx(3.0)
+    assert metrics["mean_early_disposal"] == pytest.approx(0.0)
+    assert metrics["mean_total_disposal"] == pytest.approx(3.0)
+    assert metrics["mean_waste"] == metrics["mean_total_disposal"]
     assert metrics["service_level"] == pytest.approx(
         1.0 - 1.0 / total_demand
     )

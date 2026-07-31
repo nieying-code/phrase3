@@ -103,7 +103,7 @@ def test_ccg_matches_extensive_and_unique_first_stage() -> None:
     assert ccg.iterations <= len(data.scenarios) + 1
 
 
-def test_ccg_identifies_and_adds_infeasible_recourse_scenario() -> None:
+def test_ccg_adds_formerly_infeasible_low_demand_scenario_by_cost() -> None:
     data = infeasible_oracle_data()
     ccg = run_standard_ccg(
         data,
@@ -114,9 +114,10 @@ def test_ccg_identifies_and_adds_infeasible_recourse_scenario() -> None:
     assert ccg.converged
     assert "low" in ccg.final_scenario_set
     assert any(
-        row.added_scenario == "low" and row.added_type == "infeasible"
+        row.added_scenario == "low" and row.added_type == "worst_cost"
         for row in ccg.iteration_log
     )
+    assert all(row.infeasible_scenario_count == 0 for row in ccg.iteration_log)
     assert len(ccg.final_scenario_set) == len(set(ccg.final_scenario_set))
 
 

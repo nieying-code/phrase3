@@ -53,8 +53,13 @@ class ProcurementData:
                 raise ValueError(f"initial_inventory length must equal shelf life for {item}")
             if len(self.regular_price[item]) != self.periods:
                 raise ValueError(f"regular_price length must equal periods for {item}")
-            if self.shortage_penalty[item] < 0 or self.waste_penalty[item] < 0:
-                raise ValueError("penalties must be nonnegative")
+            if self.shortage_penalty[item] < 0:
+                raise ValueError("shortage penalties must be nonnegative")
+            if self.waste_penalty[item] <= 0:
+                raise ValueError(
+                    "waste penalties must be positive because they also "
+                    "price early disposal"
+                )
 
             for scenario in self.scenarios:
                 for name, values in (

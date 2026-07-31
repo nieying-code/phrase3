@@ -16,7 +16,7 @@ from .model_data import ProcurementData
 from .scenario_generator import generate_synthetic_data
 
 
-SUPPORTED_MATRIX_ID = "phase6_streamlined_experiments_v2_0"
+SUPPORTED_MATRIX_ID = "phase6_streamlined_experiments_v2_1"
 SUPPORTED_GENERATOR_PROTOCOL = "phase6_controlled_synthetic_v1_0"
 FORMAL_EXECUTION_STATUS = "frozen_for_formal_execution"
 

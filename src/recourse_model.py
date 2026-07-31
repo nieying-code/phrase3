@@ -20,6 +20,9 @@ class RecourseResult:
     emergency_spend: float | None
     shortage: dict[str, list[float]]
     waste: dict[str, list[float]]
+    expired_waste: dict[str, list[float]]
+    early_disposal: dict[str, list[list[float]]]
+    total_disposal: dict[str, list[float]]
     ending_inventory: dict[str, list[list[float]]]
     solver: str
     runtime_seconds: float
@@ -35,6 +38,9 @@ class RecourseResult:
             "emergency_spend": self.emergency_spend,
             "shortage": self.shortage,
             "waste": self.waste,
+            "expired_waste": self.expired_waste,
+            "early_disposal": self.early_disposal,
+            "total_disposal": self.total_disposal,
             "ending_inventory": self.ending_inventory,
             "solver": self.solver,
             "runtime_seconds": self.runtime_seconds,
@@ -94,6 +100,9 @@ def solve_recourse_model(
             emergency_spend=None,
             shortage={},
             waste={},
+            expired_waste={},
+            early_disposal={},
+            total_disposal={},
             ending_inventory={},
             solver=record.solver,
             runtime_seconds=record.runtime_seconds,
@@ -115,9 +124,36 @@ def solve_recourse_model(
         ]
         for item in data.items
     }
-    waste = {
+    expired_waste = {
         item: [
-            float(pyo.value(model.waste[scenario, item, t]))
+            float(pyo.value(model.expired_waste[scenario, item, t]))
+            for t in range(data.periods)
+        ]
+        for item in data.items
+    }
+    early_disposal = {
+        item: [
+            [
+                (
+                    float(
+                        pyo.value(
+                            model.early_disposal[
+                                scenario, item, t, age
+                            ]
+                        )
+                    )
+                    if age < data.shelf_life[item] - 1
+                    else 0.0
+                )
+                for age in range(data.shelf_life[item])
+            ]
+            for t in range(data.periods)
+        ]
+        for item in data.items
+    }
+    total_disposal = {
+        item: [
+            float(pyo.value(model.total_disposal[scenario, item, t]))
             for t in range(data.periods)
         ]
         for item in data.items
@@ -141,7 +177,10 @@ def solve_recourse_model(
         emergency_purchase=emergency_purchase,
         emergency_spend=float(pyo.value(model.emergency_spend[scenario])),
         shortage=shortage,
-        waste=waste,
+        waste=total_disposal,
+        expired_waste=expired_waste,
+        early_disposal=early_disposal,
+        total_disposal=total_disposal,
         ending_inventory=ending_inventory,
         solver=record.solver,
         runtime_seconds=record.runtime_seconds,

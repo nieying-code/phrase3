@@ -271,6 +271,16 @@ def build_inventory_model(
         ],
         ordered=True,
     )
+    model.KTA_CARRY = pyo.Set(
+        dimen=3,
+        initialize=[
+            (item, t, age)
+            for item in data.items
+            for t in range(data.periods)
+            for age in range(data.shelf_life[item] - 1)
+        ],
+        ordered=True,
+    )
 
     model.y = pyo.Var(model.K, model.T, domain=pyo.NonNegativeReals)
     model.R = pyo.Var(domain=pyo.NonNegativeReals)
@@ -280,7 +290,34 @@ def build_inventory_model(
     model.consume = pyo.Var(model.S, model.KTA, domain=pyo.NonNegativeReals)
     model.inventory = pyo.Var(model.S, model.KTA, domain=pyo.NonNegativeReals)
     model.shortage = pyo.Var(model.S, model.K, model.T, domain=pyo.NonNegativeReals)
-    model.waste = pyo.Var(model.S, model.K, model.T, domain=pyo.NonNegativeReals)
+    model.expired_waste = pyo.Var(
+        model.S, model.K, model.T, domain=pyo.NonNegativeReals
+    )
+    model.early_disposal = pyo.Var(
+        model.S, model.KTA_CARRY, domain=pyo.NonNegativeReals
+    )
+    model.total_disposal = pyo.Expression(
+        model.S,
+        model.K,
+        model.T,
+        rule=lambda m, scenario, item, t: (
+            m.expired_waste[scenario, item, t]
+            + sum(
+                m.early_disposal[scenario, item, t, age]
+                for age in range(data.shelf_life[item] - 1)
+            )
+        ),
+    )
+    # Backward-compatible result name.  ``waste`` now has the documented
+    # meaning "total inventory exit"; use the explicit components in new code.
+    model.waste = pyo.Expression(
+        model.S,
+        model.K,
+        model.T,
+        rule=lambda m, scenario, item, t: (
+            m.total_disposal[scenario, item, t]
+        ),
+    )
 
     model.regular_cost = pyo.Expression(
         expr=sum(
@@ -385,12 +422,13 @@ def build_inventory_model(
             return (
                 m.available[scenario, item, t, age]
                 == m.consume[scenario, item, t, age]
-                + m.waste[scenario, item, t]
+                + m.expired_waste[scenario, item, t]
             )
         return (
             m.available[scenario, item, t, age]
             == m.consume[scenario, item, t, age]
             + m.inventory[scenario, item, t, age]
+            + m.early_disposal[scenario, item, t, age]
         )
 
     model.age_flow = pyo.Constraint(model.S, model.KTA, rule=age_flow_rule)
@@ -446,7 +484,8 @@ def build_inventory_model(
             * m.q[scenario, item, t]
             + data.shortage_penalty[item]
             * m.shortage[scenario, item, t]
-            + data.waste_penalty[item] * m.waste[scenario, item, t]
+            + data.waste_penalty[item]
+            * m.total_disposal[scenario, item, t]
             for item in data.items
             for t in range(data.periods)
         ),
