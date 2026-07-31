@@ -1,0 +1,26 @@
+\ Model 'RecourseModel[s0014]'_copy
+\ LP format - for model browsing. Use MPS format to capture full model detail.
+\ Signature: 0xff8780c9f9a00602
+Minimize
+ 
+Subject To
+ x135: x2 - x38 - x74 = 0
+ x141: x8 - x44 - x80 = 0
+ x142: x9 - x45 - x81 = 0
+ x171: x2 - x110 = 222.4772572483445
+ x177: x8 - x111 = 67.64719979007117
+ x178: x9 - x74 = 0
+ x207: x38 + x39 + x40 + x41 + x42 + x43 + x116 = 53.81923689366046
+ x208: x44 + x45 + x46 + x47 + x48 + x49 + x117 = 38.49857936978981
+ x227: x80 + x81 + x82 + x83 + x84 <= 168.4807621135332
+Bounds
+ x2 free
+ x8 free
+ x9 free
+ x38 free
+ x44 free
+ x45 free
+ x74 free
+ x80 free
+ x81 free
+End
