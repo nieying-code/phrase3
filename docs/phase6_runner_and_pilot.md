@@ -2,11 +2,11 @@
 
 ## 当前边界
 
-阶段6runner已经实现，精简矩阵
-`phase6_streamlined_experiments_v2_1` 已因相对完全补救科学模型修订
-恢复为 `candidate_for_freeze_pending_review`。在修复 PR 复审、用户
-手动合并和独立重新冻结之前，不得运行新 pilot 或正式种子；在完整 pilot
-投影通过并明确授权前，仍不得运行正式种子。
+阶段6runner已经实现。相对完全补救修复经 PR #14 复审并合并后，精简
+矩阵 `phase6_streamlined_experiments_v2_1` 已由独立受审提交重新冻结为
+`frozen_for_formal_execution`。本状态允许在重新冻结 PR 合并后使用全新
+run ID 重跑 pilot；在完整 pilot 投影通过并明确授权前，仍不得运行正式
+种子。
 
 正式授权要求：
 

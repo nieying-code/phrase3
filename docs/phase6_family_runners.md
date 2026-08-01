@@ -11,9 +11,10 @@
 
 这些执行器位于独立组件中，不修改 E3 的模型、C&CG、SPW-C&CG、worker 或 runner。因此，已经完成且指纹一致的 V1 E3 pilot 不会因本模块失效。
 
-矩阵 v2.1 因相对完全补救科学模型修订恢复为
-`candidate_for_freeze_pending_review`。所有正式种子和新 pilot 在修复
-PR 复审、用户合并并重新冻结之前均被拒绝。
+相对完全补救科学模型修订已经通过 PR #14 复审并合并，矩阵 v2.1 随后由
+独立受审提交重新冻结为 `frozen_for_formal_execution`。这只解除 pilot
+入口的候选状态阻断；所有正式种子仍须等待完整 E3/family pilot、计算量
+投影和 `formal_execution_authorized=true`。
 
 ## 入口与环境
 

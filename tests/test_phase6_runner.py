@@ -44,10 +44,12 @@ def test_candidate_matrix_blocks_e3_pilot_before_scenario_generation(
         generated = True
         raise AssertionError("scenario generation must not start")
 
+    candidate = _REAL_LOAD_PHASE6_MATRIX(MATRIX_PATH)
+    candidate["status"] = "candidate_for_freeze_pending_review"
     monkeypatch.setattr(
         phase6_runner,
         "load_phase6_matrix",
-        _REAL_LOAD_PHASE6_MATRIX,
+        lambda _: candidate,
     )
     monkeypatch.setattr(
         phase6_runner,

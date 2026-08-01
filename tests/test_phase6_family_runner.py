@@ -54,10 +54,12 @@ def test_candidate_matrix_blocks_family_pilot_before_plan_resolution(
         resolved = True
         raise AssertionError("family plans must not resolve")
 
+    candidate = _REAL_LOAD_PHASE6_MATRIX(MATRIX_PATH)
+    candidate["status"] = "candidate_for_freeze_pending_review"
     monkeypatch.setattr(
         phase6_family_runner,
         "load_phase6_matrix",
-        _REAL_LOAD_PHASE6_MATRIX,
+        lambda _: candidate,
     )
     monkeypatch.setattr(
         phase6_family_runner,

@@ -7,12 +7,13 @@
 ```text
 schema_version = 2.1
 matrix_id = phase6_streamlined_experiments_v2_1
-status = candidate_for_freeze_pending_review
+status = frozen_for_formal_execution
 ```
 
-本版在精简矩阵基础上加入经 IIS 验证的相对完全补救修订，因此恢复为候选
-状态。`candidate_for_freeze_pending_review` 不授权 pilot 或正式种子；
-必须先完成修复 PR 复审、用户手动合并与独立冻结。
+本版在精简矩阵基础上加入经 IIS 验证的相对完全补救修订。修复 PR #14
+已经通过复审并由用户手动合并；随后通过本独立受审提交把矩阵重新冻结为
+`frozen_for_formal_execution`。重新冻结只允许使用全新 run ID 重新开展
+当前指纹 pilot，不代表正式种子获得授权。
 
 本次修订不改变内生储备、C&CG 或 SPW-C&CG 算法逻辑，只在公共第二阶段
 库存平衡中加入有惩罚的提前处置。P3和P4仍不属于默认执行任务。
@@ -25,9 +26,9 @@ status = candidate_for_freeze_pending_review
 `total_disposal` 的别名。E4 同时报告 `mean_expired_waste`、
 `mean_early_disposal` 和 `mean_total_disposal`，不得重复计入成本。
 
-该科学模型修改会改变科学配置、E3 组件和 family 组件指纹。旧 V1 和
-family pilot 只作为历史诊断证据，不进入新门槛；本修复 PR 不运行任何
-新 pilot 或正式种子。
+该科学模型修改已经改变科学配置、E3 组件和 family 组件指纹。旧 V1 和
+family pilot 只作为历史诊断证据，不进入新门槛。本重新冻结 PR 不运行
+任何新 pilot 或正式种子；合并后才按受审顺序重新运行 pilot。
 
 ## 2. 论文必须回答的问题
 
