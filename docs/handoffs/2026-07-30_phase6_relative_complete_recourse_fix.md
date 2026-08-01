@@ -17,7 +17,19 @@
 - Draft PR: https://github.com/nieying-code/phrase3/pull/14
 - CI: https://github.com/nieying-code/phrase3/actions/runs/30603204207
   (`115 passed` ordinary regression + `6 passed` Phase 5)
-- PR #13: 保持 Draft，未修改、未合并
+- PR #13: 已被本次科学模型修复取代，应关闭为 superseded，禁止合并
+
+## PR #14 复审修订
+
+- 三个 IIS 已使用 Gurobi/Pyomo symbolic labels 重新导出；审计 JSON
+  逐项保存 Gurobi—Pyomo 名称映射，并按最终提交字节重算 SHA-256。
+- 新增自动测试，逐字节校验三个 `.ilp`，并验证所有 IIS 约束和变量
+  边界的符号名称映射。
+- 相对完全补救现在是执行器强制不变量：E2 任意策略或 E4 任意样本外
+  场景出现补救不可行，均返回 `unexpected_infeasible_recourse`，保留
+  哈希诊断制品、停止 family 序列并拒绝门槛，不得标记为 `optimal`。
+- 候选矩阵同时阻止 E3 pilot 与 family pilot；检查发生在计划解析或
+  场景生成前。重新冻结前不得运行任何新 pilot。
 
 ## IIS 诊断结论
 
@@ -100,9 +112,9 @@ oracle、上下界、终止条件和场景池逻辑均未改变。
 
 | 指纹 | 旧值 | 新值 |
 |---|---|---|
-| scientific config | `3ac92ff09d85eebd99ba42dfaae54fb4b1ce7171d8e8a5f1bf8bceddb4524745` | `8393c0543c5b9fee3369d0cf836821d6f5ae29c38ecede8f18b27391b6573289` |
-| E3 component | `bce43075dd91053b5b2c4fa2942fa84bea02654be17d2f10c99df08176248342` | `260c7bb2f8062954460a9436def8f70f9d80f6ef4f7848d64781730848de39e5` |
-| family component | `fb96854f96c13a3788548c78a0ac0cd1ca6b168cb5f21f74f334ca9b13ca5006` | `87f592f26a47775907dd689342d510e4d501a849116670e8e0c025d51a8c3a00` |
+| scientific config | `3ac92ff09d85eebd99ba42dfaae54fb4b1ce7171d8e8a5f1bf8bceddb4524745` | `f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3` |
+| E3 component | `bce43075dd91053b5b2c4fa2942fa84bea02654be17d2f10c99df08176248342` | `7713671bab67eec8d99fdf776f1d645740d09d020ef31b55513ccc80595f951f` |
+| family component | `fb96854f96c13a3788548c78a0ac0cd1ca6b168cb5f21f74f334ca9b13ca5006` | `5803afd60d39a2e982d9b2c879453ef2d4e21755fcb46791810a1e1de8e5076f` |
 
 旧 V1 E3 pilot 和旧 E1/E2/E4/E5 family pilot 全部保留为历史诊断
 证据，但不能进入新门槛。旧 run 没有被删除或覆盖；后续重跑必须使用
@@ -134,7 +146,7 @@ D:\新建文件夹\项目交付\阶段3-4修复同步\phrase3\.venv-gurobi\Scrip
 
 ```text
 python -m pytest -q
-121 passed in 27.25s
+126 passed in 42.15s
 
 python -m compileall -q src tests
 通过
@@ -151,6 +163,9 @@ status = optimal
 budgets = 700,800,900,1000,1100,1200
 max cold/warm objective difference = 0
 total iteration reduction = 3
+
+python -m pytest tests/test_phase6_iis_audit.py tests/test_phase6_protocol.py tests/test_phase6_runner.py tests/test_phase6_family_runner.py -q
+37 passed
 
 git diff --check
 通过（仅 Windows LF/CRLF 提示）

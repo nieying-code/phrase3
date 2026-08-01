@@ -16,6 +16,66 @@ from src.phase6_protocol import Phase6ProtocolError
 
 MATRIX_PATH = Path("configs/phase6_experiment_matrix.yaml")
 RUNNER_CONFIG_PATH = Path("configs/phase6_runner.yaml")
+_REAL_LOAD_PHASE6_MATRIX = phase6_runner.load_phase6_matrix
+
+
+@pytest.fixture(autouse=True)
+def _freeze_matrix_for_runner_unit_tests(monkeypatch) -> None:
+    def load_frozen(path: Path) -> dict[str, Any]:
+        matrix = _REAL_LOAD_PHASE6_MATRIX(path)
+        matrix["status"] = "frozen_for_formal_execution"
+        return matrix
+
+    monkeypatch.setattr(
+        phase6_runner,
+        "load_phase6_matrix",
+        load_frozen,
+    )
+
+
+def test_candidate_matrix_blocks_e3_pilot_before_scenario_generation(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    generated = False
+
+    def forbidden_generation(*args, **kwargs):
+        nonlocal generated
+        generated = True
+        raise AssertionError("scenario generation must not start")
+
+    monkeypatch.setattr(
+        phase6_runner,
+        "load_phase6_matrix",
+        _REAL_LOAD_PHASE6_MATRIX,
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_gurobi_runtime",
+        lambda: {"gurobipy": "13.0.2", "optimizer": "13.0.2"},
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_locked_environment",
+        lambda _: {"gurobipy": "13.0.2"},
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "generate_phase6_data",
+        forbidden_generation,
+    )
+    with pytest.raises(Phase6ProtocolError, match="pilot execution is blocked"):
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="V1",
+            seed=2026072001,
+            execution_mode="pilot",
+            run_id="candidate_e3_pilot_blocked",
+            worker_executor=lambda *args, **kwargs: {},
+        )
+    assert generated is False
 
 
 def test_runner_config_is_gurobi_only(tmp_path: Path) -> None:

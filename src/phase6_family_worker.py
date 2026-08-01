@@ -316,15 +316,13 @@ def _solve_policy(
             reserve,
             **solver,
         )
-    if evaluation.status == "infeasible_recourse":
-        if policy != "deterministic_mean":
-            raise RuntimeError(
-                "exact training evaluation unexpectedly infeasible for "
-                f"robust policy={policy}"
-            )
-    elif evaluation.status != "optimal" or evaluation.robust_objective is None:
+    if evaluation.status not in {"optimal", "infeasible_recourse"}:
         raise RuntimeError(
             f"exact training evaluation status={evaluation.status}"
+        )
+    if evaluation.status == "optimal" and evaluation.robust_objective is None:
+        raise RuntimeError(
+            "optimal exact training evaluation has no robust objective"
         )
     return (
         regular_purchase,
@@ -345,8 +343,14 @@ def _run_e2(request: Mapping[str, Any]) -> dict[str, Any]:
         evaluation,
         native_model,
     ) = _solve_policy(request, generated)
+    status = (
+        "unexpected_infeasible_recourse"
+        if evaluation.status == "infeasible_recourse"
+        else "optimal"
+    )
+    infeasible_count = len(evaluation.infeasible_scenarios)
     return {
-        "status": "optimal",
+        "status": status,
         "plan_id": plan["plan_id"],
         "family": "E2",
         "tier_id": generated.tier.id,
@@ -365,6 +369,18 @@ def _run_e2(request: Mapping[str, Any]) -> dict[str, Any]:
         ),
         "regular_purchase": regular_purchase,
         "exact_training_evaluation": _evaluation_summary(evaluation),
+        "failure": (
+            None
+            if status == "optimal"
+            else {
+                "stage": "e2_exact_training_evaluation",
+                "message": (
+                    "relative-complete-recourse invariant violated: "
+                    f"{infeasible_count} training scenario(s) are infeasible"
+                ),
+                "infeasible_scenario_count": infeasible_count,
+            }
+        ),
     }
 
 
@@ -403,11 +419,12 @@ def _run_e4(request: Mapping[str, Any]) -> dict[str, Any]:
         evaluation,
         reserve=float(source["reserve"]),
     )
-    status = (
-        "oos_solver_failure"
-        if metrics["solver_failure_count"]
-        else "optimal"
-    )
+    if metrics["solver_failure_count"]:
+        status = "oos_solver_failure"
+    elif metrics["infeasible_scenario_count"]:
+        status = "unexpected_infeasible_recourse"
+    else:
+        status = "optimal"
     return {
         "status": status,
         "plan_id": plan["plan_id"],
@@ -426,7 +443,17 @@ def _run_e4(request: Mapping[str, Any]) -> dict[str, Any]:
             if status == "optimal"
             else {
                 "stage": "e4_exact_oos_evaluation",
-                "message": metrics["plan_oos_status"],
+                "message": (
+                    "relative-complete-recourse invariant violated: "
+                    f"{metrics['infeasible_scenario_count']} out-of-sample "
+                    "scenario(s) are infeasible"
+                    if status == "unexpected_infeasible_recourse"
+                    else metrics["plan_oos_status"]
+                ),
+                "infeasible_scenario_count": metrics[
+                    "infeasible_scenario_count"
+                ],
+                "solver_failure_count": metrics["solver_failure_count"],
             }
         ),
     }

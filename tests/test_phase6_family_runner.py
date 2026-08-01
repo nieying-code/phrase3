@@ -26,6 +26,66 @@ from src.run_phase6_family import _write_preflight_failure
 
 MATRIX_PATH = Path("configs/phase6_experiment_matrix.yaml").resolve()
 CONFIG_PATH = Path("configs/phase6_family_runner.yaml").resolve()
+_REAL_LOAD_PHASE6_MATRIX = phase6_family_runner.load_phase6_matrix
+
+
+@pytest.fixture(autouse=True)
+def _freeze_matrix_for_runner_unit_tests(monkeypatch) -> None:
+    def load_frozen(path: Path) -> dict[str, Any]:
+        matrix = _REAL_LOAD_PHASE6_MATRIX(path)
+        matrix["status"] = "frozen_for_formal_execution"
+        return matrix
+
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "load_phase6_matrix",
+        load_frozen,
+    )
+
+
+def test_candidate_matrix_blocks_family_pilot_before_plan_resolution(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    resolved = False
+
+    def forbidden_resolution(*args, **kwargs):
+        nonlocal resolved
+        resolved = True
+        raise AssertionError("family plans must not resolve")
+
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "load_phase6_matrix",
+        _REAL_LOAD_PHASE6_MATRIX,
+    )
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "validate_gurobi_runtime",
+        lambda: {"gurobipy": "13.0.2", "optimizer": "13.0.2"},
+    )
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "validate_locked_environment",
+        lambda _: {"gurobipy": "13.0.2"},
+    )
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "resolve_family_pilot_plans",
+        forbidden_resolution,
+    )
+    with pytest.raises(Phase6ProtocolError, match="pilot execution is blocked"):
+        run_family_sequence(
+            matrix_path=MATRIX_PATH,
+            family_config_path=CONFIG_PATH,
+            output_root=tmp_path,
+            family="E1",
+            seed=2026072001,
+            execution_mode="pilot",
+            run_id="candidate_family_pilot_blocked",
+            worker=lambda *args, **kwargs: {},
+        )
+    assert resolved is False
 
 
 def test_family_config_is_gurobi_only_and_single_thread(
@@ -50,6 +110,7 @@ def test_family_config_is_gurobi_only_and_single_thread(
 
 def test_pilot_plan_resolution_is_deterministic_and_bounded() -> None:
     matrix = load_phase6_matrix(MATRIX_PATH)
+    matrix["status"] = "frozen_for_formal_execution"
     config = load_family_runner_config(CONFIG_PATH)
     expected = {"E1": 1, "E2": 6, "E4": 1, "E5": 2}
     for family, count in expected.items():
@@ -112,11 +173,16 @@ def _e2_worker_with_infeasible_deterministic_policy(
     )
     policy = request["plan"]["policy"]
     if policy == "deterministic_mean":
+        payload["status"] = "unexpected_infeasible_recourse"
         payload["robust_objective"] = None
         payload["exact_training_evaluation"] = {
             "status": "infeasible_recourse",
             "infeasible_scenario_count": 1,
             "solver_failure_count": 0,
+        }
+        payload["failure"] = {
+            "stage": "e2_exact_training_evaluation",
+            "message": "relative-complete-recourse invariant violated",
         }
     else:
         payload["exact_training_evaluation"] = {
@@ -284,7 +350,7 @@ def test_e2_runner_checkpoints_all_policies_and_checks_dominance(
         )
 
 
-def test_e2_runner_retains_infeasible_deterministic_evaluation(
+def test_e2_runner_blocks_infeasible_deterministic_evaluation(
     tmp_path: Path,
     monkeypatch,
 ) -> None:
@@ -313,18 +379,25 @@ def test_e2_runner_retains_infeasible_deterministic_evaluation(
         run_id="pilot_e2_infeasible_deterministic",
         worker=_e2_worker_with_infeasible_deterministic_policy,
     )
-    assert result["status"] == "optimal"
-    assert result["completed_work_units"] == 6
+    assert result["status"] == "unexpected_infeasible_recourse"
+    assert result["completed_work_units"] == 0
     deterministic = next(
         row
         for row in result["plans"]
         if row["policy"] == "deterministic_mean"
     )
-    assert deterministic["status"] == "optimal"
+    assert deterministic["status"] == "unexpected_infeasible_recourse"
     assert deterministic["robust_objective"] is None
+    assert deterministic["result_sha256"] == sha256_file(
+        Path(deterministic["result_path"])
+    )
+    assert all(
+        row["status"] == "not_run_after_family_failure"
+        for row in result["plans"][1:]
+    )
 
 
-def test_e2_worker_retains_exactly_infeasible_deterministic_policy(
+def test_e2_worker_marks_any_infeasible_policy_as_scientific_error(
     monkeypatch,
 ) -> None:
     generated = SimpleNamespace(
@@ -387,7 +460,7 @@ def test_e2_worker_retains_exactly_infeasible_deterministic_policy(
             },
         }
     )
-    assert result["status"] == "optimal"
+    assert result["status"] == "unexpected_infeasible_recourse"
     assert result["robust_objective"] is None
     assert (
         result["exact_training_evaluation"]["status"]
@@ -402,25 +475,22 @@ def test_e2_worker_retains_exactly_infeasible_deterministic_policy(
         "build_fixed_reserve_model",
         lambda data, ratio: object(),
     )
-    with pytest.raises(
-        RuntimeError,
-        match="unexpectedly infeasible for robust policy",
-    ):
-        phase6_family_worker._run_e2(
-            {
-                "plan": {
-                    "plan_id": "fixed_infeasible",
-                    "policy": "fixed_reserve_0_10",
-                    "budget_index": 1,
-                },
-                "solver": {
-                    "preference": ["gurobi"],
-                    "threads": 1,
-                    "feasibility_tolerance": 1.0e-7,
-                    "optimality_tolerance": 1.0e-7,
-                },
-            }
-        )
+    fixed = phase6_family_worker._run_e2(
+        {
+            "plan": {
+                "plan_id": "fixed_infeasible",
+                "policy": "fixed_reserve_0_10",
+                "budget_index": 1,
+            },
+            "solver": {
+                "preference": ["gurobi"],
+                "threads": 1,
+                "feasibility_tolerance": 1.0e-7,
+                "optimality_tolerance": 1.0e-7,
+            },
+        }
+    )
+    assert fixed["status"] == "unexpected_infeasible_recourse"
 
 
 def test_failure_retains_failed_and_not_run_plans(
@@ -734,3 +804,73 @@ def test_e4_worker_rechecks_source_hash_before_loading(
                 "source_plan_sha256": "0" * 64,
             }
         )
+
+
+def test_e4_worker_blocks_any_unexpected_infeasible_recourse(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    source = tmp_path / "source.json"
+    _atomic_write_json(
+        source,
+        {
+            "status": "optimal",
+            "plan_id": "E2_source",
+            "regular_purchase": {"item": [1.0]},
+            "reserve": 0.0,
+        },
+    )
+    generated = SimpleNamespace(
+        tier=SimpleNamespace(id="V2", solver_call_seconds=60.0),
+        data=object(),
+        budget=100.0,
+    )
+    monkeypatch.setattr(
+        phase6_family_worker,
+        "load_phase6_matrix",
+        lambda _: {},
+    )
+    monkeypatch.setattr(
+        phase6_family_worker,
+        "generate_oos_data",
+        lambda *args, **kwargs: generated,
+    )
+    monkeypatch.setattr(
+        phase6_family_worker,
+        "evaluate_first_stage",
+        lambda *args, **kwargs: object(),
+    )
+    monkeypatch.setattr(
+        phase6_family_worker,
+        "aggregate_oos_evaluation",
+        lambda *args, **kwargs: {
+            "plan_oos_status": "contains_infeasible_recourse",
+            "infeasible_scenario_count": 2,
+            "solver_failure_count": 0,
+        },
+    )
+    result = _run_e4(
+        {
+            "plan": {
+                "plan_id": "E4_plan",
+                "source_e2_plan_id": "E2_source",
+                "tier_id": "V2",
+                "test_seed": 2036072001,
+                "training_seed": 2026072001,
+                "budget_index": 1,
+                "budget": 100.0,
+                "policy": "endogenous_reserve",
+            },
+            "matrix_path": str(MATRIX_PATH),
+            "source_plan_path": str(source),
+            "source_plan_sha256": sha256_file(source),
+            "solver": {
+                "preference": ["gurobi"],
+                "threads": 1,
+                "feasibility_tolerance": 1.0e-7,
+                "optimality_tolerance": 1.0e-7,
+            },
+        }
+    )
+    assert result["status"] == "unexpected_infeasible_recourse"
+    assert result["failure"]["infeasible_scenario_count"] == 2

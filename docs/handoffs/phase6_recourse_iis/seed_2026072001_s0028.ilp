@@ -4,12 +4,24 @@
 Minimize
 
 Subject To
- x135: x2 - x38 - x74 = 0
- x171: x2 - x110 = 224.4883680972717
- x207: x38 + x39 + x40 + x41 + x42 + x43 + x116 = 50.41152736923478
- x226: x74 + x75 + x76 + x77 + x78 <= 165
+ age_flow(s0028_relief_food_1_0_0): available(s0028_relief_food_1_0_0)
+   - consume(s0028_relief_food_1_0_0) - inventory(s0028_relief_food_1_0_0)
+   = 0
+ available_balance(s0028_relief_food_1_0_0):
+   available(s0028_relief_food_1_0_0) - q(s0028_relief_food_1_0)
+   = 224.4883680972717
+ demand_balance(s0028_relief_food_1_0): consume(s0028_relief_food_1_0_0)
+   + consume(s0028_relief_food_1_0_1) + consume(s0028_relief_food_1_0_2)
+   + consume(s0028_relief_food_1_0_3) + consume(s0028_relief_food_1_0_4)
+   + consume(s0028_relief_food_1_0_5) + shortage(s0028_relief_food_1_0)
+   = 50.41152736923478
+ storage_capacity(s0028_0): inventory(s0028_relief_food_1_0_0)
+   + inventory(s0028_relief_food_1_0_1)
+   + inventory(s0028_relief_food_1_0_2)
+   + inventory(s0028_relief_food_1_0_3)
+   + inventory(s0028_relief_food_1_0_4) <= 165
 Bounds
- x2 free
- x38 free
- x74 free
+ available(s0028_relief_food_1_0_0) free
+ consume(s0028_relief_food_1_0_0) free
+ inventory(s0028_relief_food_1_0_0) free
 End

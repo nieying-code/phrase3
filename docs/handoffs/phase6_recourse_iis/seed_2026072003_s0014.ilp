@@ -4,23 +4,47 @@
 Minimize
 
 Subject To
- x135: x2 - x38 - x74 = 0
- x141: x8 - x44 - x80 = 0
- x142: x9 - x45 - x81 = 0
- x171: x2 - x110 = 222.4772572483445
- x177: x8 - x111 = 67.64719979007117
- x178: x9 - x74 = 0
- x207: x38 + x39 + x40 + x41 + x42 + x43 + x116 = 53.81923689366046
- x208: x44 + x45 + x46 + x47 + x48 + x49 + x117 = 38.49857936978981
- x227: x80 + x81 + x82 + x83 + x84 <= 168.4807621135332
+ age_flow(s0014_relief_food_1_0_0): available(s0014_relief_food_1_0_0)
+   - consume(s0014_relief_food_1_0_0) - inventory(s0014_relief_food_1_0_0)
+   = 0
+ age_flow(s0014_relief_food_1_1_0): available(s0014_relief_food_1_1_0)
+   - consume(s0014_relief_food_1_1_0) - inventory(s0014_relief_food_1_1_0)
+   = 0
+ age_flow(s0014_relief_food_1_1_1): available(s0014_relief_food_1_1_1)
+   - consume(s0014_relief_food_1_1_1) - inventory(s0014_relief_food_1_1_1)
+   = 0
+ available_balance(s0014_relief_food_1_0_0):
+   available(s0014_relief_food_1_0_0) - q(s0014_relief_food_1_0)
+   = 222.4772572483445
+ available_balance(s0014_relief_food_1_1_0):
+   available(s0014_relief_food_1_1_0) - q(s0014_relief_food_1_1)
+   = 67.64719979007117
+ available_balance(s0014_relief_food_1_1_1):
+   available(s0014_relief_food_1_1_1) - inventory(s0014_relief_food_1_0_0)
+   = 0
+ demand_balance(s0014_relief_food_1_0): consume(s0014_relief_food_1_0_0)
+   + consume(s0014_relief_food_1_0_1) + consume(s0014_relief_food_1_0_2)
+   + consume(s0014_relief_food_1_0_3) + consume(s0014_relief_food_1_0_4)
+   + consume(s0014_relief_food_1_0_5) + shortage(s0014_relief_food_1_0)
+   = 53.81923689366046
+ demand_balance(s0014_relief_food_1_1): consume(s0014_relief_food_1_1_0)
+   + consume(s0014_relief_food_1_1_1) + consume(s0014_relief_food_1_1_2)
+   + consume(s0014_relief_food_1_1_3) + consume(s0014_relief_food_1_1_4)
+   + consume(s0014_relief_food_1_1_5) + shortage(s0014_relief_food_1_1)
+   = 38.49857936978981
+ storage_capacity(s0014_1): inventory(s0014_relief_food_1_1_0)
+   + inventory(s0014_relief_food_1_1_1)
+   + inventory(s0014_relief_food_1_1_2)
+   + inventory(s0014_relief_food_1_1_3)
+   + inventory(s0014_relief_food_1_1_4) <= 168.4807621135332
 Bounds
- x2 free
- x8 free
- x9 free
- x38 free
- x44 free
- x45 free
- x74 free
- x80 free
- x81 free
+ available(s0014_relief_food_1_0_0) free
+ available(s0014_relief_food_1_1_0) free
+ available(s0014_relief_food_1_1_1) free
+ consume(s0014_relief_food_1_0_0) free
+ consume(s0014_relief_food_1_1_0) free
+ consume(s0014_relief_food_1_1_1) free
+ inventory(s0014_relief_food_1_0_0) free
+ inventory(s0014_relief_food_1_1_0) free
+ inventory(s0014_relief_food_1_1_1) free
 End

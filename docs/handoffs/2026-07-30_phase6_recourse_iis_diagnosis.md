@@ -34,9 +34,12 @@ Pyomo `gurobi_direct`、`Threads=1`。三个场景的标准化状态和 Gurobi
 跨相邻时期显示相同结构。
 
 完整哈希、约束名称和变量边界映射见
-`2026-07-30_phase6_recourse_iis_audit.json`。Gurobi 导出的精简 IIS
-文件位于 `docs/handoffs/phase6_recourse_iis/`；文件只含最小 IIS，
-不含完整场景或大型求解日志。
+`2026-07-30_phase6_recourse_iis_audit.json`。IIS 已在模型变更前提交
+`5abb3f9` 上用 `symbolic_solver_labels=True` 重新导出；审计 JSON 对每个
+Gurobi 符号名称记录精确的 Pyomo `ComponentData.name`。Gurobi 导出的
+精简 IIS 文件位于 `docs/handoffs/phase6_recourse_iis/`，并由
+`.gitattributes` 按原始字节保存；文件只含最小 IIS，不含完整场景或
+大型求解日志。自动测试会同时核验三个文件的 SHA-256、符号名称与映射。
 
 ## 根因判定
 

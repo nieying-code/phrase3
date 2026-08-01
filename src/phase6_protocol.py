@@ -345,6 +345,23 @@ def budget_values_for_tier(
     )
 
 
+def validate_matrix_execution_status(
+    matrix: Mapping[str, Any],
+    *,
+    execution_mode: str,
+) -> None:
+    """Block every non-development experiment until the matrix is frozen."""
+
+    if (
+        execution_mode in {"pilot", "formal"}
+        and matrix.get("status") != FORMAL_EXECUTION_STATUS
+    ):
+        raise Phase6ProtocolError(
+            f"{execution_mode} execution is blocked until matrix status is "
+            f"{FORMAL_EXECUTION_STATUS!r}"
+        )
+
+
 def validate_execution_seed(
     matrix: Mapping[str, Any],
     *,
@@ -354,6 +371,10 @@ def validate_execution_seed(
 ) -> None:
     """Enforce development, pilot, and formal seed boundaries."""
 
+    validate_matrix_execution_status(
+        matrix,
+        execution_mode=execution_mode,
+    )
     tier = resolve_tier(matrix, tier_id)
     seed_plan = matrix["seed_plan"]
     if execution_mode == "development":
@@ -363,11 +384,6 @@ def validate_execution_seed(
         if tier.id == "D0":
             raise Phase6ProtocolError("pilot mode must use V1 or a larger tier")
     elif execution_mode == "formal":
-        if matrix.get("status") != FORMAL_EXECUTION_STATUS:
-            raise Phase6ProtocolError(
-                "formal seeds are blocked until matrix status is "
-                f"{FORMAL_EXECUTION_STATUS!r}"
-            )
         formal = [
             int(value) for value in seed_plan["formal_training_seeds"]
         ]

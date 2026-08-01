@@ -137,6 +137,9 @@ V1–P2只使用三个正式预算：
 
 “内生模型不劣于测试固定比例”是可行域包含带来的结构正确性门槛，不作为
 经验创新结论。论文重点是样本外缺货、尾部成本、服务水平和储备变化。
+相对完全补救修订后，E2 六类策略的完整训练场景精确重评必须全部可行；
+任何 `infeasible_recourse` 均记为 `unexpected_infeasible_recourse`，保留
+诊断制品并阻断 family gate，不得作为已完成的最优策略评价。
 
 ## 8. 精确性门槛
 
@@ -240,8 +243,11 @@ N_total = N_optimal + N_infeasible + N_solver_failure
 - 浪费、应急支出、储备利用率。
 
 非最优场景不得静默删除。出现不可行或求解失败时，成本与服务聚合指标按
-冻结规则置空并单独报告状态；禁止使用任意Big-M伪造成本。零储备的利用率
-为`null`，同时记录`zero_reserve_flag`。
+冻结规则置空并单独报告状态；禁止使用任意Big-M伪造成本。由于修订后的
+模型具有相对完全补救，E4 只要 `infeasible_scenario_count > 0` 就必须
+返回 `unexpected_infeasible_recourse`，不得标记为 `optimal`，并阻断
+family gate；求解器失败保持独立状态。零储备的利用率为`null`，同时记录
+`zero_reserve_flag`。
 
 ## 12. 精简敏感性
 

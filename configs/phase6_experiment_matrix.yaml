@@ -335,6 +335,11 @@ model_comparison:
     candidate_scenarios: complete_training_set
     comparison_objective: regular_cost_plus_maximum_exact_recourse_cost
     native_deterministic_objective_must_not_be_compared_directly: true
+    relative_complete_recourse_invariant:
+      infeasible_recourse_for_any_policy_is_blocking: true
+      violation_status: unexpected_infeasible_recourse
+      family_plan_must_not_be_optimal_on_violation: true
+      retain_diagnostic_artifacts: true
   endogenous_dominance_check:
     role: structural_correctness_gate
     empirical_innovation_claim: false
@@ -538,6 +543,11 @@ out_of_sample_evaluation:
       contains_infeasible_recourse: infeasible_count_positive_and_solver_failure_count_zero
       incomplete_solver_failure: solver_failure_count_positive_and_infeasible_count_zero
       incomplete_solver_failure_and_infeasible: solver_failure_count_positive_and_infeasible_count_positive
+    relative_complete_recourse_invariant:
+      infeasible_scenario_count_must_equal_zero: true
+      violation_status: unexpected_infeasible_recourse
+      family_plan_must_not_be_optimal_on_violation: true
+      retain_diagnostic_artifacts: true
   aggregate_metric_rule:
     required_status: complete_feasible
     on_any_infeasible_or_solver_failure: set_all_cost_shortage_service_waste_and_spend_aggregates_to_null

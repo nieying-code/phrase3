@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "diagnosis_date": "2026-07-31",
   "source_git_sha": "5abb3f907b001871c03ab9e783a33a09f99ab6f6",
   "solver": {
@@ -37,19 +37,94 @@
       "iis_constraint_count": 4,
       "iis_variable_lower_bound_count": 11,
       "iis_constraints": [
-        "age_flow[s0028,relief_food_1,0,0]",
-        "available_balance[s0028,relief_food_1,0,0]",
-        "demand_balance[s0028,relief_food_1,0]",
-        "storage_capacity[s0028,0]"
+        {
+          "gurobi_name": "age_flow(s0028_relief_food_1_0_0)",
+          "pyomo_name": "age_flow[s0028,relief_food_1,0,0]"
+        },
+        {
+          "gurobi_name": "available_balance(s0028_relief_food_1_0_0)",
+          "pyomo_name": "available_balance[s0028,relief_food_1,0,0]"
+        },
+        {
+          "gurobi_name": "demand_balance(s0028_relief_food_1_0)",
+          "pyomo_name": "demand_balance[s0028,relief_food_1,0]"
+        },
+        {
+          "gurobi_name": "storage_capacity(s0028_0)",
+          "pyomo_name": "storage_capacity[s0028,0]"
+        }
       ],
       "iis_variable_lower_bounds": [
-        "consume[s0028,relief_food_1,0,1:5]",
-        "inventory[s0028,relief_food_1,0,1:4]",
-        "q[s0028,relief_food_1,0]",
-        "shortage[s0028,relief_food_1,0]"
+        {
+          "gurobi_name": "consume(s0028_relief_food_1_0_1)",
+          "pyomo_name": "consume[s0028,relief_food_1,0,1]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0028_relief_food_1_0_2)",
+          "pyomo_name": "consume[s0028,relief_food_1,0,2]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0028_relief_food_1_0_3)",
+          "pyomo_name": "consume[s0028,relief_food_1,0,3]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0028_relief_food_1_0_4)",
+          "pyomo_name": "consume[s0028,relief_food_1,0,4]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0028_relief_food_1_0_5)",
+          "pyomo_name": "consume[s0028,relief_food_1,0,5]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "inventory(s0028_relief_food_1_0_1)",
+          "pyomo_name": "inventory[s0028,relief_food_1,0,1]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "inventory(s0028_relief_food_1_0_2)",
+          "pyomo_name": "inventory[s0028,relief_food_1,0,2]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "inventory(s0028_relief_food_1_0_3)",
+          "pyomo_name": "inventory[s0028,relief_food_1,0,3]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "inventory(s0028_relief_food_1_0_4)",
+          "pyomo_name": "inventory[s0028,relief_food_1,0,4]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "q(s0028_relief_food_1_0)",
+          "pyomo_name": "q[s0028,relief_food_1,0]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "shortage(s0028_relief_food_1_0)",
+          "pyomo_name": "shortage[s0028,relief_food_1,0]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        }
       ],
       "iis_file": "docs/handoffs/phase6_recourse_iis/seed_2026072001_s0028.ilp",
-      "iis_file_sha256": "e8d95f2770ec45b6022b3bad3096caed27dd168b75e47feafc4f7b935741b760"
+      "iis_file_sha256": "e8c45caa1d90a8640496b56e73d50269f9b4ee2841aeeeb7737ca69700a2f92f",
+      "symbolic_solver_labels": true
     },
     {
       "pilot_seed": 2026072002,
@@ -66,25 +141,144 @@
       "iis_constraint_count": 9,
       "iis_variable_lower_bound_count": 16,
       "iis_constraints": [
-        "age_flow[s0113,relief_food_1,4,0]",
-        "age_flow[s0113,relief_food_1,5,0]",
-        "age_flow[s0113,relief_food_1,5,1]",
-        "available_balance[s0113,relief_food_1,4,0]",
-        "available_balance[s0113,relief_food_1,5,0]",
-        "available_balance[s0113,relief_food_1,5,1]",
-        "demand_balance[s0113,relief_food_1,4]",
-        "demand_balance[s0113,relief_food_1,5]",
-        "storage_capacity[s0113,5]"
+        {
+          "gurobi_name": "age_flow(s0113_relief_food_1_4_0)",
+          "pyomo_name": "age_flow[s0113,relief_food_1,4,0]"
+        },
+        {
+          "gurobi_name": "age_flow(s0113_relief_food_1_5_0)",
+          "pyomo_name": "age_flow[s0113,relief_food_1,5,0]"
+        },
+        {
+          "gurobi_name": "age_flow(s0113_relief_food_1_5_1)",
+          "pyomo_name": "age_flow[s0113,relief_food_1,5,1]"
+        },
+        {
+          "gurobi_name": "available_balance(s0113_relief_food_1_4_0)",
+          "pyomo_name": "available_balance[s0113,relief_food_1,4,0]"
+        },
+        {
+          "gurobi_name": "available_balance(s0113_relief_food_1_5_0)",
+          "pyomo_name": "available_balance[s0113,relief_food_1,5,0]"
+        },
+        {
+          "gurobi_name": "available_balance(s0113_relief_food_1_5_1)",
+          "pyomo_name": "available_balance[s0113,relief_food_1,5,1]"
+        },
+        {
+          "gurobi_name": "demand_balance(s0113_relief_food_1_4)",
+          "pyomo_name": "demand_balance[s0113,relief_food_1,4]"
+        },
+        {
+          "gurobi_name": "demand_balance(s0113_relief_food_1_5)",
+          "pyomo_name": "demand_balance[s0113,relief_food_1,5]"
+        },
+        {
+          "gurobi_name": "storage_capacity(s0113_5)",
+          "pyomo_name": "storage_capacity[s0113,5]"
+        }
       ],
       "iis_variable_lower_bounds": [
-        "consume[s0113,relief_food_1,4,1:5]",
-        "consume[s0113,relief_food_1,5,2:5]",
-        "inventory[s0113,relief_food_1,5,2:4]",
-        "q[s0113,relief_food_1,4:5]",
-        "shortage[s0113,relief_food_1,4:5]"
+        {
+          "gurobi_name": "consume(s0113_relief_food_1_4_1)",
+          "pyomo_name": "consume[s0113,relief_food_1,4,1]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0113_relief_food_1_4_2)",
+          "pyomo_name": "consume[s0113,relief_food_1,4,2]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0113_relief_food_1_4_3)",
+          "pyomo_name": "consume[s0113,relief_food_1,4,3]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0113_relief_food_1_4_4)",
+          "pyomo_name": "consume[s0113,relief_food_1,4,4]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0113_relief_food_1_4_5)",
+          "pyomo_name": "consume[s0113,relief_food_1,4,5]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0113_relief_food_1_5_2)",
+          "pyomo_name": "consume[s0113,relief_food_1,5,2]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0113_relief_food_1_5_3)",
+          "pyomo_name": "consume[s0113,relief_food_1,5,3]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0113_relief_food_1_5_4)",
+          "pyomo_name": "consume[s0113,relief_food_1,5,4]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0113_relief_food_1_5_5)",
+          "pyomo_name": "consume[s0113,relief_food_1,5,5]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "inventory(s0113_relief_food_1_5_2)",
+          "pyomo_name": "inventory[s0113,relief_food_1,5,2]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "inventory(s0113_relief_food_1_5_3)",
+          "pyomo_name": "inventory[s0113,relief_food_1,5,3]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "inventory(s0113_relief_food_1_5_4)",
+          "pyomo_name": "inventory[s0113,relief_food_1,5,4]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "q(s0113_relief_food_1_4)",
+          "pyomo_name": "q[s0113,relief_food_1,4]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "q(s0113_relief_food_1_5)",
+          "pyomo_name": "q[s0113,relief_food_1,5]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "shortage(s0113_relief_food_1_4)",
+          "pyomo_name": "shortage[s0113,relief_food_1,4]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "shortage(s0113_relief_food_1_5)",
+          "pyomo_name": "shortage[s0113,relief_food_1,5]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        }
       ],
       "iis_file": "docs/handoffs/phase6_recourse_iis/seed_2026072002_s0113.ilp",
-      "iis_file_sha256": "9ea0450d1bde1b67a952a70da75099f656ef20e4d24c464b39ccf9baa34981ff"
+      "iis_file_sha256": "ebae514c6de77406a6ebffeb5684b3f4a591a8de7f58a52e636e244cc389fb38",
+      "symbolic_solver_labels": true
     },
     {
       "pilot_seed": 2026072003,
@@ -101,25 +295,144 @@
       "iis_constraint_count": 9,
       "iis_variable_lower_bound_count": 16,
       "iis_constraints": [
-        "age_flow[s0014,relief_food_1,0,0]",
-        "age_flow[s0014,relief_food_1,1,0]",
-        "age_flow[s0014,relief_food_1,1,1]",
-        "available_balance[s0014,relief_food_1,0,0]",
-        "available_balance[s0014,relief_food_1,1,0]",
-        "available_balance[s0014,relief_food_1,1,1]",
-        "demand_balance[s0014,relief_food_1,0]",
-        "demand_balance[s0014,relief_food_1,1]",
-        "storage_capacity[s0014,1]"
+        {
+          "gurobi_name": "age_flow(s0014_relief_food_1_0_0)",
+          "pyomo_name": "age_flow[s0014,relief_food_1,0,0]"
+        },
+        {
+          "gurobi_name": "age_flow(s0014_relief_food_1_1_0)",
+          "pyomo_name": "age_flow[s0014,relief_food_1,1,0]"
+        },
+        {
+          "gurobi_name": "age_flow(s0014_relief_food_1_1_1)",
+          "pyomo_name": "age_flow[s0014,relief_food_1,1,1]"
+        },
+        {
+          "gurobi_name": "available_balance(s0014_relief_food_1_0_0)",
+          "pyomo_name": "available_balance[s0014,relief_food_1,0,0]"
+        },
+        {
+          "gurobi_name": "available_balance(s0014_relief_food_1_1_0)",
+          "pyomo_name": "available_balance[s0014,relief_food_1,1,0]"
+        },
+        {
+          "gurobi_name": "available_balance(s0014_relief_food_1_1_1)",
+          "pyomo_name": "available_balance[s0014,relief_food_1,1,1]"
+        },
+        {
+          "gurobi_name": "demand_balance(s0014_relief_food_1_0)",
+          "pyomo_name": "demand_balance[s0014,relief_food_1,0]"
+        },
+        {
+          "gurobi_name": "demand_balance(s0014_relief_food_1_1)",
+          "pyomo_name": "demand_balance[s0014,relief_food_1,1]"
+        },
+        {
+          "gurobi_name": "storage_capacity(s0014_1)",
+          "pyomo_name": "storage_capacity[s0014,1]"
+        }
       ],
       "iis_variable_lower_bounds": [
-        "consume[s0014,relief_food_1,0,1:5]",
-        "consume[s0014,relief_food_1,1,2:5]",
-        "inventory[s0014,relief_food_1,1,2:4]",
-        "q[s0014,relief_food_1,0:1]",
-        "shortage[s0014,relief_food_1,0:1]"
+        {
+          "gurobi_name": "consume(s0014_relief_food_1_0_1)",
+          "pyomo_name": "consume[s0014,relief_food_1,0,1]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0014_relief_food_1_0_2)",
+          "pyomo_name": "consume[s0014,relief_food_1,0,2]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0014_relief_food_1_0_3)",
+          "pyomo_name": "consume[s0014,relief_food_1,0,3]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0014_relief_food_1_0_4)",
+          "pyomo_name": "consume[s0014,relief_food_1,0,4]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0014_relief_food_1_0_5)",
+          "pyomo_name": "consume[s0014,relief_food_1,0,5]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0014_relief_food_1_1_2)",
+          "pyomo_name": "consume[s0014,relief_food_1,1,2]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0014_relief_food_1_1_3)",
+          "pyomo_name": "consume[s0014,relief_food_1,1,3]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0014_relief_food_1_1_4)",
+          "pyomo_name": "consume[s0014,relief_food_1,1,4]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "consume(s0014_relief_food_1_1_5)",
+          "pyomo_name": "consume[s0014,relief_food_1,1,5]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "inventory(s0014_relief_food_1_1_2)",
+          "pyomo_name": "inventory[s0014,relief_food_1,1,2]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "inventory(s0014_relief_food_1_1_3)",
+          "pyomo_name": "inventory[s0014,relief_food_1,1,3]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "inventory(s0014_relief_food_1_1_4)",
+          "pyomo_name": "inventory[s0014,relief_food_1,1,4]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "q(s0014_relief_food_1_0)",
+          "pyomo_name": "q[s0014,relief_food_1,0]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "q(s0014_relief_food_1_1)",
+          "pyomo_name": "q[s0014,relief_food_1,1]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "shortage(s0014_relief_food_1_0)",
+          "pyomo_name": "shortage[s0014,relief_food_1,0]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        },
+        {
+          "gurobi_name": "shortage(s0014_relief_food_1_1)",
+          "pyomo_name": "shortage[s0014,relief_food_1,1]",
+          "iis_lower_bound": true,
+          "iis_upper_bound": false
+        }
       ],
       "iis_file": "docs/handoffs/phase6_recourse_iis/seed_2026072003_s0014.ilp",
-      "iis_file_sha256": "2842c2e16643c84beb55f6276cfaec0ba2e86e655e65672bc4db7d6cb560e17c"
+      "iis_file_sha256": "7161072eea078b9bff5b2b440429ad90498b8622e82312044402e3cc17143100",
+      "symbolic_solver_labels": true
     }
   ],
   "pyomo_mapping": {
@@ -128,5 +441,10 @@
     "demand_balance": "sum consume plus shortage equals scenario demand",
     "storage_capacity": "sum nonmaximum-age ending inventory cannot exceed ending-storage capacity",
     "variable_lower_bounds": "nonnegativity prevents the legacy model from absorbing excess stock with negative purchase, consume, inventory, or shortage"
+  },
+  "iis_export": {
+    "symbolic_solver_labels": true,
+    "name_mapping": "Every IIS constraint and variable bound below records the exact Gurobi symbolic label and its Pyomo ComponentData name.",
+    "byte_stability": "IIS files are marked -text in .gitattributes; SHA-256 is over exact committed bytes."
   }
 }
