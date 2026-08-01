@@ -12,9 +12,10 @@
 - Branch: `agent/phase6-formal-e1`
 - Base/execution SHA: `f169f2d783cf4714e8fffcadb92de1e2930c46bb`
 - Execution tree: `0f945a31596af01ca168375682714002c8a72a2c`
-- Validated result commit: `pending`
-- Draft PR: `pending`
-- CI: `pending`
+- Validated result commit: `81fb39f4410199351c697622c66d3855067ce187`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/21
+- Results CI: https://github.com/nieying-code/phrase3/actions/runs/30701895450
+  (`126 passed + 6 passed`)
 
 ## 环境和执行边界
 
@@ -103,6 +104,10 @@ passed
 git diff --check
 passed
 ```
+
+GitHub Actions run `30701895450` 对结果提交
+`81fb39f4410199351c697622c66d3855067ce187` 验证成功：普通回归
+`126 passed`，Phase 5 端到端 `6 passed`。
 
 ## 下一步与审查清单
 
