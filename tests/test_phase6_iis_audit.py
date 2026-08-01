@@ -22,6 +22,9 @@ def _expected_symbolic_label(pyomo_name: str) -> str:
 def test_phase6_iis_files_match_audit_hashes_and_symbolic_mapping() -> None:
     audit = json.loads(AUDIT_PATH.read_text(encoding="utf-8"))
     assert audit["iis_export"]["symbolic_solver_labels"] is True
+    semantics = audit["iis_export"]["iis_minimal_semantics"]
+    assert "irreducible" in semantics
+    assert "does not claim minimum cardinality" in semantics
     assert len(audit["cases"]) == 3
     for case in audit["cases"]:
         iis_path = ROOT / case["iis_file"]

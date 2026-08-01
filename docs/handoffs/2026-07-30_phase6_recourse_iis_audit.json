@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "diagnosis_date": "2026-07-31",
   "source_git_sha": "5abb3f907b001871c03ab9e783a33a09f99ab6f6",
   "solver": {
@@ -445,6 +445,7 @@
   "iis_export": {
     "symbolic_solver_labels": true,
     "name_mapping": "Every IIS constraint and variable bound below records the exact Gurobi symbolic label and its Pyomo ComponentData name.",
-    "byte_stability": "IIS files are marked -text in .gitattributes; SHA-256 is over exact committed bytes."
+    "byte_stability": "IIS files are marked -text in .gitattributes; SHA-256 is over exact committed bytes.",
+    "iis_minimal_semantics": "The iis_minimal field mirrors Gurobi IISMinimal=1 and means the returned infeasible subsystem is irreducible: removing any member may destroy infeasibility. It does not claim minimum cardinality among all IISs."
   }
 }

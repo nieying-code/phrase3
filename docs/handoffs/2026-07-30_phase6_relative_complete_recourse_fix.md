@@ -41,11 +41,15 @@
 | 2026072002 | 2036072002 | `s0113` | 40 |
 | 2026072003 | 2036072003 | `s0014` | 93 |
 
-三者在 Gurobi 13.0.2 中均得到原始终止条件 `infeasible`，且最小 IIS
+三者在 Gurobi 13.0.2 中均得到原始终止条件 `infeasible`，且不可约 IIS
 共同包含 `available_balance`、非最大库龄 `age_flow`、
 `demand_balance`、`storage_capacity` 及相关非负变量边界。第一阶段
 固定采购在低需求下产生未到期剩余库存，旧模型没有提前退出通道，结转
 库存因而超过期末容量。
+
+审计字段 `iis_minimal=true` 原样对应 Gurobi `IISMinimal=1`：它表示返回
+的不可行子系统不可约，删除任一成员可能破坏不可行性，但不宣称该 IIS
+具有所有 IIS 中的最小基数。
 
 没有证据指向超时、求解器失败、`infeasible_or_unbounded`、预算实现、
 服务约束或索引错误。详细名称、哈希和 `.ilp` 路径见：

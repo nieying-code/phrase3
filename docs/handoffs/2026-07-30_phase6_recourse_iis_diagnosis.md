@@ -14,7 +14,7 @@ Pyomo `gurobi_direct`、`Threads=1`。三个场景的标准化状态和 Gurobi
 
 ## 复现与 IIS
 
-| Pilot seed | Test seed | Scenario | 原 E4 不可行数 | IIS 约束 | IIS 下界 | 最小 IIS |
+| Pilot seed | Test seed | Scenario | 原 E4 不可行数 | IIS 约束 | IIS 下界 | 不可约 IIS |
 |---:|---:|---|---:|---:|---:|---|
 | 2026072001 | 2036072001 | `s0028` | 60 | 4 | 11 | 是 |
 | 2026072002 | 2036072002 | `s0113` | 40 | 9 | 16 | 是 |
@@ -38,8 +38,10 @@ Pyomo `gurobi_direct`、`Threads=1`。三个场景的标准化状态和 Gurobi
 `5abb3f9` 上用 `symbolic_solver_labels=True` 重新导出；审计 JSON 对每个
 Gurobi 符号名称记录精确的 Pyomo `ComponentData.name`。Gurobi 导出的
 精简 IIS 文件位于 `docs/handoffs/phase6_recourse_iis/`，并由
-`.gitattributes` 按原始字节保存；文件只含最小 IIS，不含完整场景或
-大型求解日志。自动测试会同时核验三个文件的 SHA-256、符号名称与映射。
+`.gitattributes` 按原始字节保存；文件只含 Gurobi 返回的不可约 IIS，
+不含完整场景或大型求解日志。这里 `IISMinimal=1` 表示删除其中任一成员
+可能破坏该 IIS 的不可行性，不表示它是所有 IIS 中基数最小的一个。
+自动测试会同时核验三个文件的 SHA-256、符号名称与映射。
 
 ## 根因判定
 
