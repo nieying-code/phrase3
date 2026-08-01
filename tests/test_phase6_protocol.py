@@ -105,20 +105,28 @@ def test_phase6_controlled_generator_is_deterministic_and_complete() -> None:
 
 def test_phase6_execution_seed_gate_blocks_formal_candidate_matrix() -> None:
     matrix = load_phase6_matrix(MATRIX_PATH)
-    validate_execution_seed(
-        matrix,
-        tier_id="V1",
-        seed=2026072001,
-        execution_mode="pilot",
-    )
     matrix["status"] = "candidate_for_freeze_pending_review"
-    with pytest.raises(Phase6ProtocolError, match="formal seeds are blocked"):
+    with pytest.raises(Phase6ProtocolError, match="pilot execution is blocked"):
+        validate_execution_seed(
+            matrix,
+            tier_id="V1",
+            seed=2026072001,
+            execution_mode="pilot",
+        )
+    with pytest.raises(Phase6ProtocolError, match="formal execution is blocked"):
         validate_execution_seed(
             matrix,
             tier_id="V1",
             seed=2026072401,
             execution_mode="formal",
         )
+    matrix["status"] = "frozen_for_formal_execution"
+    validate_execution_seed(
+        matrix,
+        tier_id="V1",
+        seed=2026072001,
+        execution_mode="pilot",
+    )
     with pytest.raises(Phase6ProtocolError, match="pilot mode must use V1"):
         validate_execution_seed(
             matrix,

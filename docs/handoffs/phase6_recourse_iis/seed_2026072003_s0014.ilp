@@ -1,0 +1,50 @@
+\ Model 'RecourseModel[s0014]'_copy
+\ LP format - for model browsing. Use MPS format to capture full model detail.
+\ Signature: 0xff8780c9f9a00602
+Minimize
+
+Subject To
+ age_flow(s0014_relief_food_1_0_0): available(s0014_relief_food_1_0_0)
+   - consume(s0014_relief_food_1_0_0) - inventory(s0014_relief_food_1_0_0)
+   = 0
+ age_flow(s0014_relief_food_1_1_0): available(s0014_relief_food_1_1_0)
+   - consume(s0014_relief_food_1_1_0) - inventory(s0014_relief_food_1_1_0)
+   = 0
+ age_flow(s0014_relief_food_1_1_1): available(s0014_relief_food_1_1_1)
+   - consume(s0014_relief_food_1_1_1) - inventory(s0014_relief_food_1_1_1)
+   = 0
+ available_balance(s0014_relief_food_1_0_0):
+   available(s0014_relief_food_1_0_0) - q(s0014_relief_food_1_0)
+   = 222.4772572483445
+ available_balance(s0014_relief_food_1_1_0):
+   available(s0014_relief_food_1_1_0) - q(s0014_relief_food_1_1)
+   = 67.64719979007117
+ available_balance(s0014_relief_food_1_1_1):
+   available(s0014_relief_food_1_1_1) - inventory(s0014_relief_food_1_0_0)
+   = 0
+ demand_balance(s0014_relief_food_1_0): consume(s0014_relief_food_1_0_0)
+   + consume(s0014_relief_food_1_0_1) + consume(s0014_relief_food_1_0_2)
+   + consume(s0014_relief_food_1_0_3) + consume(s0014_relief_food_1_0_4)
+   + consume(s0014_relief_food_1_0_5) + shortage(s0014_relief_food_1_0)
+   = 53.81923689366046
+ demand_balance(s0014_relief_food_1_1): consume(s0014_relief_food_1_1_0)
+   + consume(s0014_relief_food_1_1_1) + consume(s0014_relief_food_1_1_2)
+   + consume(s0014_relief_food_1_1_3) + consume(s0014_relief_food_1_1_4)
+   + consume(s0014_relief_food_1_1_5) + shortage(s0014_relief_food_1_1)
+   = 38.49857936978981
+ storage_capacity(s0014_1): inventory(s0014_relief_food_1_1_0)
+   + inventory(s0014_relief_food_1_1_1)
+   + inventory(s0014_relief_food_1_1_2)
+   + inventory(s0014_relief_food_1_1_3)
+   + inventory(s0014_relief_food_1_1_4) <= 168.4807621135332
+Bounds
+ available(s0014_relief_food_1_0_0) free
+ available(s0014_relief_food_1_1_0) free
+ available(s0014_relief_food_1_1_1) free
+ consume(s0014_relief_food_1_0_0) free
+ consume(s0014_relief_food_1_1_0) free
+ consume(s0014_relief_food_1_1_1) free
+ inventory(s0014_relief_food_1_0_0) free
+ inventory(s0014_relief_food_1_1_0) free
+ inventory(s0014_relief_food_1_1_1) free
+End

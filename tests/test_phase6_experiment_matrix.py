@@ -77,9 +77,13 @@ def test_phase6_matrix_has_disjoint_reproducible_seed_sets() -> None:
     training = set(seeds["formal_training_seeds"])
     testing = set(seeds["formal_test_seeds"])
 
-    assert matrix["status"] == "frozen_for_formal_execution"
-    assert matrix["schema_version"] == "2.0"
-    assert matrix["matrix_id"] == "phase6_streamlined_experiments_v2_0"
+    assert matrix["status"] == "candidate_for_freeze_pending_review"
+    assert matrix["schema_version"] == "2.1"
+    assert matrix["matrix_id"] == "phase6_streamlined_experiments_v2_1"
+    disposal = matrix["inventory_exit_protocol"]
+    assert disposal["nonexpired_inventory_exit"] == "early_disposal"
+    assert disposal["maximum_age_inventory_exit"] == "expired_waste"
+    assert disposal["legacy_waste_field_semantics"] == "alias_of_total_disposal"
     assert len(pilot) == 3
     assert len(training) == 10
     assert len(testing) == 10
@@ -312,6 +316,9 @@ def test_phase6_matrix_has_valid_sensitivity_and_oos_design() -> None:
         "infeasible_scenario_count",
         "solver_failure_count",
         "zero_reserve_flag",
+        "mean_expired_waste",
+        "mean_early_disposal",
+        "mean_total_disposal",
     }
     assert required_metrics.issubset(out_of_sample["metrics"])
     assert (
@@ -579,6 +586,14 @@ def test_phase6_matrix_requires_exact_policy_evaluation_and_inventory_interactio
     assert exact["required_for_all_policies"] is True
     assert exact["candidate_scenarios"] == "complete_training_set"
     assert exact["native_deterministic_objective_must_not_be_compared_directly"] is True
+    invariant = exact["relative_complete_recourse_invariant"]
+    assert invariant["infeasible_recourse_for_any_policy_is_blocking"] is True
+    assert invariant["violation_status"] == "unexpected_infeasible_recourse"
+    oos_invariant = matrix["out_of_sample_evaluation"][
+        "status_accounting"
+    ]["relative_complete_recourse_invariant"]
+    assert oos_invariant["infeasible_scenario_count_must_equal_zero"] is True
+    assert oos_invariant["violation_status"] == "unexpected_infeasible_recourse"
     assert comparison["endogenous_dominance_check"]["empirical_innovation_claim"] is False
     assert comparison["tiers"] == ["V2"]
     assert comparison["policies"] == [

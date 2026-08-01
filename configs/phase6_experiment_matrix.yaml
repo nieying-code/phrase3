@@ -1,8 +1,8 @@
-schema_version: "2.0"
-matrix_id: phase6_streamlined_experiments_v2_0
-status: frozen_for_formal_execution
+schema_version: "2.1"
+matrix_id: phase6_streamlined_experiments_v2_1
+status: candidate_for_freeze_pending_review
 initial_draft_on: "2026-07-24"
-revised_on: "2026-07-30"
+revised_on: "2026-07-31"
 
 objectives:
   - validate_endogenous_reserve_value
@@ -21,7 +21,7 @@ data_tracks:
     required_for_core_method_claims: false
     optional_for_external_validity_extension: true
     status: awaiting_separate_calibration_protocol
-    included_in_v2_0_compute_total: false
+    included_in_v2_1_compute_total: false
     execution_gate: provenance_and_calibration_report_approved
   historical_case:
     role: interpretable_case_study
@@ -65,6 +65,16 @@ controlled_synthetic_baseline:
       regular_price_multiplier: 2.50
       shelf_life_periods: 1
   tier_item_rule: use_first_k_archetypes
+
+inventory_exit_protocol:
+  protocol_id: penalized_relative_complete_recourse_v1
+  nonexpired_inventory_exit: early_disposal
+  maximum_age_inventory_exit: expired_waste
+  total_disposal_formula: expired_waste_plus_sum_early_disposal_over_nonmaximum_ages
+  early_disposal_unit_penalty: existing_item_waste_penalty
+  expired_waste_unit_penalty: existing_item_waste_penalty
+  arbitrary_big_m_cost_forbidden: true
+  legacy_waste_field_semantics: alias_of_total_disposal
 
 generator_protocol:
   protocol_id: phase6_controlled_synthetic_v1_0
@@ -325,6 +335,11 @@ model_comparison:
     candidate_scenarios: complete_training_set
     comparison_objective: regular_cost_plus_maximum_exact_recourse_cost
     native_deterministic_objective_must_not_be_compared_directly: true
+    relative_complete_recourse_invariant:
+      infeasible_recourse_for_any_policy_is_blocking: true
+      violation_status: unexpected_infeasible_recourse
+      family_plan_must_not_be_optimal_on_violation: true
+      retain_diagnostic_artifacts: true
   endogenous_dominance_check:
     role: structural_correctness_gate
     empirical_innovation_claim: false
@@ -528,6 +543,11 @@ out_of_sample_evaluation:
       contains_infeasible_recourse: infeasible_count_positive_and_solver_failure_count_zero
       incomplete_solver_failure: solver_failure_count_positive_and_infeasible_count_zero
       incomplete_solver_failure_and_infeasible: solver_failure_count_positive_and_infeasible_count_positive
+    relative_complete_recourse_invariant:
+      infeasible_scenario_count_must_equal_zero: true
+      violation_status: unexpected_infeasible_recourse
+      family_plan_must_not_be_optimal_on_violation: true
+      retain_diagnostic_artifacts: true
   aggregate_metric_rule:
     required_status: complete_feasible
     on_any_infeasible_or_solver_failure: set_all_cost_shortage_service_waste_and_spend_aggregates_to_null
@@ -548,6 +568,10 @@ out_of_sample_evaluation:
       arithmetic_mean_of_scenario_service_levels_is_not_primary: true
     empirical_quantile_method: linear_type_7
     empirical_cvar95: average_worst_five_percent_with_fractional_boundary_weight
+    expired_waste: inventory_exiting_at_the_maximum_age
+    early_disposal: nonexpired_inventory_exiting_before_the_maximum_age
+    total_disposal: expired_waste_plus_early_disposal
+    waste_legacy_alias: total_disposal
     reserve_utilization:
       formula_when_reserve_above_tolerance: scenario_emergency_spend_divided_by_reserve_then_mean
       reserve_tolerance: 1.0e-9
@@ -572,6 +596,9 @@ out_of_sample_evaluation:
     - shortage_probability
     - service_level
     - mean_waste
+    - mean_expired_waste
+    - mean_early_disposal
+    - mean_total_disposal
     - mean_emergency_spend
     - reserve_utilization
     - zero_reserve_flag

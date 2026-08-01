@@ -3,8 +3,9 @@
 ## 当前边界
 
 阶段6runner已经实现，精简矩阵
-`phase6_streamlined_experiments_v2_0` 已处于
-`frozen_for_formal_execution`。这只表示实验设计正式冻结；在完整 pilot
+`phase6_streamlined_experiments_v2_1` 已因相对完全补救科学模型修订
+恢复为 `candidate_for_freeze_pending_review`。在修复 PR 复审、用户
+手动合并和独立重新冻结之前，不得运行新 pilot 或正式种子；在完整 pilot
 投影通过并明确授权前，仍不得运行正式种子。
 
 正式授权要求：
@@ -39,7 +40,7 @@ Gurobi版本预检在场景生成前执行。禁止HiGHS和求解器回退。
 `src/phase6_protocol.py`只接受：
 
 ```text
-matrix_id = phase6_streamlined_experiments_v2_0
+matrix_id = phase6_streamlined_experiments_v2_1
 generator_protocol = phase6_controlled_synthetic_v1_0
 NumPy = 2.5.1
 ```

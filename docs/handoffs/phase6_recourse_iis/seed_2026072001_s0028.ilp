@@ -1,0 +1,27 @@
+\ Model 'RecourseModel[s0028]'_copy
+\ LP format - for model browsing. Use MPS format to capture full model detail.
+\ Signature: 0x59c83a1f39a31088
+Minimize
+
+Subject To
+ age_flow(s0028_relief_food_1_0_0): available(s0028_relief_food_1_0_0)
+   - consume(s0028_relief_food_1_0_0) - inventory(s0028_relief_food_1_0_0)
+   = 0
+ available_balance(s0028_relief_food_1_0_0):
+   available(s0028_relief_food_1_0_0) - q(s0028_relief_food_1_0)
+   = 224.4883680972717
+ demand_balance(s0028_relief_food_1_0): consume(s0028_relief_food_1_0_0)
+   + consume(s0028_relief_food_1_0_1) + consume(s0028_relief_food_1_0_2)
+   + consume(s0028_relief_food_1_0_3) + consume(s0028_relief_food_1_0_4)
+   + consume(s0028_relief_food_1_0_5) + shortage(s0028_relief_food_1_0)
+   = 50.41152736923478
+ storage_capacity(s0028_0): inventory(s0028_relief_food_1_0_0)
+   + inventory(s0028_relief_food_1_0_1)
+   + inventory(s0028_relief_food_1_0_2)
+   + inventory(s0028_relief_food_1_0_3)
+   + inventory(s0028_relief_food_1_0_4) <= 165
+Bounds
+ available(s0028_relief_food_1_0_0) free
+ consume(s0028_relief_food_1_0_0) free
+ inventory(s0028_relief_food_1_0_0) free
+End

@@ -737,6 +737,9 @@ def aggregate_oos_evaluation(
         "shortage_probability",
         "service_level",
         "mean_waste",
+        "mean_expired_waste",
+        "mean_early_disposal",
+        "mean_total_disposal",
         "mean_emergency_spend",
         "reserve_utilization",
     )
@@ -746,7 +749,9 @@ def aggregate_oos_evaluation(
 
     total_costs: list[float] = []
     shortages: list[float] = []
-    wastes: list[float] = []
+    expired_wastes: list[float] = []
+    early_disposals: list[float] = []
+    total_disposals: list[float] = []
     spends: list[float] = []
     total_demand = 0.0
     total_shortage = 0.0
@@ -758,9 +763,20 @@ def aggregate_oos_evaluation(
             sum(float(value) for value in values)
             for values in recourse.shortage.values()
         )
-        waste = sum(
+        expired_waste = sum(
             sum(float(value) for value in values)
-            for values in recourse.waste.values()
+            for values in recourse.expired_waste.values()
+        )
+        early_disposal = sum(
+            sum(
+                sum(float(value) for value in ages)
+                for ages in periods
+            )
+            for periods in recourse.early_disposal.values()
+        )
+        total_disposal = sum(
+            sum(float(value) for value in values)
+            for values in recourse.total_disposal.values()
         )
         demand = sum(
             sum(float(value) for value in data.demand[scenario][item])
@@ -768,7 +784,9 @@ def aggregate_oos_evaluation(
         )
         total_costs.append(evaluation.regular_cost + recourse.objective)
         shortages.append(shortage)
-        wastes.append(waste)
+        expired_wastes.append(expired_waste)
+        early_disposals.append(early_disposal)
+        total_disposals.append(total_disposal)
         spends.append(recourse.emergency_spend)
         total_demand += demand
         total_shortage += shortage
@@ -791,7 +809,11 @@ def aggregate_oos_evaluation(
                 if total_demand > 0.0
                 else 1.0
             ),
-            "mean_waste": statistics.fmean(wastes),
+            # Backward-compatible alias: waste means total inventory exit.
+            "mean_waste": statistics.fmean(total_disposals),
+            "mean_expired_waste": statistics.fmean(expired_wastes),
+            "mean_early_disposal": statistics.fmean(early_disposals),
+            "mean_total_disposal": statistics.fmean(total_disposals),
             "mean_emergency_spend": statistics.fmean(spends),
             "reserve_utilization": (
                 statistics.fmean(spend / reserve for spend in spends)

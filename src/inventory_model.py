@@ -30,6 +30,9 @@ class ModelSolution:
     emergency_purchase: dict[str, dict[str, list[float]]]
     shortage: dict[str, dict[str, list[float]]]
     waste: dict[str, dict[str, list[float]]]
+    expired_waste: dict[str, dict[str, list[float]]]
+    early_disposal: dict[str, dict[str, list[list[float]]]]
+    total_disposal: dict[str, dict[str, list[float]]]
     runtime_seconds: float = 0.0
     status: str = "optimal"
 
@@ -48,6 +51,9 @@ class ModelSolution:
             "emergency_purchase": self.emergency_purchase,
             "shortage": self.shortage,
             "waste": self.waste,
+            "expired_waste": self.expired_waste,
+            "early_disposal": self.early_disposal,
+            "total_disposal": self.total_disposal,
             "runtime_seconds": self.runtime_seconds,
         }
 
@@ -131,10 +137,44 @@ def solve_model(
         }
         for scenario in scenarios
     }
-    waste = {
+    expired_waste = {
         scenario: {
             item: extract_item_time(
-                model.waste,
+                model.expired_waste,
+                data=data,
+                prefix=(scenario, item),
+            )
+            for item in data.items
+        }
+        for scenario in scenarios
+    }
+    early_disposal = {
+        scenario: {
+            item: [
+                [
+                    (
+                        float(
+                            pyo.value(
+                                model.early_disposal[
+                                    scenario, item, t, age
+                                ]
+                            )
+                        )
+                        if age < data.shelf_life[item] - 1
+                        else 0.0
+                    )
+                    for age in range(data.shelf_life[item])
+                ]
+                for t in range(data.periods)
+            ]
+            for item in data.items
+        }
+        for scenario in scenarios
+    }
+    total_disposal = {
+        scenario: {
+            item: extract_item_time(
+                model.total_disposal,
                 data=data,
                 prefix=(scenario, item),
             )
@@ -159,6 +199,9 @@ def solve_model(
         },
         emergency_purchase=emergency_purchase,
         shortage=shortage,
-        waste=waste,
+        waste=total_disposal,
+        expired_waste=expired_waste,
+        early_disposal=early_disposal,
+        total_disposal=total_disposal,
         runtime_seconds=record.runtime_seconds,
     )

@@ -371,6 +371,18 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
                     "waste": sum(
                         sum(values) for values in result.waste.values()
                     ),
+                    "expired_waste": sum(
+                        sum(values)
+                        for values in result.expired_waste.values()
+                    ),
+                    "early_disposal": sum(
+                        sum(sum(ages) for ages in periods)
+                        for periods in result.early_disposal.values()
+                    ),
+                    "total_disposal": sum(
+                        sum(values)
+                        for values in result.total_disposal.values()
+                    ),
                     "solver": result.solver,
                     "runtime_seconds": result.runtime_seconds,
                 }
@@ -385,6 +397,9 @@ def run(config_path: Path, output_root: Path) -> dict[str, Any]:
             "emergency_purchase",
             "shortage",
             "waste",
+            "expired_waste",
+            "early_disposal",
+            "total_disposal",
             "solver",
             "runtime_seconds",
         ),

@@ -105,9 +105,10 @@ def test_recourse_reports_true_infeasibility() -> None:
         storage_capacity=(0.0,),
         initial_inventory=(0.0, 0.0),
     )
-    result = solve_recourse_model(
-        build_recourse_model(data, "s0", {"food": [1.0]}, reserve=0.0),
-        solver_preference=("gurobi",),
+    model = build_recourse_model(data, "s0", {"food": [1.0]}, reserve=0.0)
+    model.test_contradiction = pyo.Constraint(
+        expr=model.shortage["s0", "food", 0] <= -1.0
     )
+    result = solve_recourse_model(model, solver_preference=("gurobi",))
     assert result.status == "infeasible"
     assert result.objective is None

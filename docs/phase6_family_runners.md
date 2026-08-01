@@ -11,7 +11,9 @@
 
 这些执行器位于独立组件中，不修改 E3 的模型、C&CG、SPW-C&CG、worker 或 runner。因此，已经完成且指纹一致的 V1 E3 pilot 不会因本模块失效。
 
-当前矩阵状态为 `frozen_for_formal_execution`，表示实验设计已经冻结，但不等于正式实验获准；在全部 pilot 和计算量门槛通过之前，正式种子仍被拒绝。
+矩阵 v2.1 因相对完全补救科学模型修订恢复为
+`candidate_for_freeze_pending_review`。所有正式种子和新 pilot 在修复
+PR 复审、用户合并并重新冻结之前均被拒绝。
 
 ## 入口与环境
 
@@ -58,7 +60,7 @@ E1 仅在以下条件全部满足时记为 `optimal`：
 3. 两者目标满足冻结的绝对和相对容差；
 4. 两者的全部训练场景独立补救评价均最优。
 
-E2 的六类策略全部在相同完整训练场景上重新求解独立补救模型。确定性模型的原生目标不直接参与鲁棒目标比较。确定性均值方案若在完整训练场景中出现真实补救不可行，仍记为已完成的策略评价：保留 `infeasible_recourse`、不可行场景数量和原生方案，同时将鲁棒目标记为 `null`；不得将其伪装成求解失败或使用 Big-M 伪成本。其他五类鲁棒策略的精确训练评价必须最优，否则 family run 失败。内生储备方案不劣于最佳固定比例方案被作为结构正确性门槛，而非经验创新结论。
+E2 的六类策略全部在相同完整训练场景上重新求解独立补救模型。确定性模型的原生目标不直接参与鲁棒目标比较。相对完全补救修订后，六类策略中任何一个出现 `infeasible_recourse` 都表示结构不变量被破坏：该工作单元必须记为 `unexpected_infeasible_recourse`，保留原生方案、不可行场景数、工作单元结果及其 SHA-256，但停止当前 family 序列并拒绝通过门槛。不得将其记为 `optimal`、伪装成求解失败或使用 Big-M 伪成本。内生储备方案不劣于最佳固定比例方案仍作为结构正确性门槛，而非经验创新结论。
 
 E4 禁止在测试集重新优化第一阶段方案。每个场景只能属于 `optimal`、`infeasible` 或 `solver_failure` 三类之一，并强制：
 
@@ -66,9 +68,16 @@ E4 禁止在测试集重新优化第一阶段方案。每个场景只能属于 `
 N_total = N_optimal + N_infeasible + N_solver_failure
 ```
 
-只要存在补救不可行或求解失败，总成本均值、分位数和 CVaR 等聚合量即记为不可用，不使用 Big-M 伪成本。服务水平按所有场景总需求加权；零储备时储备利用率为 `null`。
+只要存在补救不可行或求解失败，总成本均值、分位数和 CVaR 等聚合量即记为不可用，不使用 Big-M 伪成本。进一步地，只要 `infeasible_scenario_count > 0`，E4 工作单元必须记为 `unexpected_infeasible_recourse`，不得记为 `optimal`，并保留诊断制品、停止当前 family 序列和拒绝 family gate。求解器失败继续使用独立的 `oos_solver_failure` 状态。服务水平按所有场景总需求加权；零储备时储备利用率为 `null`。
+
+库存退出量分为 `expired_waste`、`early_disposal` 和二者之和
+`total_disposal`。兼容指标 `waste`/`mean_waste` 明确定义为总退出量，
+不得与两个分量再次相加。相对完全补救修订后，有限非负场景原则上应均
+可行；状态分类仍保留，用于发现模型、数据或求解异常。
 
 E5 对每个完整配置重新生成训练场景并求解内生储备扩展式，配置之间不共享被修改的数据对象。
+
+矩阵处于 `candidate_for_freeze_pending_review` 时，E3 pilot 和全部 family pilot 均在计划解析或场景生成前被拒绝。只有独立受审提交把状态恢复为 `frozen_for_formal_execution` 后，才允许使用全新 run ID 运行 pilot。
 
 ## 失败保留与监控
 

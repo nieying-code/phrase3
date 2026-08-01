@@ -37,6 +37,7 @@ from .phase6_protocol import (
     budget_values_for_tier,
     load_phase6_matrix,
     validate_execution_seed,
+    validate_matrix_execution_status,
 )
 from .phase6_runner import validate_locked_environment
 from .reproducibility import capture_runtime_context, sha256_file
@@ -568,6 +569,10 @@ def run_family_sequence(
     code_hash = family_code_sha256(project_root)
     environment_hash = environment_sha256(locked)
     if execution_mode == "pilot":
+        validate_matrix_execution_status(
+            matrix,
+            execution_mode="pilot",
+        )
         _validate_family_pilot_order(
             output_root=output_root,
             config=config,
@@ -749,10 +754,8 @@ def run_family_sequence(
             )
             plan_result_path = payload.get("result_path")
             plan_result_hash = None
-            if payload.get("status") == "optimal":
+            if plan_result_path:
                 try:
-                    if not plan_result_path:
-                        raise ValueError("worker result path is missing")
                     plan_result_hash = sha256_file(
                         Path(str(plan_result_path))
                     )
@@ -765,6 +768,15 @@ def run_family_sequence(
                             "message": f"{type(exc).__name__}: {exc}",
                         },
                     }
+            elif payload.get("status") == "optimal":
+                payload = {
+                    **payload,
+                    "status": "worker_artifact_invalid",
+                    "failure": {
+                        "stage": "worker_artifact_validation",
+                        "message": "worker result path is missing",
+                    },
+                }
             record = {
                 "plan_index": index,
                 "plan_id": plan["plan_id"],

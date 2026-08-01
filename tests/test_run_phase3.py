@@ -64,6 +64,24 @@ def test_formal_run_enforces_acceptance_and_writes_reproducibility(
         ccg_payload["reproducibility"]["scenarios_sha256"]
         == manifest["scenarios_sha256"]
     )
+    with (
+        tmp_path
+        / "tables"
+        / "phase3"
+        / "scenario_evaluation.csv"
+    ).open(encoding="utf-8-sig", newline="") as handle:
+        evaluation_rows = list(csv.DictReader(handle))
+    assert evaluation_rows
+    assert {
+        "waste",
+        "expired_waste",
+        "early_disposal",
+        "total_disposal",
+    } <= set(evaluation_rows[0])
+    assert all(
+        float(row["waste"]) == pytest.approx(float(row["total_disposal"]))
+        for row in evaluation_rows
+    )
 
 
 def test_main_exits_nonzero_when_ccg_does_not_converge(
