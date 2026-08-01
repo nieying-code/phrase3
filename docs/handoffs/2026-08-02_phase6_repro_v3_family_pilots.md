@@ -9,9 +9,9 @@
 - Branch: `agent/phase6-family-repro-v3`
 - Base: merged `main` commit `98ef223755fb9d87d8de621b00d5a874c50c6175`
 - Results commit: `e98d9ec0a65e717340d1bf48116d7f21e1e98fd0`
-- Final PR head: pending
+- PR validation head before final tracking-only update: `e41aea8cd2d320f6664c4087033538bd1f04dd4d`
 - Pull request: https://github.com/nieying-code/phrase3/pull/24
-- CI: pending
+- CI: GitHub Actions run `30709873627` succeeded for the validation head; the final tracking-only commit is reported in the PR description after its CI reaches a terminal state.
 
 ## 执行边界与环境
 
@@ -63,7 +63,7 @@
 - 审计专项测试：`.venv-gurobi\\Scripts\\python.exe -m pytest tests\\test_phase6_repro_v3_family_pilot_audit.py -q` → `1 passed in 0.05s`
 - 完整回归：`.venv-gurobi\\Scripts\\python.exe -m pytest -q` → `155 passed in 36.05s`
 - `git diff --check`：通过
-- GitHub Actions：pending
+- GitHub Actions：run `30709873627`，Linux tests 与 Windows reproducibility check 均成功
 
 ## 修改文件
 
