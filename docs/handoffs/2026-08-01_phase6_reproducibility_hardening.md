@@ -10,7 +10,8 @@ Phase 6实验，不修改数学模型、实验矩阵科学参数、算法或求�
 
 - Branch: `agent/phase6-reproducibility-hardening`
 - Base: merged PR #21, `f65ed995af846df1386049d6dc634ced99b89cc0`
-- Validated implementation commit: pending
+- Initial implementation commit: `59e5994`
+- Final PR head: see Draft PR (the handoff commit is necessarily its ancestor)
 - Draft PR: pending
 
 ## 根因与隐藏风险审计
@@ -80,9 +81,9 @@ Phase 6实验，不修改数学模型、实验矩阵科学参数、算法或求�
 复现基础设施属于受保护执行依赖，因此组件与环境指纹按设计更新：
 
 - old E3 component: `7713671...`
-- new E3 component: `3ea7beda14107efdab09c6f730640c7e922c59f69473f8c4fb5bac3746d36011`
+- new E3 component: `f99c95b2b6651e0d2d2bac6964c37fcd5bf22682e2e72bc6f10ab40351297ace`
 - old family component: `5803afd6...`
-- new family component: `4c1281ff4cf47c8462b873ff678448ccf86d5abdfbf99c6ca9ab44a3d155d065`
+- new family component: `02e2ce95219149b110d60fbc7935c6d385452b62de4da9c28406155a3baa6e9a`
 - old package-only environment: `0306c49c...`
 - new complete environment: `b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af`
 
@@ -103,10 +104,12 @@ Phase 6实验，不修改数学模型、实验矩阵科学参数、算法或求�
 
 - `python -m compileall -q src tests`: passed
 - Phase 6专项回归：`50 passed`
-- 复现加固专项：`8 passed`
-- 本地完整回归：`141 passed in 28.55s`
-- `git diff --check`: pending final check
-- 全新Git worktree LF与四类指纹一致性：pending after commit
+- 复现加固专项：`9 passed`
+- 本地完整回归：`143 passed in 29.00s`
+- `git diff --check`: passed
+- 首次全新worktree检查发现宽泛`*.json eol=lf`会把三个历史结果快照
+  标记为tracked修改；该规则已移除，避免“加固本身制造脏工作树”。最终
+  clean-worktree复核见PR验证记录。
 - GitHub Actions Linux/Windows：pending
 
 ## 后续恢复方案
