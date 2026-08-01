@@ -41,6 +41,11 @@ def _freeze_matrix_for_runner_unit_tests(monkeypatch) -> None:
         "load_phase6_matrix",
         load_frozen,
     )
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "validate_execution_source",
+        lambda _: {"commit_sha": "test", "tree_sha": "test"},
+    )
 
 
 def test_candidate_matrix_blocks_family_pilot_before_plan_resolution(

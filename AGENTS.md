@@ -10,6 +10,8 @@ These rules apply to every Codex task in this repository.
 - Do not use the Codex-managed Python runtime, the system base interpreter,
   `D:\Tools\Python312\python.exe`, or `D:\pycharm.projects\.venv`.
 - Install and reproduce dependencies from `requirements-gurobi-lock.txt`.
+- Phase 6 requires exact CPython `3.12.10`; a different patch release is not
+  an equivalent execution environment.
 
 ## Solver
 
@@ -18,6 +20,19 @@ These rules apply to every Codex task in this repository.
 - Use one solver thread (`Threads=1`) for experiment comparability.
 - Never use HiGHS, `highspy`, or an automatic solver fallback.
 - Run the repository Gurobi runtime preflight before experiments.
+
+## Reproducible experiment checkout
+
+- All controlled Python, YAML, Git metadata, and dependency-lock text files
+  must be checked out with LF line endings as declared in `.gitattributes`.
+- Pilot and formal runs require no staged or unstaged tracked changes.
+- Untracked execution artifacts are allowed only below `outputs/`; untracked
+  source, configuration, or dependency files block execution.
+- Start each reviewed experiment cycle in a new output root. Never copy a
+  registry or projection between fingerprint cycles by hand.
+- Do not switch branches in a checkout while an experiment process is alive.
+- E3 and family gates must match the scientific, runner, component, and actual
+  environment fingerprints and must validate finalized result manifests.
 
 ## Phase 6 monitoring
 

@@ -1,1 +1,10 @@
+*.py text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+requirements*.txt text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
+
 docs/handoffs/phase6_recourse_iis/*.ilp -text

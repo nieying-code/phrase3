@@ -33,7 +33,29 @@ Pyomo gurobi_direct
 Threads = 1
 ```
 
-Gurobi版本预检在场景生成前执行。禁止HiGHS和求解器回退。
+Gurobi版本和完整环境预检在场景生成前执行。Python补丁版本、锁文件中的
+全部发行版、操作系统、处理器、CPU数量和内存共同形成实际环境指纹。
+禁止HiGHS和求解器回退。
+
+## 干净检出与稳定指纹
+
+`.gitattributes`强制所有受控Python、YAML和依赖锁文件使用LF。指纹函数
+拒绝包含CRLF或孤立CR的受控文本，而不是在运行时静默转换。这样同一Git
+tree在Windows和Linux全新检出后会得到相同的代码与配置字节。
+
+pilot和formal入口在解析计划、生成场景和调用Gurobi之前强制验证：
+
+- Git提交和tree均可读取；
+- 已跟踪文件不存在暂存或未暂存修改；
+- 未跟踪文件只允许出现在`outputs/`下；
+- Python必须严格为CPython 3.12.10；
+- 实际安装包必须逐项匹配`requirements-gurobi-lock.txt`；
+- E3投影与正式门槛必须匹配实际环境指纹。
+
+每轮受审实验应使用新的输出根目录。不得手工复制、覆盖或迁移旧registry
+和projection来绕过新指纹。分支切换只在没有实验进程时进行。
+项目已显式忽略`outputs/phase6_*/`及验证/临时输出目录，因此这些受控输出
+不会再使manifest仅因结果文件存在而笼统显示脏工作树。
 
 ## 受控生成器
 
@@ -149,8 +171,11 @@ outputs/experiments/phase6/
   pilot_throughput_projection.json
 ```
 
-Manifest保存矩阵、科学配置、runner和E3代码指纹，以及Git、Python、
-依赖、Gurobi、线程和硬件信息。原始实验输出默认不提交Git。
+Manifest保存矩阵、科学配置、runner、E3代码和实际环境指纹，以及Git
+commit/tree、Python、依赖、Gurobi、线程和硬件信息。`result.json`先完成
+最终写入，再生成带结果文件SHA-256的finalized manifest，随后才登记
+registry并计算projection。投影会重新核验registry、result和manifest，
+被篡改、截断或未最终化的制品不能进入正式门槛。原始实验输出默认不提交Git。
 
 Phase 6在场景生成前逐项读取`requirements-gurobi-lock.txt`，并用已安装
 发行版元数据核验所有精确版本。任一包缺失或版本不一致都会在生成场景前
@@ -177,9 +202,11 @@ runner每次保存checkpoint或最终结果时同步写入小型
 
 ## 旧试运行的处理
 
-旧HiGHS结果永远不进入Gurobi门槛。旧矩阵和旧科学指纹的Gurobi pilot
-也不会进入精简矩阵投影。它们可以保留为历史正确性或诊断证据，但不能
-替代新版pilot或混入正式计时。
+旧HiGHS结果永远不进入Gurobi门槛。旧矩阵、旧科学指纹、旧组件指纹或
+旧环境指纹的Gurobi pilot也不会进入精简矩阵投影。它们可以保留为历史
+正确性或诊断证据，但不能替代新版pilot或混入正式计时。任何复现基础设施
+变更造成新组件指纹时，旧结果不改写、不迁移，由新输出根目录和新run ID
+重新建立门槛。
 
 精简矩阵仍要求四档×三个pilot种子，共12条预算序列；但每条序列只有
 三个预算，且除V2外只有一次技术重复，计算量显著降低。

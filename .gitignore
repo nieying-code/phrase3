@@ -33,3 +33,7 @@ outputs/tables/*
 !outputs/tables/phase5/budget_comparison.csv
 !outputs/tables/phase5/scenario_pool_transfer.csv
 outputs/experiments/*
+outputs/phase6_*/
+outputs/gurobi_validation/
+outputs/relative_complete_recourse_validation/
+outputs/tmp/

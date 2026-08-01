@@ -59,15 +59,36 @@ def _git_metadata(project_root: Path) -> dict[str, Any]:
             capture_output=True,
             text=True,
         ).stdout.strip()
-        status = subprocess.run(
-            [*command, "status", "--porcelain"],
+        tree = subprocess.run(
+            [*command, "rev-parse", "HEAD^{tree}"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        tracked_status = subprocess.run(
+            [*command, "status", "--porcelain", "--untracked-files=no"],
             check=True,
             capture_output=True,
             text=True,
         ).stdout
+        untracked_output = subprocess.run(
+            [*command, "ls-files", "--others", "--exclude-standard", "-z"],
+            check=True,
+            capture_output=True,
+        ).stdout
+        untracked_paths = [
+            value.decode("utf-8", errors="replace")
+            for value in untracked_output.split(b"\0")
+            if value
+        ]
         return {
             "commit_sha": commit,
-            "working_tree_dirty": bool(status.strip()),
+            "tree_sha": tree,
+            "tracked_worktree_dirty": bool(tracked_status.strip()),
+            "untracked_paths": untracked_paths,
+            "working_tree_dirty": bool(
+                tracked_status.strip() or untracked_paths
+            ),
         }
     except (OSError, subprocess.CalledProcessError) as exc:
         return {
@@ -75,6 +96,30 @@ def _git_metadata(project_root: Path) -> dict[str, Any]:
             "working_tree_dirty": None,
             "error": f"{type(exc).__name__}: {exc}",
         }
+
+
+def validate_execution_source(project_root: Path) -> dict[str, Any]:
+    """Require a committed source tree and only controlled untracked outputs."""
+
+    state = _git_metadata(project_root)
+    if state.get("commit_sha") is None or state.get("tree_sha") is None:
+        raise RuntimeError(f"Phase 6 Git metadata unavailable: {state}")
+    if state.get("tracked_worktree_dirty"):
+        raise RuntimeError(
+            "Phase 6 pilot/formal execution requires no staged or unstaged "
+            "tracked changes"
+        )
+    unexpected = [
+        value
+        for value in state.get("untracked_paths", [])
+        if value != "outputs" and not value.startswith("outputs/")
+    ]
+    if unexpected:
+        raise RuntimeError(
+            "Phase 6 execution found untracked paths outside outputs/: "
+            + ", ".join(unexpected[:20])
+        )
+    return state
 
 
 def _solver_metadata(

@@ -5,10 +5,10 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 import json
-import os
 from pathlib import Path
 from typing import Any
 
+from .phase6_io import atomic_write_json as _atomic_write_json
 from .phase6_runner import load_phase6_runner_config, run_phase6_sequence
 from .phase6_status import build_compact_status_payload
 
@@ -16,16 +16,6 @@ from .phase6_status import build_compact_status_payload
 def _default_run_id(mode: str, tier: str, seed: int) -> str:
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     return f"{mode}_{tier}_{seed}_{timestamp}"
-
-
-def _atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f"{path.name}.tmp-{os.getpid()}")
-    temporary.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
-    os.replace(temporary, path)
 
 
 def run(
