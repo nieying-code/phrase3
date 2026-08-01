@@ -64,7 +64,9 @@
 - Audit test: `1 passed in 0.06s`
 - Full regression: `154 passed in 35.86s`
 - `git diff --check`: passed
-- GitHub Actions: pending
+- GitHub Actions validation run `30708786656`: success (`148 passed` regular,
+  `6 passed` Phase 5 end-to-end, `16 passed` Windows reproducibility guard).
+  The final documentation-only head check is reported by PR #23.
 
 ## 下一步与停止边界
 
