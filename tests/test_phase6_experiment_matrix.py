@@ -77,7 +77,7 @@ def test_phase6_matrix_has_disjoint_reproducible_seed_sets() -> None:
     training = set(seeds["formal_training_seeds"])
     testing = set(seeds["formal_test_seeds"])
 
-    assert matrix["status"] == "candidate_for_freeze_pending_review"
+    assert matrix["status"] == "frozen_for_formal_execution"
     assert matrix["schema_version"] == "2.1"
     assert matrix["matrix_id"] == "phase6_streamlined_experiments_v2_1"
     disposal = matrix["inventory_exit_protocol"]
