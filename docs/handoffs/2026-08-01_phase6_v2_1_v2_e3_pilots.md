@@ -11,9 +11,9 @@
 - Execution SHA: `5102724935888da1929337754d4b2a35366bced7`（PR #17 head）
 - Execution/remote-main tree SHA: `db95c6f3f921da3757051a433748ebb9b82b54c1`
 - Tree equality: confirmed
-- Results commit SHA: pending
-- Draft PR: pending
-- CI: pending
+- Validated results commit SHA: `eb7a84a37549a015d69ea0281131edb0d9e2c0ba`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/18
+- Results CI: https://github.com/nieying-code/phrase3/actions/runs/30695967027 (`123 passed + 6 passed`)
 
 GitHub Git 数据端点在启动时短暂不可达，因此本地无法立即获取 merge commit 对象。GitHub API 独立确认 PR #17 已合并，且执行提交与远端最新 `main` 的 tree SHA 完全相同。换言之，运行使用的代码、配置、文档和依赖锁字节与最新 `main` 一致；该差异仅是 Git 合并提交对象，不是执行内容差异。
 
@@ -115,7 +115,7 @@ git diff --check
 passed
 ```
 
-CI：pending（Draft PR 创建后更新）。
+CI run `30695967027`：success（普通回归 `123 passed`，Phase 5 端到端 `6 passed`）。
 
 ## 已知限制与停止边界
 
