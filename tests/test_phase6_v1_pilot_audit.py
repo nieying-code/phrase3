@@ -17,6 +17,12 @@ EXPECTED_DISPOSAL_FIELDS = {
     "expired_waste": True,
     "total_disposal": True,
 }
+EXPECTED_DIRTY_PATHS = {
+    "outputs/gurobi_validation/",
+    "outputs/phase6_v21_rr_clean/",
+    "outputs/relative_complete_recourse_validation/",
+    "outputs/tmp/",
+}
 EXPECTED_FINGERPRINTS = {
     "scientific_config_sha256": (
         "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3"
@@ -46,6 +52,23 @@ def test_phase6_v1_pilot_audit_is_complete_and_internally_consistent() -> None:
     assert audit["source"]["execution_git_tree_sha"] == (
         "e15526efe9ecbb350c41eb25cfb797153c24749e"
     )
+    assert audit["source"]["execution_tree_matches_remote_merged_base"] is True
+    assert audit["source"]["working_tree_dirty_recorded_by_manifest"] is True
+    worktree = audit["source"]["worktree_status_evidence"]
+    assert worktree["tracked_modified_count"] == 0
+    assert set(worktree["pre_output_initialization_untracked_paths"]) == (
+        EXPECTED_DIRTY_PATHS - {"outputs/phase6_v21_rr_clean/"}
+    )
+    assert set(worktree["manifest_time_untracked_paths"]) == EXPECTED_DIRTY_PATHS
+    dirty_paths = worktree["dirty_paths"]
+    assert {entry["path"] for entry in dirty_paths} == EXPECTED_DIRTY_PATHS
+    assert all(entry["git_status"] == "untracked" for entry in dirty_paths)
+    assert all(entry["is_e3_component"] is False for entry in dirty_paths)
+    assert all(
+        entry["is_matrix_or_runner_config"] is False for entry in dirty_paths
+    )
+    assert all(entry["is_dependency_lock"] is False for entry in dirty_paths)
+    assert all(entry["used_as_runtime_input"] is False for entry in dirty_paths)
     assert audit["environment"] == {
         "python": "3.12.10",
         "gurobipy": "13.0.2",

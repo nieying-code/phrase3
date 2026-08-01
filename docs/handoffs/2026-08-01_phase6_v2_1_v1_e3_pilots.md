@@ -17,13 +17,15 @@
 
 由于执行开始时 Git HTTPS 连接被重置，本地分支从已合并 PR #15 的 head `977675e27f2de0f48ec51a60e349dc2a77165ee0` 创建。GitHub API 独立核验表明，该提交是远端 merge commit 的第二父提交，且两者 tree SHA 完全相同。发布前仍需重新同步远端状态。
 
-## 干净运行基线
+## 隔离输出基线
 
 本批次使用独立输出根目录：
 
 `outputs/phase6_v21_rr_clean`
 
 该目录在运行前不存在，因此当前指纹的 E3 投影严格从 `0/12` 开始。旧 V1、旧 family pilot，以及因执行顺序误判而提前产生的 E1/E2/E4 记录，均保留在原输出目录作为审计证据，但不会进入本批次 registry、projection 或完成率。
+
+三个 run 的 manifest 均记录 `working_tree_dirty=true`。这不是已跟踪科学代码或配置发生修改：运行前的 `git status --short` 只包含 `outputs/gurobi_validation/`、`outputs/relative_complete_recourse_validation/` 和 `outputs/tmp/` 三个历史未跟踪输出目录；manifest 捕获前又创建了本批次写出目录 `outputs/phase6_v21_rr_clean/`。已跟踪修改数为 0。这四个路径均不属于矩阵、runner 配置、E3 组件或依赖锁，也没有作为运行输入。审计 JSON 逐项记录其状态、原因和排除依据。执行 tree SHA 与 PR #15 远端合并提交完全相同。
 
 基线核验结果：
 
@@ -96,7 +98,7 @@ V1 完成后的 E3 投影为：
 
 `docs/handoffs/2026-08-01_phase6_v2_1_v1_e3_pilots_audit.json`
 
-该紧凑 JSON 由干净输出目录机械提取，记录三个 run 的 manifest、result、status summary 和预算比较 SHA-256，逐预算冷热状态与目标、处置字段存在性、全局 registry/projection 哈希、三类科学与环境指纹，以及失败、重复、父运行和 clean root family run 计数。专项测试 `tests/test_phase6_v1_pilot_audit.py` 检查其计数、状态、指纹、哈希格式、目标一致性、处置字段及 `3/12` 投影闭合关系。
+该紧凑 JSON 由隔离输出目录机械提取，记录三个 run 的 manifest、result、status summary 和预算比较 SHA-256，逐预算冷热状态与目标、处置字段存在性、全局 registry/projection 哈希、三类科学与环境指纹，以及失败、重复、父运行和 isolated root family run 计数。专项测试 `tests/test_phase6_v1_pilot_audit.py` 检查其计数、状态、指纹、哈希格式、目标一致性、处置字段、已解释的未跟踪输出路径及 `3/12` 投影闭合关系。
 
 ## 验证结果
 
@@ -107,8 +109,12 @@ V1 完成后的 E3 投影为：
 .venv-gurobi\Scripts\python.exe -m pytest -q tests/test_phase6_v1_pilot_audit.py
 1 passed in 0.04s
 
-audit artifact SHA-256 verification against the D-drive clean output root
+audit artifact SHA-256 verification against the D-drive isolated output root
 verified
+
+post-review worktree-forensics update
+focused audit test: 1 passed in 0.07s
+full regression: 127 passed in 26.95s
 
 .venv-gurobi\Scripts\python.exe -m compileall -q src tests
 passed
@@ -121,7 +127,7 @@ passed
 - V1 仅为正确性 pilot，不用于显著性推断。
 - 本批次没有运行 family、V2、P1、P2 或正式种子。
 - 本 PR 通过 ChatGPT 复审并由用户手动合并前，不得启动 family pilot。
-- 合并后应使用同一干净输出根目录，按每个种子的 `E1 → E2 → E4 → E5` 顺序重新运行 family pilot。
+- 合并后应使用同一隔离输出根目录，按每个种子的 `E1 → E2 → E4 → E5` 顺序重新运行 family pilot。
 
 ## ChatGPT 审查清单
 

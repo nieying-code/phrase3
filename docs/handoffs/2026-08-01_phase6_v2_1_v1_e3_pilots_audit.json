@@ -6,7 +6,61 @@
     "execution_git_sha": "977675e27f2de0f48ec51a60e349dc2a77165ee0",
     "execution_git_tree_sha": "e15526efe9ecbb350c41eb25cfb797153c24749e",
     "remote_merged_base_sha": "bdf016ba4ed537aa25950f6e3924d68cdb5b81c1",
-    "working_tree_dirty_recorded_by_manifest": true
+    "execution_tree_matches_remote_merged_base": true,
+    "working_tree_dirty_recorded_by_manifest": true,
+    "worktree_status_evidence": {
+      "evidence_source": "Codex pre-run git status --short captured in the task transcript, plus deterministic creation of the isolated output root before manifest capture",
+      "tracked_modified_count": 0,
+      "pre_output_initialization_untracked_paths": [
+        "outputs/gurobi_validation/",
+        "outputs/relative_complete_recourse_validation/",
+        "outputs/tmp/"
+      ],
+      "manifest_time_untracked_paths": [
+        "outputs/gurobi_validation/",
+        "outputs/phase6_v21_rr_clean/",
+        "outputs/relative_complete_recourse_validation/",
+        "outputs/tmp/"
+      ],
+      "dirty_paths": [
+        {
+          "path": "outputs/gurobi_validation/",
+          "git_status": "untracked",
+          "reason": "historical Gurobi validation output",
+          "is_e3_component": false,
+          "is_matrix_or_runner_config": false,
+          "is_dependency_lock": false,
+          "used_as_runtime_input": false
+        },
+        {
+          "path": "outputs/phase6_v21_rr_clean/",
+          "git_status": "untracked",
+          "reason": "isolated write-only output root created for this V1 batch",
+          "is_e3_component": false,
+          "is_matrix_or_runner_config": false,
+          "is_dependency_lock": false,
+          "used_as_runtime_input": false
+        },
+        {
+          "path": "outputs/relative_complete_recourse_validation/",
+          "git_status": "untracked",
+          "reason": "historical relative-complete-recourse validation output",
+          "is_e3_component": false,
+          "is_matrix_or_runner_config": false,
+          "is_dependency_lock": false,
+          "used_as_runtime_input": false
+        },
+        {
+          "path": "outputs/tmp/",
+          "git_status": "untracked",
+          "reason": "historical temporary output",
+          "is_e3_component": false,
+          "is_matrix_or_runner_config": false,
+          "is_dependency_lock": false,
+          "used_as_runtime_input": false
+        }
+      ]
+    }
   },
   "environment": {
     "python": "3.12.10",
