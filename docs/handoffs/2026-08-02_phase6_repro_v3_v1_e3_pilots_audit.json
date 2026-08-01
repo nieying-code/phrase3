@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0",
+  "audit_id": "phase6_v21_repro_v3_v1_e3_pilots",
+  "output_root": "outputs/phase6_v21_repro_v3",
+  "source": {
+    "execution_git_sha": "92f92b8fa8f85436797a7f9f4b20295ab09a3b35",
+    "execution_git_tree_sha": "384b6ddd523d45c468068f466c41c0c6eec31d1e",
+    "all_manifests_record_clean_worktree": true
+  },
+  "environment": {
+    "python": "3.12.10",
+    "gurobipy": "13.0.2",
+    "gurobi_optimizer": "13.0.2",
+    "pyomo_interface": "gurobi_direct",
+    "threads": 1,
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+    "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+    "e3_component_sha256": "fd0dc3ea77f850615502005e2caf9f3b7c0259d7c11a9efc7e2a30025c404083",
+    "family_component_sha256": "92bbf40a3dbbb6c72f75f257d39197ee9c42f455daf6efecb4e8df710e065b5e",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "global_artifacts": {
+    "run_registry_sha256": "fd81725bddcd1e8a4e498822c2aff6c0089f9421c2b4e8f6beb078202c6dbf57",
+    "algorithm_performance_sha256": "46479f1d0ee071aa08ee9cf532626bd18cdd09828d35c789582faf4684d31c60",
+    "pilot_throughput_projection_sha256": "24ba54f12061d9fd68316da2345d72cce70190fdc27ed7e0f805dca3fdc43f05"
+  },
+  "counts": {
+    "primary_run_count": 3,
+    "budget_pair_count": 9,
+    "algorithm_execution_count": 18,
+    "optimal_algorithm_execution_count": 18,
+    "infeasible_recourse_count": 0,
+    "solver_failure_count": 0,
+    "failed_primary_run_count": 0,
+    "duplicate_primary_run_count": 0,
+    "parent_run_count": 0,
+    "family_run_count_in_clean_root": 0
+  },
+  "performance": {
+    "total_algorithm_wall_seconds": 28.02980910014594,
+    "cold_wall_seconds": 13.959337400097866,
+    "warm_wall_seconds": 14.070471700048074,
+    "total_ccg_iterations": 20,
+    "max_peak_memory_mb": 75.38671875,
+    "max_abs_objective_difference": 0.0
+  },
+  "projection": {
+    "status": "insufficient_pilot_coverage",
+    "completed_run_count": 3,
+    "required_run_count": 12,
+    "primary_completion_rate": 0.25,
+    "failed_primary_runs": [],
+    "duplicate_primary_runs": [],
+    "diagnostic_attempts": [],
+    "compute_gate_passed": false,
+    "formal_execution_authorized": false
+  },
+  "runs": [
+    {
+      "run_id": "pilot_v1_repro_v3_2026072001",
+      "seed": 2026072001,
+      "tier_id": "V1",
+      "execution_mode": "pilot",
+      "status": "optimal",
+      "parent_run_id": null,
+      "working_tree_dirty": false,
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "fd0dc3ea77f850615502005e2caf9f3b7c0259d7c11a9efc7e2a30025c404083",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "manifest_sha256": "7ef73c724d7f3a25069d4fdfca900636282843682e146bbbda5a519acc1bca1b",
+        "result_sha256": "ac57ebc7f1778f2504b18435fa877808cc3298a3332492244c3beeb5f61f1f6c",
+        "status_summary_sha256": "f7a52f90ed3e69b758aa3ac8629731d19a2f9efda1959a88a912a55b18cf38a6",
+        "budget_comparison_sha256": "0df29f9b25cc8a3d65497dd470504c33d9565b42fa42b73c85731d38a39841a4"
+      },
+      "disposal_fields_present": {"early_disposal": true, "expired_waste": true, "total_disposal": true},
+      "budget_pairs": [
+        {"budget_index": 0, "budget_factor": 0.9, "budget": 1107.2893851278257, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 30620.79029084595, "warm_objective": 30620.79029084595, "objective_difference": 0.0},
+        {"budget_index": 1, "budget_factor": 1.1, "budget": 1353.3536929340091, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 25431.602135889087, "warm_objective": 25431.602135889087, "objective_difference": 0.0},
+        {"budget_index": 2, "budget_factor": 1.3, "budget": 1599.4180007401926, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 20301.417127459383, "warm_objective": 20301.417127459383, "objective_difference": 0.0}
+      ]
+    },
+    {
+      "run_id": "pilot_v1_repro_v3_2026072002",
+      "seed": 2026072002,
+      "tier_id": "V1",
+      "execution_mode": "pilot",
+      "status": "optimal",
+      "parent_run_id": null,
+      "working_tree_dirty": false,
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "fd0dc3ea77f850615502005e2caf9f3b7c0259d7c11a9efc7e2a30025c404083",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "manifest_sha256": "2b0da95bb79efe00d0ec8f8dc41c7e3cde84131fed64d1600794f810192cff35",
+        "result_sha256": "d545869b14ab3489a24ba6431d286b5c6a35577431ea905ed35decb4f87b473b",
+        "status_summary_sha256": "9e8dded870a7dfe5ae9abc2b70533f2409568f3ee33ae087ed5c34a4e64b77c1",
+        "budget_comparison_sha256": "dbd1251a6800e693e3382b2d1f6ee1ffa2a415301eaeb7a942b404ab775da9db"
+      },
+      "disposal_fields_present": {"early_disposal": true, "expired_waste": true, "total_disposal": true},
+      "budget_pairs": [
+        {"budget_index": 0, "budget_factor": 0.9, "budget": 1107.2893851278257, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 17728.74000636316, "warm_objective": 17728.74000636316, "objective_difference": 0.0},
+        {"budget_index": 1, "budget_factor": 1.1, "budget": 1353.3536929340091, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 12593.369449515683, "warm_objective": 12593.369449515683, "objective_difference": 0.0},
+        {"budget_index": 2, "budget_factor": 1.3, "budget": 1599.4180007401926, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 7468.893506759239, "warm_objective": 7468.893506759239, "objective_difference": 0.0}
+      ]
+    },
+    {
+      "run_id": "pilot_v1_repro_v3_2026072003",
+      "seed": 2026072003,
+      "tier_id": "V1",
+      "execution_mode": "pilot",
+      "status": "optimal",
+      "parent_run_id": null,
+      "working_tree_dirty": false,
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "fd0dc3ea77f850615502005e2caf9f3b7c0259d7c11a9efc7e2a30025c404083",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "manifest_sha256": "91a12bc9efc0838b5d7b26c8518c4384cf8172d3dd0ee98832bdb1b58d78dfc3",
+        "result_sha256": "a7ff432caddbe1e97688d2055174eaf48e688f8568755418599e026aa42a00e2",
+        "status_summary_sha256": "119a95b53c9899e8db3eb08e2a029549dfcd0386d574baded1f13ce6878222fb",
+        "budget_comparison_sha256": "e44744fa8a70d3dbdb493ce81057ad3b4e8468d9d6b11598a8a2627fb526b39c"
+      },
+      "disposal_fields_present": {"early_disposal": true, "expired_waste": true, "total_disposal": true},
+      "budget_pairs": [
+        {"budget_index": 0, "budget_factor": 0.9, "budget": 1107.2893851278257, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 21611.625137750263, "warm_objective": 21611.625137750263, "objective_difference": 0.0},
+        {"budget_index": 1, "budget_factor": 1.1, "budget": 1353.3536929340091, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 16465.082639466546, "warm_objective": 16465.082639466546, "objective_difference": 0.0},
+        {"budget_index": 2, "budget_factor": 1.3, "budget": 1599.4180007401926, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 11336.058724920795, "warm_objective": 11336.058724920795, "objective_difference": 0.0}
+      ]
+    }
+  ]
+}
