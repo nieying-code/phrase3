@@ -21,6 +21,7 @@ from .phase6_environment import (
     validate_locked_environment,
 )
 from .phase6_families import (
+    FAMILY_COMPONENT_FILES,
     FAMILIES,
     POLICY_RATIOS,
     _atomic_write_json,
@@ -568,7 +569,15 @@ def run_family_sequence(
         raise ValueError(f"unsupported family: {family}")
     project_root = matrix_path.resolve().parent.parent
     if execution_mode in ("pilot", "formal"):
-        validate_execution_source(project_root)
+        validate_execution_source(
+            project_root,
+            required_tracked_paths=(
+                matrix_path,
+                family_config_path.resolve(),
+                project_root / "requirements-gurobi-lock.txt",
+                *(project_root / path for path in FAMILY_COMPONENT_FILES),
+            ),
+        )
     matrix = load_phase6_matrix(matrix_path)
     config = load_family_runner_config(family_config_path)
     validate_gurobi_runtime()

@@ -132,6 +132,7 @@ WorkerExecutor = Callable[[dict[str, Any], float, Path], dict[str, Any]]
 
 PHASE6_E3_COMPONENT_FILES = (
     ".gitattributes",
+    ".gitignore",
     "src/phase6_protocol.py",
     "src/phase6_environment.py",
     "src/phase6_io.py",
@@ -842,7 +843,15 @@ def _run_phase6_sequence_locked(
     output_root = output_root.resolve()
     project_root = matrix_path.parent.parent
     if execution_mode in ("pilot", "formal"):
-        validate_execution_source(project_root)
+        validate_execution_source(
+            project_root,
+            required_tracked_paths=(
+                matrix_path,
+                runner_config_path,
+                project_root / PHASE6_E3_REQUIREMENTS_FILE,
+                *(project_root / path for path in PHASE6_E3_COMPONENT_FILES),
+            ),
+        )
     matrix = load_phase6_matrix(matrix_path)
     config = load_phase6_runner_config(runner_config_path)
     validate_gurobi_runtime()

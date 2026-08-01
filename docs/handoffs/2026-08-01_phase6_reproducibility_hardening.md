@@ -13,7 +13,7 @@ Phase 6实验，不修改数学模型、实验矩阵科学参数、算法或求�
 - Final PR head: see Draft PR; the machine audit validates the committed
   execution inputs by their content fingerprints rather than a self-referential
   handoff commit SHA.
-- Draft PR: pending
+- Draft PR: https://github.com/nieying-code/phrase3/pull/22
 
 ## 根因与隐藏风险审计
 
@@ -62,6 +62,14 @@ Phase 6实验，不修改数学模型、实验矩阵科学参数、算法或求�
 
 - pilot/formal在生成场景前拒绝任何tracked修改；
 - 未跟踪文件只允许位于`outputs/`；
+- `src/`和`configs/`会使用不带exclude规则的Git查询扫描所有未跟踪文件，
+  因而被仓库`.gitignore`、`.git/info/exclude`或用户全局ignore隐藏的执行输入也会被拒绝；
+- 仓库根目录的Python模块/扩展、YAML和`gurobi.env`也执行同样扫描，避免依赖遮蔽、
+  `sitecustomize`或Gurobi环境参数绕过门槛；
+- 矩阵、runner配置、依赖锁及E3/family组件逐文件验证为Git已跟踪文件；
+- `.gitignore`本身进入E3和family组件指纹，因为它会改变源码清洁门槛语义；
+- Python自动生成的`__pycache__/*.pyc`和`*.pyo`不作为源输入；其他未跟踪源码、
+  配置、扩展模块或具体运行输入仍会阻断执行；
 - `.gitignore`覆盖Phase 6周期输出、验证输出和临时输出目录，使受控输出不再
   把manifest标成笼统的脏工作树；
 - E3改为`result → finalized manifest（result SHA-256）→ registry →
@@ -82,9 +90,9 @@ Phase 6实验，不修改数学模型、实验矩阵科学参数、算法或求�
 复现基础设施属于受保护执行依赖，因此组件与环境指纹按设计更新：
 
 - old E3 component: `7713671...`
-- new E3 component: `f99c95b2b6651e0d2d2bac6964c37fcd5bf22682e2e72bc6f10ab40351297ace`
+- new E3 component: `fd0dc3ea77f850615502005e2caf9f3b7c0259d7c11a9efc7e2a30025c404083`
 - old family component: `5803afd6...`
-- new family component: `02e2ce95219149b110d60fbc7935c6d385452b62de4da9c28406155a3baa6e9a`
+- new family component: `92bbf40a3dbbb6c72f75f257d39197ee9c42f455daf6efecb4e8df710e065b5e`
 - old package-only environment: `0306c49c...`
 - new complete environment: `b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af`
 
@@ -104,14 +112,15 @@ Phase 6实验，不修改数学模型、实验矩阵科学参数、算法或求�
 未运行任何场景生成、pilot、formal seed或Gurobi实验。
 
 - `python -m compileall -q src tests`: passed
-- Phase 6专项回归：`50 passed`
-- 复现加固专项：`9 passed`
-- 本地完整回归：`144 passed in 29.34s`
+- 源码门槛与Phase 6专项回归：`50 passed in 14.00s`
+- 本地完整回归：`153 passed in 37.35s`
+- CI同口径普通回归：`147 passed in 29.27s`
+- Phase 5端到端：`6 passed in 6.26s`
 - `git diff --check`: passed
 - 首次全新worktree检查发现宽泛`*.json eol=lf`会把三个历史结果快照
   标记为tracked修改；该规则已移除，避免“加固本身制造脏工作树”。最终
   clean-worktree复核见PR验证记录。
-- GitHub Actions Linux/Windows：pending
+- GitHub Actions reviewed baseline：run `30706775890`, success；本次修复提交的最终CI以PR #22 checks为准。
 
 ## 后续恢复方案
 

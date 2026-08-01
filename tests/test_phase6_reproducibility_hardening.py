@@ -87,6 +87,7 @@ def test_phase6_output_roots_are_git_ignored() -> None:
 
 def test_component_fingerprint_lists_cover_direct_local_dependencies() -> None:
     for components in (PHASE6_E3_COMPONENT_FILES, FAMILY_COMPONENT_FILES):
+        assert ".gitignore" in components
         protected = set(components)
         missing = {
             relative: sorted(_direct_relative_imports(relative) - protected)
@@ -176,3 +177,110 @@ def test_execution_source_allows_only_untracked_output_artifacts(
     state["untracked_paths"] = ["src/local_override.py"]
     with pytest.raises(RuntimeError, match="outside outputs"):
         reproducibility.validate_execution_source(PROJECT_ROOT)
+
+
+def _initialize_execution_input_repository(path: Path) -> None:
+    (path / "src").mkdir(parents=True)
+    (path / "configs").mkdir()
+    (path / "src" / "tracked.py").write_text(
+        "VALUE = 1\n",
+        encoding="utf-8",
+    )
+    (path / "configs" / "base.yaml").write_text(
+        "status: frozen\n",
+        encoding="utf-8",
+    )
+    (path / ".gitignore").write_text("outputs/\n", encoding="utf-8")
+    subprocess.run(["git", "init", "-q"], cwd=path, check=True)
+    subprocess.run(
+        ["git", "config", "user.email", "phase6-test@example.invalid"],
+        cwd=path,
+        check=True,
+    )
+    subprocess.run(
+        ["git", "config", "user.name", "Phase 6 Test"],
+        cwd=path,
+        check=True,
+    )
+    subprocess.run(["git", "add", "."], cwd=path, check=True)
+    subprocess.run(
+        ["git", "commit", "-q", "-m", "test baseline"],
+        cwd=path,
+        check=True,
+    )
+
+
+@pytest.mark.parametrize(
+    ("relative", "ignore_source"),
+    [
+        ("src/override.py", "repository"),
+        ("configs/override.yaml", "repository"),
+        ("src/override.py", "info_exclude"),
+        ("configs/override.yaml", "global"),
+        ("sitecustomize.py", "global"),
+        ("gurobi.env", "repository"),
+    ],
+)
+def test_execution_source_rejects_ignored_untracked_inputs(
+    tmp_path: Path,
+    relative: str,
+    ignore_source: str,
+) -> None:
+    _initialize_execution_input_repository(tmp_path)
+    if ignore_source == "repository":
+        with (tmp_path / ".gitignore").open("a", encoding="utf-8") as handle:
+            handle.write(f"{relative}\n")
+        subprocess.run(
+            ["git", "add", ".gitignore"],
+            cwd=tmp_path,
+            check=True,
+        )
+        subprocess.run(
+            ["git", "commit", "-q", "-m", "ignore override"],
+            cwd=tmp_path,
+            check=True,
+        )
+    elif ignore_source == "info_exclude":
+        exclude = tmp_path / ".git" / "info" / "exclude"
+        with exclude.open("a", encoding="utf-8") as handle:
+            handle.write(f"{relative}\n")
+    else:
+        global_ignore = tmp_path / "global-ignore"
+        global_ignore.write_text(f"{relative}\n", encoding="utf-8")
+        subprocess.run(
+            ["git", "config", "core.excludesFile", str(global_ignore)],
+            cwd=tmp_path,
+            check=True,
+        )
+    override = tmp_path / relative
+    override.parent.mkdir(parents=True, exist_ok=True)
+    override.write_text("OVERRIDE = True\n", encoding="utf-8")
+    ignored = subprocess.run(
+        ["git", "check-ignore", "--quiet", "--", relative],
+        cwd=tmp_path,
+        check=False,
+    )
+    assert ignored.returncode == 0
+
+    with pytest.raises(RuntimeError, match="including ignored files"):
+        reproducibility.validate_execution_source(
+            tmp_path,
+            required_tracked_paths=(
+                tmp_path / "src" / "tracked.py",
+                tmp_path / "configs" / "base.yaml",
+                tmp_path / ".gitignore",
+            ),
+        )
+
+
+def test_execution_source_rejects_untracked_concrete_input(
+    tmp_path: Path,
+) -> None:
+    _initialize_execution_input_repository(tmp_path)
+    outside_roots = tmp_path / "local-runner.yaml"
+    outside_roots.write_text("solver: gurobi\n", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="must be Git tracked"):
+        reproducibility.validate_execution_source(
+            tmp_path,
+            required_tracked_paths=(outside_roots,),
+        )

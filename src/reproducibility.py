@@ -29,6 +29,19 @@ PACKAGE_NAMES = (
     "pytest",
 )
 
+PHASE6_EXECUTION_INPUT_ROOTS = (
+    "src",
+    "configs",
+)
+PHASE6_ROOT_EXECUTION_INPUT_PATHSPECS = (
+    ":(top,glob)*.py",
+    ":(top,glob)*.pyw",
+    ":(top,glob)*.pyd",
+    ":(top,glob)*.yaml",
+    ":(top,glob)*.yml",
+    ":(top)gurobi.env",
+)
+
 
 def sha256_file(path: Path) -> str:
     """Return the SHA-256 digest of a file."""
@@ -98,8 +111,89 @@ def _git_metadata(project_root: Path) -> dict[str, Any]:
         }
 
 
-def validate_execution_source(project_root: Path) -> dict[str, Any]:
-    """Require a committed source tree and only controlled untracked outputs."""
+def _git_untracked_execution_inputs(project_root: Path) -> list[str]:
+    """List untracked execution inputs, including files hidden by ignores."""
+
+    completed = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(project_root),
+            "ls-files",
+            "--others",
+            "-z",
+            "--",
+            *PHASE6_EXECUTION_INPUT_ROOTS,
+            *PHASE6_ROOT_EXECUTION_INPUT_PATHSPECS,
+        ],
+        check=True,
+        capture_output=True,
+    )
+    candidates = [
+        value.decode("utf-8", errors="replace")
+        for value in completed.stdout.split(b"\0")
+        if value
+    ]
+    return [
+        value
+        for value in candidates
+        if "__pycache__/" not in value
+        and not value.endswith((".pyc", ".pyo"))
+    ]
+
+
+def _require_git_tracked_files(
+    project_root: Path,
+    paths: Iterable[Path],
+) -> list[str]:
+    """Require every concrete Phase 6 input to be tracked by this repository."""
+
+    relative_paths: list[str] = []
+    root = project_root.resolve()
+    for path in paths:
+        resolved = path.resolve()
+        try:
+            relative = resolved.relative_to(root).as_posix()
+        except ValueError as exc:
+            raise RuntimeError(
+                f"Phase 6 execution input is outside the repository: {resolved}"
+            ) from exc
+        if not resolved.is_file():
+            raise RuntimeError(f"Phase 6 execution input is missing: {relative}")
+        relative_paths.append(relative)
+    if not relative_paths:
+        return []
+    completed = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(project_root),
+            "ls-files",
+            "--error-unmatch",
+            "--",
+            *relative_paths,
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    tracked = set(completed.stdout.splitlines())
+    missing = [path for path in relative_paths if path not in tracked]
+    if completed.returncode or missing:
+        details = missing or relative_paths
+        raise RuntimeError(
+            "Phase 6 execution inputs must be Git tracked: "
+            + ", ".join(details[:20])
+        )
+    return relative_paths
+
+
+def validate_execution_source(
+    project_root: Path,
+    *,
+    required_tracked_paths: Iterable[Path] = (),
+) -> dict[str, Any]:
+    """Require committed, tracked inputs and only controlled output artifacts."""
 
     state = _git_metadata(project_root)
     if state.get("commit_sha") is None or state.get("tree_sha") is None:
@@ -108,6 +202,23 @@ def validate_execution_source(project_root: Path) -> dict[str, Any]:
         raise RuntimeError(
             "Phase 6 pilot/formal execution requires no staged or unstaged "
             "tracked changes"
+        )
+    try:
+        untracked_execution_inputs = _git_untracked_execution_inputs(
+            project_root
+        )
+        tracked_execution_inputs = _require_git_tracked_files(
+            project_root,
+            required_tracked_paths,
+        )
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise RuntimeError(
+            f"Phase 6 Git execution-input validation failed: {exc}"
+        ) from exc
+    if untracked_execution_inputs:
+        raise RuntimeError(
+            "Phase 6 execution found untracked source/config inputs, including "
+            "ignored files: " + ", ".join(untracked_execution_inputs[:20])
         )
     unexpected = [
         value
@@ -119,6 +230,8 @@ def validate_execution_source(project_root: Path) -> dict[str, Any]:
             "Phase 6 execution found untracked paths outside outputs/: "
             + ", ".join(unexpected[:20])
         )
+    state["untracked_execution_input_paths"] = []
+    state["tracked_execution_input_paths"] = tracked_execution_inputs
     return state
 
 

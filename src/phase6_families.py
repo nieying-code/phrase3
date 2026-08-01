@@ -66,6 +66,7 @@ FAMILY_REGISTRY_FIELDS = (
     "manifest_path",
 )
 FAMILY_COMPONENT_FILES = (
+    ".gitignore",
     "src/ccg.py",
     "src/evaluation.py",
     "src/extensive_model.py",

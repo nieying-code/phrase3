@@ -54,6 +54,23 @@ def test_reproducibility_hardening_audit_matches_current_execution_inputs() -> N
         fingerprints["environment_sha256"]
     )
     assert audit["source"]["identity_rule"].startswith("final PR head")
+    assert audit["source"]["execution_input_roots"] == ["src", "configs"]
+    assert set(audit["source"]["root_execution_input_patterns"]) == {
+        "*.py",
+        "*.pyw",
+        "*.pyd",
+        "*.yaml",
+        "*.yml",
+        "gurobi.env",
+    }
+    assert audit["source"]["ignored_untracked_execution_inputs_rejected"]
+    assert audit["source"]["required_concrete_inputs_must_be_git_tracked"]
+    assert set(audit["source"]["ignore_sources_covered"]) == {
+        "repository_gitignore",
+        "git_info_exclude",
+        "user_global_ignore",
+    }
+    assert audit["validation"]["github_actions"] != "pending"
     assert audit["experiment_execution"] == {
         "pilot_runs_started": 0,
         "formal_runs_started": 0,

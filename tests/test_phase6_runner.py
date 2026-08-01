@@ -34,7 +34,7 @@ def _freeze_matrix_for_runner_unit_tests(monkeypatch) -> None:
     monkeypatch.setattr(
         phase6_runner,
         "validate_execution_source",
-        lambda _: {"commit_sha": "test", "tree_sha": "test"},
+        lambda _, **kwargs: {"commit_sha": "test", "tree_sha": "test"},
     )
 
 
@@ -80,6 +80,44 @@ def test_candidate_matrix_blocks_e3_pilot_before_scenario_generation(
             seed=2026072001,
             execution_mode="pilot",
             run_id="candidate_e3_pilot_blocked",
+            worker_executor=lambda *args, **kwargs: {},
+        )
+    assert generated is False
+
+
+def test_source_gate_blocks_e3_before_scenario_generation(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    generated = False
+
+    def rejected_source(*args, **kwargs):
+        raise RuntimeError("ignored source/config input")
+
+    def forbidden_generation(*args, **kwargs):
+        nonlocal generated
+        generated = True
+        raise AssertionError("scenario generation must not start")
+
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_execution_source",
+        rejected_source,
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "generate_phase6_data",
+        forbidden_generation,
+    )
+    with pytest.raises(RuntimeError, match="ignored source/config input"):
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="V1",
+            seed=2026072001,
+            execution_mode="pilot",
+            run_id="ignored_e3_input_blocked",
             worker_executor=lambda *args, **kwargs: {},
         )
     assert generated is False
