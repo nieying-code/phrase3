@@ -9,9 +9,9 @@
 - Branch: `agent/phase6-v2-1-family-pilots`
 - Base: `8d72b36c38eab93986b6e267946b09b4d34c7c3e`（PR #16 合并后的 `main`）
 - Execution tree: `faa3948e8381525992a54463ef25b1887cb8543c`
-- Commit SHA: pending
-- Draft PR: pending
-- CI: pending
+- Validated results commit SHA: `d06e60e3769dd74796da643587d9164ac9886312`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/17
+- Initial CI: https://github.com/nieying-code/phrase3/actions/runs/30694739823 (queued when the handoff was finalized)
 
 ## 隔离输出基线
 
@@ -118,7 +118,7 @@ git diff --check
 passed
 ```
 
-CI：pending（Draft PR 创建后更新）。
+CI：初始 run `30694739823` 已创建；其最终状态及当前 PR head 由 PR checks 作为合并验收依据。
 
 ## 已知限制与停止边界
 
