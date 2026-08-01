@@ -88,11 +88,25 @@ V1 完成后的 E3 投影为：
 
 该状态符合流程：本批次只完成 V1，不能启动正式种子。
 
+## 机器审计快照
+
+为使 GitHub 审查者无需访问 D 盘大型结果即可独立核对关键声明，本 PR 同步提供：
+
+`docs/handoffs/2026-08-01_phase6_v2_1_v1_e3_pilots_audit.json`
+
+该紧凑 JSON 由干净输出目录机械提取，记录三个 run 的 manifest、result、status summary 和预算比较 SHA-256，逐预算冷热状态与目标、处置字段存在性、全局 registry/projection 哈希、三类科学与环境指纹，以及失败、重复、父运行和 clean root family run 计数。专项测试 `tests/test_phase6_v1_pilot_audit.py` 检查其计数、状态、指纹、哈希格式、目标一致性、处置字段及 `3/12` 投影闭合关系。
+
 ## 验证结果
 
 ```text
 .venv-gurobi\Scripts\python.exe -m pytest -q
-126 passed in 38.85s
+127 passed in 27.19s
+
+.venv-gurobi\Scripts\python.exe -m pytest -q tests/test_phase6_v1_pilot_audit.py
+1 passed in 0.04s
+
+audit artifact SHA-256 verification against the D-drive clean output root
+verified
 
 .venv-gurobi\Scripts\python.exe -m compileall -q src tests
 passed
