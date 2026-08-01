@@ -14,9 +14,10 @@ pilot 执行完整计算门槛审计；没有启动任何正式种子。
 - Execution tree: `c5d420fab08c2b6551db6ead9358d8c6f9f12ade`
 - Merged `main` SHA: `c18ff242756ca9fad43b17f21511ca24e9f6a345`
 - Merged `main` tree: `c5d420fab08c2b6551db6ead9358d8c6f9f12ade`
-- Final result commit: `pending`
-- Draft PR: `pending`
-- CI: `pending`
+- Validated result commit: `c33139449b707855714ccfa819ddd1367d7831b9`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/20
+- Results CI: https://github.com/nieying-code/phrase3/actions/runs/30700159405
+  (`125 passed + 6 passed`)
 
 开始运行时 GitHub 网络短暂不可达，因此本地分支从 PR #19 的最终 head 创建。
 网络恢复后已获取合并后的 `main`；两者 Git tree 完全相同，故运行代码字节与
@@ -129,6 +130,10 @@ passed
 git diff --check
 passed
 ```
+
+GitHub Actions run `30700159405` 对结果提交
+`c33139449b707855714ccfa819ddd1367d7831b9` 验证成功：普通回归
+`125 passed`，Phase 5 端到端 `6 passed`。
 
 ## 停止边界和下一步
 
