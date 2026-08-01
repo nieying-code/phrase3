@@ -31,6 +31,11 @@ def _freeze_matrix_for_runner_unit_tests(monkeypatch) -> None:
         "load_phase6_matrix",
         load_frozen,
     )
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_execution_source",
+        lambda _, **kwargs: {"commit_sha": "test", "tree_sha": "test"},
+    )
 
 
 def test_candidate_matrix_blocks_e3_pilot_before_scenario_generation(
@@ -75,6 +80,44 @@ def test_candidate_matrix_blocks_e3_pilot_before_scenario_generation(
             seed=2026072001,
             execution_mode="pilot",
             run_id="candidate_e3_pilot_blocked",
+            worker_executor=lambda *args, **kwargs: {},
+        )
+    assert generated is False
+
+
+def test_source_gate_blocks_e3_before_scenario_generation(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    generated = False
+
+    def rejected_source(*args, **kwargs):
+        raise RuntimeError("ignored source/config input")
+
+    def forbidden_generation(*args, **kwargs):
+        nonlocal generated
+        generated = True
+        raise AssertionError("scenario generation must not start")
+
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_execution_source",
+        rejected_source,
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "generate_phase6_data",
+        forbidden_generation,
+    )
+    with pytest.raises(RuntimeError, match="ignored source/config input"):
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="V1",
+            seed=2026072001,
+            execution_mode="pilot",
+            run_id="ignored_e3_input_blocked",
             worker_executor=lambda *args, **kwargs: {},
         )
     assert generated is False
@@ -319,6 +362,74 @@ def test_phase6_runner_checkpoints_every_pair_and_alternates_order(
         "insufficient_pilot_coverage"
     )
     assert result["reporting"]["formal_execution_authorized"] is False
+
+
+def test_e3_finalization_precedes_registry_and_projection(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    events: list[str] = []
+
+    def executor(
+        request: dict[str, Any],
+        timeout_seconds: float,
+        work_directory: Path,
+    ) -> dict[str, Any]:
+        return _fake_result(request)
+
+    def register(path: Path, row: dict[str, Any]) -> None:
+        if row["status"] == "running":
+            assert not row.get("manifest_path")
+            events.append("running_registry")
+            return
+        result_path = Path(row["result_path"])
+        manifest_path = Path(row["manifest_path"])
+        assert result_path.is_file()
+        assert manifest_path.is_file()
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        assert manifest["artifact_state"] == "finalized"
+        assert manifest["result_sha256"] == phase6_runner.sha256_file(
+            result_path
+        )
+        events.append("final_registry")
+
+    def performance(output_root: Path, result: dict[str, Any]) -> Path:
+        assert events[-1] == "final_registry"
+        assert all(value == "running_registry" for value in events[:-1])
+        events.append("performance")
+        return output_root / "algorithm_performance.csv"
+
+    def projection(**kwargs: Any) -> dict[str, Any]:
+        assert events[-2:] == ["final_registry", "performance"]
+        assert all(value == "running_registry" for value in events[:-2])
+        events.append("projection")
+        return {
+            "status": "projection_incomplete",
+            "formal_execution_authorized": False,
+        }
+
+    monkeypatch.setattr(phase6_runner, "_upsert_registry", register)
+    monkeypatch.setattr(
+        phase6_runner,
+        "update_algorithm_performance",
+        performance,
+    )
+    monkeypatch.setattr(phase6_runner, "update_pilot_projection", projection)
+
+    result = run_phase6_sequence(
+        matrix_path=MATRIX_PATH,
+        runner_config_path=RUNNER_CONFIG_PATH,
+        output_root=tmp_path,
+        tier_id="V1",
+        seed=2026072001,
+        execution_mode="pilot",
+        run_id="pilot_e3_finalization_order",
+        worker_executor=executor,
+    )
+
+    assert result["status"] == "optimal"
+    assert events[-3:] == ["final_registry", "performance", "projection"]
+    assert all(value == "running_registry" for value in events[:-3])
 
 
 def test_formal_projection_is_checked_before_scenario_generation(

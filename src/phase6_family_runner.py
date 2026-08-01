@@ -16,13 +16,17 @@ import psutil
 import yaml
 
 from .model_common import validate_gurobi_runtime
+from .phase6_environment import (
+    environment_sha256,
+    validate_locked_environment,
+)
 from .phase6_families import (
+    FAMILY_COMPONENT_FILES,
     FAMILIES,
     POLICY_RATIOS,
     _atomic_write_json,
     compact_failure,
     enumerate_family_plans,
-    environment_sha256,
     family_code_sha256,
     load_verified_plan_result,
     sensitivity_configurations,
@@ -39,8 +43,12 @@ from .phase6_protocol import (
     validate_execution_seed,
     validate_matrix_execution_status,
 )
-from .phase6_runner import validate_locked_environment
-from .reproducibility import capture_runtime_context, sha256_file
+from .phase6_io import sha256_lf_text_file
+from .reproducibility import (
+    capture_runtime_context,
+    sha256_file,
+    validate_execution_source,
+)
 
 
 FamilyWorker = Callable[
@@ -81,7 +89,7 @@ def load_family_runner_config(path: str | Path) -> dict[str, Any]:
 
 
 def family_runner_config_sha256(path: Path) -> str:
-    return sha256_file(path)
+    return sha256_lf_text_file(path)
 
 
 def _budget_for_factor(
@@ -560,6 +568,16 @@ def run_family_sequence(
     if normalized not in FAMILIES:
         raise ValueError(f"unsupported family: {family}")
     project_root = matrix_path.resolve().parent.parent
+    if execution_mode in ("pilot", "formal"):
+        validate_execution_source(
+            project_root,
+            required_tracked_paths=(
+                matrix_path,
+                family_config_path.resolve(),
+                project_root / "requirements-gurobi-lock.txt",
+                *(project_root / path for path in FAMILY_COMPONENT_FILES),
+            ),
+        )
     matrix = load_phase6_matrix(matrix_path)
     config = load_family_runner_config(family_config_path)
     validate_gurobi_runtime()
@@ -886,7 +904,7 @@ def run_family_sequence(
                 "run_id": run_id,
                 "family": normalized,
                 "matrix_path": str(matrix_path.resolve()),
-                "matrix_sha256": sha256_file(matrix_path),
+                "matrix_sha256": sha256_lf_text_file(matrix_path),
                 "family_config_path": str(family_config_path.resolve()),
                 "result_path": str(result_path.resolve()),
                 "result_sha256": sha256_file(result_path),

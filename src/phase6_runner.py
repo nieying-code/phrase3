@@ -6,12 +6,10 @@ from collections.abc import Callable
 import csv
 from datetime import datetime, timezone
 import hashlib
-from importlib import metadata
 import json
 import math
 import os
 from pathlib import Path
-import re
 import subprocess
 import sys
 from time import perf_counter, sleep
@@ -21,6 +19,16 @@ import psutil
 import yaml
 
 from .model_common import validate_gurobi_runtime
+from .phase6_environment import (
+    environment_sha256,
+    validate_locked_environment,
+)
+from .phase6_io import (
+    atomic_write_csv,
+    atomic_write_json,
+    read_lf_bytes,
+    sha256_lf_text_file,
+)
 from .phase6_protocol import (
     Phase6ProtocolError,
     budget_values_for_tier,
@@ -30,7 +38,11 @@ from .phase6_protocol import (
     validate_execution_seed,
 )
 from .phase6_locking import exclusive_file_lock
-from .reproducibility import capture_runtime_context, sha256_file
+from .reproducibility import (
+    capture_runtime_context,
+    sha256_file,
+    validate_execution_source,
+)
 from .scenario_generator import write_scenarios_csv
 from .phase6_reporting import (
     append_failure_registry,
@@ -55,6 +67,7 @@ REGISTRY_FIELDS = (
     "scientific_config_sha256",
     "runner_config_sha256",
     "e3_component_sha256",
+    "environment_sha256",
     "planned_budget_count",
     "completed_budget_count",
     "started_at_utc",
@@ -63,6 +76,7 @@ REGISTRY_FIELDS = (
     "failure_message",
     "result_path",
     "checkpoint_path",
+    "manifest_path",
 )
 
 BUDGET_FIELDS = (
@@ -117,7 +131,12 @@ ITERATION_FIELDS = (
 WorkerExecutor = Callable[[dict[str, Any], float, Path], dict[str, Any]]
 
 PHASE6_E3_COMPONENT_FILES = (
+    ".gitattributes",
+    ".gitignore",
     "src/phase6_protocol.py",
+    "src/phase6_environment.py",
+    "src/phase6_io.py",
+    "src/phase6_locking.py",
     "src/model_data.py",
     "src/scenario_generator.py",
     "src/model_common.py",
@@ -130,6 +149,9 @@ PHASE6_E3_COMPONENT_FILES = (
     "src/phase6_worker.py",
     "src/phase6_reporting.py",
     "src/phase6_runner.py",
+    "src/phase6_status.py",
+    "src/reproducibility.py",
+    "src/run_phase6.py",
 )
 
 PHASE6_E3_DEPENDENCY_NAMES = (
@@ -151,49 +173,12 @@ SCIENTIFIC_CONFIG_EXCLUDED_ROOT_FIELDS = (
 RUN_LOCK_TIMEOUT_SECONDS = 0.0
 
 
-def validate_locked_environment(project_root: Path) -> dict[str, str]:
-    """Require every installed distribution to match the exact lock file."""
-
-    lock_path = project_root / PHASE6_E3_REQUIREMENTS_FILE
-    expected: dict[str, tuple[str, str]] = {}
-    for raw in lock_path.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#"):
-            continue
-        if "==" not in line or any(token in line for token in (";", "[", "]")):
-            raise RuntimeError(f"non-exact requirement in {lock_path}: {line}")
-        name, version = (part.strip() for part in line.split("==", 1))
-        normalized = re.sub(r"[-_.]+", "-", name).lower()
-        expected[normalized] = (name, version)
-    actual: dict[str, str] = {}
-    mismatches: list[str] = []
-    for normalized, (name, required) in sorted(expected.items()):
-        try:
-            installed = metadata.version(name)
-        except metadata.PackageNotFoundError:
-            installed = "not-installed"
-        actual[normalized] = installed
-        if installed != required:
-            mismatches.append(f"{name}: required {required}, found {installed}")
-    if mismatches:
-        raise RuntimeError(
-            "Phase 6 locked environment mismatch: " + "; ".join(mismatches)
-        )
-    return actual
-
-
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
 def _atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f"{path.name}.tmp-{os.getpid()}")
-    temporary.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
-    os.replace(temporary, path)
+    atomic_write_json(path, payload)
 
 
 def _atomic_write_csv(
@@ -201,13 +186,7 @@ def _atomic_write_csv(
     fieldnames: tuple[str, ...],
     rows: list[dict[str, Any]],
 ) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f"{path.name}.tmp-{os.getpid()}")
-    with temporary.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
-    os.replace(temporary, path)
+    atomic_write_csv(path, fieldnames, rows)
 
 
 def _upsert_registry(path: Path, row: dict[str, Any]) -> None:
@@ -270,15 +249,15 @@ def _e3_component_code_sha256(project_root: Path) -> str:
         relative = path.relative_to(project_root).as_posix()
         digest.update(relative.encode("utf-8"))
         digest.update(b"\0")
-        digest.update(path.read_bytes())
+        digest.update(read_lf_bytes(path))
         digest.update(b"\0")
     requirements_path = project_root / PHASE6_E3_REQUIREMENTS_FILE
     if not requirements_path.is_file():
         raise FileNotFoundError(
             f"E3 dependency lock is missing: {requirements_path}"
         )
-    requirement_lines = requirements_path.read_text(
-        encoding="utf-8"
+    requirement_lines = read_lf_bytes(requirements_path).decode(
+        "utf-8"
     ).splitlines()
     e3_requirements = sorted(
         line.strip()
@@ -571,14 +550,16 @@ def _checkpoint_fingerprint(
     execution_mode: str,
     budgets: tuple[float, ...],
     e3_component_sha256: str,
+    environment_sha256: str,
     parent_run_id: str | None,
 ) -> dict[str, Any]:
     return {
         "matrix_id": matrix["matrix_id"],
-        "matrix_sha256": sha256_file(matrix_path),
+        "matrix_sha256": sha256_lf_text_file(matrix_path),
         "scientific_config_sha256": _scientific_config_sha256(matrix),
-        "runner_config_sha256": sha256_file(runner_config_path),
+        "runner_config_sha256": sha256_lf_text_file(runner_config_path),
         "e3_component_sha256": e3_component_sha256,
+        "environment_sha256": environment_sha256,
         "tier_id": tier_id,
         "seed": int(seed),
         "execution_mode": execution_mode,
@@ -860,10 +841,22 @@ def _run_phase6_sequence_locked(
     matrix_path = matrix_path.resolve()
     runner_config_path = runner_config_path.resolve()
     output_root = output_root.resolve()
+    project_root = matrix_path.parent.parent
+    if execution_mode in ("pilot", "formal"):
+        validate_execution_source(
+            project_root,
+            required_tracked_paths=(
+                matrix_path,
+                runner_config_path,
+                project_root / PHASE6_E3_REQUIREMENTS_FILE,
+                *(project_root / path for path in PHASE6_E3_COMPONENT_FILES),
+            ),
+        )
     matrix = load_phase6_matrix(matrix_path)
     config = load_phase6_runner_config(runner_config_path)
     validate_gurobi_runtime()
-    locked_environment = validate_locked_environment(matrix_path.parent.parent)
+    locked_environment = validate_locked_environment(project_root)
+    environment_hash = environment_sha256(locked_environment)
     tier = resolve_tier(matrix, tier_id)
     validate_execution_seed(
         matrix,
@@ -876,7 +869,7 @@ def _run_phase6_sequence_locked(
         tier_id,
         matrix_path=matrix_path,
     )
-    code_sha256 = _e3_component_code_sha256(matrix_path.parent.parent)
+    code_sha256 = _e3_component_code_sha256(project_root)
     fingerprint = _checkpoint_fingerprint(
         matrix_path=matrix_path,
         runner_config_path=runner_config_path,
@@ -886,6 +879,7 @@ def _run_phase6_sequence_locked(
         execution_mode=execution_mode,
         budgets=budgets,
         e3_component_sha256=code_sha256,
+        environment_sha256=environment_hash,
         parent_run_id=parent_run_id,
     )
 
@@ -907,6 +901,7 @@ def _run_phase6_sequence_locked(
             e3_component_sha256=str(
                 fingerprint["e3_component_sha256"]
             ),
+            environment_sha256=str(fingerprint["environment_sha256"]),
         )
         activation = next(
             (
@@ -933,6 +928,9 @@ def _run_phase6_sequence_locked(
                 ),
                 e3_component_sha256=str(
                     fingerprint["e3_component_sha256"]
+                ),
+                environment_sha256=str(
+                    fingerprint["environment_sha256"]
                 ),
                 source_tier=str(activation["prior_tier"]),
                 target_tier=tier_id,
@@ -1349,6 +1347,28 @@ def _run_phase6_sequence_locked(
         "sequence_elapsed_seconds": sequence_elapsed,
         "comparisons": comparisons,
         "failure": failure,
+        "fingerprints": {
+            "scientific_config_sha256": fingerprint[
+                "scientific_config_sha256"
+            ],
+            "runner_config_sha256": fingerprint["runner_config_sha256"],
+            "e3_component_sha256": fingerprint["e3_component_sha256"],
+            "environment_sha256": fingerprint["environment_sha256"],
+        },
+        "reporting": {
+            "algorithm_performance_path": str(
+                output_root
+                / "experiments"
+                / "phase6"
+                / "algorithm_performance.csv"
+            ),
+            "pilot_projection_path": str(
+                output_root
+                / "experiments"
+                / "phase6"
+                / "pilot_throughput_projection.json"
+            ),
+        },
     }
     _atomic_write_json(result_path, result)
     _atomic_write_csv(
@@ -1366,9 +1386,11 @@ def _run_phase6_sequence_locked(
         project_root=matrix_path.parent.parent,
         solver_threads=int(config["solver"]["threads"]),
     )
+    manifest_path = run_directory / "manifest.json"
     _atomic_write_json(
-        run_directory / "manifest.json",
+        manifest_path,
         {
+            "artifact_state": "finalized",
             "run_id": run_id,
             "parent_run_id": parent_run_id,
             "matrix_path": str(matrix_path),
@@ -1379,6 +1401,9 @@ def _run_phase6_sequence_locked(
             "runner_config_path": str(runner_config_path),
             "runner_config_sha256": fingerprint["runner_config_sha256"],
             "e3_component_sha256": fingerprint["e3_component_sha256"],
+            "environment_sha256": fingerprint["environment_sha256"],
+            "result_path": str(result_path.resolve()),
+            "result_sha256": sha256_file(result_path),
             "resolved_run_path": str(resolved_run_path),
             "resolved_run_sha256": sha256_file(resolved_run_path),
             "training_scenarios_path": str(scenarios_path),
@@ -1404,6 +1429,7 @@ def _run_phase6_sequence_locked(
             ],
             "runner_config_sha256": fingerprint["runner_config_sha256"],
             "e3_component_sha256": fingerprint["e3_component_sha256"],
+            "environment_sha256": fingerprint["environment_sha256"],
             "planned_budget_count": len(budgets),
             "completed_budget_count": _completed_budget_count(comparisons),
             "started_at_utc": started_at,
@@ -1416,6 +1442,7 @@ def _run_phase6_sequence_locked(
             ),
             "result_path": str(result_path),
             "checkpoint_path": str(checkpoint_path),
+            "manifest_path": str(manifest_path),
         },
     )
     performance_path = update_algorithm_performance(output_root, result)
@@ -1429,6 +1456,7 @@ def _run_phase6_sequence_locked(
         ),
         runner_config_sha256=str(fingerprint["runner_config_sha256"]),
         e3_component_sha256=str(fingerprint["e3_component_sha256"]),
+        environment_sha256=str(fingerprint["environment_sha256"]),
     )
     advancement = None
     if execution_mode == "formal" and tier_id == "P1":
@@ -1444,15 +1472,11 @@ def _run_phase6_sequence_locked(
             e3_component_sha256=str(
                 fingerprint["e3_component_sha256"]
             ),
+            environment_sha256=str(fingerprint["environment_sha256"]),
         )
-    result["reporting"] = {
-        "algorithm_performance_path": str(performance_path),
-        "pilot_projection_path": str(
-            output_root
-            / "experiments"
-            / "phase6"
-            / "pilot_throughput_projection.json"
-        ),
+    returned = dict(result)
+    returned["reporting"] = {
+        **result["reporting"],
         "pilot_projection_status": projection["status"],
         "formal_execution_authorized": projection[
             "formal_execution_authorized"
@@ -1461,10 +1485,9 @@ def _run_phase6_sequence_locked(
             advancement["status"] if advancement is not None else None
         ),
     }
-    _atomic_write_json(result_path, result)
     _atomic_write_json(
         status_summary_path,
-        build_compact_status_payload(result),
+        build_compact_status_payload(returned),
     )
     if failure is not None:
         failure_path = output_root / "experiments" / "phase6" / "failure_registry.csv"
@@ -1483,4 +1506,4 @@ def _run_phase6_sequence_locked(
                 "recorded_at_utc": finished_at,
             },
         )
-    return result
+    return returned

@@ -12,16 +12,20 @@ import csv
 import hashlib
 import json
 import math
-import os
 from pathlib import Path
 import statistics
-from time import sleep
 from typing import Any, Iterable, Mapping, Sequence
 
 import numpy as np
 
 from .evaluation import EvaluationResult
 from .model_data import ProcurementData
+from .phase6_environment import environment_sha256
+from .phase6_io import (
+    atomic_write_csv as _atomic_write_csv,
+    atomic_write_json as _atomic_write_json,
+    read_lf_bytes,
+)
 from .phase6_locking import exclusive_file_lock
 from .phase6_protocol import (
     GeneratedPhase6Data,
@@ -62,16 +66,18 @@ FAMILY_REGISTRY_FIELDS = (
     "manifest_path",
 )
 FAMILY_COMPONENT_FILES = (
+    ".gitignore",
     "src/ccg.py",
     "src/evaluation.py",
     "src/extensive_model.py",
     "src/inventory_model.py",
     "src/model_common.py",
     "src/model_data.py",
-    "src/parameters.py",
+    ".gitattributes",
+    "src/phase6_environment.py",
+    "src/phase6_io.py",
     "src/phase6_locking.py",
     "src/phase6_protocol.py",
-    "src/phase6_runner.py",
     "src/recourse_model.py",
     "src/reproducibility.py",
     "src/scenario_generator.py",
@@ -86,62 +92,6 @@ SCIENTIFIC_CONFIG_EXCLUDED_ROOT_FIELDS = (
     "initial_draft_on",
     "revised_on",
 )
-ATOMIC_REPLACE_MAX_ATTEMPTS = 20
-ATOMIC_REPLACE_RETRY_SECONDS = 0.05
-
-
-def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f"{path.name}.tmp-{os.getpid()}")
-    temporary.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
-    try:
-        for attempt in range(ATOMIC_REPLACE_MAX_ATTEMPTS):
-            try:
-                os.replace(temporary, path)
-                return
-            except PermissionError:
-                if attempt + 1 == ATOMIC_REPLACE_MAX_ATTEMPTS:
-                    raise
-                sleep(ATOMIC_REPLACE_RETRY_SECONDS)
-    finally:
-        if temporary.exists():
-            try:
-                temporary.unlink()
-            except OSError:
-                pass
-
-
-def _atomic_write_csv(
-    path: Path,
-    fieldnames: Sequence[str],
-    rows: Iterable[Mapping[str, Any]],
-) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f"{path.name}.tmp-{os.getpid()}")
-    with temporary.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
-    try:
-        for attempt in range(ATOMIC_REPLACE_MAX_ATTEMPTS):
-            try:
-                os.replace(temporary, path)
-                return
-            except PermissionError:
-                if attempt + 1 == ATOMIC_REPLACE_MAX_ATTEMPTS:
-                    raise
-                sleep(ATOMIC_REPLACE_RETRY_SECONDS)
-    finally:
-        if temporary.exists():
-            try:
-                temporary.unlink()
-            except OSError:
-                pass
-
-
 def scientific_config_sha256(matrix: Mapping[str, Any]) -> str:
     """Return the lifecycle-independent scientific matrix fingerprint."""
 
@@ -159,17 +109,6 @@ def scientific_config_sha256(matrix: Mapping[str, Any]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def environment_sha256(locked_environment: Mapping[str, str]) -> str:
-    """Hash the actual exact distribution versions used by a family run."""
-
-    encoded = json.dumps(
-        dict(sorted(locked_environment.items())),
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
-
-
 def family_code_sha256(project_root: Path) -> str:
     """Fingerprint every code dependency that can change family results."""
 
@@ -180,7 +119,7 @@ def family_code_sha256(project_root: Path) -> str:
             raise FileNotFoundError(f"family component file is missing: {path}")
         digest.update(relative.encode("utf-8"))
         digest.update(b"\0")
-        digest.update(path.read_bytes())
+        digest.update(read_lf_bytes(path))
         digest.update(b"\0")
     return digest.hexdigest()
 

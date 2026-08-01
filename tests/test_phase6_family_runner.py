@@ -41,6 +41,11 @@ def _freeze_matrix_for_runner_unit_tests(monkeypatch) -> None:
         "load_phase6_matrix",
         load_frozen,
     )
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "validate_execution_source",
+        lambda _, **kwargs: {"commit_sha": "test", "tree_sha": "test"},
+    )
 
 
 def test_candidate_matrix_blocks_family_pilot_before_plan_resolution(
@@ -85,6 +90,44 @@ def test_candidate_matrix_blocks_family_pilot_before_plan_resolution(
             seed=2026072001,
             execution_mode="pilot",
             run_id="candidate_family_pilot_blocked",
+            worker=lambda *args, **kwargs: {},
+        )
+    assert resolved is False
+
+
+def test_source_gate_blocks_family_before_plan_resolution(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    resolved = False
+
+    def rejected_source(*args, **kwargs):
+        raise RuntimeError("ignored source/config input")
+
+    def forbidden_resolution(*args, **kwargs):
+        nonlocal resolved
+        resolved = True
+        raise AssertionError("family plans must not resolve")
+
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "validate_execution_source",
+        rejected_source,
+    )
+    monkeypatch.setattr(
+        phase6_family_runner,
+        "resolve_family_pilot_plans",
+        forbidden_resolution,
+    )
+    with pytest.raises(RuntimeError, match="ignored source/config input"):
+        run_family_sequence(
+            matrix_path=MATRIX_PATH,
+            family_config_path=CONFIG_PATH,
+            output_root=tmp_path,
+            family="E1",
+            seed=2026072001,
+            execution_mode="pilot",
+            run_id="ignored_family_input_blocked",
             worker=lambda *args, **kwargs: {},
         )
     assert resolved is False

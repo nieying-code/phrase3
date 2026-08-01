@@ -42,6 +42,7 @@ def _registry_row(
     scientific_config_sha256: str,
     runner_config_sha256: str,
     e3_component_sha256: str,
+    environment_sha256: str = "environment-hash",
     status: str = "optimal",
     parent_run_id: str | None = None,
 ) -> dict[str, object]:
@@ -57,6 +58,7 @@ def _registry_row(
         "scientific_config_sha256": scientific_config_sha256,
         "runner_config_sha256": runner_config_sha256,
         "e3_component_sha256": e3_component_sha256,
+        "environment_sha256": environment_sha256,
         "planned_budget_count": 6,
         "completed_budget_count": 6 if status == "optimal" else 1,
         "started_at_utc": "2026-07-27T00:00:00+00:00",
@@ -65,6 +67,7 @@ def _registry_row(
         "failure_message": None if status == "optimal" else "failed",
         "result_path": str(result_path),
         "checkpoint_path": str(result_path.parent / "checkpoint.json"),
+        "manifest_path": str(result_path.parent / "manifest.json"),
     }
 
 
@@ -74,6 +77,10 @@ def _write_fake_result(
     run_id: str,
     tier_id: str,
     seed: int,
+    scientific_config_sha256: str,
+    runner_config_sha256: str,
+    e3_component_sha256: str,
+    environment_sha256: str = "environment-hash",
 ) -> None:
     repetitions = [
         {
@@ -96,10 +103,35 @@ def _write_fake_result(
         json.dumps(
             {
                 "run_id": run_id,
+                "parent_run_id": None,
+                "status": "optimal",
                 "execution_mode": "pilot",
                 "tier_id": tier_id,
                 "seed": seed,
+                "planned_budget_count": 6,
+                "completed_budget_count": 6,
                 "comparisons": comparisons,
+                "fingerprints": {
+                    "scientific_config_sha256": scientific_config_sha256,
+                    "runner_config_sha256": runner_config_sha256,
+                    "e3_component_sha256": e3_component_sha256,
+                    "environment_sha256": environment_sha256,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    (path.parent / "manifest.json").write_text(
+        json.dumps(
+            {
+                "artifact_state": "finalized",
+                "run_id": run_id,
+                "result_path": str(path.resolve()),
+                "result_sha256": sha256_file(path),
+                "scientific_config_sha256": scientific_config_sha256,
+                "runner_config_sha256": runner_config_sha256,
+                "e3_component_sha256": e3_component_sha256,
+                "environment_sha256": environment_sha256,
             }
         ),
         encoding="utf-8",
@@ -147,6 +179,9 @@ def test_projection_is_fingerprinted_and_incomplete_without_family_runners(
                 run_id=run_id,
                 tier_id=tier,
                 seed=seed,
+                scientific_config_sha256=scientific_hash,
+                runner_config_sha256=config_hash,
+                e3_component_sha256=code_hash,
             )
             _upsert_registry(
                 registry_path,
@@ -184,6 +219,7 @@ def test_projection_is_fingerprinted_and_incomplete_without_family_runners(
         scientific_config_sha256=scientific_hash,
         runner_config_sha256=config_hash,
         e3_component_sha256=code_hash,
+        environment_sha256="environment-hash",
     )
 
     assert projection["completed_run_count"] == 12
@@ -198,6 +234,74 @@ def test_projection_is_fingerprinted_and_incomplete_without_family_runners(
     assert "projected_total_wall_hours" not in projection
 
 
+def test_e3_projection_rejects_result_changed_after_finalization(
+    tmp_path: Path,
+) -> None:
+    matrix = deepcopy(load_phase6_matrix(MATRIX_PATH))
+    matrix["seed_plan"]["pilot_training_seeds"] = [2026072001]
+    runner_config = deepcopy(load_phase6_runner_config(RUNNER_CONFIG_PATH))
+    runner_config["runner"]["pilot_projection_required_tiers"] = ["V1"]
+    matrix_hash = sha256_file(MATRIX_PATH)
+    scientific_hash = _scientific_config_sha256(matrix)
+    config_hash = sha256_file(RUNNER_CONFIG_PATH)
+    code_hash = _e3_component_code_sha256(MATRIX_PATH.parent.parent)
+    result_path = (
+        tmp_path
+        / "experiments"
+        / "phase6"
+        / "runs"
+        / "pilot_tampered"
+        / "result.json"
+    )
+    _write_fake_result(
+        result_path,
+        run_id="pilot_tampered",
+        tier_id="V1",
+        seed=2026072001,
+        scientific_config_sha256=scientific_hash,
+        runner_config_sha256=config_hash,
+        e3_component_sha256=code_hash,
+    )
+    registry_path = (
+        tmp_path / "experiments" / "phase6" / "run_registry.csv"
+    )
+    _upsert_registry(
+        registry_path,
+        _registry_row(
+            run_id="pilot_tampered",
+            tier_id="V1",
+            seed=2026072001,
+            result_path=result_path,
+            matrix_sha256=matrix_hash,
+            scientific_config_sha256=scientific_hash,
+            runner_config_sha256=config_hash,
+            e3_component_sha256=code_hash,
+        ),
+    )
+    result_path.write_text(
+        json.dumps({"run_id": "pilot_tampered", "tampered": True}),
+        encoding="utf-8",
+    )
+
+    projection = update_pilot_projection(
+        output_root=tmp_path,
+        matrix=matrix,
+        runner_config=runner_config,
+        matrix_sha256=matrix_hash,
+        scientific_config_sha256=scientific_hash,
+        runner_config_sha256=config_hash,
+        e3_component_sha256=code_hash,
+        environment_sha256="environment-hash",
+    )
+
+    assert projection["status"] == "pilot_failures"
+    assert projection["completed_run_count"] == 0
+    assert projection["artifact_invalid_runs"][0]["run_id"] == (
+        "pilot_tampered"
+    )
+    assert projection["formal_execution_authorized"] is False
+
+
 def test_formal_projection_gate_rejects_stale_or_unapproved_file(
     tmp_path: Path,
 ) -> None:
@@ -209,6 +313,7 @@ def test_formal_projection_gate_rejects_stale_or_unapproved_file(
         "scientific_config_sha256": "scientific-hash",
         "runner_config_sha256": "config-hash",
         "e3_component_sha256": "code-hash",
+        "environment_sha256": "environment-hash",
         "required_run_count": 12,
         "completed_run_count": 12,
         "missing_runs": [],
@@ -227,6 +332,7 @@ def test_formal_projection_gate_rejects_stale_or_unapproved_file(
             scientific_config_sha256="scientific-hash",
             runner_config_sha256="config-hash",
             e3_component_sha256="code-hash",
+            environment_sha256="environment-hash",
         )
     with pytest.raises(ValueError, match="fingerprint mismatch"):
         validate_formal_projection(
@@ -235,6 +341,7 @@ def test_formal_projection_gate_rejects_stale_or_unapproved_file(
             scientific_config_sha256="stale",
             runner_config_sha256="config-hash",
             e3_component_sha256="code-hash",
+            environment_sha256="environment-hash",
         )
 
     payload.update(
@@ -251,6 +358,7 @@ def test_formal_projection_gate_rejects_stale_or_unapproved_file(
         scientific_config_sha256="scientific-hash",
         runner_config_sha256="config-hash",
         e3_component_sha256="code-hash",
+        environment_sha256="environment-hash",
     )
     assert accepted["formal_execution_authorized"] is True
 
@@ -332,7 +440,11 @@ def test_e3_component_hash_scope_is_explicit(tmp_path: Path) -> None:
     assert "src/phase6_worker.py" in PHASE6_E3_COMPONENT_FILES
     assert "src/ccg.py" in PHASE6_E3_COMPONENT_FILES
     assert "src/phase6_reporting.py" in PHASE6_E3_COMPONENT_FILES
-    assert "src/run_phase6.py" not in PHASE6_E3_COMPONENT_FILES
+    assert "src/run_phase6.py" in PHASE6_E3_COMPONENT_FILES
+    assert "src/reproducibility.py" in PHASE6_E3_COMPONENT_FILES
+    assert "src/phase6_environment.py" in PHASE6_E3_COMPONENT_FILES
+    assert "src/phase6_io.py" in PHASE6_E3_COMPONENT_FILES
+    assert ".gitattributes" in PHASE6_E3_COMPONENT_FILES
     assert PHASE6_E3_REQUIREMENTS_FILE == "requirements-gurobi-lock.txt"
     baseline = _e3_component_code_sha256(project_root)
     assert len(baseline) == 64
@@ -349,6 +461,7 @@ def test_e3_component_hash_scope_is_explicit(tmp_path: Path) -> None:
     with (copied_root / PHASE6_E3_REQUIREMENTS_FILE).open(
         "a",
         encoding="utf-8",
+        newline="\n",
     ) as handle:
         handle.write("\nplotly>=6.0\n")
     assert _e3_component_code_sha256(copied_root) == baseline
@@ -356,6 +469,7 @@ def test_e3_component_hash_scope_is_explicit(tmp_path: Path) -> None:
     with (copied_root / "src" / "ccg.py").open(
         "a",
         encoding="utf-8",
+        newline="\n",
     ) as handle:
         handle.write("\n# scientific change\n")
     assert _e3_component_code_sha256(copied_root) != baseline
@@ -380,6 +494,7 @@ def test_scale_advancement_rejects_failed_or_stale_gate(
         "scientific_config_sha256": "science",
         "runner_config_sha256": "runner",
         "e3_component_sha256": "code",
+        "environment_sha256": "environment",
         "source_tier": "P1",
         "target_tier": "P2",
         "status": "not_passed",
@@ -393,6 +508,7 @@ def test_scale_advancement_rejects_failed_or_stale_gate(
             scientific_config_sha256="science",
             runner_config_sha256="runner",
             e3_component_sha256="code",
+            environment_sha256="environment",
             source_tier="P1",
             target_tier="P2",
         )
@@ -405,6 +521,7 @@ def test_scale_advancement_rejects_failed_or_stale_gate(
             scientific_config_sha256="stale",
             runner_config_sha256="runner",
             e3_component_sha256="code",
+            environment_sha256="environment",
             source_tier="P1",
             target_tier="P2",
         )
@@ -438,6 +555,14 @@ def test_scale_advancement_computes_p1_gate_from_formal_runs(
         result_path.write_text(
             json.dumps(
                 {
+                    "run_id": run_id,
+                    "parent_run_id": None,
+                    "status": "optimal",
+                    "execution_mode": "formal",
+                    "tier_id": "P1",
+                    "seed": seed,
+                    "planned_budget_count": 3,
+                    "completed_budget_count": 3,
                     "comparisons": [
                         {
                             "status": "optimal",
@@ -446,7 +571,29 @@ def test_scale_advancement_computes_p1_gate_from_formal_runs(
                             "warm": mode,
                         }
                         for _ in range(3)
-                    ]
+                    ],
+                    "fingerprints": {
+                        "scientific_config_sha256": scientific,
+                        "runner_config_sha256": runner_hash,
+                        "e3_component_sha256": code_hash,
+                        "environment_sha256": "environment-hash",
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        manifest_path = result_path.parent / "manifest.json"
+        manifest_path.write_text(
+            json.dumps(
+                {
+                    "artifact_state": "finalized",
+                    "run_id": run_id,
+                    "result_path": str(result_path.resolve()),
+                    "result_sha256": sha256_file(result_path),
+                    "scientific_config_sha256": scientific,
+                    "runner_config_sha256": runner_hash,
+                    "e3_component_sha256": code_hash,
+                    "environment_sha256": "environment-hash",
                 }
             ),
             encoding="utf-8",
@@ -462,7 +609,11 @@ def test_scale_advancement_computes_p1_gate_from_formal_runs(
                 "scientific_config_sha256": scientific,
                 "runner_config_sha256": runner_hash,
                 "e3_component_sha256": code_hash,
+                "environment_sha256": "environment-hash",
+                "planned_budget_count": 3,
+                "completed_budget_count": 3,
                 "result_path": str(result_path),
+                "manifest_path": str(manifest_path),
             }
         )
         _upsert_registry(registry, row)
@@ -473,6 +624,7 @@ def test_scale_advancement_computes_p1_gate_from_formal_runs(
         scientific_config_sha256=scientific,
         runner_config_sha256=runner_hash,
         e3_component_sha256=code_hash,
+        environment_sha256="environment-hash",
     )
 
     assert decision["status"] == "passed"

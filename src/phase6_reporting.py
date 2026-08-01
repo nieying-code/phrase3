@@ -4,12 +4,16 @@ from __future__ import annotations
 
 import csv
 import json
-import os
 from pathlib import Path
 import statistics
 from typing import Any, Mapping
 
+from .phase6_io import (
+    atomic_write_csv as _atomic_write_csv,
+    atomic_write_json as _atomic_write_json,
+)
 from .phase6_locking import exclusive_file_lock
+from .reproducibility import sha256_file
 
 
 PERFORMANCE_FIELDS = (
@@ -28,30 +32,6 @@ PERFORMANCE_FIELDS = (
     "wall_seconds",
     "peak_memory_mb",
 )
-
-
-def _atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f"{path.name}.tmp-{os.getpid()}")
-    temporary.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
-    os.replace(temporary, path)
-
-
-def _atomic_write_csv(
-    path: Path,
-    fieldnames: tuple[str, ...],
-    rows: list[dict[str, Any]],
-) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f"{path.name}.tmp-{os.getpid()}")
-    with temporary.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
-    os.replace(temporary, path)
 
 
 def update_algorithm_performance(
@@ -183,6 +163,50 @@ def _run_throughput(result: Mapping[str, Any]) -> dict[str, float]:
     }
 
 
+def validate_e3_run_artifacts(
+    row: Mapping[str, str],
+) -> dict[str, Any]:
+    """Verify an E3 registry row against finalized, hashed artifacts."""
+
+    result_path = Path(str(row.get("result_path", "")))
+    manifest_path = Path(str(row.get("manifest_path", "")))
+    if not result_path.is_file() or not manifest_path.is_file():
+        raise ValueError("E3 result or manifest is missing")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("artifact_state") != "finalized":
+        raise ValueError("E3 manifest is not finalized")
+    if Path(str(manifest.get("result_path", ""))).resolve() != result_path.resolve():
+        raise ValueError("E3 manifest result path mismatch")
+    if manifest.get("result_sha256") != sha256_file(result_path):
+        raise ValueError("E3 result SHA-256 mismatch")
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    fingerprints = result.get("fingerprints") or {}
+    exact_fields = {
+        "run_id": result.get("run_id"),
+        "parent_run_id": result.get("parent_run_id") or "",
+        "execution_mode": result.get("execution_mode"),
+        "tier_id": result.get("tier_id"),
+        "seed": str(result.get("seed")),
+        "status": result.get("status"),
+        "planned_budget_count": str(result.get("planned_budget_count")),
+        "completed_budget_count": str(result.get("completed_budget_count")),
+        "scientific_config_sha256": fingerprints.get(
+            "scientific_config_sha256"
+        ),
+        "runner_config_sha256": fingerprints.get("runner_config_sha256"),
+        "e3_component_sha256": fingerprints.get("e3_component_sha256"),
+        "environment_sha256": fingerprints.get("environment_sha256"),
+    }
+    for name, expected in exact_fields.items():
+        if str(row.get(name, "")) != str(expected):
+            raise ValueError(f"E3 registry/result mismatch for {name}")
+        if name.endswith("sha256") and manifest.get(name) != expected:
+            raise ValueError(f"E3 manifest/result mismatch for {name}")
+    if manifest.get("run_id") != result.get("run_id"):
+        raise ValueError("E3 manifest run_id mismatch")
+    return result
+
+
 def update_pilot_projection(
     *,
     output_root: Path,
@@ -192,6 +216,7 @@ def update_pilot_projection(
     scientific_config_sha256: str,
     runner_config_sha256: str,
     e3_component_sha256: str,
+    environment_sha256: str,
 ) -> dict[str, Any]:
     """Rebuild fingerprinted pilot coverage without unit-invalid estimates."""
 
@@ -231,11 +256,31 @@ def update_pilot_projection(
                 == runner_config_sha256
                 and row.get("e3_component_sha256", "")
                 == e3_component_sha256
+                and row.get("environment_sha256", "")
+                == environment_sha256
             )
         ]
+        artifact_invalid: list[dict[str, Any]] = []
+        verified_results: dict[str, dict[str, Any]] = {}
+        valid_matching: list[dict[str, str]] = []
+        for row in matching:
+            try:
+                verified_results[row["run_id"]] = validate_e3_run_artifacts(row)
+            except Exception as exc:
+                artifact_invalid.append(
+                    {
+                        "run_id": row.get("run_id"),
+                        "tier_id": row.get("tier_id"),
+                        "seed": row.get("seed"),
+                        "status": "artifact_invalid",
+                        "message": f"{type(exc).__name__}: {exc}",
+                    }
+                )
+            else:
+                valid_matching.append(row)
         primaries: dict[tuple[str, int], list[dict[str, str]]] = {}
         diagnostics: list[dict[str, Any]] = []
-        for row in matching:
+        for row in valid_matching:
             if row.get("parent_run_id", "").strip():
                 diagnostics.append(
                     {
@@ -304,8 +349,7 @@ def update_pilot_projection(
                 != int(row.get("planned_budget_count", 0))
             ):
                 continue
-            result_path = Path(row["result_path"])
-            result = json.loads(result_path.read_text(encoding="utf-8"))
+            result = verified_results[row["run_id"]]
             throughput = _run_throughput(result)
             rates.append(throughput)
             runs.append(
@@ -318,7 +362,9 @@ def update_pilot_projection(
             )
 
         required_count = len(required_tiers) * len(required_seeds)
-        if missing:
+        if artifact_invalid:
+            status = "pilot_failures"
+        elif missing:
             status = "insufficient_pilot_coverage"
         elif failed:
             status = "pilot_failures"
@@ -333,6 +379,7 @@ def update_pilot_projection(
             "scientific_config_sha256": scientific_config_sha256,
             "runner_config_sha256": runner_config_sha256,
             "e3_component_sha256": e3_component_sha256,
+            "environment_sha256": environment_sha256,
             "required_tiers": required_tiers,
             "required_seeds": required_seeds,
             "completed_run_count": len(runs),
@@ -340,6 +387,7 @@ def update_pilot_projection(
             "primary_completion_rate": len(runs) / required_count,
             "missing_runs": missing,
             "failed_primary_runs": failed,
+            "artifact_invalid_runs": artifact_invalid,
             "duplicate_primary_runs": duplicate,
             "diagnostic_attempts": diagnostics,
             "runs": runs,
@@ -391,6 +439,7 @@ def update_pilot_projection(
             not missing
             and not failed
             and not duplicate
+            and not artifact_invalid
             and rates
         ):
             conservative_recourse_rate = min(
@@ -428,6 +477,7 @@ def validate_formal_projection(
     scientific_config_sha256: str,
     runner_config_sha256: str,
     e3_component_sha256: str,
+    environment_sha256: str,
 ) -> dict[str, Any]:
     """Require a complete, current, explicitly authorized projection."""
 
@@ -439,6 +489,7 @@ def validate_formal_projection(
         "scientific_config_sha256": scientific_config_sha256,
         "runner_config_sha256": runner_config_sha256,
         "e3_component_sha256": e3_component_sha256,
+        "environment_sha256": environment_sha256,
     }
     mismatches = {
         name: {"expected": value, "actual": payload.get(name)}
@@ -457,6 +508,8 @@ def validate_formal_projection(
         )
     if payload.get("failed_primary_runs"):
         raise ValueError("pilot projection contains failed primary runs")
+    if payload.get("artifact_invalid_runs"):
+        raise ValueError("pilot projection contains invalid artifacts")
     if payload.get("duplicate_primary_runs"):
         raise ValueError("pilot projection contains duplicate primary runs")
     if payload.get("missing_runs"):
@@ -479,6 +532,7 @@ def update_scale_advancement(
     scientific_config_sha256: str,
     runner_config_sha256: str,
     e3_component_sha256: str,
+    environment_sha256: str,
     source_tier: str = "P1",
     target_tier: str = "P2",
 ) -> dict[str, Any]:
@@ -514,8 +568,21 @@ def update_scale_advancement(
             == scientific_config_sha256
             and row.get("runner_config_sha256") == runner_config_sha256
             and row.get("e3_component_sha256") == e3_component_sha256
+            and row.get("environment_sha256") == environment_sha256
         )
     ]
+    verified_results: dict[str, dict[str, Any]] = {}
+    artifact_invalid: list[dict[str, str]] = []
+    for row in matching:
+        try:
+            verified_results[row["run_id"]] = validate_e3_run_artifacts(row)
+        except Exception as exc:
+            artifact_invalid.append(
+                {
+                    "run_id": row.get("run_id", ""),
+                    "message": f"{type(exc).__name__}: {exc}",
+                }
+            )
     grouped: dict[int, list[dict[str, str]]] = {}
     for row in matching:
         grouped.setdefault(int(row["seed"]), []).append(row)
@@ -533,13 +600,9 @@ def update_scale_advancement(
     cold_fractions: list[float] = []
     warm_fractions: list[float] = []
     budget_wall = float(tier_raw["time_limits"]["ccg_budget_wall_seconds"])
-    if not missing and not duplicates and not failed:
+    if not missing and not duplicates and not failed and not artifact_invalid:
         for seed in expected_seeds:
-            result = json.loads(
-                Path(grouped[seed][0]["result_path"]).read_text(
-                    encoding="utf-8"
-                )
-            )
+            result = verified_results[grouped[seed][0]["run_id"]]
             for comparison in result.get("comparisons", []):
                 times: dict[str, float] = {}
                 jointly_optimal = comparison.get("status") == "optimal"
@@ -578,7 +641,9 @@ def update_scale_advancement(
         else None
     )
     rules = matrix["scale_advancement"]["all_conditions"]
-    coverage_complete = not missing and not duplicates and not failed
+    coverage_complete = (
+        not missing and not duplicates and not failed and not artifact_invalid
+    )
     passed = (
         coverage_complete
         and completion_rate
@@ -592,12 +657,14 @@ def update_scale_advancement(
         "scientific_config_sha256": scientific_config_sha256,
         "runner_config_sha256": runner_config_sha256,
         "e3_component_sha256": e3_component_sha256,
+        "environment_sha256": environment_sha256,
         "source_tier": source_tier,
         "target_tier": target_tier,
         "expected_seeds": expected_seeds,
         "missing_seeds": missing,
         "duplicate_seeds": duplicates,
         "failed_seeds": failed,
+        "artifact_invalid_runs": artifact_invalid,
         "planned_pair_count": expected_pairs,
         "jointly_optimal_pair_count": joint_pairs,
         "joint_pair_completion_rate": completion_rate,
@@ -620,6 +687,7 @@ def validate_scale_advancement(
     scientific_config_sha256: str,
     runner_config_sha256: str,
     e3_component_sha256: str,
+    environment_sha256: str,
     source_tier: str,
     target_tier: str,
 ) -> dict[str, Any]:
@@ -633,6 +701,7 @@ def validate_scale_advancement(
         "scientific_config_sha256": scientific_config_sha256,
         "runner_config_sha256": runner_config_sha256,
         "e3_component_sha256": e3_component_sha256,
+        "environment_sha256": environment_sha256,
         "source_tier": source_tier,
         "target_tier": target_tier,
     }
