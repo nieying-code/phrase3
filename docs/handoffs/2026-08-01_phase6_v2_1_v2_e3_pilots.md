@@ -11,9 +11,11 @@
 - Execution SHA: `5102724935888da1929337754d4b2a35366bced7`（PR #17 head）
 - Execution/remote-main tree SHA: `db95c6f3f921da3757051a433748ebb9b82b54c1`
 - Tree equality: confirmed
-- Validated results commit SHA: `eb7a84a37549a015d69ea0281131edb0d9e2c0ba`
+- Final validated V2 results head: `33a5267b8d1300246f7dad7d77f9c26ce9ef45e5`
 - Draft PR: https://github.com/nieying-code/phrase3/pull/18
-- Results CI: https://github.com/nieying-code/phrase3/actions/runs/30695967027 (`123 passed + 6 passed`)
+- Final validated V2 results CI: https://github.com/nieying-code/phrase3/actions/runs/30696021947 (`123 passed + 6 passed`)
+
+`eb7a84a37549a015d69ea0281131edb0d9e2c0ba` 与 CI run `30695967027` 是 handoff 元数据最终化之前的中间状态，不作为最终验收状态。后续纯文档追溯提交不会改变实验结果、模型、矩阵或指纹；当前 PR head 及其 CI 以 GitHub PR checks 为准。
 
 GitHub Git 数据端点在启动时短暂不可达，因此本地无法立即获取 merge commit 对象。GitHub API 独立确认 PR #17 已合并，且执行提交与远端最新 `main` 的 tree SHA 完全相同。换言之，运行使用的代码、配置、文档和依赖锁字节与最新 `main` 一致；该差异仅是 Git 合并提交对象，不是执行内容差异。
 
@@ -34,7 +36,14 @@ GitHub Git 数据端点在启动时短暂不可达，因此本地无法立即获
 | Family prerequisites | `12/12 runs, 30/30 work units, all optimal` |
 | Initial formal authorization | `false` |
 
-隔离输出根目录为 `outputs/phase6_v21_rr_clean`。执行前 Git 已跟踪文件修改数为 0；manifest 的 `working_tree_dirty=true` 仅来自 Git 忽略的 D 盘实验输出目录。当前根目录是预期写出位置，并包含已获批的 V1/family 前序制品；没有本地源代码、矩阵、runner 配置或依赖锁改动。
+隔离输出根目录为 `outputs/phase6_v21_rr_clean`。执行前 `tracked_modified_count_at_start=0`，`working_tree_dirty=true` 来自以下未跟踪（untracked）输出目录，而不是已跟踪文件修改：
+
+- `outputs/gurobi_validation/`
+- `outputs/phase6_v21_rr_clean/`
+- `outputs/relative_complete_recourse_validation/`
+- `outputs/tmp/`
+
+其中三个历史目录 `outputs/gurobi_validation/`、`outputs/relative_complete_recourse_validation/` 和 `outputs/tmp/` 没有作为本次 V2 运行输入。`outputs/phase6_v21_rr_clean/` 是本批次受控的当前读写根目录：runner 读取其中已经批准的 V1/family registry、projection 与前序制品，并向同一根目录写入 V2 结果。执行时不存在未提交的模型代码、科学配置、实验矩阵、runner 配置或依赖锁修改。
 
 ## 执行范围
 
@@ -115,7 +124,7 @@ git diff --check
 passed
 ```
 
-CI run `30695967027`：success（普通回归 `123 passed`，Phase 5 端到端 `6 passed`）。
+最终验证 CI run `30696021947`：success（普通回归 `123 passed`，Phase 5 端到端 `6 passed`）。
 
 ## 已知限制与停止边界
 

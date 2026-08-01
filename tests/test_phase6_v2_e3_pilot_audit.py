@@ -13,6 +13,13 @@ AUDIT = Path(
 )
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 SEEDS = {2026072001, 2026072002, 2026072003}
+UNTRACKED_OUTPUTS = {
+    "outputs/gurobi_validation/",
+    "outputs/phase6_v21_rr_clean/",
+    "outputs/relative_complete_recourse_validation/",
+    "outputs/tmp/",
+}
+HISTORICAL_OUTPUTS = UNTRACKED_OUTPUTS - {"outputs/phase6_v21_rr_clean/"}
 
 
 def test_v2_e3_pilot_audit_is_complete_and_consistent() -> None:
@@ -25,6 +32,35 @@ def test_v2_e3_pilot_audit_is_complete_and_consistent() -> None:
     assert source["execution_tree_matches_remote_main"] is True
     assert source["execution_git_tree_sha"] == source["remote_main_tree_sha"]
     assert source["tracked_modified_count_at_start"] == 0
+    assert source["working_tree_dirty_recorded_by_manifest"] is True
+    assert set(source["untracked_output_directories"]) == UNTRACKED_OUTPUTS
+    assert set(
+        source["historical_output_directories_not_used_as_runtime_input"]
+    ) == HISTORICAL_OUTPUTS
+    controlled_root = source["controlled_read_write_root"]
+    assert controlled_root["path"] == "outputs/phase6_v21_rr_clean/"
+    assert controlled_root["read_inputs"] == [
+        "approved V1 E3 registry and projection artifacts",
+        "approved family registry, projection, and prerequisite artifacts",
+    ]
+    assert controlled_root["write_outputs"] == "current V2 E3 pilot artifacts"
+    assert all(
+        value is False
+        for value in source["uncommitted_execution_inputs"].values()
+    )
+    traceability = audit["review_traceability"]
+    assert traceability == {
+        "final_validated_v2_results_head": (
+            "33a5267b8d1300246f7dad7d77f9c26ce9ef45e5"
+        ),
+        "final_validated_v2_results_ci_run": 30696021947,
+        "final_validated_v2_results_ci_status": "success",
+        "intermediate_results_head": (
+            "eb7a84a37549a015d69ea0281131edb0d9e2c0ba"
+        ),
+        "intermediate_ci_run": 30695967027,
+        "intermediate_state_is_final": False,
+    }
     assert audit["environment"] == {
         "python": "3.12.10",
         "gurobipy": "13.0.2",

@@ -10,7 +10,41 @@
     "branch": "agent/phase6-v2-1-v2-e3-pilots",
     "tracked_modified_count_at_start": 0,
     "working_tree_dirty_recorded_by_manifest": true,
-    "dirty_path_classification": "Only Git-ignored D-drive output roots were untracked. No tracked source, configuration, matrix, dependency lock, or test file was modified. The active isolated output root was the intended write target and contained the approved V1/family prerequisites."
+    "untracked_output_directories": [
+      "outputs/gurobi_validation/",
+      "outputs/phase6_v21_rr_clean/",
+      "outputs/relative_complete_recourse_validation/",
+      "outputs/tmp/"
+    ],
+    "historical_output_directories_not_used_as_runtime_input": [
+      "outputs/gurobi_validation/",
+      "outputs/relative_complete_recourse_validation/",
+      "outputs/tmp/"
+    ],
+    "controlled_read_write_root": {
+      "path": "outputs/phase6_v21_rr_clean/",
+      "read_inputs": [
+        "approved V1 E3 registry and projection artifacts",
+        "approved family registry, projection, and prerequisite artifacts"
+      ],
+      "write_outputs": "current V2 E3 pilot artifacts"
+    },
+    "uncommitted_execution_inputs": {
+      "model_code": false,
+      "scientific_config": false,
+      "experiment_matrix": false,
+      "runner_config": false,
+      "dependency_lock": false
+    },
+    "dirty_path_classification": "The manifest dirty flag records untracked output directories. Tracked modifications were zero. Three historical output roots were not inputs; the active isolated root was a controlled read/write root containing approved V1/family prerequisites and the new V2 outputs."
+  },
+  "review_traceability": {
+    "final_validated_v2_results_head": "33a5267b8d1300246f7dad7d77f9c26ce9ef45e5",
+    "final_validated_v2_results_ci_run": 30696021947,
+    "final_validated_v2_results_ci_status": "success",
+    "intermediate_results_head": "eb7a84a37549a015d69ea0281131edb0d9e2c0ba",
+    "intermediate_ci_run": 30695967027,
+    "intermediate_state_is_final": false
   },
   "fingerprints": {
     "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
