@@ -1,0 +1,146 @@
+{
+  "audit_schema": "phase6_v2_1_p2_e3_pilots_and_compute_gate_v1",
+  "output_root": "outputs/phase6_v21_rr_clean",
+  "source": {
+    "execution_git_sha": "ce9d5e32fb60e444d90550be07deb61641544f4c",
+    "execution_git_tree_sha": "c5d420fab08c2b6551db6ead9358d8c6f9f12ade",
+    "merged_main_git_sha": "c18ff242756ca9fad43b17f21511ca24e9f6a345",
+    "merged_main_git_tree_sha": "c5d420fab08c2b6551db6ead9358d8c6f9f12ade",
+    "execution_tree_matches_merged_main": true,
+    "branch": "agent/phase6-v2-1-p2-e3-pilots",
+    "tracked_modified_count_at_start": 0,
+    "manifest_working_tree_dirty": true,
+    "working_tree_dirty_reason": "Only untracked output directories existed; no tracked model, matrix, runner configuration, or dependency lock was modified.",
+    "controlled_read_write_root": "outputs/phase6_v21_rr_clean/",
+    "historical_output_directories_used_as_input": false,
+    "uncommitted_model_or_configuration_input": false
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+    "e3_component_sha256": "7713671bab67eec8d99fdf776f1d645740d09d020ef31b55513ccc80595f951f",
+    "family_component_sha256": "5803afd60d39a2e982d9b2c879453ef2d4e21755fcb46791810a1e1de8e5076f",
+    "family_config_sha256": "983776a19e0a12937bc8a185b0fe5fdf76877d266445dcfce5f252d397a6ca8c",
+    "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+    "environment_sha256": "0306c49cf953a79e3ade0fdf537e074dd17ddb942677333c62ef3f1bfb4782c2"
+  },
+  "environment": {
+    "python": "3.12.10",
+    "gurobipy": "13.0.2",
+    "gurobi_optimizer": "13.0.2",
+    "pyomo_interface": "gurobi_direct",
+    "threads": 1,
+    "highs_fallback": false
+  },
+  "p2_counts": {
+    "primary_run_count": 3,
+    "optimal_primary_run_count": 3,
+    "budget_pair_count": 9,
+    "algorithm_execution_count": 18,
+    "optimal_algorithm_execution_count": 18,
+    "cold_execution_count": 9,
+    "warm_execution_count": 9,
+    "failed_primary_run_count": 0,
+    "duplicate_primary_run_count": 0,
+    "parent_run_count": 0,
+    "diagnostic_attempt_count": 0
+  },
+  "p2_numerical_consistency": {
+    "max_cold_warm_objective_difference": 0.0,
+    "max_peak_memory_mb": 220.6171875,
+    "disposal_fields_present": {
+      "early_disposal": true,
+      "expired_waste": true,
+      "total_disposal": true
+    }
+  },
+  "p2_runs": [
+    {
+      "run_id": "pilot_rr_v21_e3_p2_primary_2026072001",
+      "seed": 2026072001,
+      "status": "optimal",
+      "elapsed_seconds": 479.098618,
+      "peak_memory_mb": 204.62890625,
+      "result_sha256": "9042ea6947639b322b569b0c91297e42ec25f416517ca23e1efa7ee3f9d83ba0",
+      "manifest_sha256": "d16284dc5a71763102b2302995b0549c8091fbba649ca815ad086721094c8a0a",
+      "status_summary_sha256": "f70378103db38377780117f623f4fe954a4df167d10ffea05421b6eb22d3ce38",
+      "budget_comparison_sha256": "51000a75e1c685501c06a09d7b2dcb54fc0588e842cc53cf4d7b9b26fb0bbb8d"
+    },
+    {
+      "run_id": "pilot_rr_v21_e3_p2_primary_2026072002",
+      "seed": 2026072002,
+      "status": "optimal",
+      "elapsed_seconds": 607.691004,
+      "peak_memory_mb": 220.6171875,
+      "result_sha256": "1c190bce3ed247a78b99e771920181a9f11242f20dc80b47aa073651a9f546a5",
+      "manifest_sha256": "93b510117702e096439c8acf015c711f21a7900bb2316e5e5626fa5224feb685",
+      "status_summary_sha256": "33b97802af0e257fc75b54f42c8dadc63b597cf7fe60097bc6eb5749ccd8e4c6",
+      "budget_comparison_sha256": "4a552d872eff425ecbe5e6c551391849aaaa5a7e779202e239c4fa21bef8856b"
+    },
+    {
+      "run_id": "pilot_rr_v21_e3_p2_primary_2026072003",
+      "seed": 2026072003,
+      "status": "optimal",
+      "elapsed_seconds": 876.580209,
+      "peak_memory_mb": 218.984375,
+      "result_sha256": "f4385792d9695b74ae6a770839a2fa7b9597df67eab374ce949f4d5ec512600a",
+      "manifest_sha256": "bd4c107516d9f64a70612f6078d930fe9e83702124663da2fcc81475f42a0e1a",
+      "status_summary_sha256": "ee2fb24fc88452c43b52e52c8bcc3132026c60e554c5e237c49e5ed2a9d98f6b",
+      "budget_comparison_sha256": "dfc4df47a4776c609a3e25524270136b624598314e1700ac0b6a361d0740ebf9"
+    }
+  ],
+  "p2_budget_pairs": [
+    {"seed": 2026072001, "budget_factor": 0.9, "budget": 8805.598459893736, "cold_objective": 230431.306279301, "warm_objective": 230431.306279301, "difference": 0.0, "cold_seconds": 56.27741989999777, "warm_seconds": 56.05683010001667, "cold_iterations": 1, "warm_iterations": 1},
+    {"seed": 2026072001, "budget_factor": 1.1, "budget": 10762.3981176479, "cold_objective": 189431.8893610312, "warm_objective": 189431.8893610312, "difference": 0.0, "cold_seconds": 54.98734729998978, "warm_seconds": 54.59979740000563, "cold_iterations": 1, "warm_iterations": 1},
+    {"seed": 2026072001, "budget_factor": 1.3, "budget": 12719.197775402063, "cold_objective": 148642.52938153353, "warm_objective": 148642.52938153353, "difference": 0.0, "cold_seconds": 120.90465290000429, "warm_seconds": 119.48907219996909, "cold_iterations": 2, "warm_iterations": 2},
+    {"seed": 2026072002, "budget_factor": 0.9, "budget": 8805.598459893736, "cold_objective": 208974.6992689172, "warm_objective": 208974.6992689172, "difference": 0.0, "cold_seconds": 118.98144599999068, "warm_seconds": 117.49696810002206, "cold_iterations": 2, "warm_iterations": 2},
+    {"seed": 2026072002, "budget_factor": 1.1, "budget": 10762.3981176479, "cold_objective": 168022.14595810272, "warm_objective": 168022.14595810272, "difference": 0.0, "cold_seconds": 121.88440999999875, "warm_seconds": 55.936134100018535, "cold_iterations": 2, "warm_iterations": 1},
+    {"seed": 2026072002, "budget_factor": 1.3, "budget": 12719.197775402063, "cold_objective": 127269.65582465004, "warm_objective": 127269.65582465004, "difference": 0.0, "cold_seconds": 120.3563505000202, "warm_seconds": 56.64735250000376, "cold_iterations": 2, "warm_iterations": 1},
+    {"seed": 2026072003, "budget_factor": 0.9, "budget": 8805.598459893736, "cold_objective": 238191.5830064444, "warm_objective": 238191.5830064444, "difference": 0.0, "cold_seconds": 185.62517740001203, "warm_seconds": 187.7034580000327, "cold_iterations": 3, "warm_iterations": 3},
+    {"seed": 2026072003, "budget_factor": 1.1, "budget": 10762.3981176479, "cold_objective": 197154.76511395251, "warm_objective": 197154.76511395251, "difference": 0.0, "cold_seconds": 186.8494507999858, "warm_seconds": 56.823046900040936, "cold_iterations": 3, "warm_iterations": 1},
+    {"seed": 2026072003, "budget_factor": 1.3, "budget": 12719.197775402063, "cold_objective": 156358.34030094187, "warm_objective": 156358.34030094187, "difference": 0.0, "cold_seconds": 185.99085980001837, "warm_seconds": 57.592287999985274, "cold_iterations": 3, "warm_iterations": 1}
+  ],
+  "complete_e3_projection": {
+    "completed_run_count": 12,
+    "required_run_count": 12,
+    "primary_completion_rate": 1.0,
+    "tier_run_counts": {"V1": 3, "V2": 3, "P1": 3, "P2": 3},
+    "missing_run_count": 0,
+    "failed_primary_run_count": 0,
+    "duplicate_primary_run_count": 0,
+    "diagnostic_attempt_count": 0,
+    "projected_wall_hours": 8.861969083078154,
+    "conservative_recourse_lp_solves_per_hour": 58564.862406372595,
+    "max_peak_memory_mb": 220.6171875
+  },
+  "family_projection": {
+    "family_primary_run_count": 12,
+    "planned_work_unit_count": 30,
+    "completed_work_unit_count": 30,
+    "statuses": {"E1": "projected", "E2": "projected", "E3": "projected", "E4": "projected", "E5": "projected"},
+    "projected_wall_hours": {"E1": 0.03059695374977309, "E2": 0.12966605333349435, "E3": 8.861969083078154, "E4": 0.7634906449995469, "E5": 0.04397931666668834}
+  },
+  "compute_gate": {
+    "projection_status": "passed",
+    "projected_total_wall_hours": 9.829702051827658,
+    "maximum_projected_total_wall_hours": 168.0,
+    "maximum_projected_single_family_wall_hours": 72.0,
+    "largest_projected_family": "E3",
+    "largest_projected_family_wall_hours": 8.861969083078154,
+    "compute_gate_passed": true,
+    "formal_execution_authorized": true,
+    "authorization_interpretation": "Machine gate passed; formal experiments remain stopped until this result PR is independently reviewed and the user explicitly authorizes execution."
+  },
+  "global_artifacts": {
+    "run_registry_sha256": "af4797280e015e6fb4d165fb12fd72b00f5767bf2c1054412be8e9beedeb24ac",
+    "algorithm_performance_sha256": "1dbc4684eea3b8a86fd60c552d1d752873ebf09674f7cf7229ffb7518e0b4c95",
+    "pilot_projection_sha256": "887c66e203e35495a523074b8cf757212ccb6f57745bc767e1426214d8a7a7ee",
+    "family_registry_sha256": "4fccd4790a63737bc10be6530b245131c68ec64f5d4447a6dba1b8b5f46c2c5e"
+  },
+  "stop_boundary": {
+    "formal_v1_started": false,
+    "formal_v2_started": false,
+    "formal_p1_started": false,
+    "formal_p2_started": false,
+    "formal_family_started": false
+  }
+}
