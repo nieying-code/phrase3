@@ -12,9 +12,9 @@ Phase 6 精简实验矩阵 v2.1 从候选状态重新冻结。本任务只改变
 - Branch: `agent/phase6-refreeze-v2-1`
 - Base branch: `main`
 - Base SHA: `9aff27c24d9e04a768ec5fc434ceaed17334f168`
-- Commit SHA: pending (to be filled after publication)
-- Draft PR: pending (to be filled after publication)
-- CI: pending (to be filled after publication)
+- Validated commit SHA: `487bb35070574d341d538807708fd3f7810c29b6`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/15
+- CI: https://github.com/nieying-code/phrase3/actions/runs/30691473489 (`120 passed + 6 passed`)
 
 ## 修改内容
 
