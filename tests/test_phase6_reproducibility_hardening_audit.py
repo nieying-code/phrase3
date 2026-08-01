@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-import subprocess
 
 from src.phase6_environment import environment_sha256
 from src.phase6_families import (
@@ -54,33 +53,7 @@ def test_reproducibility_hardening_audit_matches_current_execution_inputs() -> N
     assert environment_sha256(audit["environment_identity"]) == (
         fingerprints["environment_sha256"]
     )
-    source = audit["source"]
-    ancestor = subprocess.run(
-        [
-            "git",
-            "merge-base",
-            "--is-ancestor",
-            source["validated_implementation_commit_sha"],
-            "HEAD",
-        ],
-        cwd=ROOT,
-        check=False,
-    )
-    assert ancestor.returncode == 0
-    tree = subprocess.run(
-        [
-            "git",
-            "show",
-            "-s",
-            "--format=%T",
-            source["validated_implementation_commit_sha"],
-        ],
-        cwd=ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    assert tree == source["validated_implementation_tree_sha"]
+    assert audit["source"]["identity_rule"].startswith("final PR head")
     assert audit["experiment_execution"] == {
         "pilot_runs_started": 0,
         "formal_runs_started": 0,

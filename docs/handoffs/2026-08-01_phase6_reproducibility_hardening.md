@@ -10,8 +10,9 @@ Phase 6实验，不修改数学模型、实验矩阵科学参数、算法或求�
 
 - Branch: `agent/phase6-reproducibility-hardening`
 - Base: merged PR #21, `f65ed995af846df1386049d6dc634ced99b89cc0`
-- Initial implementation commit: `59e5994`
-- Final PR head: see Draft PR (the handoff commit is necessarily its ancestor)
+- Final PR head: see Draft PR; the machine audit validates the committed
+  execution inputs by their content fingerprints rather than a self-referential
+  handoff commit SHA.
 - Draft PR: pending
 
 ## 根因与隐藏风险审计

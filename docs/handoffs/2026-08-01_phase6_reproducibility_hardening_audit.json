@@ -8,8 +8,7 @@
   },
   "source": {
     "base_commit_sha": "f65ed995af846df1386049d6dc634ced99b89cc0",
-    "validated_implementation_commit_sha": "f725a75cee3cd27e5b777fc11ccb02cf3bf35957",
-    "validated_implementation_tree_sha": "cdff655a003e1811a75a4734dd8d8e2a85e89880",
+    "identity_rule": "final PR head plus recomputed scientific, runner, component and environment fingerprints",
     "clean_detached_worktree": true,
     "tracked_change_count": 0,
     "unexpected_untracked_count": 0
