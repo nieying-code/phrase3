@@ -105,7 +105,7 @@ Phase 6实验，不修改数学模型、实验矩阵科学参数、算法或求�
 - `python -m compileall -q src tests`: passed
 - Phase 6专项回归：`50 passed`
 - 复现加固专项：`9 passed`
-- 本地完整回归：`143 passed in 29.00s`
+- 本地完整回归：`144 passed in 29.34s`
 - `git diff --check`: passed
 - 首次全新worktree检查发现宽泛`*.json eol=lf`会把三个历史结果快照
   标记为tracked修改；该规则已移除，避免“加固本身制造脏工作树”。最终

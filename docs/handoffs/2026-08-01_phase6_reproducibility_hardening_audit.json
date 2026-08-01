@@ -58,7 +58,7 @@
   },
   "validation": {
     "compileall": "passed",
-    "full_pytest": "143 passed in 29.00s",
+    "full_pytest": "144 passed in 29.34s",
     "clean_worktree_reproducibility_test": "9 passed in 1.62s",
     "git_diff_check": "passed",
     "github_actions": "pending"
