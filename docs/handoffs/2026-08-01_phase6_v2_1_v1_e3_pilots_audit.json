@@ -1,0 +1,204 @@
+{
+  "schema_version": "1.0",
+  "audit_id": "phase6_v2_1_v1_e3_pilots",
+  "output_root": "outputs/phase6_v21_rr_clean",
+  "source": {
+    "execution_git_sha": "977675e27f2de0f48ec51a60e349dc2a77165ee0",
+    "execution_git_tree_sha": "e15526efe9ecbb350c41eb25cfb797153c24749e",
+    "remote_merged_base_sha": "bdf016ba4ed537aa25950f6e3924d68cdb5b81c1",
+    "execution_tree_matches_remote_merged_base": true,
+    "working_tree_dirty_recorded_by_manifest": true,
+    "worktree_status_evidence": {
+      "evidence_source": "Codex pre-run git status --short captured in the task transcript, plus deterministic creation of the isolated output root before manifest capture",
+      "tracked_modified_count": 0,
+      "pre_output_initialization_untracked_paths": [
+        "outputs/gurobi_validation/",
+        "outputs/relative_complete_recourse_validation/",
+        "outputs/tmp/"
+      ],
+      "manifest_time_untracked_paths": [
+        "outputs/gurobi_validation/",
+        "outputs/phase6_v21_rr_clean/",
+        "outputs/relative_complete_recourse_validation/",
+        "outputs/tmp/"
+      ],
+      "dirty_paths": [
+        {
+          "path": "outputs/gurobi_validation/",
+          "git_status": "untracked",
+          "reason": "historical Gurobi validation output",
+          "is_e3_component": false,
+          "is_matrix_or_runner_config": false,
+          "is_dependency_lock": false,
+          "used_as_runtime_input": false
+        },
+        {
+          "path": "outputs/phase6_v21_rr_clean/",
+          "git_status": "untracked",
+          "reason": "isolated write-only output root created for this V1 batch",
+          "is_e3_component": false,
+          "is_matrix_or_runner_config": false,
+          "is_dependency_lock": false,
+          "used_as_runtime_input": false
+        },
+        {
+          "path": "outputs/relative_complete_recourse_validation/",
+          "git_status": "untracked",
+          "reason": "historical relative-complete-recourse validation output",
+          "is_e3_component": false,
+          "is_matrix_or_runner_config": false,
+          "is_dependency_lock": false,
+          "used_as_runtime_input": false
+        },
+        {
+          "path": "outputs/tmp/",
+          "git_status": "untracked",
+          "reason": "historical temporary output",
+          "is_e3_component": false,
+          "is_matrix_or_runner_config": false,
+          "is_dependency_lock": false,
+          "used_as_runtime_input": false
+        }
+      ]
+    }
+  },
+  "environment": {
+    "python": "3.12.10",
+    "gurobipy": "13.0.2",
+    "gurobi_optimizer": "13.0.2",
+    "pyomo_interface": "gurobi_direct",
+    "threads": 1,
+    "environment_sha256": "0306c49cf953a79e3ade0fdf537e074dd17ddb942677333c62ef3f1bfb4782c2"
+  },
+  "fingerprints": {
+    "matrix_sha256": "61de9544a4ca80a904700ddf5e12c3dd75e568c31b7d8d2bd24e76c59fabc731",
+    "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+    "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+    "e3_component_sha256": "7713671bab67eec8d99fdf776f1d645740d09d020ef31b55513ccc80595f951f",
+    "family_component_sha256": "5803afd60d39a2e982d9b2c879453ef2d4e21755fcb46791810a1e1de8e5076f",
+    "environment_sha256": "0306c49cf953a79e3ade0fdf537e074dd17ddb942677333c62ef3f1bfb4782c2"
+  },
+  "global_artifacts": {
+    "run_registry_sha256": "6f95c3338069d4196e0cdf0c1f666dc06d885775b30255d4ae26ba4f5ade70d8",
+    "algorithm_performance_sha256": "1cc56bfe7edfde7570b913d81ad06c660782bc2eb0972525fe86c72a2f5359ac",
+    "pilot_throughput_projection_sha256": "e9deca5567aec72fa75c78e2e63588f3217beccbc37b8000ab2c503c9fb8e1c2"
+  },
+  "counts": {
+    "primary_run_count": 3,
+    "budget_pair_count": 9,
+    "algorithm_execution_count": 18,
+    "optimal_algorithm_execution_count": 18,
+    "failed_primary_run_count": 0,
+    "duplicate_primary_run_count": 0,
+    "parent_run_count": 0,
+    "family_run_count_in_clean_root": 0
+  },
+  "projection": {
+    "status": "insufficient_pilot_coverage",
+    "completed_run_count": 3,
+    "required_run_count": 12,
+    "primary_completion_rate": 0.25,
+    "failed_primary_runs": [],
+    "duplicate_primary_runs": [],
+    "diagnostic_attempts": [],
+    "formal_execution_authorized": false
+  },
+  "runs": [
+    {
+      "run_id": "pilot_rr_v21_e3_v1_primary_2026072001",
+      "seed": 2026072001,
+      "tier_id": "V1",
+      "execution_mode": "pilot",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "977675e27f2de0f48ec51a60e349dc2a77165ee0",
+      "git_tree_sha": "e15526efe9ecbb350c41eb25cfb797153c24749e",
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "7713671bab67eec8d99fdf776f1d645740d09d020ef31b55513ccc80595f951f",
+        "environment_sha256": "0306c49cf953a79e3ade0fdf537e074dd17ddb942677333c62ef3f1bfb4782c2"
+      },
+      "artifacts": {
+        "manifest_sha256": "76112e121fd85ca885483dca1b0882852adf93f56e6e112d4eb35660c627a014",
+        "result_sha256": "edd4123248b6f49a4c1e48fb9ca612a0e40b7c9e0e33d7944a99c9bab016683c",
+        "status_summary_sha256": "25a00bd65367041a6f2a6529cd170722f033574757168b34996a322da0a61d44",
+        "budget_comparison_sha256": "32e2e64e7eb8ac8923c12c4cbc5234ba88b14086b6bc79424ecd87dff0033eb8"
+      },
+      "disposal_fields_present": {
+        "early_disposal": true,
+        "expired_waste": true,
+        "total_disposal": true
+      },
+      "budget_pairs": [
+        {"budget_index": 0, "budget_factor": 0.9, "budget": 1107.2893851278257, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 30620.79029084595, "warm_objective": 30620.79029084595, "objective_difference": 0.0},
+        {"budget_index": 1, "budget_factor": 1.1, "budget": 1353.3536929340091, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 25431.602135889087, "warm_objective": 25431.602135889087, "objective_difference": 0.0},
+        {"budget_index": 2, "budget_factor": 1.3, "budget": 1599.4180007401926, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 20301.417127459383, "warm_objective": 20301.417127459383, "objective_difference": 0.0}
+      ]
+    },
+    {
+      "run_id": "pilot_rr_v21_e3_v1_primary_2026072002",
+      "seed": 2026072002,
+      "tier_id": "V1",
+      "execution_mode": "pilot",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "977675e27f2de0f48ec51a60e349dc2a77165ee0",
+      "git_tree_sha": "e15526efe9ecbb350c41eb25cfb797153c24749e",
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "7713671bab67eec8d99fdf776f1d645740d09d020ef31b55513ccc80595f951f",
+        "environment_sha256": "0306c49cf953a79e3ade0fdf537e074dd17ddb942677333c62ef3f1bfb4782c2"
+      },
+      "artifacts": {
+        "manifest_sha256": "63b3304cc0ef810f54d6202bdc7b219843849291a23d17e405e92b14c536fc97",
+        "result_sha256": "eaea565cbe37d9bd890b8b1dc2fe1828cbdf99950b88c661bae092afe213368e",
+        "status_summary_sha256": "763e17563685875f542d8e46d21ea3f9b17da57159ffb685960cc11f68a1c532",
+        "budget_comparison_sha256": "f3078e48f7c19758761b38acbadf497e1a92f5fb8a36d0fb7f2f571ecb8e828c"
+      },
+      "disposal_fields_present": {
+        "early_disposal": true,
+        "expired_waste": true,
+        "total_disposal": true
+      },
+      "budget_pairs": [
+        {"budget_index": 0, "budget_factor": 0.9, "budget": 1107.2893851278257, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 17728.74000636316, "warm_objective": 17728.74000636316, "objective_difference": 0.0},
+        {"budget_index": 1, "budget_factor": 1.1, "budget": 1353.3536929340091, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 12593.369449515683, "warm_objective": 12593.369449515683, "objective_difference": 0.0},
+        {"budget_index": 2, "budget_factor": 1.3, "budget": 1599.4180007401926, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 7468.893506759239, "warm_objective": 7468.893506759239, "objective_difference": 0.0}
+      ]
+    },
+    {
+      "run_id": "pilot_rr_v21_e3_v1_primary_2026072003",
+      "seed": 2026072003,
+      "tier_id": "V1",
+      "execution_mode": "pilot",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "977675e27f2de0f48ec51a60e349dc2a77165ee0",
+      "git_tree_sha": "e15526efe9ecbb350c41eb25cfb797153c24749e",
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "7713671bab67eec8d99fdf776f1d645740d09d020ef31b55513ccc80595f951f",
+        "environment_sha256": "0306c49cf953a79e3ade0fdf537e074dd17ddb942677333c62ef3f1bfb4782c2"
+      },
+      "artifacts": {
+        "manifest_sha256": "b4ce52149ddee5ad105029298cb8cb706a98c7e34c8a416d263c594061958691",
+        "result_sha256": "1d83de2efb12ed947e510807306abf73f9193ccf85d9fcadf9259aabb22923dd",
+        "status_summary_sha256": "9751ea8fe0140bd2c70e2d5b1e3a3c82296fa8f034c85b401f5993b475bc4f8c",
+        "budget_comparison_sha256": "27e725c9b1c0c55e7313df10852942c8db638eecb61042d4aec0478bfc2a0e32"
+      },
+      "disposal_fields_present": {
+        "early_disposal": true,
+        "expired_waste": true,
+        "total_disposal": true
+      },
+      "budget_pairs": [
+        {"budget_index": 0, "budget_factor": 0.9, "budget": 1107.2893851278257, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 21611.625137750263, "warm_objective": 21611.625137750263, "objective_difference": 0.0},
+        {"budget_index": 1, "budget_factor": 1.1, "budget": 1353.3536929340091, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 16465.082639466546, "warm_objective": 16465.082639466546, "objective_difference": 0.0},
+        {"budget_index": 2, "budget_factor": 1.3, "budget": 1599.4180007401926, "status": "optimal", "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 11336.058724920795, "warm_objective": 11336.058724920795, "objective_difference": 0.0}
+      ]
+    }
+  ]
+}
