@@ -1,0 +1,124 @@
+{
+  "audit_schema": "phase6_v2_1_e1_formal_v1",
+  "output_root": "outputs/phase6_v21_rr_clean",
+  "source": {
+    "execution_git_sha": "f169f2d783cf4714e8fffcadb92de1e2930c46bb",
+    "execution_git_tree_sha": "0f945a31596af01ca168375682714002c8a72a2c",
+    "branch": "agent/phase6-formal-e1",
+    "tracked_modified_count_at_start": 0,
+    "manifest_working_tree_dirty": true,
+    "working_tree_dirty_reason": "Only untracked experiment-output directories existed; no tracked model, matrix, runner configuration, or dependency lock was modified.",
+    "controlled_read_write_root": "outputs/phase6_v21_rr_clean/",
+    "historical_output_directories_used_as_input": false,
+    "uncommitted_model_or_configuration_input": false
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+    "family_config_sha256": "983776a19e0a12937bc8a185b0fe5fdf76877d266445dcfce5f252d397a6ca8c",
+    "family_component_sha256": "5803afd60d39a2e982d9b2c879453ef2d4e21755fcb46791810a1e1de8e5076f",
+    "environment_sha256": "0306c49cf953a79e3ade0fdf537e074dd17ddb942677333c62ef3f1bfb4782c2"
+  },
+  "environment": {
+    "python": "3.12.10",
+    "gurobipy": "13.0.2",
+    "gurobi_optimizer": "13.0.2",
+    "pyomo": "6.10.1",
+    "pyomo_interface": "gurobi_direct",
+    "threads": 1,
+    "highs_fallback": false
+  },
+  "counts": {
+    "primary_run_count": 14,
+    "optimal_primary_run_count": 14,
+    "planned_work_unit_count": 45,
+    "completed_work_unit_count": 45,
+    "extensive_model_execution_count": 45,
+    "standard_ccg_execution_count": 45,
+    "total_model_algorithm_execution_count": 90,
+    "exact_evaluation_block_count": 90,
+    "exact_optimal_scenario_count": 7140,
+    "infeasible_scenario_count": 0,
+    "solver_failure_count": 0,
+    "failed_primary_run_count": 0,
+    "duplicate_primary_run_count": 0,
+    "parent_run_count": 0,
+    "diagnostic_attempt_count": 0
+  },
+  "tier_summary": {
+    "D0": {
+      "run_count": 1,
+      "work_unit_count": 6,
+      "exact_evaluation_block_count": 12,
+      "exact_optimal_scenario_count": 240,
+      "max_abs_objective_difference": 1.3642420526593924e-12,
+      "max_objective_tolerance": 0.0009789611543803301,
+      "infeasible_scenario_count": 0,
+      "solver_failure_count": 0
+    },
+    "V1": {
+      "run_count": 3,
+      "work_unit_count": 9,
+      "exact_evaluation_block_count": 18,
+      "exact_optimal_scenario_count": 900,
+      "max_abs_objective_difference": 0.0,
+      "max_objective_tolerance": 0.0029885311506953056,
+      "infeasible_scenario_count": 0,
+      "solver_failure_count": 0
+    },
+    "V2": {
+      "run_count": 10,
+      "work_unit_count": 30,
+      "exact_evaluation_block_count": 60,
+      "exact_optimal_scenario_count": 6000,
+      "max_abs_objective_difference": 5.4569682106375694e-12,
+      "max_objective_tolerance": 0.004708838345677341,
+      "infeasible_scenario_count": 0,
+      "solver_failure_count": 0
+    }
+  },
+  "numerical_consistency": {
+    "max_abs_extensive_vs_standard_ccg_objective_difference": 5.4569682106375694e-12,
+    "max_abs_extensive_vs_standard_ccg_reserve_difference": 5.684341886080802e-14,
+    "max_standard_ccg_iterations": 4,
+    "max_standard_ccg_final_scenario_count": 6,
+    "all_objective_differences_within_plan_tolerance": true,
+    "all_exact_evaluations_optimal": true,
+    "relative_complete_recourse_violations": 0,
+    "solver_values": ["gurobi_direct"]
+  },
+  "performance": {
+    "sum_family_wall_seconds": 165.62536159995943,
+    "max_peak_memory_mb": 121.1875
+  },
+  "runs": [
+    {"run_id": "formal_v21_e1_d0_20260723", "tier_id": "D0", "seed": 20260723, "status": "optimal", "planned_work_units": 6, "completed_work_units": 6, "wall_seconds": 9.667248900048435, "peak_memory_mb": 77.8984375, "result_sha256": "e1a336559758de8001724dd853911c219991bf8549182fc2200b16ab9ff41e46", "manifest_sha256": "32bafadf4d45fbc99ed5ba5b070993821c8fb9524161012c8623a658db7511da", "status_summary_sha256": "f74ad17feb6aa3a5d4afa9f4f3d99c489cb37d127e1f05b45126328ad2841885"},
+    {"run_id": "formal_v21_e1_v1_2026072401", "tier_id": "V1", "seed": 2026072401, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 7.405516400001943, "peak_memory_mb": 95.8046875, "result_sha256": "e99bd2549c2f1c4985d21820a02d81624056640fedc788ab74cc6eb429c49335", "manifest_sha256": "7f935ad09c316ec04a43d25403874a317fb4ee79b8a78da79aef1a689d32258d", "status_summary_sha256": "00425ca2e88ed80392fec7c665c9a65bcb2d019905b378d41443cbfb54d999f8"},
+    {"run_id": "formal_v21_e1_v1_2026072402", "tier_id": "V1", "seed": 2026072402, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 7.947773699997924, "peak_memory_mb": 95.3515625, "result_sha256": "a0547f6aebe3f683c998bca641d2ec841ac710c1d4442b9d913bc688fc099495", "manifest_sha256": "34df3af0a052cc3448ef49af8949d57f95ffa38b3eb9f16fdc10c95ae486366c", "status_summary_sha256": "29d4620e2afecf2f89a138a52a6570147fa48abcda75165c14421d1766e9b397"},
+    {"run_id": "formal_v21_e1_v1_2026072403", "tier_id": "V1", "seed": 2026072403, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 7.307393499999307, "peak_memory_mb": 96.02734375, "result_sha256": "e43064af42a9d7480a7021ce23d8cd3c4cc44df0a0b28fa85682d1449b9e54fe", "manifest_sha256": "5c47eab9a322dd23892f0fedc1b1c40cd2d7c65d719ff6db92d947c60f5b958b", "status_summary_sha256": "c2d2c324958c3b8ecca3108b0a4e64e8dd2751f66bca69e0d58bdb9159ce7bc2"},
+    {"run_id": "formal_v21_e1_v2_2026072401", "tier_id": "V2", "seed": 2026072401, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 17.001525199972093, "peak_memory_mb": 118.20703125, "result_sha256": "5bc6922d58bae803eae71af9eed0076c0f0bf14043ab398e67e18236fa2ce235", "manifest_sha256": "c1d9a62ebf48274e50cbfcb5f837c501f536053b406497d6babda461f6b6eade", "status_summary_sha256": "14731125b3df2e2f9cfb64d610c1c9abc203a3f5c25452a48ff8f6a2d09ac867"},
+    {"run_id": "formal_v21_e1_v2_2026072402", "tier_id": "V2", "seed": 2026072402, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 11.92025799996918, "peak_memory_mb": 120.62109375, "result_sha256": "f1fc13af7e7f4296dd1b64f1058dea9e0a33a0030bb201922cad62b27027a24f", "manifest_sha256": "4fcb867f48af156675ed3b26f24570e55774e019fed1de48c943a2a46bd1faad", "status_summary_sha256": "751d17637ff67783a3d50b403ab8538fc48b8cbc6e44c2ab171b60cd47694f32"},
+    {"run_id": "formal_v21_e1_v2_2026072403", "tier_id": "V2", "seed": 2026072403, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 11.691529600007925, "peak_memory_mb": 118.08984375, "result_sha256": "eca2cdcf6517e4b88c2d87ff5b82fa76ef4bb4604acc987de84422c7d64bc202", "manifest_sha256": "45d4c267c27f7c35e8e1d18d13b5ebcbb918081fe54ffe03457c6ad51cb4febd", "status_summary_sha256": "d633632228ee1c99c327c9963a0d62bc509cbaaf5f6ddd776ab2609a0a71d91c"},
+    {"run_id": "formal_v21_e1_v2_2026072404", "tier_id": "V2", "seed": 2026072404, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 14.231737099995371, "peak_memory_mb": 119.4296875, "result_sha256": "932f6d9fec740f6e35de87e6596a572546403b70ff63e4456a8fe4148023070e", "manifest_sha256": "520a2a5e5712cea571d8eada558d0e7c5bce0b7924d5278a302807e147ec11d3", "status_summary_sha256": "a0c2009443e1f889f6fbdc229439cc71252ed9fe890b657b791319197126f67d"},
+    {"run_id": "formal_v21_e1_v2_2026072405", "tier_id": "V2", "seed": 2026072405, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 11.882901399978437, "peak_memory_mb": 118.24609375, "result_sha256": "8517592d4657374549d1910355497bcf97c689f3d6e2d8fd27f9101b620cf2d7", "manifest_sha256": "90e091f5e4f96dcf108f78a6924408fa4f077a16e368ea358f01f3a4ffa8534c", "status_summary_sha256": "629beeeec8efb5ef933955ed883d21ba2ecdde6ceba584f878abcadd9e632493"},
+    {"run_id": "formal_v21_e1_v2_2026072406", "tier_id": "V2", "seed": 2026072406, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 14.391856300004292, "peak_memory_mb": 120.75390625, "result_sha256": "c4af207eea128f10ec30d3ae6da7650f9f0f9b1bfac0bc34d73d16db0ab6385b", "manifest_sha256": "f6316c3a7e6d1cc41e53463e94167391995a8af8f09d89a42c7e07399c09946c", "status_summary_sha256": "cfc74cb6cf7dcb699b4968a252fcf406e1561fda87f6d246f221be9afb0f000a"},
+    {"run_id": "formal_v21_e1_v2_2026072407", "tier_id": "V2", "seed": 2026072407, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 11.765865799970925, "peak_memory_mb": 118.2109375, "result_sha256": "155fbc95f08c1adc8b838d0beb9516e8e20bcb376fe3231834469c112d05ed05", "manifest_sha256": "4a003931a383cc11af746621fc23820eaa27dbb767a0c87749cb6fbf78714555", "status_summary_sha256": "c08e8ce31ec91aeb0955f09b51ac366e24a82832fbe7e6781fbd268bc92abc84"},
+    {"run_id": "formal_v21_e1_v2_2026072408", "tier_id": "V2", "seed": 2026072408, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 11.838719599996693, "peak_memory_mb": 118.28515625, "result_sha256": "45849a846081ecfc93be422891e1554b260491346a4fa08ba6b52b3b7ab8caf2", "manifest_sha256": "3f899c3068a83854786eedb97a74d47c1d72a66c9e375896d69308db1db1de5a", "status_summary_sha256": "6090394694ccb084eb9481a9a9fbe34171e2c0b0eb1f7012a692a8abb1146018"},
+    {"run_id": "formal_v21_e1_v2_2026072409", "tier_id": "V2", "seed": 2026072409, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 11.717810300004203, "peak_memory_mb": 121.1875, "result_sha256": "d7db24fe5081efb7639000d85add0ff41dd200880df9bfd1d499210c37de8080", "manifest_sha256": "4b1e8fe4ea187d8380406a6a407919b53057a5eec1250b33ecd89d2cd863fe32", "status_summary_sha256": "036c458cb8ec4db9d2c503b79ffce5108c9500e4ddfba00718f2c5bc7315081d"},
+    {"run_id": "formal_v21_e1_v2_2026072410", "tier_id": "V2", "seed": 2026072410, "status": "optimal", "planned_work_units": 3, "completed_work_units": 3, "wall_seconds": 16.855225800012704, "peak_memory_mb": 119.19140625, "result_sha256": "c16323c42e974701429b00ecfd43c8e1ceb32df8162e4342bbaab7494805ef27", "manifest_sha256": "f753db5fde45ef190b43362a228e8d26bbba35fcfd1246d7d0f3ef1d5231beaa", "status_summary_sha256": "5f242ba644acaf9b4747f16869c09b70f717ba18ff0a61c86db5d0af9a491c46"}
+  ],
+  "artifact_validation": {
+    "all_family_results_match_manifests": true,
+    "all_plan_result_hashes_match_family_results": true,
+    "all_registry_scalar_fields_match_hashed_results": true
+  },
+  "global_artifacts": {
+    "family_run_registry_sha256": "7fcf1242408942b8c3be8e8dd97749ede2b4f3815a33ee3db7668b1ed6a2b21d",
+    "pilot_projection_sha256": "887c66e203e35495a523074b8cf757212ccb6f57745bc767e1426214d8a7a7ee"
+  },
+  "stop_boundary": {
+    "e2_formal_started": false,
+    "e3_formal_started": false,
+    "e4_formal_started": false,
+    "e5_formal_started": false
+  }
+}
