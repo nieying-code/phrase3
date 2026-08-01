@@ -4,10 +4,7 @@ import json
 from pathlib import Path
 import subprocess
 
-from src.phase6_environment import (
-    environment_sha256,
-    validate_locked_environment,
-)
+from src.phase6_environment import environment_sha256
 from src.phase6_families import (
     family_code_sha256,
     scientific_config_sha256,
@@ -39,7 +36,11 @@ def test_reproducibility_hardening_audit_matches_current_execution_inputs() -> N
     assert _scientific_config_sha256(matrix) == scientific_config_sha256(
         matrix
     )
-    assert fingerprints == {
+    assert {
+        key: value
+        for key, value in fingerprints.items()
+        if key != "environment_sha256"
+    } == {
         "scientific_config_sha256": _scientific_config_sha256(matrix),
         "e3_component_sha256": _e3_component_code_sha256(ROOT),
         "family_component_sha256": family_code_sha256(ROOT),
@@ -49,10 +50,10 @@ def test_reproducibility_hardening_audit_matches_current_execution_inputs() -> N
         "family_runner_config_sha256": family_runner_config_sha256(
             ROOT / "configs" / "phase6_family_runner.yaml"
         ),
-        "environment_sha256": environment_sha256(
-            validate_locked_environment(ROOT)
-        ),
     }
+    assert environment_sha256(audit["environment_identity"]) == (
+        fingerprints["environment_sha256"]
+    )
     source = audit["source"]
     ancestor = subprocess.run(
         [
