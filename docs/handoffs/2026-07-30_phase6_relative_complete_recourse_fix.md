@@ -11,12 +11,12 @@
 - Branch: `fix/phase6-relative-complete-recourse`
 - Base branch: `main`
 - Base SHA: `5abb3f907b001871c03ab9e783a33a09f99ab6f6`
-- Model/test commit SHA: `70a68ea671a9cf94e0c01671a7b20a1cc83dc9e3`
+- Model/test commit SHA: `eb2b06364880bf251b9ec52cad22368f6117b9c3`
 - Validated remote head before this handoff-only update:
-  `b3917739fe9ef29e0fb86e2d4b4250f23741905f`
+  `eb2b06364880bf251b9ec52cad22368f6117b9c3`
 - Draft PR: https://github.com/nieying-code/phrase3/pull/14
-- CI: https://github.com/nieying-code/phrase3/actions/runs/30603204207
-  (`115 passed` ordinary regression + `6 passed` Phase 5)
+- CI: https://github.com/nieying-code/phrase3/actions/runs/30690238552
+  (`120 passed` ordinary regression + `6 passed` Phase 5)
 - PR #13: 已被本次科学模型修复取代，应关闭为 superseded，禁止合并
 
 ## PR #14 复审修订
