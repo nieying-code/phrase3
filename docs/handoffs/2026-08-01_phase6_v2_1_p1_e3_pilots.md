@@ -9,9 +9,9 @@
 - Branch: `agent/phase6-v2-1-p1-e3-pilots`
 - Base/execution SHA: `9c135f7120ad322302bc2db868f2c77e260e49af`（PR #18 merge commit）
 - Execution tree: `91bb61b768345fab833861b0f32a3f9a21dd1162`
-- Results commit: pending
-- Draft PR: pending
-- CI: pending
+- Validated results commit: `b1706fa2d59a0baa8a1d13815187b157d865381b`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/19
+- Results CI: https://github.com/nieying-code/phrase3/actions/runs/30697544132 (`124 passed + 6 passed`)
 
 ## 环境与前序状态
 
@@ -106,7 +106,7 @@ git diff --check
 passed
 ```
 
-CI：pending（Draft PR 创建后更新）。
+CI run `30697544132`：success（普通回归 `124 passed`，Phase 5 端到端 `6 passed`）。
 
 ## 下一步与审查清单
 
