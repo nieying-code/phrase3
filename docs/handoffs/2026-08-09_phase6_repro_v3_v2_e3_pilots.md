@@ -10,7 +10,8 @@
 - Base: merged `main` commit `b9371d4ba36bd8b578cb366aaa4f56b9d839b472`
 - Results commit: `52da67a013c596eea76d57c7278f0fbfec9e4a75`
 - Pull request: https://github.com/nieying-code/phrase3/pull/25
-- CI: pending
+- PR validation head before final tracking-only update: `c9a10f2df2b3e5fd911ffbd0f6079a57d1bc55e3`
+- CI: GitHub Actions run `31296570413` succeeded for the validation head; the final tracking-only head is reported in the PR description after its CI reaches a terminal state.
 
 ## 执行环境与基线
 
@@ -64,7 +65,7 @@
 - 审计专项测试：`.venv-gurobi\\Scripts\\python.exe -m pytest tests\\test_phase6_repro_v3_v2_pilot_audit.py -q` → `1 passed in 0.07s`
 - 完整回归：`.venv-gurobi\\Scripts\\python.exe -m pytest -q` → `156 passed in 48.24s`
 - `git diff --check`：通过
-- GitHub Actions：pending
+- GitHub Actions：run `31296570413`，Linux tests 与 Windows reproducibility check 均成功
 
 ## 修改文件
 
