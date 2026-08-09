@@ -883,8 +883,9 @@ def _run_phase6_sequence_locked(
         parent_run_id=parent_run_id,
     )
 
+    formal_projection: dict[str, Any] | None = None
     if execution_mode == "formal":
-        validate_formal_projection(
+        formal_projection = validate_formal_projection(
             projection_path=(
                 output_root
                 / "experiments"
@@ -1446,18 +1447,23 @@ def _run_phase6_sequence_locked(
         },
     )
     performance_path = update_algorithm_performance(output_root, result)
-    projection = update_pilot_projection(
-        output_root=output_root,
-        matrix=matrix,
-        runner_config=config,
-        matrix_sha256=str(fingerprint["matrix_sha256"]),
-        scientific_config_sha256=str(
-            fingerprint["scientific_config_sha256"]
-        ),
-        runner_config_sha256=str(fingerprint["runner_config_sha256"]),
-        e3_component_sha256=str(fingerprint["e3_component_sha256"]),
-        environment_sha256=str(fingerprint["environment_sha256"]),
-    )
+    if execution_mode == "formal":
+        if formal_projection is None:  # pragma: no cover - defensive invariant
+            raise RuntimeError("formal projection was not validated before execution")
+        projection = formal_projection
+    else:
+        projection = update_pilot_projection(
+            output_root=output_root,
+            matrix=matrix,
+            runner_config=config,
+            matrix_sha256=str(fingerprint["matrix_sha256"]),
+            scientific_config_sha256=str(
+                fingerprint["scientific_config_sha256"]
+            ),
+            runner_config_sha256=str(fingerprint["runner_config_sha256"]),
+            e3_component_sha256=str(fingerprint["e3_component_sha256"]),
+            environment_sha256=str(fingerprint["environment_sha256"]),
+        )
     advancement = None
     if execution_mode == "formal" and tier_id == "P1":
         advancement = update_scale_advancement(

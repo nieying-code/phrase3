@@ -476,6 +476,70 @@ def test_formal_projection_is_checked_before_scenario_generation(
     assert generated is False
 
 
+def test_consecutive_formal_runs_preserve_authorized_pilot_projection(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    validation_count = 0
+
+    def authorized_projection(**kwargs: Any) -> dict[str, Any]:
+        nonlocal validation_count
+        validation_count += 1
+        return {
+            "status": "passed",
+            "compute_gate_passed": True,
+            "formal_execution_authorized": True,
+        }
+
+    def forbidden_projection_rebuild(**kwargs: Any) -> dict[str, Any]:
+        raise AssertionError(
+            "formal execution must not rebuild or overwrite the pilot projection"
+        )
+
+    def executor(
+        request: dict[str, Any],
+        timeout_seconds: float,
+        work_directory: Path,
+    ) -> dict[str, Any]:
+        return _fake_result(request)
+
+    monkeypatch.setattr(
+        phase6_runner,
+        "validate_formal_projection",
+        authorized_projection,
+    )
+    monkeypatch.setattr(
+        phase6_runner,
+        "update_pilot_projection",
+        forbidden_projection_rebuild,
+    )
+
+    results = [
+        run_phase6_sequence(
+            matrix_path=MATRIX_PATH,
+            runner_config_path=RUNNER_CONFIG_PATH,
+            output_root=tmp_path,
+            tier_id="V1",
+            seed=seed,
+            execution_mode="formal",
+            run_id=f"formal_projection_preserved_{seed}",
+            worker_executor=executor,
+        )
+        for seed in (2026072401, 2026072402)
+    ]
+
+    assert validation_count == 2
+    assert all(result["status"] == "optimal" for result in results)
+    assert all(
+        result["reporting"]["pilot_projection_status"] == "passed"
+        for result in results
+    )
+    assert all(
+        result["reporting"]["formal_execution_authorized"] is True
+        for result in results
+    )
+
+
 def test_p2_scale_gate_is_checked_before_scenario_generation(
     tmp_path: Path,
     monkeypatch,
