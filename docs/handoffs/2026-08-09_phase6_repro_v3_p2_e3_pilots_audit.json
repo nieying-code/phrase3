@@ -1,5 +1,5 @@
 {
-  "audit_schema": "phase6_repro_v3_p2_e3_pilots_and_compute_gate_v1",
+  "audit_schema": "phase6_repro_v3_p2_e3_pilots_and_compute_gate_v2",
   "output_root": "outputs/phase6_v21_repro_v3",
   "source": {
     "execution_git_sha": "b53eb42c323f36175ad89940aec1fd460e66a171",
@@ -8,7 +8,20 @@
     "tracked_modified_count_at_start": 0,
     "untracked_execution_input_count_at_start": 0,
     "working_tree_dirty": false,
-    "controlled_read_write_root": "outputs/phase6_v21_repro_v3/",
+    "controlled_read_write_root": {
+      "path": "outputs/phase6_v21_repro_v3/",
+      "read_inputs": {
+        "approved_v1_v2_p1_e3_registry": "experiments/phase6/run_registry.csv",
+        "approved_v1_v2_p1_e3_projection": "experiments/phase6/pilot_throughput_projection.json",
+        "approved_family_prerequisite_registry": "experiments/phase6/family_run_registry.csv",
+        "approved_family_prerequisite_artifacts": "experiments/phase6/family_runs/*/{result.json,manifest.json}"
+      },
+      "write_outputs": {
+        "current_p2_e3_pilot_artifacts": "experiments/phase6/runs/pilot_p2_repro_v3_*",
+        "updated_e3_registry": "experiments/phase6/run_registry.csv",
+        "updated_e3_projection": "experiments/phase6/pilot_throughput_projection.json"
+      }
+    },
     "external_historical_output_directories_used_as_input": false,
     "uncommitted_model_or_configuration_input": false
   },
@@ -138,14 +151,61 @@
     "diagnostic_attempt_count": 0
   },
   "family_projection": {
+    "projection_method": "experiment_family_specific_dimensionally_consistent_rates",
     "family_primary_run_count": 12,
     "planned_work_unit_count": 30,
     "completed_work_unit_count": 30,
     "all_optimal": true,
-    "statuses": {"E1": "projected", "E2": "projected", "E3": "projected", "E4": "projected", "E5": "projected"},
-    "projected_wall_hours": {"E1": 0.030906230000255167, "E2": 0.13186587000042588, "E3": 8.781424245601437, "E4": 0.7623039049998624, "E5": 0.04610120729133389}
+    "families": {
+      "E1": {
+        "status": "projected",
+        "work_unit": "complete_family_plan",
+        "pilot_run_ids": ["pilot_family_repro_v3_e1_2026072001", "pilot_family_repro_v3_e1_2026072002", "pilot_family_repro_v3_e1_2026072003"],
+        "pilot_seeds": [2026072001, 2026072002, 2026072003],
+        "planned_work_units": 45,
+        "conservative_work_units_per_hour": 1456.0171201608373,
+        "projected_wall_hours": 0.030906230000255167
+      },
+      "E2": {
+        "status": "projected",
+        "work_unit": "complete_family_plan",
+        "pilot_run_ids": ["pilot_family_repro_v3_e2_2026072001", "pilot_family_repro_v3_e2_2026072002", "pilot_family_repro_v3_e2_2026072003"],
+        "pilot_seeds": [2026072001, 2026072002, 2026072003],
+        "planned_work_units": 180,
+        "conservative_work_units_per_hour": 1365.0234135596927,
+        "projected_wall_hours": 0.13186587000042588
+      },
+      "E3": {
+        "status": "projected",
+        "work_unit": "recourse_lp_solve",
+        "pilot_run_ids": ["pilot_v1_repro_v3_2026072001", "pilot_v1_repro_v3_2026072002", "pilot_v1_repro_v3_2026072003", "pilot_v2_repro_v3_2026072001", "pilot_v2_repro_v3_2026072002", "pilot_v2_repro_v3_2026072003", "pilot_p1_repro_v3_2026072001", "pilot_p1_repro_v3_2026072002", "pilot_p1_repro_v3_2026072003", "pilot_p2_repro_v3_2026072001", "pilot_p2_repro_v3_2026072002", "pilot_p2_repro_v3_2026072003"],
+        "pilot_seeds": [2026072001, 2026072002, 2026072003],
+        "estimated_recourse_lp_calls": 519000,
+        "conservative_recourse_lp_solves_per_hour": 59102.03009038813,
+        "projected_wall_hours": 8.781424245601437
+      },
+      "E4": {
+        "status": "projected",
+        "work_unit": "complete_family_plan",
+        "pilot_run_ids": ["pilot_family_repro_v3_e4_2026072001", "pilot_family_repro_v3_e4_2026072002", "pilot_family_repro_v3_e4_2026072003"],
+        "pilot_seeds": [2026072001, 2026072002, 2026072003],
+        "planned_work_units": 90,
+        "conservative_work_units_per_hour": 118.06314963061385,
+        "projected_wall_hours": 0.7623039049998624
+      },
+      "E5": {
+        "status": "projected",
+        "work_unit": "complete_family_plan",
+        "pilot_run_ids": ["pilot_family_repro_v3_e5_2026072001", "pilot_family_repro_v3_e5_2026072002", "pilot_family_repro_v3_e5_2026072003"],
+        "pilot_seeds": [2026072001, 2026072002, 2026072003],
+        "planned_work_units": 75,
+        "conservative_work_units_per_hour": 1626.8554427662136,
+        "projected_wall_hours": 0.04610120729133389
+      }
+    }
   },
   "compute_gate": {
+    "matrix_status": "frozen_for_formal_execution",
     "projection_status": "passed",
     "projected_total_wall_hours": 9.752601457893315,
     "maximum_projected_total_wall_hours": 168.0,
