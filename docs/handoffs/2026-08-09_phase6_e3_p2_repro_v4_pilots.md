@@ -11,7 +11,8 @@
 - Execution tree: `42b480ec855e8eb90bb33c09de47adcc33f63300`
 - Results documentation commit: `336f9331156a63530ea78d1fcc44b7ccc3044107`
 - Draft PR: [#32](https://github.com/nieying-code/phrase3/pull/32)
-- CI: pending
+- Validated documentation head: `08d714f5674de6177f13b889c35a95a78f1ae774`
+- CI: [run 31319589396](https://github.com/nieying-code/phrase3/actions/runs/31319589396)，Linux 与 Windows 均成功
 
 运行开始时执行提交与 `origin/main` 一致；tracked 修改、未跟踪执行输入均为 0，工作树干净。
 
@@ -66,7 +67,7 @@
 - 完整 pytest：`python -m pytest -q`，`163 passed in 40.86s`
 - 语法检查：`python -m compileall -q src tests`，通过
 - `git diff --check`：通过
-- GitHub Actions：pending
+- GitHub Actions：run `31319589396`，Linux `test` 与 Windows `reproducibility-windows` 均成功
 
 ## 下一步建议
 
