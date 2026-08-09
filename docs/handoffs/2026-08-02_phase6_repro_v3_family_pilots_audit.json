@@ -1,0 +1,320 @@
+{
+  "audit_schema": "phase6_repro_v3_family_pilots_v1",
+  "output_root": "outputs/phase6_v21_repro_v3",
+  "source": {
+    "execution_git_sha": "98ef223755fb9d87d8de621b00d5a874c50c6175",
+    "execution_git_tree_sha": "551678c5045a93dafc2cc146d44ef000991ef64d",
+    "branch": "agent/phase6-family-repro-v3",
+    "tracked_modified_count_at_start": 0,
+    "untracked_paths_at_start": [],
+    "working_tree_dirty": false,
+    "runtime_input_note": "The controlled output root contains the approved repro-v3 V1 E3 pilots. E4 consumes the hash-verified E2 endogenous-reserve plan for the same seed from this root. No untracked model, matrix, runner configuration, dependency lock, or historical output root participated in execution."
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+    "e3_component_sha256": "fd0dc3ea77f850615502005e2caf9f3b7c0259d7c11a9efc7e2a30025c404083",
+    "family_component_sha256": "92bbf40a3dbbb6c72f75f257d39197ee9c42f455daf6efecb4e8df710e065b5e",
+    "family_config_sha256": "983776a19e0a12937bc8a185b0fe5fdf76877d266445dcfce5f252d397a6ca8c",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "environment": {
+    "python": "3.12.10",
+    "gurobipy": "13.0.2",
+    "gurobi_optimizer": "13.0.2",
+    "pyomo_interface": "gurobi_direct",
+    "threads": 1,
+    "highs_fallback": false
+  },
+  "counts": {
+    "primary_run_count": 12,
+    "optimal_primary_run_count": 12,
+    "planned_work_unit_count": 30,
+    "completed_work_unit_count": 30,
+    "failed_primary_run_count": 0,
+    "duplicate_primary_run_count": 0,
+    "parent_run_count": 0,
+    "work_units_by_family": {
+      "E1": 3,
+      "E2": 18,
+      "E4": 3,
+      "E5": 6
+    }
+  },
+  "runs": [
+    {
+      "run_id": "pilot_family_repro_v3_e1_2026072001",
+      "family": "E1",
+      "seed": 2026072001,
+      "status": "optimal",
+      "work_units": 1,
+      "wall_seconds": 2.4140165999997407,
+      "peak_memory_mb": 95.2421875,
+      "result_sha256": "87ee825c6285cead1efc07c5092e2591dbccb247c72f248d6fdb14d041b9c81e",
+      "manifest_sha256": "3c9a8fc60a340f59e4192c2aaf66dcd78e42449e97bff7c07e4673e320c5b9a4",
+      "status_summary_sha256": "35ed1eafffbeb4e2af00c5ce4e576628ed819c93493a1eda1cff13512b1edaba"
+    },
+    {
+      "run_id": "pilot_family_repro_v3_e2_2026072001",
+      "family": "E2",
+      "seed": 2026072001,
+      "status": "optimal",
+      "work_units": 6,
+      "wall_seconds": 15.710153000021819,
+      "peak_memory_mb": 121.125,
+      "result_sha256": "d72950aea4e7b4d0573bb6419f846bb23d8aa799935d106484825d0d1ea6950c",
+      "manifest_sha256": "bbe46c34d48e2ade255a0fd6987510e3da1ddc8fd9575ff149abbe29bf94be58",
+      "status_summary_sha256": "f965e8c47ebc82f338b2f65a5f2a85454cada7b495365cc50d2004d250d71844"
+    },
+    {
+      "run_id": "pilot_family_repro_v3_e4_2026072001",
+      "family": "E4",
+      "seed": 2026072001,
+      "status": "optimal",
+      "work_units": 1,
+      "wall_seconds": 30.398643799999263,
+      "peak_memory_mb": 96.92578125,
+      "result_sha256": "f5a369c7fbb67b4e85137513ae6775da6b3fe4499247ca5ead603bebe3f1ca61",
+      "manifest_sha256": "cb87665da95ba3a82eabd7094a299d26ae3823165f05a06edd664500c6f1f3af",
+      "status_summary_sha256": "8c09f85f0c0143761a12b2d65b85cfc9431775884fb6e9dbb027b29ffc92ed26"
+    },
+    {
+      "run_id": "pilot_family_repro_v3_e5_2026072001",
+      "family": "E5",
+      "seed": 2026072001,
+      "status": "optimal",
+      "work_units": 2,
+      "wall_seconds": 4.19965789996786,
+      "peak_memory_mb": 102.33203125,
+      "result_sha256": "7894e3f808bd0d7caf94181d6c5f31fe34b14980be4216b452dde48b746b82ba",
+      "manifest_sha256": "f7b1777712fe81724fea09e25a0c8c07a21d3315d8a556a90a813048c7c9aaf0",
+      "status_summary_sha256": "cf79c1a3c2552e2b8911f1429e39c8cb8e3f9effb828ccbbff1aa3279eaaeb2b"
+    },
+    {
+      "run_id": "pilot_family_repro_v3_e1_2026072002",
+      "family": "E1",
+      "seed": 2026072002,
+      "status": "optimal",
+      "work_units": 1,
+      "wall_seconds": 2.457475400005933,
+      "peak_memory_mb": 94.28515625,
+      "result_sha256": "9b79af63933ab8cfb18305caab0bf7198fa55265d327c72f15bd1153c67db176",
+      "manifest_sha256": "db891bfea428fe6f1e5bdafc570c851319ee2082a86f122741aa81bc6f34d7af",
+      "status_summary_sha256": "3e27d8cfd034a8fbbb5041739f8e6a7c100f1974f366ddb80cfccc1cd743c656"
+    },
+    {
+      "run_id": "pilot_family_repro_v3_e2_2026072002",
+      "family": "E2",
+      "seed": 2026072002,
+      "status": "optimal",
+      "work_units": 6,
+      "wall_seconds": 15.823904400051106,
+      "peak_memory_mb": 121.171875,
+      "result_sha256": "50bf2cf28546bb47ac41e43e5db46fd12504783769fd41f2bd90eb3c622e1d86",
+      "manifest_sha256": "28e772945caa4a54bb7c3a674a92994f3f2b6f897b505d44d63197ab09babded",
+      "status_summary_sha256": "f99e1e21048ecdf7bb5ba0bcf6c2afb83890b54e523d39ee1e1cba0277148f7f"
+    },
+    {
+      "run_id": "pilot_family_repro_v3_e4_2026072002",
+      "family": "E4",
+      "seed": 2026072002,
+      "status": "optimal",
+      "work_units": 1,
+      "wall_seconds": 30.487124900042545,
+      "peak_memory_mb": 96.19921875,
+      "result_sha256": "2f1ed31aff8f20e66bb6f98ba84c59809d90fd5f085507d9ea8270c0a88f439a",
+      "manifest_sha256": "2f19325eae533cae4487a1cf08820e9b767507cdff8e8d8f6e854dfcb6829ffc",
+      "status_summary_sha256": "cb172478d3f4a7e426a1329e20d4681cce70a0cfe6b179b4a81160491bcaf6cc"
+    },
+    {
+      "run_id": "pilot_family_repro_v3_e5_2026072002",
+      "family": "E5",
+      "seed": 2026072002,
+      "status": "optimal",
+      "work_units": 2,
+      "wall_seconds": 4.425715899968054,
+      "peak_memory_mb": 98.06640625,
+      "result_sha256": "919ca60833e6d773f7ed12ac1546a1da8e34218698647fd499fdb8dfcdd4740c",
+      "manifest_sha256": "1e7f56b3224a4cd6eda681583a1451c558111423b6a8e5f188405ae3aa66303d",
+      "status_summary_sha256": "5463f976bed823bdb328df45f5f52360d111266bf31c2a6bc1e7fb5e1c686182"
+    },
+    {
+      "run_id": "pilot_family_repro_v3_e1_2026072003",
+      "family": "E1",
+      "seed": 2026072003,
+      "status": "optimal",
+      "work_units": 1,
+      "wall_seconds": 2.472498400020413,
+      "peak_memory_mb": 96.73046875,
+      "result_sha256": "4ae9ae8f3a15aacc21e4cac01005527b76478388d9fe78ece284969a70e60ebc",
+      "manifest_sha256": "2f3a1650e93ccf27437afa6ab3c595c98af74b79cb2a1559fcd92f09daa094bf",
+      "status_summary_sha256": "af6763052fc9f3de88d172bed8deb92fb967451fa33f33e130b5273ff1d4d57e"
+    },
+    {
+      "run_id": "pilot_family_repro_v3_e2_2026072003",
+      "family": "E2",
+      "seed": 2026072003,
+      "status": "optimal",
+      "work_units": 6,
+      "wall_seconds": 15.533810799999628,
+      "peak_memory_mb": 118.3671875,
+      "result_sha256": "a0cb0cfa39963fe310341a3749c326a5009441409e693aedd4469748c62870a2",
+      "manifest_sha256": "b346ba29568c16b988e4873f184d9f5cccb427c5277e59868e9bedc74962d392",
+      "status_summary_sha256": "31ab7388845ec78b1c8097d075a700676168b6bd4f611e75e1ca5daf869e7162"
+    },
+    {
+      "run_id": "pilot_family_repro_v3_e4_2026072003",
+      "family": "E4",
+      "seed": 2026072003,
+      "status": "optimal",
+      "work_units": 1,
+      "wall_seconds": 30.492156199994497,
+      "peak_memory_mb": 96.8046875,
+      "result_sha256": "f06feed21ddbf535f0a366ace9ca9c089f70391d91418b64eb00a8702ec651c1",
+      "manifest_sha256": "bbbed023ccac127cd0de174b6867ef9205f48fbaf9e091ce466a7e4b459e5986",
+      "status_summary_sha256": "ec02eb38c3e6ba8d02b4ad3c87696fdffcc4d01da80b281f6978926d5f0069aa"
+    },
+    {
+      "run_id": "pilot_family_repro_v3_e5_2026072003",
+      "family": "E5",
+      "seed": 2026072003,
+      "status": "optimal",
+      "work_units": 2,
+      "wall_seconds": 4.170593400020152,
+      "peak_memory_mb": 99.46875,
+      "result_sha256": "04d4e136d4855dd0b858b7109f650af811ad8b9666f9cb060c0a8085d5e6f8d4",
+      "manifest_sha256": "7ac6a2efa218d94c63fd3f747d337a41b4357c02d5e2bea1e2735ac908b55f7f",
+      "status_summary_sha256": "d81cbe23f54e4f110ba6ae6ff2434e2677f7e3ee70f833c58206ef2d11730fda"
+    }
+  ],
+  "e1_consistency": [
+    {
+      "seed": 2026072001,
+      "extensive_objective": 25431.602135889087,
+      "standard_ccg_objective": 25431.602135889087,
+      "difference": 0.0,
+      "extensive_infeasible_recourse_count": 0,
+      "standard_ccg_infeasible_recourse_count": 0
+    },
+    {
+      "seed": 2026072002,
+      "extensive_objective": 12593.369449515683,
+      "standard_ccg_objective": 12593.369449515683,
+      "difference": 0.0,
+      "extensive_infeasible_recourse_count": 0,
+      "standard_ccg_infeasible_recourse_count": 0
+    },
+    {
+      "seed": 2026072003,
+      "extensive_objective": 16465.082639466546,
+      "standard_ccg_objective": 16465.082639466546,
+      "difference": 0.0,
+      "extensive_infeasible_recourse_count": 0,
+      "standard_ccg_infeasible_recourse_count": 0
+    }
+  ],
+  "e2_summary": {
+    "strategy_result_count": 18,
+    "optimal_count": 18,
+    "infeasible_recourse_count": 0,
+    "solver_failure_count": 0,
+    "policies_per_seed": [
+      "deterministic_mean",
+      "zero_reserve",
+      "fixed_reserve_0_10",
+      "fixed_reserve_0_30",
+      "fixed_reserve_0_50",
+      "endogenous_reserve"
+    ]
+  },
+  "e4_oos": [
+    {
+      "training_seed": 2026072001,
+      "test_seed": 2036072001,
+      "status": "optimal",
+      "plan_oos_status": "complete_feasible",
+      "source_e2_plan_id": "E2P_V2_2026072001_b01_endogenous_reserve",
+      "source_e2_result_sha256": "6fa8973cb9c9fdc0f2bda6910979350d46fb70d56e212406f58635735758cbbb",
+      "total_scenarios": 2000,
+      "optimal_scenarios": 2000,
+      "infeasible_scenarios": 0,
+      "solver_failures": 0,
+      "mean_total_cost": 9234.831483452244,
+      "p95_total_cost": 16983.16823911869,
+      "cvar95_total_cost": 20760.664760353364,
+      "service_level": 0.7141019135329911,
+      "mean_early_disposal": 196.54906918612363,
+      "mean_expired_waste": 0.0,
+      "mean_total_disposal": 196.54906918612363
+    },
+    {
+      "training_seed": 2026072002,
+      "test_seed": 2036072002,
+      "status": "optimal",
+      "plan_oos_status": "complete_feasible",
+      "source_e2_plan_id": "E2P_V2_2026072002_b01_endogenous_reserve",
+      "source_e2_result_sha256": "0caf0b2377e3211c8c85bb8606939a9498b7ab3c8eb1d6e38d7df01efc305ba5",
+      "total_scenarios": 2000,
+      "optimal_scenarios": 2000,
+      "infeasible_scenarios": 0,
+      "solver_failures": 0,
+      "mean_total_cost": 4999.396537833755,
+      "p95_total_cost": 12451.527077092645,
+      "cvar95_total_cost": 16396.645521206676,
+      "service_level": 0.8664049000290975,
+      "mean_early_disposal": 111.23873706085998,
+      "mean_expired_waste": 0.0,
+      "mean_total_disposal": 111.23873706085998
+    },
+    {
+      "training_seed": 2026072003,
+      "test_seed": 2036072003,
+      "status": "optimal",
+      "plan_oos_status": "complete_feasible",
+      "source_e2_plan_id": "E2P_V2_2026072003_b01_endogenous_reserve",
+      "source_e2_result_sha256": "7a6f00c7f49cb9bd6767b6edc754d40d6d57de336b2e8bef94a6cad54ce65cbb",
+      "total_scenarios": 2000,
+      "optimal_scenarios": 2000,
+      "infeasible_scenarios": 0,
+      "solver_failures": 0,
+      "mean_total_cost": 8959.085400194437,
+      "p95_total_cost": 16242.489542452897,
+      "cvar95_total_cost": 18710.01332255431,
+      "service_level": 0.7182678328356518,
+      "mean_early_disposal": 138.92739041875726,
+      "mean_expired_waste": 0.0,
+      "mean_total_disposal": 138.92739041875726
+    }
+  ],
+  "e5_summary": {
+    "configuration_result_count": 6,
+    "optimal_count": 6,
+    "configurations_per_seed": [
+      "baseline",
+      "interaction_life_1_supply_0.4"
+    ]
+  },
+  "projection": {
+    "e3_completed_run_count": 3,
+    "e3_required_run_count": 12,
+    "family_status": {
+      "E1": "projected",
+      "E2": "projected",
+      "E3": "awaiting_complete_pilots",
+      "E4": "projected",
+      "E5": "projected"
+    },
+    "status": "projection_incomplete",
+    "compute_gate_passed": false,
+    "formal_execution_authorized": false
+  },
+  "global_artifacts": {
+    "family_run_registry_sha256": "fc9051452d8eafbd7bcbc871f38936b7206554499db054b0c4596bc94e9958b9",
+    "pilot_throughput_projection_sha256": "813a26d487595da0fca23ba0594b716b6ef264caf7fa60f48d41cc3284c9ee8b"
+  },
+  "stop_boundary": {
+    "v2_started": false,
+    "p1_started": false,
+    "p2_started": false,
+    "formal_seed_started": false
+  }
+}
