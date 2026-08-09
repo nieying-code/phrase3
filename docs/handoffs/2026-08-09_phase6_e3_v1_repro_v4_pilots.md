@@ -82,7 +82,7 @@ formal_execution_authorized = false
 - Draft PR: https://github.com/nieying-code/phrase3/pull/29
 - Result commit: `6c87421ce57435334b7159460904507a2e3a0ed3`
 - Final PR head: see Draft PR after this handoff-link commit
-- CI: GitHub Actions run `31304741276`, success（覆盖结果提交与首次 handoff 链接提交）
+- CI: GitHub Actions run `31306023548`, success（覆盖最终审计修复提交）
 
 ## 停止边界
 
