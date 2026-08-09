@@ -11,6 +11,8 @@
 - Branch: `agent/phase6-p2-repro-v3`
 - Base and execution commit: `b53eb42c323f36175ad89940aec1fd460e66a171`
 - Execution tree: `bc569a17f3e60d08953f8ba6678b9ffe6fcf6cf9`
+- Results commit: `a21d349af1e700c5977ba1e35519f9c1af4da2b9`
+- Pull request: https://github.com/nieying-code/phrase3/pull/27
 - Output root: `outputs/phase6_v21_repro_v3`
 - Python `3.12.10`
 - Gurobi Optimizer / gurobipy `13.0.2`
