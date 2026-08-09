@@ -26,6 +26,58 @@ GLOBAL_HASHES = {
     "pilot_throughput_projection_before.json": "ca5bea5f4e2a5876d3a76cf4778f92439097ac0c9f9a16ba9b666eaa351f33eb",
     "pilot_throughput_projection_after.json": "c3b9c26e69a46aa89a99d7b6f40ff307c308c2782405e884154bc21c906faff2",
 }
+FAMILY_PROJECTION_INPUTS = {
+    "E1": {
+        "work_unit": "complete_family_plan",
+        "planned_work_units": 45,
+        "conservative_work_units_per_hour": 1456.0171201608373,
+        "projected_wall_hours": 0.030906230000255167,
+        "pilot_run_ids": [
+            "pilot_family_repro_v3_e1_2026072001",
+            "pilot_family_repro_v3_e1_2026072002",
+            "pilot_family_repro_v3_e1_2026072003",
+        ],
+    },
+    "E2": {
+        "work_unit": "complete_family_plan",
+        "planned_work_units": 180,
+        "conservative_work_units_per_hour": 1365.0234135596927,
+        "projected_wall_hours": 0.13186587000042588,
+        "pilot_run_ids": [
+            "pilot_family_repro_v3_e2_2026072001",
+            "pilot_family_repro_v3_e2_2026072002",
+            "pilot_family_repro_v3_e2_2026072003",
+        ],
+    },
+    "E4": {
+        "work_unit": "complete_family_plan",
+        "planned_work_units": 90,
+        "conservative_work_units_per_hour": 118.06314963061385,
+        "projected_wall_hours": 0.7623039049998624,
+        "pilot_run_ids": [
+            "pilot_family_repro_v3_e4_2026072001",
+            "pilot_family_repro_v3_e4_2026072002",
+            "pilot_family_repro_v3_e4_2026072003",
+        ],
+    },
+    "E5": {
+        "work_unit": "complete_family_plan",
+        "planned_work_units": 75,
+        "conservative_work_units_per_hour": 1626.8554427662136,
+        "projected_wall_hours": 0.04610120729133389,
+        "pilot_run_ids": [
+            "pilot_family_repro_v3_e5_2026072001",
+            "pilot_family_repro_v3_e5_2026072002",
+            "pilot_family_repro_v3_e5_2026072003",
+        ],
+    },
+}
+E3_PROJECTION_INPUTS = {
+    "work_unit": "recourse_lp_solve",
+    "estimated_recourse_lp_calls": 519000,
+    "conservative_recourse_lp_solves_per_hour": 58516.74272579252,
+    "projected_wall_hours": 8.86925648667795,
+}
 
 
 def test_final_projection_reaggregation_audit() -> None:
@@ -81,7 +133,15 @@ def test_final_projection_reaggregation_audit() -> None:
         row = projections[family]
         assert row["status"] == "projected"
         assert row["pilot_seeds"] == SEEDS
-        assert len(row["pilot_run_ids"]) == 3
+        approved = FAMILY_PROJECTION_INPUTS[family]
+        for field in (
+            "work_unit",
+            "planned_work_units",
+            "conservative_work_units_per_hour",
+            "projected_wall_hours",
+            "pilot_run_ids",
+        ):
+            assert row[field] == approved[field]
         expected = row["planned_work_units"] / row[
             "conservative_work_units_per_hour"
         ]
@@ -91,8 +151,11 @@ def test_final_projection_reaggregation_audit() -> None:
         recomputed[family] = expected
     e3_projection = projections["E3"]
     assert e3_projection["status"] == "projected"
-    assert e3_projection["estimated_recourse_lp_calls"] == 519000
-    recomputed["E3"] = 519000 / e3_projection[
+    for field, approved in E3_PROJECTION_INPUTS.items():
+        assert e3_projection[field] == approved
+    recomputed["E3"] = E3_PROJECTION_INPUTS[
+        "estimated_recourse_lp_calls"
+    ] / E3_PROJECTION_INPUTS[
         "conservative_recourse_lp_solves_per_hour"
     ]
     assert math.isclose(
@@ -103,6 +166,8 @@ def test_final_projection_reaggregation_audit() -> None:
     )
 
     gate = audit["compute_gate"]
+    assert gate["projection_status"] == "passed"
+    assert gate["matrix_status"] == "frozen_for_formal_execution"
     total = sum(recomputed.values())
     largest_family = max(recomputed, key=recomputed.get)
     assert math.isclose(
