@@ -77,8 +77,9 @@ formal_execution_authorized = false
 - 完整本地回归：`160 passed in 39.40s`
 - `python -m compileall -q src tests`：通过
 - `git diff --check`：通过
-- Draft PR: pending
-- Final result commit: pending
+- Draft PR: https://github.com/nieying-code/phrase3/pull/29
+- Result commit: `6c87421ce57435334b7159460904507a2e3a0ed3`
+- Final PR head: see Draft PR after this handoff-link commit
 - CI: pending
 
 ## 停止边界
