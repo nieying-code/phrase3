@@ -9,8 +9,8 @@
 - Branch: `agent/phase6-e3-p2-repro-v4`
 - Base / execution commit: `921b9e0866ce7d3856ff2275d4159f9702b5b942`
 - Execution tree: `42b480ec855e8eb90bb33c09de47adcc33f63300`
-- Results documentation commit: pending
-- Draft PR: pending
+- Results documentation commit: `336f9331156a63530ea78d1fcc44b7ccc3044107`
+- Draft PR: [#32](https://github.com/nieying-code/phrase3/pull/32)
 - CI: pending
 
 运行开始时执行提交与 `origin/main` 一致；tracked 修改、未跟踪执行输入均为 0，工作树干净。
