@@ -8,8 +8,8 @@
 
 - Branch: `agent/phase6-p1-repro-v3`
 - Base: merged `main` commit `1440b288cc875d0ff70b2acbd581ae75764a7724`
-- Results commit: pending
-- Pull request: pending
+- Results commit: `159a7eb34ad209a4278b0faf60ec1b70a87ce108`
+- Pull request: https://github.com/nieying-code/phrase3/pull/26
 - CI: pending
 
 ## 环境与执行基线
