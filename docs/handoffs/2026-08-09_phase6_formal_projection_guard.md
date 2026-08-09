@@ -12,7 +12,7 @@
 - Implementation commit: `04f775fe59b6b81790b11f375ce5601d78be0422`
 - Final PR head: see Draft PR after the handoff-link commit
 - PR: https://github.com/nieying-code/phrase3/pull/28
-- CI: GitHub Actions run `31303233553`, success（覆盖实现提交与首次 handoff 链接提交）
+- CI: GitHub Actions run `31303318687`, success（最终 PR head 的 Linux 与 Windows 检查）
 
 ## 根因
 
@@ -63,7 +63,7 @@ formal_execution_authorized=false
   - 通过
 - `python -m pytest -q`
   - `159 passed in 38.00s`
-- GitHub Actions run `31303233553`
+- GitHub Actions run `31303318687`
   - Linux 常规回归与 Phase 5 端到端：通过
   - Windows 复现守卫：通过
 
@@ -87,4 +87,13 @@ formal_execution_authorized=false
 
 ## 下一步建议
 
-PR 通过复审并由用户手动合并后，从最新 `main` 建立干净运行分支，按 V1 → family 投影重汇总 → V2 → P1 → P1 门槛 → P2 的受审批次顺序重新建立 E3 pilot 门槛。完成 12/12 与完整计算门槛复审之前，不启动正式实验。
+PR 通过复审并由用户手动合并后，从最新 `main` 建立干净运行分支，并按以下受审批次重新建立 E3 pilot 门槛：
+
+1. V1 E3 pilot → 停止并复审；
+2. V2 E3 pilot → 停止并复审；
+3. P1 E3 pilot → 计算 P1 推进条件 → 停止并复审；
+4. 门槛通过后运行 P2 E3 pilot → 停止并复审；
+5. E3 达到新指纹下的 12/12 后，读取现有、指纹仍有效的 family pilot 制品，执行一次最终 family 投影重汇总；
+6. 复审完整计算门槛，只有再次得到 `compute_gate_passed=true` 和 `formal_execution_authorized=true` 后才允许正式实验。
+
+如果在 V1、V2 或 P1 后执行中间 family 投影重汇总，它只能作为诊断材料；后续 E3 pilot 会再次重建 E3 投影并把 family 项暂时初始化为 unavailable，因此 P2 完成后仍必须执行上述最终重汇总。现有 family pilot 不需要重跑。
