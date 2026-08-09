@@ -47,9 +47,16 @@ def test_phase6_e3_v1_repro_v4_audit_is_closed() -> None:
     assert source["merged_main_sha"] == (
         "1fa12bd9c3026ad202377d72fb79bfcd70c7c07e"
     )
-    assert source["execution_git_tree_sha"] == source["merged_main_tree_sha"]
+    assert source["execution_git_tree_sha"] == (
+        "e4f268fa170013f3d8bd52b3f71e5133c716571e"
+    )
+    assert source["merged_main_tree_sha"] == (
+        "e4f268fa170013f3d8bd52b3f71e5133c716571e"
+    )
     assert source["tree_equivalent"] is True
     assert source["tracked_modified_count_at_start"] == 0
+    assert source["untracked_execution_input_count_at_start"] == 0
+    assert source["working_tree_dirty"] is False
 
     assert len(runs) == 3
     assert {run["seed"] for run in runs} == {
@@ -59,6 +66,7 @@ def test_phase6_e3_v1_repro_v4_audit_is_closed() -> None:
     }
     assert len({run["run_id"] for run in runs}) == 3
     for run in runs:
+        assert run["tier_id"] == "V1"
         assert run["status"] == "optimal"
         assert run["execution_mode"] == "pilot"
         assert run["parent_run_id"] is None
@@ -96,20 +104,44 @@ def test_phase6_e3_v1_repro_v4_audit_is_closed() -> None:
         "diagnostic_parent_count": 0,
         "family_registry_run_count": 12,
     }
-    assert projection == {
-        "completed_run_count": 3,
-        "required_run_count": 12,
-        "status": "insufficient_pilot_coverage",
-        "compute_gate_passed": False,
-        "formal_execution_authorized": False,
-        "e3_component_sha256": EXPECTED_FINGERPRINTS[
-            "e3_component_sha256"
-        ],
+    expected_missing = {
+        (tier, seed)
+        for tier in ("V2", "P1", "P2")
+        for seed in (2026072001, 2026072002, 2026072003)
     }
-    assert all(
-        SHA256.fullmatch(value)
-        for value in audit["global_artifact_sha256"].values()
+    actual_missing = {
+        (row["tier_id"], row["seed"]) for row in projection["missing_runs"]
+    }
+    assert actual_missing == expected_missing
+    assert projection["completed_run_count"] == 3
+    assert projection["required_run_count"] == 12
+    assert projection["completed_run_count"] + len(actual_missing) == (
+        projection["required_run_count"]
     )
+    assert projection["status"] == "insufficient_pilot_coverage"
+    assert projection["compute_gate_passed"] is False
+    assert projection["formal_execution_authorized"] is False
+    assert projection["e3_component_sha256"] == EXPECTED_FINGERPRINTS[
+        "e3_component_sha256"
+    ]
+    assert projection["failed_primary_runs"] == []
+    assert projection["artifact_invalid_runs"] == []
+    assert projection["duplicate_primary_runs"] == []
+    assert projection["diagnostic_attempts"] == []
+    assert audit["global_artifact_sha256"] == {
+        "run_registry.csv": (
+            "714baced90c731428669eb008585cfe03bcef6dc1debc321fc27eca3527e5601"
+        ),
+        "algorithm_performance.csv": (
+            "998ca0634a040d104966d9d21d9d7b5209430c29af68884bd7ca4caedbd8ec08"
+        ),
+        "pilot_throughput_projection.json": (
+            "06ca895fbd19394071630eccb0b589272303f5be6e1bef27176827d77b045078"
+        ),
+        "family_run_registry.csv": (
+            "fc9051452d8eafbd7bcbc871f38936b7206554499db054b0c4596bc94e9958b9"
+        ),
+    }
     assert audit["experiment_scope"] == {
         "v2_started": False,
         "p1_started": False,

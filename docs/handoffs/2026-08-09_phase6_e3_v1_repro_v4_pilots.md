@@ -55,6 +55,7 @@ Git smart-HTTP 在运行前发生网络连接重置，无法把本地 `origin/ma
 - Maximum cold/warm objective difference: 0.0
 - Failed/invalid/duplicate/diagnostic runs: 0
 - `early_disposal` / `expired_waste` / `total_disposal`: 三条 run 均存在
+- 三条 run 均明确记录 `tier_id=V1`
 - Solver: Gurobi 13.0.2, `gurobi_direct`, Threads=1
 
 新投影状态：
@@ -68,6 +69,7 @@ formal_execution_authorized = false
 ```
 
 该状态符合流程；缺少的 9 条为 V2、P1、P2 各三个种子。
+机器审计进一步逐项锁定九条缺失集合，并确认 failed、artifact-invalid、duplicate 与 diagnostic 均为空；`3 completed + 9 missing = 12 required`。
 
 ## 制品与审计
 

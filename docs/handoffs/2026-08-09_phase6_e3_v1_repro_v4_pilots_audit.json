@@ -7,11 +7,14 @@
     "merged_main_sha": "1fa12bd9c3026ad202377d72fb79bfcd70c7c07e",
     "merged_main_tree_sha": "e4f268fa170013f3d8bd52b3f71e5133c716571e",
     "tree_equivalent": true,
-    "tracked_modified_count_at_start": 0
+    "tracked_modified_count_at_start": 0,
+    "untracked_execution_input_count_at_start": 0,
+    "working_tree_dirty": false
   },
   "runs": [
     {
       "run_id": "pilot_e3_repro_v4_v1_2026072001",
+      "tier_id": "V1",
       "seed": 2026072001,
       "status": "optimal",
       "execution_mode": "pilot",
@@ -38,6 +41,7 @@
     },
     {
       "run_id": "pilot_e3_repro_v4_v1_2026072002",
+      "tier_id": "V1",
       "seed": 2026072002,
       "status": "optimal",
       "execution_mode": "pilot",
@@ -64,6 +68,7 @@
     },
     {
       "run_id": "pilot_e3_repro_v4_v1_2026072003",
+      "tier_id": "V1",
       "seed": 2026072003,
       "status": "optimal",
       "execution_mode": "pilot",
@@ -106,7 +111,22 @@
     "status": "insufficient_pilot_coverage",
     "compute_gate_passed": false,
     "formal_execution_authorized": false,
-    "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e"
+    "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e",
+    "missing_runs": [
+      {"tier_id": "V2", "seed": 2026072001},
+      {"tier_id": "V2", "seed": 2026072002},
+      {"tier_id": "V2", "seed": 2026072003},
+      {"tier_id": "P1", "seed": 2026072001},
+      {"tier_id": "P1", "seed": 2026072002},
+      {"tier_id": "P1", "seed": 2026072003},
+      {"tier_id": "P2", "seed": 2026072001},
+      {"tier_id": "P2", "seed": 2026072002},
+      {"tier_id": "P2", "seed": 2026072003}
+    ],
+    "failed_primary_runs": [],
+    "artifact_invalid_runs": [],
+    "duplicate_primary_runs": [],
+    "diagnostic_attempts": []
   },
   "global_artifact_sha256": {
     "run_registry.csv": "714baced90c731428669eb008585cfe03bcef6dc1debc321fc27eca3527e5601",
