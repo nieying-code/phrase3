@@ -1,0 +1,143 @@
+{
+  "schema_version": "phase6_e3_v1_repro_v4_audit_v1",
+  "output_root": "D:\\新建文件夹\\项目交付\\阶段3-4修复同步\\phrase3\\outputs\\phase6_v21_repro_v3",
+  "source": {
+    "execution_git_sha": "75ac9b852781e880c998dba0618a3f0b48195234",
+    "execution_git_tree_sha": "e4f268fa170013f3d8bd52b3f71e5133c716571e",
+    "merged_main_sha": "1fa12bd9c3026ad202377d72fb79bfcd70c7c07e",
+    "merged_main_tree_sha": "e4f268fa170013f3d8bd52b3f71e5133c716571e",
+    "tree_equivalent": true,
+    "tracked_modified_count_at_start": 0,
+    "untracked_execution_input_count_at_start": 0,
+    "working_tree_dirty": false
+  },
+  "runs": [
+    {
+      "run_id": "pilot_e3_repro_v4_v1_2026072001",
+      "tier_id": "V1",
+      "seed": 2026072001,
+      "status": "optimal",
+      "execution_mode": "pilot",
+      "completed_budget_count": 3,
+      "planned_budget_count": 3,
+      "parent_run_id": null,
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifact_sha256": {
+        "result.json": "9850c571fb80bce94319fedf4d385feed65d5e82fc637bc59a823d47a965828f",
+        "manifest.json": "6a0e8c396726101c3a61b96f3fe28bb675482406cab6e0d8266f222fa12b54b1",
+        "status_summary.json": "3dfb6faed321cf682fab9c2f0c8e3bd765cba938e9fa4cdf682d6762cd14f27f"
+      },
+      "disposal_fields": ["early_disposal", "expired_waste", "total_disposal"],
+      "budget_pairs": [
+        {"budget_index": 0, "budget": 1107.2893851278257, "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 30620.79029084595, "warm_objective": 30620.79029084595, "objective_difference": 0.0},
+        {"budget_index": 1, "budget": 1353.3536929340091, "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 25431.602135889087, "warm_objective": 25431.602135889087, "objective_difference": 0.0},
+        {"budget_index": 2, "budget": 1599.4180007401926, "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 20301.417127459383, "warm_objective": 20301.417127459383, "objective_difference": 0.0}
+      ]
+    },
+    {
+      "run_id": "pilot_e3_repro_v4_v1_2026072002",
+      "tier_id": "V1",
+      "seed": 2026072002,
+      "status": "optimal",
+      "execution_mode": "pilot",
+      "completed_budget_count": 3,
+      "planned_budget_count": 3,
+      "parent_run_id": null,
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifact_sha256": {
+        "result.json": "300b920ed5a355a56b95eecaba04131e23e93ade3c07566362dcbc31309767fc",
+        "manifest.json": "3d4734646720900a69948725d9376a919eb80caeee0518da011c7bb930624489",
+        "status_summary.json": "aad618d04057a487742b5431ab8466d1a7a568f3db1196102fa383779e8f4d17"
+      },
+      "disposal_fields": ["early_disposal", "expired_waste", "total_disposal"],
+      "budget_pairs": [
+        {"budget_index": 0, "budget": 1107.2893851278257, "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 17728.74000636316, "warm_objective": 17728.74000636316, "objective_difference": 0.0},
+        {"budget_index": 1, "budget": 1353.3536929340091, "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 12593.369449515683, "warm_objective": 12593.369449515683, "objective_difference": 0.0},
+        {"budget_index": 2, "budget": 1599.4180007401926, "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 7468.893506759239, "warm_objective": 7468.893506759239, "objective_difference": 0.0}
+      ]
+    },
+    {
+      "run_id": "pilot_e3_repro_v4_v1_2026072003",
+      "tier_id": "V1",
+      "seed": 2026072003,
+      "status": "optimal",
+      "execution_mode": "pilot",
+      "completed_budget_count": 3,
+      "planned_budget_count": 3,
+      "parent_run_id": null,
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifact_sha256": {
+        "result.json": "242b693aa433428ee71f7a3be317603de9ceaca070ffe55cd89f2368952f7509",
+        "manifest.json": "b262277a5684c305725555f8ea57366054cced447473001c501d10f0cb39eb4a",
+        "status_summary.json": "4075a352e9b543f195a052a43d223e267c76cb49baf2ac614ec7cc7f48c22842"
+      },
+      "disposal_fields": ["early_disposal", "expired_waste", "total_disposal"],
+      "budget_pairs": [
+        {"budget_index": 0, "budget": 1107.2893851278257, "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 21611.625137750263, "warm_objective": 21611.625137750263, "objective_difference": 0.0},
+        {"budget_index": 1, "budget": 1353.3536929340091, "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 16465.082639466546, "warm_objective": 16465.082639466546, "objective_difference": 0.0},
+        {"budget_index": 2, "budget": 1599.4180007401926, "cold_status": "optimal", "warm_status": "optimal", "cold_objective": 11336.058724920795, "warm_objective": 11336.058724920795, "objective_difference": 0.0}
+      ]
+    }
+  ],
+  "summary": {
+    "primary_run_count": 3,
+    "budget_pair_count": 9,
+    "algorithm_execution_count": 18,
+    "all_optimal": true,
+    "max_abs_objective_difference": 0.0,
+    "failed_primary_count": 0,
+    "duplicate_primary_count": 0,
+    "diagnostic_parent_count": 0,
+    "family_registry_run_count": 12
+  },
+  "projection": {
+    "completed_run_count": 3,
+    "required_run_count": 12,
+    "status": "insufficient_pilot_coverage",
+    "compute_gate_passed": false,
+    "formal_execution_authorized": false,
+    "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e",
+    "missing_runs": [
+      {"tier_id": "V2", "seed": 2026072001},
+      {"tier_id": "V2", "seed": 2026072002},
+      {"tier_id": "V2", "seed": 2026072003},
+      {"tier_id": "P1", "seed": 2026072001},
+      {"tier_id": "P1", "seed": 2026072002},
+      {"tier_id": "P1", "seed": 2026072003},
+      {"tier_id": "P2", "seed": 2026072001},
+      {"tier_id": "P2", "seed": 2026072002},
+      {"tier_id": "P2", "seed": 2026072003}
+    ],
+    "failed_primary_runs": [],
+    "artifact_invalid_runs": [],
+    "duplicate_primary_runs": [],
+    "diagnostic_attempts": []
+  },
+  "global_artifact_sha256": {
+    "run_registry.csv": "714baced90c731428669eb008585cfe03bcef6dc1debc321fc27eca3527e5601",
+    "algorithm_performance.csv": "998ca0634a040d104966d9d21d9d7b5209430c29af68884bd7ca4caedbd8ec08",
+    "pilot_throughput_projection.json": "06ca895fbd19394071630eccb0b589272303f5be6e1bef27176827d77b045078",
+    "family_run_registry.csv": "fc9051452d8eafbd7bcbc871f38936b7206554499db054b0c4596bc94e9958b9"
+  },
+  "experiment_scope": {
+    "v2_started": false,
+    "p1_started": false,
+    "p2_started": false,
+    "formal_started": false
+  }
+}
