@@ -50,6 +50,41 @@ EXPECTED_GLOBAL_HASHES = {
         "fc9051452d8eafbd7bcbc871f38936b7206554499db054b0c4596bc94e9958b9"
     ),
 }
+EXPECTED_RUN_ARTIFACT_HASHES = {
+    "pilot_e3_repro_v4_v2_2026072001": {
+        "result.json": (
+            "46cd8637ef5b610588b57af8a0463d6dcabd4b1800323b816277b01a1676d620"
+        ),
+        "manifest.json": (
+            "c6952d7c370a1c3aef0aeac9ef3812938812e20d90e1d11a742d906091d549ac"
+        ),
+        "status_summary.json": (
+            "fc11073224129052f3aff378a2b3a6eaafe33bb6d4f0f6a351a052ead4132d79"
+        ),
+    },
+    "pilot_e3_repro_v4_v2_2026072002": {
+        "result.json": (
+            "1269d78f01e3d6a76ef507f6f2a0884eb66a993b92d8abe704795577f3f33e3c"
+        ),
+        "manifest.json": (
+            "65f00fb441c2a4858d68e2c4bbebac07dbefc3bbd1cca5618c46cd90e5078c67"
+        ),
+        "status_summary.json": (
+            "3652d2ef6dd6e452b642c38d0dd30388baf9b441b4d2388320689269d8904d28"
+        ),
+    },
+    "pilot_e3_repro_v4_v2_2026072003": {
+        "result.json": (
+            "4028d55ca38bc471da36efe8f3fb51e544af071943edfd850cd25d4c85622037"
+        ),
+        "manifest.json": (
+            "1cd01bba4b7503f408191d38208f8a3c384b8a33b4f97b0d57efc8153ef95e96"
+        ),
+        "status_summary.json": (
+            "37b18384b2218f45fecd4a4faf7fef57cec97b30a4ad89c27f66bd6c95397830"
+        ),
+    },
+}
 
 
 def test_phase6_e3_v2_repro_v4_audit_is_closed() -> None:
@@ -89,12 +124,20 @@ def test_phase6_e3_v2_repro_v4_audit_is_closed() -> None:
         assert run["status"] == "optimal"
         assert run["parent_run_id"] is None
         assert run["completed_budget_count"] == run["planned_budget_count"] == 3
-        assert {pair["budget_index"] for pair in run["budget_pairs"]} == {0, 1, 2}
-        assert set(run["artifact_sha256"]) == {
-            "result.json",
-            "manifest.json",
-            "status_summary.json",
+        assert run["fingerprints"] == {
+            key: value
+            for key, value in EXPECTED_FINGERPRINTS.items()
+            if key != "family_component_sha256"
         }
+        assert run["disposal_fields"] == [
+            "early_disposal",
+            "expired_waste",
+            "total_disposal",
+        ]
+        assert {pair["budget_index"] for pair in run["budget_pairs"]} == {0, 1, 2}
+        assert run["artifact_sha256"] == EXPECTED_RUN_ARTIFACT_HASHES[
+            run["run_id"]
+        ]
         for pair in run["budget_pairs"]:
             expected_factor, expected_budget = EXPECTED_BUDGETS[pair["budget_index"]]
             assert pair["budget_factor"] == expected_factor
