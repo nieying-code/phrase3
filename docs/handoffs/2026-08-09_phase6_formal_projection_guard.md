@@ -9,9 +9,9 @@
 - Branch: `agent/fix-phase6-formal-projection`
 - Base branch: `main`
 - Base commit: `d7a67d59ab4b7abfa4c25fa0e05dd6c6e2961540`
-- Implementation commit: pending
-- Final PR head: pending
-- PR: pending
+- Implementation commit: `04f775fe59b6b81790b11f375ce5601d78be0422`
+- Final PR head: see Draft PR after the handoff-link commit
+- PR: https://github.com/nieying-code/phrase3/pull/28
 - CI: pending
 
 ## 根因
