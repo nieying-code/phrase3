@@ -7,7 +7,7 @@
     "gurobi_solve_invoked": false
   },
   "source": {
-    "base_commit_sha": "f65ed995af846df1386049d6dc634ced99b89cc0",
+    "base_commit_sha": "d7a67d59ab4b7abfa4c25fa0e05dd6c6e2961540",
     "identity_rule": "final PR head plus recomputed scientific, runner, component and environment fingerprints",
     "clean_detached_worktree": true,
     "tracked_change_count": 0,
@@ -49,7 +49,7 @@
   },
   "fingerprints": {
     "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
-    "e3_component_sha256": "fd0dc3ea77f850615502005e2caf9f3b7c0259d7c11a9efc7e2a30025c404083",
+    "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e",
     "family_component_sha256": "92bbf40a3dbbb6c72f75f257d39197ee9c42f455daf6efecb4e8df710e065b5e",
     "e3_runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
     "family_runner_config_sha256": "983776a19e0a12937bc8a185b0fe5fdf76877d266445dcfce5f252d397a6ca8c",
@@ -92,11 +92,12 @@
     "result_sha256_revalidated": true,
     "registry_result_manifest_cross_checked": true,
     "artifact_invalid_blocks_authorization": true,
-    "atomic_replace_permission_retry_is_bounded": true
+    "atomic_replace_permission_retry_is_bounded": true,
+    "formal_e3_preserves_authorized_pilot_projection": true
   },
   "validation": {
     "compileall": "passed",
-    "full_pytest": "153 passed in 37.35s",
+    "full_pytest": "159 passed in 38.00s",
     "ci_equivalent_regular_pytest": "147 passed in 29.27s",
     "phase5_end_to_end": "6 passed in 6.26s",
     "source_gate_and_phase6_targeted": "50 passed in 14.00s",
@@ -104,7 +105,7 @@
     "github_actions": {
       "reviewed_baseline_run_id": "30706775890",
       "reviewed_baseline_status": "success",
-      "current_fix_ci": "reported_by_pr_checks_after_push"
+      "current_fix_ci": "pending for formal projection guard PR"
     }
   },
   "legacy_result_policy": {
