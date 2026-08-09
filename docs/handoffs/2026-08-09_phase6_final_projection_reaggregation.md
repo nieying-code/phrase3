@@ -9,8 +9,8 @@
 - Branch: `agent/phase6-final-projection-repro-v4`
 - Base / execution commit: `f91e10c9140fc49b4a67dcaadc654a8bfb9df8e3`
 - Execution tree: `e3ed562c3a63cb45309f86e8a681f4cd6acea000`
-- Results documentation commit: pending
-- Draft PR: pending
+- Results documentation commit: `950e225e25302f566b6febbff38bac1a08e5ab8c`
+- Draft PR: [#33](https://github.com/nieying-code/phrase3/pull/33)
 - CI: pending
 
 ## 执行内容
