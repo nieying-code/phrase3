@@ -12,7 +12,6 @@ AUDIT = Path(
     "docs/handoffs/2026-08-09_phase6_repro_v3_v2_e3_pilots_audit.json"
 )
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
-GIT_SHA = re.compile(r"^[0-9a-f]{40}$")
 SEEDS = {2026072001, 2026072002, 2026072003}
 
 
@@ -24,8 +23,12 @@ def test_repro_v3_v2_e3_pilot_audit_is_complete_and_consistent() -> None:
     pairs = audit["budget_pairs"]
 
     assert audit["output_root"] == "outputs/phase6_v21_repro_v3"
-    assert GIT_SHA.fullmatch(source["execution_git_sha"])
-    assert GIT_SHA.fullmatch(source["execution_git_tree_sha"])
+    assert source["execution_git_sha"] == (
+        "b9371d4ba36bd8b578cb366aaa4f56b9d839b472"
+    )
+    assert source["execution_git_tree_sha"] == (
+        "db8526a508c96c0af48a06c037a63a991cb27408"
+    )
     assert source["tracked_modified_count_at_start"] == 0
     assert source["untracked_paths_at_start"] == []
     assert source["working_tree_dirty"] is False
@@ -68,6 +71,7 @@ def test_repro_v3_v2_e3_pilot_audit_is_complete_and_consistent() -> None:
     assert len(runs) == 3
     assert {run["seed"] for run in runs} == SEEDS
     assert all(run["tier_id"] == "V2" for run in runs)
+    assert all(run["execution_mode"] == "pilot" for run in runs)
     assert all(run["status"] == "optimal" for run in runs)
     assert all(run["budget_pair_count"] == 3 for run in runs)
     assert all(run["algorithm_execution_count"] == 18 for run in runs)
@@ -82,8 +86,11 @@ def test_repro_v3_v2_e3_pilot_audit_is_complete_and_consistent() -> None:
             assert SHA256.fullmatch(run[name])
 
     assert len(pairs) == 9
-    assert {pair["seed"] for pair in pairs} == SEEDS
-    assert {pair["budget_factor"] for pair in pairs} == {0.9, 1.1, 1.3}
+    assert {(pair["seed"], pair["budget_factor"]) for pair in pairs} == {
+        (seed, factor)
+        for seed in SEEDS
+        for factor in (0.9, 1.1, 1.3)
+    }
     assert all(pair["difference"] == 0.0 for pair in pairs)
     assert all(pair["cold_objective"] == pair["warm_objective"] for pair in pairs)
     assert all(pair["cold_iterations"] > 0 for pair in pairs)
@@ -104,7 +111,13 @@ def test_repro_v3_v2_e3_pilot_audit_is_complete_and_consistent() -> None:
         "total_transferred_scenarios_reused": 6,
         "mean_warm_pool_reuse_fraction": 2 / 9,
     }
-    assert all(SHA256.fullmatch(value) for value in audit["fingerprints"].values())
+    assert audit["fingerprints"] == {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "e3_component_sha256": "fd0dc3ea77f850615502005e2caf9f3b7c0259d7c11a9efc7e2a30025c404083",
+        "family_component_sha256": "92bbf40a3dbbb6c72f75f257d39197ee9c42f455daf6efecb4e8df710e065b5e",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
+    }
     assert all(SHA256.fullmatch(value) for value in audit["global_artifacts"].values())
 
     projection = audit["projection"]

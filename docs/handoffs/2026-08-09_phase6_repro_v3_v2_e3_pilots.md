@@ -66,6 +66,7 @@
 - 完整回归：`.venv-gurobi\\Scripts\\python.exe -m pytest -q` → `156 passed in 48.24s`
 - `git diff --check`：通过
 - GitHub Actions：run `31296570413`，Linux tests 与 Windows reproducibility check 均成功
+- 复审审计硬化：精确锁定五类批准指纹、执行 commit/tree、逐种子预算笛卡尔积和 `execution_mode=pilot`；专项测试 `1 passed in 0.07s`，未运行任何实验或 Gurobi 求解
 
 ## 修改文件
 

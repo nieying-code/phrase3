@@ -74,6 +74,7 @@
   "runs": [
     {
       "run_id": "pilot_v2_repro_v3_2026072001",
+      "execution_mode": "pilot",
       "tier_id": "V2",
       "seed": 2026072001,
       "status": "optimal",
@@ -89,6 +90,7 @@
     },
     {
       "run_id": "pilot_v2_repro_v3_2026072002",
+      "execution_mode": "pilot",
       "tier_id": "V2",
       "seed": 2026072002,
       "status": "optimal",
@@ -104,6 +106,7 @@
     },
     {
       "run_id": "pilot_v2_repro_v3_2026072003",
+      "execution_mode": "pilot",
       "tier_id": "V2",
       "seed": 2026072003,
       "status": "optimal",
