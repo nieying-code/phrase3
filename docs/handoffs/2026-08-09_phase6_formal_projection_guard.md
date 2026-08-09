@@ -12,7 +12,7 @@
 - Implementation commit: `04f775fe59b6b81790b11f375ce5601d78be0422`
 - Final PR head: see Draft PR after the handoff-link commit
 - PR: https://github.com/nieying-code/phrase3/pull/28
-- CI: pending
+- CI: GitHub Actions run `31303233553`, success（覆盖实现提交与首次 handoff 链接提交）
 
 ## 根因
 
@@ -63,7 +63,9 @@ formal_execution_authorized=false
   - 通过
 - `python -m pytest -q`
   - `159 passed in 38.00s`
-- CI：pending
+- GitHub Actions run `31303233553`
+  - Linux 常规回归与 Phase 5 端到端：通过
+  - Windows 复现守卫：通过
 
 ## 实验停止边界
 
