@@ -1,0 +1,152 @@
+{
+  "schema_version": "phase6_e3_v2_repro_v4_audit_v1",
+  "output_root": "D:\\新建文件夹\\项目交付\\阶段3-4修复同步\\phrase3\\outputs\\phase6_v21_repro_v3",
+  "source": {
+    "execution_git_sha": "e7fae479092cbaab35f4ac05fae3001b6b1b94a4",
+    "execution_git_tree_sha": "5bb7715fb80a78783488a0f6b33eb00849c2902d",
+    "merged_main_sha": "e7fae479092cbaab35f4ac05fae3001b6b1b94a4",
+    "merged_main_tree_sha": "5bb7715fb80a78783488a0f6b33eb00849c2902d",
+    "tree_equivalent": true,
+    "tracked_modified_count_at_start": 0,
+    "untracked_execution_input_count_at_start": 0,
+    "working_tree_dirty": false
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+    "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+    "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e",
+    "family_component_sha256": "92bbf40a3dbbb6c72f75f257d39197ee9c42f455daf6efecb4e8df710e065b5e",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "runs": [
+    {
+      "run_id": "pilot_e3_repro_v4_v2_2026072001",
+      "tier_id": "V2",
+      "execution_mode": "pilot",
+      "seed": 2026072001,
+      "status": "optimal",
+      "parent_run_id": null,
+      "planned_budget_count": 3,
+      "completed_budget_count": 3,
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "disposal_fields": ["early_disposal", "expired_waste", "total_disposal"],
+      "artifact_sha256": {
+        "result.json": "46cd8637ef5b610588b57af8a0463d6dcabd4b1800323b816277b01a1676d620",
+        "manifest.json": "c6952d7c370a1c3aef0aeac9ef3812938812e20d90e1d11a742d906091d549ac",
+        "status_summary.json": "fc11073224129052f3aff378a2b3a6eaafe33bb6d4f0f6a351a052ead4132d79"
+      },
+      "budget_pairs": [
+        {"budget_index": 0, "budget_factor": 0.9, "budget": 1107.2893851278257, "cold_statuses": ["optimal", "optimal", "optimal"], "warm_statuses": ["optimal", "optimal", "optimal"], "cold_objectives": [30620.79029084595, 30620.79029084595, 30620.79029084595], "warm_objectives": [30620.79029084595, 30620.79029084595, 30620.79029084595], "cold_seconds": [1.282570100040175, 1.2335859999293461, 1.2760251000290737], "warm_seconds": [1.2903120000846684, 1.2806977999862283, 1.210687999962829], "objective_difference": 0.0, "transferred_from_previous_budget": false},
+        {"budget_index": 1, "budget_factor": 1.1, "budget": 1353.3536929340091, "cold_statuses": ["optimal", "optimal", "optimal"], "warm_statuses": ["optimal", "optimal", "optimal"], "cold_objectives": [25431.602135889087, 25431.602135889087, 25431.602135889087], "warm_objectives": [25431.602135889087, 25431.602135889087, 25431.602135889087], "cold_seconds": [1.227974500041455, 1.220531600061804, 1.2455977000063285], "warm_seconds": [1.2616060000145808, 1.2453897000523284, 1.176714500063099], "objective_difference": 0.0, "transferred_from_previous_budget": true},
+        {"budget_index": 2, "budget_factor": 1.3, "budget": 1599.4180007401926, "cold_statuses": ["optimal", "optimal", "optimal"], "warm_statuses": ["optimal", "optimal", "optimal"], "cold_objectives": [20301.417127459383, 20301.417127459383, 20301.417127459383], "warm_objectives": [20301.417127459383, 20301.417127459383, 20301.417127459383], "cold_seconds": [1.2583015999989584, 1.2545718000037596, 1.2316744000418112], "warm_seconds": [1.2531548000406474, 1.1981111000059173, 1.293727400014177], "objective_difference": 0.0, "transferred_from_previous_budget": true}
+      ]
+    },
+    {
+      "run_id": "pilot_e3_repro_v4_v2_2026072002",
+      "tier_id": "V2",
+      "execution_mode": "pilot",
+      "seed": 2026072002,
+      "status": "optimal",
+      "parent_run_id": null,
+      "planned_budget_count": 3,
+      "completed_budget_count": 3,
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "disposal_fields": ["early_disposal", "expired_waste", "total_disposal"],
+      "artifact_sha256": {
+        "result.json": "1269d78f01e3d6a76ef507f6f2a0884eb66a993b92d8abe704795577f3f33e3c",
+        "manifest.json": "65f00fb441c2a4858d68e2c4bbebac07dbefc3bbd1cca5618c46cd90e5078c67",
+        "status_summary.json": "3652d2ef6dd6e452b642c38d0dd30388baf9b441b4d2388320689269d8904d28"
+      },
+      "budget_pairs": [
+        {"budget_index": 0, "budget_factor": 0.9, "budget": 1107.2893851278257, "cold_statuses": ["optimal", "optimal", "optimal"], "warm_statuses": ["optimal", "optimal", "optimal"], "cold_objectives": [17728.74000636316, 17728.74000636316, 17728.74000636316], "warm_objectives": [17728.74000636316, 17728.74000636316, 17728.74000636316], "cold_seconds": [1.306540200021118, 1.2436027999501675, 1.2233564000343904], "warm_seconds": [1.2652416999917477, 1.2709461000049487, 1.2318351999856532], "objective_difference": 0.0, "transferred_from_previous_budget": false},
+        {"budget_index": 1, "budget_factor": 1.1, "budget": 1353.3536929340091, "cold_statuses": ["optimal", "optimal", "optimal"], "warm_statuses": ["optimal", "optimal", "optimal"], "cold_objectives": [12593.369449515683, 12593.369449515683, 12593.369449515683], "warm_objectives": [12593.369449515683, 12593.369449515683, 12593.369449515683], "cold_seconds": [1.2588449000613764, 1.198057199944742, 1.2037517999997362], "warm_seconds": [1.283164000022225, 1.2878971000900492, 1.239667300018482], "objective_difference": 0.0, "transferred_from_previous_budget": true},
+        {"budget_index": 2, "budget_factor": 1.3, "budget": 1599.4180007401926, "cold_statuses": ["optimal", "optimal", "optimal"], "warm_statuses": ["optimal", "optimal", "optimal"], "cold_objectives": [7468.893506759239, 7468.893506759239, 7468.893506759239], "warm_objectives": [7468.893506759239, 7468.893506759239, 7468.893506759239], "cold_seconds": [1.2570594999706373, 1.2700963999377564, 1.270949500030838], "warm_seconds": [1.2165740000782534, 1.2226768999826163, 1.207594999927096], "objective_difference": 0.0, "transferred_from_previous_budget": true}
+      ]
+    },
+    {
+      "run_id": "pilot_e3_repro_v4_v2_2026072003",
+      "tier_id": "V2",
+      "execution_mode": "pilot",
+      "seed": 2026072003,
+      "status": "optimal",
+      "parent_run_id": null,
+      "planned_budget_count": 3,
+      "completed_budget_count": 3,
+      "fingerprints": {
+        "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+        "runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+        "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "disposal_fields": ["early_disposal", "expired_waste", "total_disposal"],
+      "artifact_sha256": {
+        "result.json": "4028d55ca38bc471da36efe8f3fb51e544af071943edfd850cd25d4c85622037",
+        "manifest.json": "1cd01bba4b7503f408191d38208f8a3c384b8a33b4f97b0d57efc8153ef95e96",
+        "status_summary.json": "37b18384b2218f45fecd4a4faf7fef57cec97b30a4ad89c27f66bd6c95397830"
+      },
+      "budget_pairs": [
+        {"budget_index": 0, "budget_factor": 0.9, "budget": 1107.2893851278257, "cold_statuses": ["optimal", "optimal", "optimal"], "warm_statuses": ["optimal", "optimal", "optimal"], "cold_objectives": [30866.35385896142, 30866.35385896142, 30866.35385896142], "warm_objectives": [30866.35385896142, 30866.35385896142, 30866.35385896142], "cold_seconds": [1.3046051999554038, 1.2370342999929562, 1.2498505000257865], "warm_seconds": [1.2679175999946892, 1.2542146000778303, 1.2744653999106959], "objective_difference": 0.0, "transferred_from_previous_budget": false},
+        {"budget_index": 1, "budget_factor": 1.1, "budget": 1353.3536929340091, "cold_statuses": ["optimal", "optimal", "optimal"], "warm_statuses": ["optimal", "optimal", "optimal"], "cold_objectives": [25707.147715073075, 25707.147715073075, 25707.147715073075], "warm_objectives": [25707.147715073075, 25707.147715073075, 25707.147715073075], "cold_seconds": [1.2342535000061616, 1.2258701999671757, 1.1848112000152469], "warm_seconds": [1.2824356999481097, 1.3696184000000358, 1.2682103998959064], "objective_difference": 0.0, "transferred_from_previous_budget": true},
+        {"budget_index": 2, "budget_factor": 1.3, "budget": 1599.4180007401926, "cold_statuses": ["optimal", "optimal", "optimal"], "warm_statuses": ["optimal", "optimal", "optimal"], "cold_objectives": [20577.90327517287, 20577.90327517287, 20577.90327517287], "warm_objectives": [20577.90327517287, 20577.90327517287, 20577.90327517287], "cold_seconds": [1.236212599906139, 1.2261075000278652, 1.2733007000060752], "warm_seconds": [1.2914700000546873, 1.2555393000366166, 1.2384792000520974], "objective_difference": 0.0, "transferred_from_previous_budget": true}
+      ]
+    }
+  ],
+  "disposal_fields": ["early_disposal", "expired_waste", "total_disposal"],
+  "summary": {
+    "primary_run_count": 3,
+    "budget_pair_count": 9,
+    "technical_repetition_group_count": 18,
+    "algorithm_execution_count": 54,
+    "adjacent_budget_state_transfer_count": 6,
+    "all_optimal": true,
+    "max_within_group_objective_spread": 0.0,
+    "max_abs_cold_warm_objective_difference": 0.0,
+    "failed_primary_count": 0,
+    "duplicate_primary_count": 0,
+    "diagnostic_parent_count": 0,
+    "family_registry_run_count": 12
+  },
+  "projection": {
+    "status": "insufficient_pilot_coverage",
+    "completed_run_count": 6,
+    "required_run_count": 12,
+    "primary_completion_rate": 0.5,
+    "missing_runs": [
+      {"tier_id": "P1", "seed": 2026072001},
+      {"tier_id": "P1", "seed": 2026072002},
+      {"tier_id": "P1", "seed": 2026072003},
+      {"tier_id": "P2", "seed": 2026072001},
+      {"tier_id": "P2", "seed": 2026072002},
+      {"tier_id": "P2", "seed": 2026072003}
+    ],
+    "failed_primary_runs": [],
+    "artifact_invalid_runs": [],
+    "duplicate_primary_runs": [],
+    "diagnostic_attempts": [],
+    "compute_gate_passed": false,
+    "formal_execution_authorized": false
+  },
+  "global_artifact_sha256": {
+    "run_registry.csv": "e7cf00da066262d050b2cefd83d1a09fcad2955576c96d78b53dce09c525917b",
+    "algorithm_performance.csv": "cfc0150c9f753c7ce110ae3ac35dc6d192a872512027d8b8998b82b5a4b71c4e",
+    "pilot_throughput_projection.json": "1aecd67d9ea9791b2e8fb80b668ee9397b19ce6821552b1e30342165e035189d",
+    "family_run_registry.csv": "fc9051452d8eafbd7bcbc871f38936b7206554499db054b0c4596bc94e9958b9"
+  },
+  "experiment_scope": {
+    "v1_current_fingerprint_run_count": 3,
+    "v2_current_fingerprint_run_count": 3,
+    "p1_started": false,
+    "p2_started": false,
+    "formal_started": false
+  }
+}
