@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import math
 import re
+import statistics
 from pathlib import Path
 
 
@@ -17,6 +18,7 @@ SEEDS = {2026072001, 2026072002, 2026072003}
 
 def test_repro_v3_p1_e3_pilot_audit_and_scale_assessment() -> None:
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
+    assert audit["audit_schema"] == "phase6_repro_v3_p1_e3_pilots_v2"
     source = audit["source"]
     assert source["execution_git_sha"] == (
         "1440b288cc875d0ff70b2acbd581ae75764a7724"
@@ -27,7 +29,36 @@ def test_repro_v3_p1_e3_pilot_audit_and_scale_assessment() -> None:
     assert source["tracked_modified_count_at_start"] == 0
     assert source["untracked_paths_at_start"] == []
     assert source["working_tree_dirty"] is False
-    assert source["historical_output_directories_used_as_input"] is False
+    controlled_root = source["controlled_read_write_root"]
+    assert controlled_root == {
+        "path": "outputs/phase6_v21_repro_v3/",
+        "read_inputs": {
+            "approved_v1_v2_e3_registry": (
+                "experiments/phase6/run_registry.csv"
+            ),
+            "approved_v1_v2_e3_projection": (
+                "experiments/phase6/pilot_throughput_projection.json"
+            ),
+            "approved_family_prerequisite_registry": (
+                "experiments/phase6/family_run_registry.csv"
+            ),
+            "approved_family_prerequisite_artifacts": (
+                "experiments/phase6/family_runs/*/{result.json,manifest.json}"
+            ),
+        },
+        "write_outputs": {
+            "current_p1_e3_pilot_artifacts": (
+                "experiments/phase6/runs/pilot_p1_repro_v3_*"
+            ),
+            "updated_e3_registry": "experiments/phase6/run_registry.csv",
+            "updated_e3_projection": (
+                "experiments/phase6/pilot_throughput_projection.json"
+            ),
+        },
+    }
+    assert (
+        source["external_historical_output_directories_used_as_input"] is False
+    )
     assert source["uncommitted_model_or_configuration_input"] is False
     assert audit["fingerprints"] == {
         "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
@@ -92,21 +123,56 @@ def test_repro_v3_p1_e3_pilot_audit_and_scale_assessment() -> None:
     assert all(math.isfinite(pair["warm_seconds"]) for pair in pairs)
 
     gate = audit["pilot_scale_advancement_assessment"]
-    assert gate["scope"] == "P1 pilot to P2 pilot review authorization only"
-    assert gate["planned_pair_count"] == gate["jointly_optimal_pair_count"] == 9
-    assert gate["joint_pair_completion_rate"] == 1.0
-    assert gate["joint_pair_completion_rate"] >= gate[
-        "joint_pair_completion_rate_minimum"
-    ]
-    assert gate["budget_wall_seconds_per_algorithm"] == 1800.0
-    assert gate["maximum_algorithm_median_runtime_fraction"] == max(
-        gate["cold_median_runtime_fraction"],
-        gate["warm_median_runtime_fraction"],
+    cold_median_seconds = statistics.median(
+        pair["cold_seconds"] for pair in pairs
     )
-    assert gate["maximum_algorithm_median_runtime_fraction"] <= gate[
-        "maximum_runtime_fraction_threshold"
-    ]
-    assert gate["assessment_passed"] is True
+    warm_median_seconds = statistics.median(
+        pair["warm_seconds"] for pair in pairs
+    )
+    consistency = audit["numerical_consistency"]
+    assert cold_median_seconds == consistency["cold_median_seconds"]
+    assert warm_median_seconds == consistency["warm_median_seconds"]
+
+    assert gate["scope"] == "P1 pilot to P2 pilot review authorization only"
+    planned_pair_count = len(pairs)
+    jointly_optimal_pair_count = sum(
+        math.isfinite(pair["cold_objective"])
+        and math.isfinite(pair["warm_objective"])
+        and pair["cold_objective"] == pair["warm_objective"]
+        for pair in pairs
+    )
+    completion_rate = jointly_optimal_pair_count / planned_pair_count
+    assert gate["planned_pair_count"] == planned_pair_count == 9
+    assert gate["jointly_optimal_pair_count"] == jointly_optimal_pair_count == 9
+    assert gate["joint_pair_completion_rate"] == completion_rate == 1.0
+    assert gate["joint_pair_completion_rate_minimum"] == 0.80
+    assert gate["maximum_runtime_fraction_threshold"] == 0.75
+    assert gate["budget_wall_seconds_per_algorithm"] == 1800.0
+    cold_runtime_fraction = cold_median_seconds / 1800.0
+    warm_runtime_fraction = warm_median_seconds / 1800.0
+    assert math.isclose(
+        gate["cold_median_runtime_fraction"],
+        cold_runtime_fraction,
+        rel_tol=0.0,
+        abs_tol=1e-15,
+    )
+    assert math.isclose(
+        gate["warm_median_runtime_fraction"],
+        warm_runtime_fraction,
+        rel_tol=0.0,
+        abs_tol=1e-15,
+    )
+    max_runtime_fraction = max(cold_runtime_fraction, warm_runtime_fraction)
+    assert math.isclose(
+        gate["maximum_algorithm_median_runtime_fraction"],
+        max_runtime_fraction,
+        rel_tol=0.0,
+        abs_tol=1e-15,
+    )
+    expected_assessment = (
+        completion_rate >= 0.80 and max_runtime_fraction <= 0.75
+    )
+    assert gate["assessment_passed"] is expected_assessment
     assert gate["canonical_scale_advancement_json_created"] is False
 
     assert audit["numerical_consistency"][

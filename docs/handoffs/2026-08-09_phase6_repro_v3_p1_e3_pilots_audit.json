@@ -1,5 +1,5 @@
 {
-  "audit_schema": "phase6_repro_v3_p1_e3_pilots_v1",
+  "audit_schema": "phase6_repro_v3_p1_e3_pilots_v2",
   "output_root": "outputs/phase6_v21_repro_v3",
   "source": {
     "execution_git_sha": "1440b288cc875d0ff70b2acbd581ae75764a7724",
@@ -8,8 +8,21 @@
     "tracked_modified_count_at_start": 0,
     "untracked_paths_at_start": [],
     "working_tree_dirty": false,
-    "controlled_read_write_root": "outputs/phase6_v21_repro_v3/",
-    "historical_output_directories_used_as_input": false,
+    "controlled_read_write_root": {
+      "path": "outputs/phase6_v21_repro_v3/",
+      "read_inputs": {
+        "approved_v1_v2_e3_registry": "experiments/phase6/run_registry.csv",
+        "approved_v1_v2_e3_projection": "experiments/phase6/pilot_throughput_projection.json",
+        "approved_family_prerequisite_registry": "experiments/phase6/family_run_registry.csv",
+        "approved_family_prerequisite_artifacts": "experiments/phase6/family_runs/*/{result.json,manifest.json}"
+      },
+      "write_outputs": {
+        "current_p1_e3_pilot_artifacts": "experiments/phase6/runs/pilot_p1_repro_v3_*",
+        "updated_e3_registry": "experiments/phase6/run_registry.csv",
+        "updated_e3_projection": "experiments/phase6/pilot_throughput_projection.json"
+      }
+    },
+    "external_historical_output_directories_used_as_input": false,
     "uncommitted_model_or_configuration_input": false
   },
   "fingerprints": {

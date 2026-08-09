@@ -31,6 +31,17 @@
 - Runner config: `3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd`
 - Environment: `b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af`
 
+### Controlled output provenance clarification
+
+`outputs/phase6_v21_repro_v3/` was the controlled read/write root. The P1
+runner read the already approved V1/V2 E3 registry and projection plus the
+approved family prerequisite registry and finalized family result manifests
+inside that same root. It wrote only the current P1 E3 run artifacts and the
+corresponding E3 registry/projection updates. No historical output directory
+outside this controlled root was used as input, and no uncommitted model,
+scientific configuration, matrix, runner configuration, or dependency lock
+participated in execution.
+
 ## P1 结果
 
 - Primary runs：3/3 `optimal`
