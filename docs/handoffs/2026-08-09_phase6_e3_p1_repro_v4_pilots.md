@@ -9,9 +9,10 @@
 - Branch: `agent/phase6-e3-p1-repro-v4`
 - Base / execution commit: `de1593e94b4cd22653255421a21a0c6b792ffdd2`
 - Execution tree: `5424daebb2da574034c5b210e9a4e02d64d1c451`
-- Results documentation commit: `10d6f4f`
+- Intermediate results documentation commit: `10d6f4f`
+- Final reviewed PR head before this tracking-only correction: `7f986a935a029a91a0fab21ebb58dca54ade16a7`
 - Draft PR: https://github.com/nieying-code/phrase3/pull/31
-- CI: pending
+- CI: [GitHub Actions run 31315371844](https://github.com/nieying-code/phrase3/actions/runs/31315371844) succeeded on Linux and Windows for `7f986a9`
 
 运行开始时执行提交与 `origin/main` 一致；tracked 修改、未跟踪执行输入均为 0，工作树干净。
 
@@ -70,7 +71,7 @@
 - 完整 pytest：`162 passed in 38.28s`
 - `python -m compileall -q src tests`：通过
 - `git diff --check`：通过
-- GitHub Actions：pending
+- GitHub Actions：[run 31315371844](https://github.com/nieying-code/phrase3/actions/runs/31315371844)，Linux 与 Windows 均成功
 
 ## 下一步建议
 
