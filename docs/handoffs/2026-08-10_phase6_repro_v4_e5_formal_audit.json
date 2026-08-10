@@ -88,6 +88,60 @@
     "interaction_life_6_supply_0.05": {"design":"interaction","factor":"shelf_life_periods_x_supply_reduction_mean","value":[6,0.05],"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21361.054897160313,"minimum_robust_objective":14704.168742024207,"maximum_robust_objective":29333.062192760906,"mean_paired_objective_difference_from_baseline":-3.637978807091713e-13},
     "interaction_life_6_supply_0.4": {"design":"interaction","factor":"shelf_life_periods_x_supply_reduction_mean","value":[6,0.4],"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21361.054897160313,"minimum_robust_objective":14704.168742024207,"maximum_robust_objective":29333.062192760906,"mean_paired_objective_difference_from_baseline":-3.637978807091713e-13}
   },
+  "markup_shortage_penalty_linkage": {
+    "shortage_penalty_changes_with_markup": true,
+    "pure_emergency_price_effect_identified": false,
+    "maximum_reference_emergency_price_formula": "maximum_regular_price * (1 + emergency_price_markup_mean + 3 * emergency_price_markup_sd)",
+    "shortage_penalty_formula": "shortage_penalty_multiplier * item_maximum_reference_emergency_price",
+    "shortage_penalty_multiplier": 12.0,
+    "emergency_price_markup_sd": 0.15,
+    "regular_price_by_period": [2.0, 2.063301270189222, 2.083301270189222, 2.06, 2.036698729810778, 2.056698729810778],
+    "maximum_regular_price": 2.083301270189222,
+    "markup_mean_cases": {
+      "0.15": {
+        "shortage_penalty_by_item": {"relief_food_1": 39.99938438763306},
+        "shortage_penalty_vector_sha256": "7f010ece05797f7c29555d5da0c5a83f7c2fc4a65d5734940d1289f5e48beebf"
+      },
+      "0.35": {
+        "shortage_penalty_by_item": {"relief_food_1": 44.9993074360872},
+        "shortage_penalty_vector_sha256": "e87a8b4746d1d359f84eff187c9a7290cd77e406e20f64b6af0fa026a11e337c"
+      },
+      "0.55": {
+        "shortage_penalty_by_item": {"relief_food_1": 49.99923048454133},
+        "shortage_penalty_vector_sha256": "71c784929e678f9180a9b395572eb7d65b44956ee9e7cad19833142387b5a771"
+      }
+    },
+    "emergency_activity": {
+      "evidence_type": "structural_implication_from_locked_zero_reserve_and_recourse_budget_constraint",
+      "directly_serialized_in_e5_worker_result": false,
+      "plan_count": 75,
+      "plan_count_with_zero_reserve": 75,
+      "maximum_reserve": 0.0,
+      "recourse_budget_constraint": "sum(emergency_price * emergency_purchase) <= reserve",
+      "emergency_purchase_nonnegative": true,
+      "emergency_prices_strictly_positive": true,
+      "maximum_emergency_spend": 0.0,
+      "maximum_emergency_purchase": 0.0,
+      "maximum_emergency_spend_by_configuration": {
+        "baseline": 0.0,
+        "ofat_demand_cv_0.15": 0.0,
+        "ofat_demand_cv_0.45": 0.0,
+        "ofat_emergency_price_markup_mean_0.15": 0.0,
+        "ofat_emergency_price_markup_mean_0.55": 0.0,
+        "ofat_supply_reduction_mean_0.05": 0.0,
+        "ofat_supply_reduction_mean_0.4": 0.0,
+        "ofat_shelf_life_periods_1": 0.0,
+        "ofat_shelf_life_periods_6": 0.0,
+        "ofat_storage_capacity_to_expected_period_demand_0.5": 0.0,
+        "ofat_storage_capacity_to_expected_period_demand_1.5": 0.0,
+        "interaction_life_1_supply_0.05": 0.0,
+        "interaction_life_1_supply_0.4": 0.0,
+        "interaction_life_6_supply_0.05": 0.0,
+        "interaction_life_6_supply_0.4": 0.0
+      }
+    },
+    "interpretation": "This sensitivity changes both the emergency-price distribution and the shortage-penalty calibration. Because every E5 plan has zero reserve and therefore zero emergency purchasing, the observed objective change cannot be interpreted as an isolated emergency-price effect."
+  },
   "mechanism_finding": {
     "reserve_activation_tolerance": 1e-7,
     "plan_count": 75,
@@ -96,6 +150,7 @@
     "configuration_count_with_any_positive_reserve": 0,
     "frozen_range_supports_positive_endogenous_reserve": false,
     "interpretation": "Within the frozen V2 budget and sensitivity ranges, the endogenous model always allocates the full budget to regular procurement and no tested configuration activates positive reserve.",
+    "markup_sensitivity_interpretation": "The emergency-price markup mean and shortage-penalty calibration move together and materially affect the robust objective; the experiment does not separately identify a pure emergency-price effect.",
     "supply_effect_under_zero_reserve": "Changing emergency supply reduction has no objective effect here because reserve and therefore emergency purchasing are zero; this is a conditional result, not proof that supply risk is generally irrelevant.",
     "innovation_claim_boundary": "The experiment supports the correctness and endogeneity of the reserve-allocation mechanism but does not support empirical superiority or positive reserve activation in the frozen range."
   },

@@ -52,6 +52,20 @@ EXPECTED_MEAN_OBJECTIVES = {
     "interaction_life_6_supply_0.05": 21361.054897160313,
     "interaction_life_6_supply_0.4": 21361.054897160313,
 }
+EXPECTED_SHORTAGE_PENALTIES = {
+    "0.15": (
+        {"relief_food_1": 39.99938438763306},
+        "7f010ece05797f7c29555d5da0c5a83f7c2fc4a65d5734940d1289f5e48beebf",
+    ),
+    "0.35": (
+        {"relief_food_1": 44.9993074360872},
+        "e87a8b4746d1d359f84eff187c9a7290cd77e406e20f64b6af0fa026a11e337c",
+    ),
+    "0.55": (
+        {"relief_food_1": 49.99923048454133},
+        "71c784929e678f9180a9b395572eb7d65b44956ee9e7cad19833142387b5a771",
+    ),
+}
 
 
 def _canonical_sha256(value: object) -> str:
@@ -151,6 +165,61 @@ def test_repro_v4_e5_formal_audit_is_complete_and_consistent() -> None:
         assert row["minimum_robust_objective"] <= row["mean_robust_objective"]
         assert row["mean_robust_objective"] <= row["maximum_robust_objective"]
 
+    linkage = audit["markup_shortage_penalty_linkage"]
+    assert linkage["shortage_penalty_changes_with_markup"] is True
+    assert linkage["pure_emergency_price_effect_identified"] is False
+    assert linkage["shortage_penalty_multiplier"] == 12.0
+    assert linkage["emergency_price_markup_sd"] == 0.15
+    assert linkage["regular_price_by_period"] == [
+        2.0,
+        2.063301270189222,
+        2.083301270189222,
+        2.06,
+        2.036698729810778,
+        2.056698729810778,
+    ]
+    assert linkage["maximum_regular_price"] == 2.083301270189222
+    assert set(linkage["markup_mean_cases"]) == set(EXPECTED_SHORTAGE_PENALTIES)
+    for markup_mean, (penalty_vector, vector_hash) in (
+        EXPECTED_SHORTAGE_PENALTIES.items()
+    ):
+        case = linkage["markup_mean_cases"][markup_mean]
+        assert case["shortage_penalty_by_item"] == penalty_vector
+        assert (
+            _canonical_sha256(penalty_vector)
+            == case["shortage_penalty_vector_sha256"]
+            == vector_hash
+        )
+        expected_penalty = (
+            linkage["shortage_penalty_multiplier"]
+            * linkage["maximum_regular_price"]
+            * (
+                1.0
+                + float(markup_mean)
+                + 3.0 * linkage["emergency_price_markup_sd"]
+            )
+        )
+        assert penalty_vector == {"relief_food_1": expected_penalty}
+
+    emergency = linkage["emergency_activity"]
+    assert emergency["evidence_type"] == (
+        "structural_implication_from_locked_zero_reserve_and_"
+        "recourse_budget_constraint"
+    )
+    assert emergency["directly_serialized_in_e5_worker_result"] is False
+    assert emergency["plan_count"] == emergency["plan_count_with_zero_reserve"] == 75
+    assert emergency["maximum_reserve"] == 0.0
+    assert emergency["emergency_purchase_nonnegative"] is True
+    assert emergency["emergency_prices_strictly_positive"] is True
+    assert emergency["maximum_emergency_spend"] == 0.0
+    assert emergency["maximum_emergency_purchase"] == 0.0
+    assert set(emergency["maximum_emergency_spend_by_configuration"]) == set(
+        CONFIGURATIONS
+    )
+    assert set(emergency["maximum_emergency_spend_by_configuration"].values()) == {
+        0.0
+    }
+
     finding = audit["mechanism_finding"]
     assert finding["reserve_activation_tolerance"] == 1e-7
     assert finding["plan_count"] == 75
@@ -158,6 +227,7 @@ def test_repro_v4_e5_formal_audit_is_complete_and_consistent() -> None:
     assert finding["maximum_reserve"] == 0.0
     assert finding["configuration_count_with_any_positive_reserve"] == 0
     assert finding["frozen_range_supports_positive_endogenous_reserve"] is False
+    assert "move together" in finding["markup_sensitivity_interpretation"]
     baseline = summaries["baseline"]["mean_robust_objective"]
     assert summaries["ofat_supply_reduction_mean_0.05"]["mean_robust_objective"] == baseline
     assert summaries["ofat_supply_reduction_mean_0.4"]["mean_robust_objective"] == baseline

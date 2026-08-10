@@ -9,7 +9,7 @@
 - Branch: `results/phase6-repro-v4-e5-formal`
 - Execution and merged-main commit: `54d6ed0868b0ba47b3e7886714a75ab85f911084`
 - Execution and merged-main tree: `03216fc7c4d0de155c7770f652e8a5dd816fcf4a`
-- Draft PR: pending
+- Draft PR: https://github.com/nieying-code/phrase3/pull/37
 - 启动时 tracked 修改为 0、未跟踪执行输入为 0、工作树干净。
 - 受控读写根目录：`outputs/phase6_v21_repro_v3/`。
 
@@ -65,6 +65,19 @@ configuration_count_with_any_positive_reserve = 0 / 15
 | storage factor = 0.5 | 21699.337088 | +338.282191 |
 | storage factor = 1.5 | 21521.592213 | +160.537316 |
 
+应急价格加价敏感性必须按联动校准解释。冻结矩阵把物资缺货惩罚定义为：
+
+```text
+shortage_penalty
+= shortage_penalty_multiplier
+  × maximum_regular_price
+  × (1 + emergency_price_markup_mean + 3 × emergency_price_markup_sd)
+```
+
+因此，加价均值 0.15、0.35 和 0.55 对应的缺货惩罚分别为 `39.99938438763306`、`44.9993074360872` 和 `49.99923048454133`。本批识别的是“应急价格加价均值—缺货惩罚联动校准对鲁棒目标具有明显影响”，不是保持缺货惩罚不变的纯应急价格 OFAT，无法分离价格效应与惩罚效应。
+
+75 个方案的储备金均为 0。公共补救约束为 `sum(emergency_price × emergency_purchase) <= R`，应急采购非负且应急价格严格为正，所以每个配置的应急支出和应急采购量在结构上均只能为 0。E5 worker 结果没有直接序列化逐期应急采购，本结论的证据类型是锁定的零储备结果与公共补救约束共同蕴含的结构证明；机器审计对此作了明确区分。
+
 供应缩减均值 0.05/0.40 在本批与基准目标相同；四个交互配置的供应维度也未改变对应保质期结果。这是 `R=0`、应急采购未被使用时的条件性结果，不表示供应风险一般无关。
 
 ## 科学解释与论文边界
@@ -87,13 +100,15 @@ configuration_count_with_any_positive_reserve = 0 / 15
 - 每条 run 的 15-plan 身份摘要和 worker-result 映射摘要；
 - 完整 `5 × 15` 笛卡尔积；
 - 15 个配置的储备激活数、目标均值、范围和基准配对差；
+- 三档加价均值对应的缺货惩罚、向量哈希以及价格—惩罚联动解释；
+- 由零储备与公共应急预算约束推出的逐配置零应急支出证据；
 - 外层观察窗口事件、全局 registry/projection 哈希和停止边界。
 
 大型原始 worker 结果和日志仅保留在 D 盘受控输出根目录，不提交 GitHub。
 
 ## 验证
 
-计划执行：
+执行：
 
 ```text
 .venv-gurobi\Scripts\python.exe -m pytest -q tests\test_phase6_repro_v4_e5_formal_audit.py
@@ -101,6 +116,8 @@ configuration_count_with_any_positive_reserve = 0 / 15
 .venv-gurobi\Scripts\python.exe -m compileall -q src tests
 git diff --check
 ```
+
+实际结果：专项审计 `1 passed`，完整本地回归 `168 passed`，`compileall` 与 `git diff --check` 均通过。本次解释修复没有生成场景、调用 Gurobi 或重新运行 E5。
 
 ## 已知限制
 
@@ -123,6 +140,8 @@ E5 完成后已停止，没有启动 E3。应先由 ChatGPT 复审本 PR 并由�
 5. 75 个方案的储备金是否确实全部为 0；
 6. 配置目标均值与基准配对差是否可由审计复核；
 7. 供应风险无效的表述是否严格限定在零储备条件下；
-8. 是否避免把机制内生性夸大为正储备激活或经验优势；
-9. 外层观察窗口事件是否未造成覆盖、重试或科学失败；
-10. E3 是否确实未启动。
+8. 应急加价敏感性是否明确表述为与缺货惩罚联动，而非纯价格效应；
+9. 零应急采购是否由零储备和公共应急预算约束严格推出；
+10. 是否避免把机制内生性夸大为正储备激活或经验优势；
+11. 外层观察窗口事件是否未造成覆盖、重试或科学失败；
+12. E3 是否确实未启动。
