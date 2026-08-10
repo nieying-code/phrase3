@@ -1,0 +1,41 @@
+protocol_id: phase6_reserve_activation_diagnostic_v1
+status: exploratory_diagnostic_only
+source_matrix: configs/phase6_experiment_matrix.yaml
+
+design:
+  tier_id: V1
+  seed: 20260723
+  budget_factor: 1.10
+  reserve_activation_tolerance: 1.0e-7
+  consistency_tolerance: 1.0e-5
+  solver_call_time_limit_seconds: 300
+  solver_threads: 1
+
+reserve_frontier_ratios:
+  - 0.0
+  - 0.0025
+  - 0.005
+  - 0.01
+  - 0.02
+  - 0.05
+  - 0.10
+
+# This grid holds demand, shortage penalties, supply and the random draw fixed.
+# Price scales below 1.0 are diagnostic stress/positive-control values, not a
+# proposed recalibration of the frozen experiment matrix.
+mechanism_surface:
+  emergency_price_scales: [1.0, 0.9, 0.75, 0.5]
+  waste_penalty_multipliers: [1.0, 4.0, 16.0, 64.0]
+
+# These paired cases use identical random draws.  The pure-price case restores
+# the baseline shortage penalty; the coupled case applies the frozen formula.
+markup_attribution:
+  markup_means: [0.15, 0.55]
+
+claim_boundary:
+  formal_evidence: false
+  changes_frozen_matrix: false
+  replaces_e5: false
+  permitted_use: mechanism_diagnosis_and_route_selection_only
+  positive_control_is_empirical_evidence: false
+
