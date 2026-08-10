@@ -39,6 +39,23 @@
     "test_set_reoptimization": false,
     "evidence_role": "limited_descriptive_out_of_sample"
   },
+  "test_scenario_pairing_audit": {
+    "evidence_type": "deterministic_generation_identity_from_finalized_worker_requests_and_results",
+    "generator_protocol_id": "phase6_controlled_synthetic_v1_0",
+    "random_engine": "numpy.Generator(PCG64DXSM)",
+    "identity_fields": ["scientific_config_sha256", "family_component_sha256", "generator_protocol_id", "random_engine", "tier_id", "test_seed", "scenario_count"],
+    "budget_and_policy_excluded_from_identity_reason": "The locked generator draws all stochastic demand, emergency-price, and emergency-supply values from tier, protocol, and seed before assigning budget to ProcurementData; policy is not a generator input.",
+    "scenario_content_file_persisted_by_e4_runner": false,
+    "scenario_content_sha256": null,
+    "content_hash_limitation": "The finalized E4 artifacts did not persist a test-scenario content file, so this audit does not mislabel a generation-input identity as a scenario-file SHA-256.",
+    "runs": {
+      "formal_e4_repro_v4_v2_2026072401": {"test_seed":2026082401,"worker_count":18,"test_scenario_count":2000,"worker_test_scenario_generation_identity_unique_count":1,"all_workers_share_locked_generation_identity":true,"test_scenario_generation_identity_sha256":"7d6453168c3c0ac37fc4966f1fc93105971177b59f8e3b4cc1be035135b54939","worker_scenario_evidence_sha256":"a012ac6baa10cd9027e6c30d03c1743bfe3ae3644697394e74869197f5f6b3ca"},
+      "formal_e4_repro_v4_v2_2026072402": {"test_seed":2026082402,"worker_count":18,"test_scenario_count":2000,"worker_test_scenario_generation_identity_unique_count":1,"all_workers_share_locked_generation_identity":true,"test_scenario_generation_identity_sha256":"0fbcbb3a6228bf30f4c3c960e9f57400c4617237b81292b534b933f43917efdd","worker_scenario_evidence_sha256":"d275261657a5f662501199e0c1ce3e73c603d5fe3fedc8087a492d7d434ca257"},
+      "formal_e4_repro_v4_v2_2026072403": {"test_seed":2026082403,"worker_count":18,"test_scenario_count":2000,"worker_test_scenario_generation_identity_unique_count":1,"all_workers_share_locked_generation_identity":true,"test_scenario_generation_identity_sha256":"39245f6fd8e89ee749a6b166a079833b9192315c6e4626487c7b3e464cd725ab","worker_scenario_evidence_sha256":"5223823e4d5bae509b41bf85b63284f35392ce87a12d1a58a800f1d13c991175"},
+      "formal_e4_repro_v4_v2_2026072404": {"test_seed":2026082404,"worker_count":18,"test_scenario_count":2000,"worker_test_scenario_generation_identity_unique_count":1,"all_workers_share_locked_generation_identity":true,"test_scenario_generation_identity_sha256":"23963457dd2ef118727c763ec8716def22c329d71ace9a529d8b879d95d9d0f0","worker_scenario_evidence_sha256":"55ab289df315d1ed6e441b36d0fd3f425a0b98963758813e181c4607a64b69f0"},
+      "formal_e4_repro_v4_v2_2026072405": {"test_seed":2026082405,"worker_count":18,"test_scenario_count":2000,"worker_test_scenario_generation_identity_unique_count":1,"all_workers_share_locked_generation_identity":true,"test_scenario_generation_identity_sha256":"76be5c21a6c9102d4d6284842f978b324c236f3eccad8e23db902e3f099f40b3","worker_scenario_evidence_sha256":"add4251379d276e68bc812d36b988b1cda9a6dee01e63bb418724d9fe2924c95"}
+    }
+  },
   "counts": {
     "primary_run_count": 5,
     "optimal_primary_run_count": 5,
@@ -69,6 +86,18 @@
     "fixed_reserve_0_30": {"count":15,"mean_total_cost":5321.253693719499,"total_cost_p95":14221.392653604114,"total_cost_cvar95":18292.36501206009,"service_level":0.8511758512514515,"shortage_probability":0.6265000000000001,"mean_total_disposal":73.97898130251446},
     "fixed_reserve_0_50": {"count":15,"mean_total_cost":4753.581211366601,"total_cost_p95":14654.460842848395,"total_cost_cvar95":19238.132881185564,"service_level":0.8687414805555008,"shortage_probability":0.5266,"mean_total_disposal":19.074562968738594},
     "endogenous_reserve": {"count":15,"mean_total_cost":7191.0764246106955,"total_cost_p95":14186.644641594727,"total_cost_cvar95":17559.237081772033,"service_level":0.7856042804576767,"shortage_probability":0.8890333333333333,"mean_total_disposal":146.56996428089093}
+  },
+  "metric_definitions": {
+    "total_cost": "regular_purchase_cost_plus_exact_scenario_recourse_cost",
+    "reserve_is_not_added_to_total_cost": true,
+    "service_level": "one_minus_sum_shortage_over_all_scenarios_divided_by_sum_demand_over_all_scenarios",
+    "service_level_aggregation": "demand_weighted_across_all_scenarios",
+    "zero_total_demand_service_level": 1.0,
+    "shortage_tolerance": 1e-7,
+    "shortage_probability": "fraction_of_scenarios_with_total_shortage_above_tolerance",
+    "empirical_p95_quantile_method": "numpy_linear_type_7",
+    "empirical_cvar95": "average_worst_five_percent_with_fractional_boundary_weight",
+    "cvar_tail_probability": 0.05
   },
   "endogenous_vs_zero_reserve_paired_audit": {
     "comparison_group_count": 15,

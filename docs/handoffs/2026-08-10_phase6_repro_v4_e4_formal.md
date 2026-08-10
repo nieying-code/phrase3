@@ -1,5 +1,29 @@
 # Phase 6 Reproducibility-v4 E4 Formal Handoff
 
+## Pairing and metric audit clarification
+
+The finalized E4 worker artifacts did not persist a standalone test-scenario
+content file. Consequently, this handoff does not claim a retroactive scenario
+file SHA-256. Instead, the compact audit mechanically locks, for each formal
+run, all 18 finalized worker request/result hashes, the common V2 test seed,
+the 2,000-scenario count, the scientific and family-component fingerprints,
+the controlled generator protocol, and the PCG64DXSM random engine. The
+resulting deterministic generation identity has unique count one within each
+run. Because the locked generator draws scenario demand, emergency prices,
+and emergency supply before assigning the budget, and policy is not a
+generator input, this proves that the 18 paired plans in a run used the same
+deterministically generated scenario set. The audit explicitly records
+`scenario_content_sha256=null` rather than misrepresenting an input identity
+as a persisted-file hash.
+
+The audit also locks all reported summary values for all six policies and the
+frozen definitions of total cost, demand-weighted service level, shortage
+probability, linear Type-7 P95, and fractional-boundary CVaR95. The empirical
+statement about endogenous reserve and zero reserve is limited to their 15
+paired E4 evaluation-metric vectors being identical; this handoff does not
+claim first-stage decision-vector identity without a corresponding vector
+hash.
+
 ## 任务目标
 
 在 E2 正式结果经 PR #35 复审并合并、用户单独授权后，执行 E4 独立样本外精确补救评价。范围为冻结矩阵指定的前 5 个 V2 正式训练种子、按位置配对的 5 个独立测试种子、3 档预算和 6 种策略，共 90 个第一阶段方案与 180,000 次样本外补救评价。批次完成后立即停止，未启动 E3 或 E5。
@@ -58,7 +82,7 @@
 | fixed_reserve_0_50 | 4753.581 | 14654.461 | 19238.133 | 0.8687 | 0.5266 |
 | endogenous_reserve | 7191.076 | 14186.645 | 17559.237 | 0.7856 | 0.8890 |
 
-由于 E2 中内生方案与零储备方案具有相同的第一阶段决策，E4 的 15 个逐组配对在平均成本、P95、CVaR95、服务水平和缺货概率上全部完全一致，最大绝对差为 0。这确认了零储备训练解的样本外表现与对应零储备策略一致，但并不证明零储备在样本外占优。
+E4 的内生方案与零储备方案在 15 个逐组配对的平均成本、P95、CVaR95、服务水平和缺货概率上全部完全一致，最大绝对差为 0。这确认了两类方案在本次冻结样本外评价指标上的表现一致，但在没有第一阶段决策向量哈希的情况下，不额外声称其决策向量完全相同；该结果也不证明零储备在样本外占优。
 
 相反，在本次冻结测试分布上，固定比例储备相较零储备呈现更低的平均成本和更高的服务水平；确定性均值方案的描述性均值表现最好。该结果可能反映训练鲁棒目标、冻结测试分布与策略保守性之间的差异，只能作为配对效应和尾部风险轮廓报告，不能以 5 个训练种子作强显著性或普遍性结论。E5 将进一步检验成本、需求与供应风险变化下内生储备是否转为正值。
 
