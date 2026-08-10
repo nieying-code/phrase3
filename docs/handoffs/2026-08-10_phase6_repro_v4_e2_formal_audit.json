@@ -1,5 +1,5 @@
 {
-  "audit_schema": "phase6_repro_v4_e2_formal_v1",
+  "audit_schema": "phase6_repro_v4_e2_formal_v2",
   "output_root": "outputs/phase6_v21_repro_v3",
   "source": {
     "execution_git_sha": "c0d16d3ed8e3912c9350ac1bd16bf5c99b2e43b5",
@@ -52,6 +52,12 @@
   },
   "structural_gate": {
     "comparison_group_count": 30,
+    "endogenous_plan_count": 30,
+    "endogenous_nonzero_reserve_count": 0,
+    "max_abs_endogenous_reserve": 0.0,
+    "endogenous_zero_reserve_objective_match_count": 30,
+    "objective_match_absolute_tolerance": 1e-05,
+    "max_abs_endogenous_minus_zero_reserve_objective": 5.4569682106375694e-12,
     "max_endogenous_minus_best_positive_fixed_reserve_objective": -513.8054557105679,
     "min_endogenous_minus_best_positive_fixed_reserve_objective": -1149.5801370952558,
     "all_endogenous_objectives_not_worse_than_best_positive_fixed_reserve": true
@@ -69,6 +75,19 @@
     "max_peak_memory_mb": 121.4140625
   },
   "worker_hash_map_method": "SHA-256 of UTF-8 canonical JSON for the sorted plan_id-to-worker-result-SHA256 mapping, using sort_keys=true and separators comma/colon",
+  "plan_identity_sha256_method": "SHA-256 of UTF-8 canonical JSON for the sorted list of 18 plan IDs in each run, using sort_keys=true and separators comma/colon",
+  "plan_identity_sha256_by_run": {
+    "formal_e2_repro_v4_v2_2026072401": "d52280053571ab46f9667e8a6b3f46aaa08d9aa035f3e4fee1e9bfc070a06c35",
+    "formal_e2_repro_v4_v2_2026072402": "4658500bdf803a71991a7065b6fa6c8329f87db84062e56f22f26d8eef51c9b1",
+    "formal_e2_repro_v4_v2_2026072403": "9ea3797ec0df43bf69976cfe084dd44be4e9c6e1425065de7bd2e9f78a6e9c2b",
+    "formal_e2_repro_v4_v2_2026072404": "948b1b1d6e69b1a6b0e824f089831defe52e9374f58b19c6de8447af2d210110",
+    "formal_e2_repro_v4_v2_2026072405": "1193ed1467000e6dcf0fce2228ea81c629ae37a9b4685b6e30e06183abd4a3f7",
+    "formal_e2_repro_v4_v2_2026072406": "c30c9d8d5e277206eeff369073699d539a5508fd99dd0d08952f601e41876ae3",
+    "formal_e2_repro_v4_v2_2026072407": "a6544cca0ff14fea529bf230a0fb38284022adbcb342475e3069a4890af2e4e2",
+    "formal_e2_repro_v4_v2_2026072408": "4ba84a08832aa1e64138b3e6b5ef1e1692f1c04b736ef903dc053d7e8f0418c3",
+    "formal_e2_repro_v4_v2_2026072409": "078bceb523c440ef95c53f29d55ae2e7323af0ed1233c00493451d31ca936552",
+    "formal_e2_repro_v4_v2_2026072410": "af4b827658b29b2fe4bde30b2c841ee4c6f2e4e9c179f7b8958aa1fb2087806b"
+  },
   "runs": [
     {"run_id":"formal_e2_repro_v4_v2_2026072401","tier_id":"V2","seed":2026072401,"execution_mode":"formal","status":"optimal","planned_work_units":18,"completed_work_units":18,"parent_run_id":"","wall_seconds":44.23697640001774,"result_sha256":"ee894a86fee6872c973881a329eb584138c186375ed4033abaeea8e656e0bbec","manifest_sha256":"02072d40a59ac83f9a33c310ca7820c9d73bb06453a721172ae3f7fa89c6d565","status_summary_sha256":"0ac59715e6d3c846a8116366fec01fb8ce5216e715a51dff73c727b3119a0a18","worker_hash_map_sha256":"4c0e0b21f55e9f52c02c3ad2be5c0d77256794a68b569d88b73abe3b3c55a854"},
     {"run_id":"formal_e2_repro_v4_v2_2026072402","tier_id":"V2","seed":2026072402,"execution_mode":"formal","status":"optimal","planned_work_units":18,"completed_work_units":18,"parent_run_id":"","wall_seconds":44.332516899798065,"result_sha256":"49b8e7670d5c9e408a4d61d276922245edd4d45efe6ec5bbbd0abfdc2ea0df7d","manifest_sha256":"88eddd2b3cbae96440980ca7acf275f6ff5c0d8ebbb8ca47d54b0e80faea105b","status_summary_sha256":"74c85bb8714d3c117969f51b6b593e8d21a9e1579c0ebd99311b0126a3ad6973","worker_hash_map_sha256":"691d21c5b12c8927593ebd83cb02ec1678b172ecfb0cdd280f81033105450171"},

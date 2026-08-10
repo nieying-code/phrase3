@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 from collections import Counter
 from pathlib import Path
 
@@ -10,6 +11,19 @@ from pathlib import Path
 AUDIT = Path(
     "docs/handoffs/2026-08-10_phase6_repro_v4_e2_formal_audit.json"
 )
+EXPECTED_BUDGETS = [
+    1107.2893851278257,
+    1353.3536929340091,
+    1599.4180007401926,
+]
+EXPECTED_POLICIES = [
+    "deterministic_mean",
+    "zero_reserve",
+    "fixed_reserve_0_10",
+    "fixed_reserve_0_30",
+    "fixed_reserve_0_50",
+    "endogenous_reserve",
+]
 EXPECTED_RUNS = {
     "formal_e2_repro_v4_v2_2026072401": (2026072401, "ee894a86fee6872c973881a329eb584138c186375ed4033abaeea8e656e0bbec", "02072d40a59ac83f9a33c310ca7820c9d73bb06453a721172ae3f7fa89c6d565", "0ac59715e6d3c846a8116366fec01fb8ce5216e715a51dff73c727b3119a0a18", "4c0e0b21f55e9f52c02c3ad2be5c0d77256794a68b569d88b73abe3b3c55a854"),
     "formal_e2_repro_v4_v2_2026072402": (2026072402, "49b8e7670d5c9e408a4d61d276922245edd4d45efe6ec5bbbd0abfdc2ea0df7d", "88eddd2b3cbae96440980ca7acf275f6ff5c0d8ebbb8ca47d54b0e80faea105b", "74c85bb8714d3c117969f51b6b593e8d21a9e1579c0ebd99311b0126a3ad6973", "691d21c5b12c8927593ebd83cb02ec1678b172ecfb0cdd280f81033105450171"),
@@ -49,7 +63,28 @@ def test_repro_v4_e2_formal_audit_is_complete_and_consistent() -> None:
     assert design["tier_id"] == "V2"
     assert design["formal_seeds"] == list(range(2026072401, 2026072411))
     assert design["budget_indices"] == [0, 1, 2]
-    assert len(design["policies"]) == 6
+    assert design["budgets"] == EXPECTED_BUDGETS
+    assert design["policies"] == EXPECTED_POLICIES
+
+    expected_plan_digests = {}
+    expected_plan_count = 0
+    for seed in design["formal_seeds"]:
+        run_id = f"formal_e2_repro_v4_v2_{seed}"
+        plan_ids = sorted(
+            f"E2_V2_{seed}_b{budget_index:02d}_{policy}"
+            for budget_index in design["budget_indices"]
+            for policy in EXPECTED_POLICIES
+        )
+        expected_plan_count += len(plan_ids)
+        canonical = json.dumps(
+            plan_ids,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        expected_plan_digests[run_id] = hashlib.sha256(canonical).hexdigest()
+    assert expected_plan_count == 180
+    assert audit["plan_identity_sha256_by_run"] == expected_plan_digests
 
     runs = {run["run_id"]: run for run in audit["runs"]}
     assert set(runs) == set(EXPECTED_RUNS)
@@ -91,6 +126,16 @@ def test_repro_v4_e2_formal_audit_is_complete_and_consistent() -> None:
 
     gate = audit["structural_gate"]
     assert gate["comparison_group_count"] == 10 * 3 == 30
+    assert gate["endogenous_plan_count"] == 30
+    assert gate["endogenous_nonzero_reserve_count"] == 0
+    assert gate["max_abs_endogenous_reserve"] == 0.0
+    assert gate["endogenous_zero_reserve_objective_match_count"] == 30
+    assert gate["objective_match_absolute_tolerance"] == 1e-5
+    assert gate["max_abs_endogenous_minus_zero_reserve_objective"] == 5.4569682106375694e-12
+    assert (
+        gate["max_abs_endogenous_minus_zero_reserve_objective"]
+        <= gate["objective_match_absolute_tolerance"]
+    )
     assert gate["max_endogenous_minus_best_positive_fixed_reserve_objective"] == -513.8054557105679
     assert gate["min_endogenous_minus_best_positive_fixed_reserve_objective"] == -1149.5801370952558
     assert gate["all_endogenous_objectives_not_worse_than_best_positive_fixed_reserve"] is True
