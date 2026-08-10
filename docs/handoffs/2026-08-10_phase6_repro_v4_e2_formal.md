@@ -12,9 +12,10 @@
 - Merged main commit: `365f835fdde7f25dd79fe29d7581ca5c16b5339d`
 - Merged main tree: `81067a1d35d1495833dca5722845eab0c937e540`
 - Execution tree equals merged main tree: `true`
-- Results commit: pending
-- Draft PR: pending
-- CI: pending
+- Validated results snapshot commit: `906786cfb886bee5b8092d02e268852446909208`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/35
+- Results CI: https://github.com/nieying-code/phrase3/actions/runs/31356278451
+  (`success`; Linux and Windows jobs passed)
 
 普通 Git HTTPS 在同步时被网络重置，因此执行提交与远程合并提交的 commit SHA 不同；二者 tree 完全相同，说明模型、配置、测试和所有执行字节一致。该等价关系已写入机器审计并由测试精确锁定。
 
@@ -77,7 +78,9 @@ git diff --check
 
 实际本地结果：专项审计`1 passed in 0.05s`；完整回归
 `166 passed in 37.97s`；语法检查和`git diff --check`均通过。
-GitHub Actions状态将在Draft PR创建后补充。
+GitHub Actions run `31356278451` 对结果快照提交
+`906786cfb886bee5b8092d02e268852446909208` 验证成功；Linux和Windows
+作业均通过。
 
 ## 停止边界和下一步
 
