@@ -1,0 +1,123 @@
+{
+  "audit_schema": "phase6_repro_v4_e5_formal_v1",
+  "output_root": "outputs/phase6_v21_repro_v3",
+  "source": {
+    "execution_git_sha": "54d6ed0868b0ba47b3e7886714a75ab85f911084",
+    "execution_git_tree_sha": "03216fc7c4d0de155c7770f652e8a5dd816fcf4a",
+    "merged_main_git_sha": "54d6ed0868b0ba47b3e7886714a75ab85f911084",
+    "merged_main_git_tree_sha": "03216fc7c4d0de155c7770f652e8a5dd816fcf4a",
+    "tracked_modified_count_at_start": 0,
+    "untracked_execution_input_count_at_start": 0,
+    "working_tree_dirty": false,
+    "controlled_read_write_root": "outputs/phase6_v21_repro_v3/",
+    "external_historical_output_directories_used_as_input": false
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+    "family_config_sha256": "983776a19e0a12937bc8a185b0fe5fdf76877d266445dcfce5f252d397a6ca8c",
+    "family_component_sha256": "92bbf40a3dbbb6c72f75f257d39197ee9c42f455daf6efecb4e8df710e065b5e",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "environment": {
+    "python": "3.12.10",
+    "gurobipy": "13.0.2",
+    "gurobi_optimizer": "13.0.2",
+    "pyomo_interface": "gurobi_direct",
+    "threads": 1,
+    "highs_fallback": false
+  },
+  "design": {
+    "tier_id": "V2",
+    "training_seeds": [2026072401, 2026072402, 2026072403, 2026072404, 2026072405],
+    "budget_factor": 1.1,
+    "budget": 1353.3536929340091,
+    "ofat_configuration_count": 11,
+    "interaction_configuration_count": 4,
+    "configuration_ids": [
+      "baseline",
+      "ofat_demand_cv_0.15",
+      "ofat_demand_cv_0.45",
+      "ofat_emergency_price_markup_mean_0.15",
+      "ofat_emergency_price_markup_mean_0.55",
+      "ofat_supply_reduction_mean_0.05",
+      "ofat_supply_reduction_mean_0.4",
+      "ofat_shelf_life_periods_1",
+      "ofat_shelf_life_periods_6",
+      "ofat_storage_capacity_to_expected_period_demand_0.5",
+      "ofat_storage_capacity_to_expected_period_demand_1.5",
+      "interaction_life_1_supply_0.05",
+      "interaction_life_1_supply_0.4",
+      "interaction_life_6_supply_0.05",
+      "interaction_life_6_supply_0.4"
+    ]
+  },
+  "counts": {
+    "primary_run_count": 5,
+    "optimal_primary_run_count": 5,
+    "planned_work_unit_count": 75,
+    "completed_work_unit_count": 75,
+    "optimal_work_unit_count": 75,
+    "positive_reserve_plan_count": 0,
+    "failed_primary_run_count": 0,
+    "failed_work_unit_count": 0,
+    "duplicate_primary_run_count": 0,
+    "parent_run_count": 0,
+    "diagnostic_attempt_count": 0
+  },
+  "runs": [
+    {"run_id":"formal_e5_repro_v4_v2_2026072401","tier_id":"V2","training_seed":2026072401,"execution_mode":"formal","status":"optimal","planned_work_units":15,"completed_work_units":15,"parent_run_id":"","wall_seconds":35.211591499857605,"peak_memory_mb":118.3515625,"result_sha256":"10b6be3a7e4d8bb84990a64d17f0e5db3cd235bda446a56cf46f58a72d26d903","manifest_sha256":"44eeae4147509a7f76e52af620fdebaff5649455bd01eef6461becf931d4c0a7","status_summary_sha256":"d2c2359865705ecc6955c62452292419eec0d61af17398c837613755716c443d","plan_identity_sha256":"0f7d64e61525e222976551c1c98aab1cf4f0f056762ba15745e0f7089e35893c","worker_result_map_sha256":"556fe0fbaa5d58ad3f74390bd1dacf52a555810b16224a576e4a1a59eddbeb8a"},
+    {"run_id":"formal_e5_repro_v4_v2_2026072402","tier_id":"V2","training_seed":2026072402,"execution_mode":"formal","status":"optimal","planned_work_units":15,"completed_work_units":15,"parent_run_id":"","wall_seconds":35.22603669995442,"peak_memory_mb":119.30859375,"result_sha256":"eaf2f88f4fc91f2431b456b5330605436daff36fd01acafed6a630af4f053023","manifest_sha256":"88434a1575eda290ba9ba80cf0efd0a5b01dc647535d3496878c84a89e0e41cc","status_summary_sha256":"8c0f8767a1c04fabad88fd6a6bc5ebf3e9cf947faa8b7775ef2fafaf7069950c","plan_identity_sha256":"fa3a8664e62bbee3e891294751aa4a7524dec5ab41147499add424a15f336100","worker_result_map_sha256":"dfeec30b9f2593c86f0544dd616719f3c8c06167597075939f59e4ceeb960e93"},
+    {"run_id":"formal_e5_repro_v4_v2_2026072403","tier_id":"V2","training_seed":2026072403,"execution_mode":"formal","status":"optimal","planned_work_units":15,"completed_work_units":15,"parent_run_id":"","wall_seconds":35.275108200032264,"peak_memory_mb":119.45703125,"result_sha256":"17a03ad52796b0d75b1e677f48fbd3b7b24a2bb696575e8881378622385203ae","manifest_sha256":"9421225f0cad1c847cffa5a393feecd2ae01fc62968ab6ea89ae117af6acb3d7","status_summary_sha256":"1ba2d311b5144e293e64ec64f3a7c781865283a6ce5279c06b7c09ce3c4507d1","plan_identity_sha256":"b64547f64e2d81a5ccfebefdb8a2eeb1d7a5a8d7ae2c8d773dd47929095fa320","worker_result_map_sha256":"bf32ddef789278d20d497204b4ff0e70e9a4a7ee93d3158b4c3e19c47fe6442f"},
+    {"run_id":"formal_e5_repro_v4_v2_2026072404","tier_id":"V2","training_seed":2026072404,"execution_mode":"formal","status":"optimal","planned_work_units":15,"completed_work_units":15,"parent_run_id":"","wall_seconds":34.98491599992849,"peak_memory_mb":118.13671875,"result_sha256":"0c0635c1b864e5ee11d942fed8f41632ef8d0e8f8d72ddc15251e338039415b0","manifest_sha256":"7e5929c6aa20b70242abf6b2295b230ed33854b6a47f862ba6e06fd868f2c99f","status_summary_sha256":"2fba27dd64a645115516eb89f7d8155b98e29560603224d2ccd215ec654182b7","plan_identity_sha256":"be827f735f41ad8b8972d78b17b0827249b11819b2b1f97c300761d7a61e37eb","worker_result_map_sha256":"5c716e18dc6804a5bde441c0fc27fdbb74e7aa5071662f971945603c67191e81"},
+    {"run_id":"formal_e5_repro_v4_v2_2026072405","tier_id":"V2","training_seed":2026072405,"execution_mode":"formal","status":"optimal","planned_work_units":15,"completed_work_units":15,"parent_run_id":"","wall_seconds":36.304952499922365,"peak_memory_mb":122.859375,"result_sha256":"891360e3aef023a442eb3d012a390c3cd006751e5b02b12c7b5a159c13409ee7","manifest_sha256":"ef1be45b73256fdf6cb5f589ebfbc533630d877e262dfb9435d7d5cb29ab70fc","status_summary_sha256":"dfd148ba3032711ff454587a7302dd5998db90bd969004b256e4ce9abe4c77b0","plan_identity_sha256":"83364597eba45bcdc2f0169070652158e1df5f1643c73f582f35b1c07a1db4cd","worker_result_map_sha256":"a107cc085d9597c101ba7d8d5ed3c13db51a3dcfd1250465af3c3a6e6449a81d"}
+  ],
+  "configuration_summaries": {
+    "baseline": {"design":"ofat","factor":"baseline","value":null,"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21361.054897160313,"minimum_robust_objective":14704.168742024209,"maximum_robust_objective":29333.062192760906,"mean_paired_objective_difference_from_baseline":0.0},
+    "ofat_demand_cv_0.15": {"design":"ofat","factor":"demand_cv","value":0.15,"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":8406.402084722758,"minimum_robust_objective":5904.204355685508,"maximum_robust_objective":11185.44153688294,"mean_paired_objective_difference_from_baseline":-12954.652812437556},
+    "ofat_demand_cv_0.45": {"design":"ofat","factor":"demand_cv","value":0.45,"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":36949.90961722295,"minimum_robust_objective":24273.165322590416,"maximum_robust_objective":53255.86196389626,"mean_paired_objective_difference_from_baseline":15588.85472006264},
+    "ofat_emergency_price_markup_mean_0.15": {"design":"ofat","factor":"emergency_price_markup_mean","value":0.15,"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":19137.97698557961,"minimum_robust_objective":13220.744847680851,"maximum_robust_objective":26224.205692780135,"mean_paired_objective_difference_from_baseline":-2223.077911580705},
+    "ofat_emergency_price_markup_mean_0.55": {"design":"ofat","factor":"emergency_price_markup_mean","value":0.55,"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":23584.13280874101,"minimum_robust_objective":16187.592636367563,"maximum_robust_objective":32441.91869274167,"mean_paired_objective_difference_from_baseline":2223.0779115806977},
+    "ofat_supply_reduction_mean_0.05": {"design":"ofat","factor":"supply_reduction_mean","value":0.05,"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21361.054897160313,"minimum_robust_objective":14704.168742024209,"maximum_robust_objective":29333.062192760906,"mean_paired_objective_difference_from_baseline":0.0},
+    "ofat_supply_reduction_mean_0.4": {"design":"ofat","factor":"supply_reduction_mean","value":0.4,"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21361.054897160313,"minimum_robust_objective":14704.168742024209,"maximum_robust_objective":29333.062192760906,"mean_paired_objective_difference_from_baseline":0.0},
+    "ofat_shelf_life_periods_1": {"design":"ofat","factor":"shelf_life_periods","value":1,"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21790.102836821505,"minimum_robust_objective":15161.950589845843,"maximum_robust_objective":29740.459481576472,"mean_paired_objective_difference_from_baseline":429.0479396611921},
+    "ofat_shelf_life_periods_6": {"design":"ofat","factor":"shelf_life_periods","value":6,"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21361.054897160313,"minimum_robust_objective":14704.168742024207,"maximum_robust_objective":29333.062192760906,"mean_paired_objective_difference_from_baseline":-3.637978807091713e-13},
+    "ofat_storage_capacity_to_expected_period_demand_0.5": {"design":"ofat","factor":"storage_capacity_to_expected_period_demand","value":0.5,"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21699.337087678236,"minimum_robust_objective":15069.04438198761,"maximum_robust_objective":29651.404652486715,"mean_paired_objective_difference_from_baseline":338.28219051792223},
+    "ofat_storage_capacity_to_expected_period_demand_1.5": {"design":"ofat","factor":"storage_capacity_to_expected_period_demand","value":1.5,"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21521.592212806478,"minimum_robust_objective":14887.267031710016,"maximum_robust_objective":29480.737663672786,"mean_paired_objective_difference_from_baseline":160.5373156461661},
+    "interaction_life_1_supply_0.05": {"design":"interaction","factor":"shelf_life_periods_x_supply_reduction_mean","value":[1,0.05],"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21790.102836821505,"minimum_robust_objective":15161.950589845843,"maximum_robust_objective":29740.459481576472,"mean_paired_objective_difference_from_baseline":429.0479396611921},
+    "interaction_life_1_supply_0.4": {"design":"interaction","factor":"shelf_life_periods_x_supply_reduction_mean","value":[1,0.4],"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21790.102836821505,"minimum_robust_objective":15161.950589845843,"maximum_robust_objective":29740.459481576472,"mean_paired_objective_difference_from_baseline":429.0479396611921},
+    "interaction_life_6_supply_0.05": {"design":"interaction","factor":"shelf_life_periods_x_supply_reduction_mean","value":[6,0.05],"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21361.054897160313,"minimum_robust_objective":14704.168742024207,"maximum_robust_objective":29333.062192760906,"mean_paired_objective_difference_from_baseline":-3.637978807091713e-13},
+    "interaction_life_6_supply_0.4": {"design":"interaction","factor":"shelf_life_periods_x_supply_reduction_mean","value":[6,0.4],"count":5,"optimal_count":5,"positive_reserve_count":0,"mean_reserve":0.0,"maximum_reserve":0.0,"mean_reserve_ratio":0.0,"mean_robust_objective":21361.054897160313,"minimum_robust_objective":14704.168742024207,"maximum_robust_objective":29333.062192760906,"mean_paired_objective_difference_from_baseline":-3.637978807091713e-13}
+  },
+  "mechanism_finding": {
+    "reserve_activation_tolerance": 1e-7,
+    "plan_count": 75,
+    "positive_reserve_plan_count": 0,
+    "maximum_reserve": 0.0,
+    "configuration_count_with_any_positive_reserve": 0,
+    "frozen_range_supports_positive_endogenous_reserve": false,
+    "interpretation": "Within the frozen V2 budget and sensitivity ranges, the endogenous model always allocates the full budget to regular procurement and no tested configuration activates positive reserve.",
+    "supply_effect_under_zero_reserve": "Changing emergency supply reduction has no objective effect here because reserve and therefore emergency purchasing are zero; this is a conditional result, not proof that supply risk is generally irrelevant.",
+    "innovation_claim_boundary": "The experiment supports the correctness and endogeneity of the reserve-allocation mechanism but does not support empirical superiority or positive reserve activation in the frozen range."
+  },
+  "execution_observer_event": {
+    "outer_serial_observer_timeout_seconds": 120,
+    "finalized_before_observer_timeout_run_count": 4,
+    "fifth_run_started_before_observer_timeout": false,
+    "fifth_run_later_started_once_with_original_planned_run_id": true,
+    "same_run_id_retry_count": 0,
+    "scientific_failure": false
+  },
+  "performance": {
+    "sum_family_wall_seconds": 177.00260489969514,
+    "maximum_single_run_wall_seconds": 36.304952499922365,
+    "maximum_peak_memory_mb": 122.859375
+  },
+  "formal_primary_run_count_by_family_after_batch": {"E1":14,"E2":10,"E4":5,"E5":5},
+  "global_artifacts": {
+    "family_run_registry_sha256": "f61805a6cec93193f9b279853895f781035dd4a498387d8ad3b9b33346a5bb4d",
+    "algorithm_performance_sha256": "2486b070ee569bcc938cdb2468eb173d658353fd181c286bdaccf6216cb791c3",
+    "pilot_throughput_projection_sha256": "c3b9c26e69a46aa89a99d7b6f40ff307c308c2782405e884154bc21c906faff2"
+  },
+  "authorization_after_batch": {"projection_status":"passed","compute_gate_passed":true,"formal_execution_authorized":true},
+  "stop_boundary": {"e3_formal_started_in_batch":false,"additional_formal_family_started":false}
+}
