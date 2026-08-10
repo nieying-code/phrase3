@@ -9,6 +9,7 @@ import yaml
 
 from src.model_data import ProcurementData
 from src.run_reserve_activation_diagnostic import scaled_economic_data
+from src.run_reserve_activation_diagnostic import _canonical_sha256
 
 
 CONFIG = Path("configs/phase6_reserve_activation_diagnostic.yaml")
@@ -113,3 +114,9 @@ def test_procurement_data_replace_does_not_mutate_baseline() -> None:
     changed = replace(original, shortage_penalty={"item": 99.0})
     assert original.shortage_penalty == {"item": 20.0}
     assert changed.shortage_penalty == {"item": 99.0}
+
+
+def test_canonical_hash_is_order_independent() -> None:
+    assert _canonical_sha256({"a": 1, "b": 2}) == _canonical_sha256(
+        {"b": 2, "a": 1}
+    )

@@ -167,7 +167,7 @@ def _solve_endogenous(
         "theta": float(solution.master.theta or 0.0),
         "consistency_difference": solution.consistency_difference,
         "regular_purchase_sha256": _canonical_sha256(
-            solution.regular_purchase
+            solution.master.regular_purchase
         ),
         "evaluation": _evaluation_summary(solution.evaluation),
         "solver": solution.master.solver,
@@ -397,7 +397,23 @@ def main() -> int:
     args = parser.parse_args()
     config_path = args.config.resolve()
     output_path = args.output.resolve()
-    result = run_diagnostic(config_path, output_path)
+    try:
+        result = run_diagnostic(config_path, output_path)
+    except Exception as exc:
+        if not output_path.exists():
+            atomic_write_json(
+                output_path,
+                {
+                    "schema": "phase6_reserve_activation_diagnostic_v1",
+                    "status": "failed",
+                    "failure": {
+                        "stage": "diagnostic_runner",
+                        "type": type(exc).__name__,
+                        "message": str(exc)[:2000],
+                    },
+                },
+            )
+        raise
     print(
         json.dumps(
             {
@@ -413,4 +429,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
