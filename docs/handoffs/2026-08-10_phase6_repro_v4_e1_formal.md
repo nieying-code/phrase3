@@ -9,9 +9,10 @@
 - Branch: `results/phase6-repro-v4-e1-formal`
 - Execution/base commit: `e6cffb6a65996f5189dd9d6b06845b485da985bc`
 - Execution tree: `9880f7c76f3e12bc53f295abc752022c029ec016`
-- Results commit: pending
-- Draft PR: pending
-- CI: pending
+- Validated results snapshot commit: `f1a76aeef579b8452e6ac94a8f2b9894715209fc`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/34
+- Results CI: https://github.com/nieying-code/phrase3/actions/runs/31352095340
+  (`success`; Linux and Windows jobs passed)
 
 ## 执行环境和门槛
 
@@ -85,7 +86,9 @@ git diff --check
 
 实际本地结果：专项审计 `1 passed in 0.03s`；完整回归
 `165 passed in 37.75s`；语法检查和 `git diff --check` 均通过。
-GitHub Actions 状态将在 Draft PR 创建后补充。
+GitHub Actions run `31352095340` 对已验证结果快照提交
+`f1a76aeef579b8452e6ac94a8f2b9894715209fc` 验证成功；Linux 和 Windows
+作业均通过。
 
 ## 停止边界和下一步
 
