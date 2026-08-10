@@ -9,8 +9,10 @@
 - Branch: `results/phase6-repro-v4-e4-formal`
 - Execution and merged-main commit: `2161e4182c6e0cd80b54c385b54c5e20048aee7f`
 - Execution and merged-main tree: `7e5f15a3a2637b860d7dde9447d3dff13c8f1b11`
-- Draft PR: pending
-- CI: pending
+- Results documentation commit: `3084288`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/36
+- Results CI: https://github.com/nieying-code/phrase3/actions/runs/31362367642
+  (`success`; Linux and Windows jobs passed)
 - 启动时已跟踪修改为 0、未跟踪执行输入为 0、工作树干净。
 - 受控读写根目录为 `outputs/phase6_v21_repro_v3/`；E4 只读取其中经哈希验证的 E2 来源方案，未读取外部历史输出目录。
 
