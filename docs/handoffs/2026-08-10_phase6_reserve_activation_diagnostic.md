@@ -12,7 +12,8 @@
 - 本地起点 commit: `24500085da0c2699282110283d87fc88d0a36466`
 - 本地起点 tree: `b3ce557e953c39f162f0abbc6e1af935f2359990`
 - 成功执行 commit: `dbc0dc88c201cf4e1a625d7943269a96b486b817`
-- Draft PR: pending
+- Results documentation commit: `5b7457f`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/38
 
 Git smart-HTTP 在同步合并提交时发生临时 443 reset；GitHub API 已确认合并提交和 tree。本地起点与合并后 `main` 的 tree 完全相同，因此诊断基线文件内容等价。诊断协议和运行器先提交，再在无 tracked 修改的工作树上执行。
 
@@ -125,4 +126,3 @@ R/B = 0
 - 未覆盖任何 E1/E2/E4/E5 正式结果；
 - 未启动 E3 正式实验；
 - 完成后创建独立 Draft PR，等待 ChatGPT 复审和用户手动合并。
-
