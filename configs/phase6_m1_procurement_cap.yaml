@@ -1,0 +1,89 @@
+protocol_id: phase6_m1_procurement_cap_v1_0
+version: 1.0.0-design
+status: candidate_design_pending_review
+initial_draft_on: 2026-08-11
+revised_on: 2026-08-11
+
+base_model:
+  id: M0
+  matrix_path: configs/phase6_experiment_matrix.yaml
+  preserve_existing_results: true
+  direct_paired_control:
+    regular_procurement_cap:
+      enabled: false
+      kappa: null
+
+runner_namespace: phase6_m1_procurement_cap
+output_root: outputs/phase6_m1_procurement_cap_v1
+inherit_m0_authorization: false
+accept_m0_registry_or_projection: false
+
+regular_procurement_cap:
+  enabled: false
+  kappa: null
+regular_procurement_cap_definition:
+  definition: kappa_times_frozen_theoretical_mean_demand_by_item_period
+  infinity_encoding_forbidden: true
+
+unchanged_scientific_rules:
+  first_stage_budget: regular_cost_plus_reserve_equals_budget
+  emergency_price: inherit_frozen_M0_baseline
+  shortage_penalty: inherit_frozen_M0_baseline_vector
+  emergency_price_shortage_penalty_sweep: forbidden
+  additional_lead_time_or_reliability_mechanisms: forbidden
+
+objective_tolerance:
+  source: frozen_phase6_model_and_algorithm_consistency
+  absolute_tolerance: 1.0e-5
+  relative_tolerance: 1.0e-7
+  formula: absolute_plus_relative_times_max_one_abs_optimum
+
+reserve_identification:
+  minimum_feasible_reserve: exact_first_stage_LP
+  closed_form_check: max_zero_budget_minus_capacity_weighted_regular_spend
+  tolerance_optimal_interval: complete_finite_scenario_extensive_model
+  restricted_CCG_master_for_interval_forbidden: true
+  robust_discretionary_reserve: max_zero_R_min_opt_minus_R_min_feas
+  numerical_activation_ratio_strictly_greater_than: 1.0e-4
+  substantive_activation_ratio_greater_than_or_equal_to: 0.01
+
+fixed_autonomous_reserve_policies:
+  rho: [0.0, 0.1, 0.3, 0.5]
+  formula: R_min_feas_plus_rho_times_budget_minus_R_min_feas
+  reoptimize_regular_purchase_for_every_policy: true
+
+development_preregistration:
+  execution_allowed_in_this_revision: false
+  tier: V1
+  seeds: [2026081101, 2026081102, 2026081103]
+  beta: [0.9, 1.1, 1.3]
+  kappa: [null, 1.5, 1.3, 1.2, 1.1, 1.0, 0.8]
+  configuration_count: 63
+  success_rule:
+    all_three_seeds_optimal: true
+    no_infeasible_or_solver_or_interval_failure: true
+    minimum_substantive_activation_seed_count: 2
+    cost_service_or_manual_trend_selection_forbidden: true
+  stop_rule:
+    if_no_combination_passes: stop_without_parameter_chasing
+
+future_formal_extension:
+  status: not_authorized
+  new_training_seed_count: 5
+  independent_test_seed_count: 5
+  common_random_numbers_required: true
+  test_scenario_reoptimization_forbidden: true
+  cap_disabled_control_required: true
+
+audit_protocol:
+  namespace: phase6_m1_procurement_cap_v1
+  compact_machine_audit_required: true
+  result_manifest_registry_projection_chain_required: true
+  M0_artifact_migration_forbidden: true
+  raw_large_results_committed_to_git: false
+
+execution_boundaries:
+  development_matrix_started: false
+  pilot_started: false
+  formal_started: false
+  M0_E3_started_by_this_protocol: false

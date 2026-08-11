@@ -1,0 +1,21 @@
+runner_namespace: phase6_m1_procurement_cap
+output_root: outputs/phase6_m1_procurement_cap_v1
+scientific_config: configs/phase6_m1_procurement_cap.yaml
+base_matrix: configs/phase6_experiment_matrix.yaml
+
+solver:
+  preference: [gurobi]
+  interface: gurobi_direct
+  optimizer_version: 13.0.2
+  gurobipy_version: 13.0.2
+  threads: 1
+  feasibility_tolerance: 1.0e-7
+  optimality_tolerance: 1.0e-7
+
+execution:
+  design_revision_validate_only: true
+  accept_M0_authorization: false
+  accept_M0_registry: false
+  accept_M0_projection: false
+  immutable_run_ids: true
+  independent_manifest_and_registry_required: true

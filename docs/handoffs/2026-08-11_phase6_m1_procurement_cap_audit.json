@@ -1,0 +1,81 @@
+{
+  "audit_protocol": "phase6_m1_procurement_cap_design_audit_v1",
+  "task_status": "design_implemented_execution_not_authorized",
+  "base": {
+    "merged_pr": 38,
+    "merge_commit_sha": "0c7c6cffe82a858b534e8bf812a23291ef40b709",
+    "merge_tree_sha": "595ed0025be82beb7b7283faca6f53282fa8ab22"
+  },
+  "branch": "agent/phase6-m1-procurement-cap",
+  "protocol": {
+    "protocol_id": "phase6_m1_procurement_cap_v1_0",
+    "version": "1.0.0-design",
+    "status": "candidate_design_pending_review",
+    "runner_namespace": "phase6_m1_procurement_cap",
+    "output_root": "outputs/phase6_m1_procurement_cap_v1",
+    "inherits_M0_authorization": false,
+    "accepts_M0_registry_or_projection": false
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "6439d8a1945e44985cb1c8b20a20b7641617ed9a160db554680f3dc4680aa8c8",
+    "e3_component_sha256": "13f034140db75dc62059b99fe6cc2e238de521bb2483e299ff6cfd83fbec1160",
+    "family_component_sha256": "f3b24114668ae612133b54f0cfd5850c1ad835b2e0d4672b3b0a68057f935825",
+    "runner_config_sha256": "204362904604a5e34922a6022696859657ca3ffd9b5fa3e04dec59900337169f",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "scientific_change": {
+    "only_new_constraint": "0 <= x[i,t] <= kappa * theoretical_E_D[i,t]",
+    "cap_disabled_has_no_added_constraint": true,
+    "budget_equality_preserved": true,
+    "emergency_price_changed": false,
+    "shortage_penalty_changed": false,
+    "new_risk_parameters_added": false,
+    "M0_protected_source_files_modified": false
+  },
+  "reserve_identification": {
+    "minimum_feasible_reserve": "first_stage_LP",
+    "closed_form_checked": true,
+    "optimal_face_model": "complete_finite_scenario_extensive",
+    "restricted_master_for_optimal_face": false,
+    "minimum_and_maximum_face_points_exactly_reevaluated": true,
+    "robust_discretionary_formula": "max(0,R_min_opt-R_min_feas)"
+  },
+  "fixed_autonomous_reserve": {
+    "rho": [0.0, 0.1, 0.3, 0.5],
+    "formula": "R_min_feas+rho*(B-R_min_feas)",
+    "regular_purchase_reoptimized_for_each_rho": true,
+    "cap_disabled_recovers_rho_times_B": true
+  },
+  "development_preregistration": {
+    "seeds": [2026081101, 2026081102, 2026081103],
+    "beta": [0.9, 1.1, 1.3],
+    "kappa": [null, 1.5, 1.3, 1.2, 1.1, 1.0, 0.8],
+    "configuration_count": 63,
+    "numerical_activation_ratio_strictly_greater_than": 0.0001,
+    "substantive_activation_ratio_greater_than_or_equal_to": 0.01,
+    "minimum_substantive_activation_seed_count": 2,
+    "all_three_seeds_must_succeed": true,
+    "manual_or_outcome_based_selection_forbidden": true
+  },
+  "verification": {
+    "targeted_test_command": ".venv-gurobi/Scripts/python.exe -m pytest tests/test_phase6_m1_procurement_cap.py -q",
+    "targeted_test_result": "17 passed",
+    "full_regression_command": ".venv-gurobi/Scripts/python.exe -m pytest -q",
+    "full_regression_result": "pending_final_commit",
+    "syntax_check": "passed",
+    "solver": "gurobi_direct",
+    "gurobi_optimizer": "13.0.2",
+    "gurobipy": "13.0.2",
+    "threads": 1,
+    "github_actions": "pending"
+  },
+  "execution_boundaries": {
+    "development_grid_run_count": 0,
+    "pilot_run_count": 0,
+    "formal_run_count": 0,
+    "M0_E3_run_count": 0,
+    "scenario_generation_performed_by_design_validation": false,
+    "M0_results_modified_or_deleted": false,
+    "M1_results_written_to_M0_output_root": false
+  }
+}
