@@ -10,7 +10,7 @@
 - Base branch：`main`
 - Base/PR #38 merge：`0c7c6cffe82a858b534e8bf812a23291ef40b709`
 - Implementation/validation commit SHA：`19936c3bf26b2eca10603f60b32da0bc689b4c31`
-- Draft PR：pending
+- Draft PR：https://github.com/nieying-code/phrase3/pull/39
 - CI：pending
 
 ## 修改内容

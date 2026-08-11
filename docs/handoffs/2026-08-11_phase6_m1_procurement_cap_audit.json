@@ -7,6 +7,7 @@
     "merge_tree_sha": "595ed0025be82beb7b7283faca6f53282fa8ab22"
   },
   "branch": "agent/phase6-m1-procurement-cap",
+  "pull_request": "https://github.com/nieying-code/phrase3/pull/39",
   "protocol": {
     "protocol_id": "phase6_m1_procurement_cap_v1_0",
     "version": "1.0.0-design",
