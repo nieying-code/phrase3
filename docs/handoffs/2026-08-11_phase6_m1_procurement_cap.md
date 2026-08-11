@@ -11,7 +11,8 @@
 - Base/PR #38 merge：`0c7c6cffe82a858b534e8bf812a23291ef40b709`
 - Implementation/validation commit SHA：`19936c3bf26b2eca10603f60b32da0bc689b4c31`
 - Draft PR：https://github.com/nieying-code/phrase3/pull/39
-- CI：pending
+- Validated PR head：`abcc6c7d8c0f855b561db40c0bc171b7cd2451e9`
+- CI：[run 31459808225](https://github.com/nieying-code/phrase3/actions/runs/31459808225)，Linux `186 passed`、Phase 5 `6 passed`、Windows复现检查成功
 
 ## 修改内容
 

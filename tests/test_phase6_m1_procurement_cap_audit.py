@@ -106,3 +106,13 @@ def test_m1_design_audit_is_complete_and_reproducible() -> None:
     assert boundaries["scenario_generation_performed_by_design_validation"] is False
     assert boundaries["M0_results_modified_or_deleted"] is False
     assert boundaries["M1_results_written_to_M0_output_root"] is False
+
+    assert audit["verification"]["github_actions"] == {
+        "validated_head_sha": "abcc6c7d8c0f855b561db40c0bc171b7cd2451e9",
+        "run_id": 31459808225,
+        "url": "https://github.com/nieying-code/phrase3/actions/runs/31459808225",
+        "linux_unit_and_regression": "186 passed",
+        "phase5_end_to_end": "6 passed",
+        "windows_reproducibility": "passed",
+        "status": "success",
+    }
