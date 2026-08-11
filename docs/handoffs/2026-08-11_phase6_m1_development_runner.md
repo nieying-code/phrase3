@@ -10,7 +10,8 @@
 - Base branch：`main`
 - PR #39 merge/base：`cf6847c9d25574bb70be73d9d96b81a875a52b93`
 - Draft PR：https://github.com/nieying-code/phrase3/pull/40
-- 最终修复提交和 CI：发布后更新
+- Runner加固验证提交：`6c213c24c0f58d02a86705afb2e9e83606a96070`
+- Runner加固CI：[run 31470284497](https://github.com/nieying-code/phrase3/actions/runs/31470284497)，Linux和Windows成功
 
 ## 修改内容
 
@@ -63,7 +64,7 @@
 - Windows 复现专项：`16 passed in 7.88s`
 - 语法检查：通过
 - `git diff --check`：通过
-- GitHub Actions：runner 加固提交发布后更新
+- GitHub Actions：[run 31470284497](https://github.com/nieying-code/phrase3/actions/runs/31470284497)：Linux `231 passed + 6 passed`，Windows `16 passed`，成功
 
 ## 明确未执行
 

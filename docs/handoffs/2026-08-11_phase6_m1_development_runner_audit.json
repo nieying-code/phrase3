@@ -66,13 +66,13 @@
     "windows_reproducibility": "16 passed in 7.88s",
     "git_diff_check": "passed",
     "github_actions": {
-      "validated_head_sha": "pending_runner_hardening_commit",
-      "run_id": null,
-      "url": null,
-      "linux_unit_and_regression": "pending",
+      "validated_head_sha": "6c213c24c0f58d02a86705afb2e9e83606a96070",
+      "run_id": 31470284497,
+      "url": "https://github.com/nieying-code/phrase3/actions/runs/31470284497",
+      "linux_unit_and_regression": "231 passed in 17.36s",
       "phase5_end_to_end": "6 passed",
-      "windows_reproducibility": "16 passed",
-      "status": "pending"
+      "windows_reproducibility": "16 passed in 5.67s",
+      "status": "success"
     }
   }
 }
