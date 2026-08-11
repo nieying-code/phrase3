@@ -9,7 +9,7 @@
 - Branch：`agent/phase6-m1-procurement-cap`
 - Base branch：`main`
 - Base/PR #38 merge：`0c7c6cffe82a858b534e8bf812a23291ef40b709`
-- Commit SHA：pending
+- Implementation/validation commit SHA：`19936c3bf26b2eca10603f60b32da0bc689b4c31`
 - Draft PR：pending
 - CI：pending
 
@@ -62,7 +62,7 @@
 
 - `python -m py_compile src/phase6_m1.py src/run_phase6_m1.py`：通过。
 - `python -m pytest tests/test_phase6_m1_procurement_cap.py -q`：`17 passed`。
-- 完整回归：pending final tracked commit。
+- `python -m pytest -q`：`192 passed in 38.55s`。
 - Gurobi Optimizer/gurobipy：13.0.2。
 - Pyomo接口：`gurobi_direct`。
 - Threads：1。

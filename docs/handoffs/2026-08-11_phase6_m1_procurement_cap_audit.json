@@ -61,7 +61,7 @@
     "targeted_test_command": ".venv-gurobi/Scripts/python.exe -m pytest tests/test_phase6_m1_procurement_cap.py -q",
     "targeted_test_result": "17 passed",
     "full_regression_command": ".venv-gurobi/Scripts/python.exe -m pytest -q",
-    "full_regression_result": "pending_final_commit",
+    "full_regression_result": "192 passed in 38.55s",
     "syntax_check": "passed",
     "solver": "gurobi_direct",
     "gurobi_optimizer": "13.0.2",
