@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 
 from src.phase6_m1 import load_m1_config, m1_fingerprints
 
@@ -46,11 +47,28 @@ def test_m1_design_audit_is_complete_and_reproducible() -> None:
     }
     assert audit["branch"] == "agent/phase6-m1-procurement-cap"
     assert audit["fingerprints"] == EXPECTED_FINGERPRINTS
-    assert m1_fingerprints(
+    actual_fingerprints = m1_fingerprints(
         project_root=ROOT,
         config_path=CONFIG,
         runner_config_path=RUNNER,
-    ) == EXPECTED_FINGERPRINTS
+    )
+    assert {
+        key: value
+        for key, value in actual_fingerprints.items()
+        if key != "environment_sha256"
+    } == {
+        key: value
+        for key, value in EXPECTED_FINGERPRINTS.items()
+        if key != "environment_sha256"
+    }
+    assert re.fullmatch(
+        r"[0-9a-f]{64}", actual_fingerprints["environment_sha256"]
+    )
+    assert audit["environment_fingerprint_scope"] == {
+        "recorded_value": "local_controlled_gurobi_execution_host",
+        "cross_platform_CI_expected_to_match": False,
+        "future_M1_runs_must_match_recorded_local_environment": True,
+    }
 
     protocol = audit["protocol"]
     assert protocol["status"] == config["status"] == "candidate_design_pending_review"

@@ -33,6 +33,7 @@
 ### 复现与执行边界
 
 - M1 使用独立科学配置、runner配置、组件指纹、环境指纹、命名空间和输出根目录。
+- 机器审计锁定本地受控 Gurobi 主机的环境指纹；跨平台 CI 只重算并验证环境记录有效，不要求 Linux 硬件环境与本地执行主机哈希相同。未来 M1 实验仍必须匹配已批准的本地环境指纹。
 - 当前配置为 `candidate_design_pending_review`，入口只允许 `--validate-only`。
 - M1 不接受 M0 authorization、registry 或 projection。
 - 本次没有运行63组开发矩阵、pilot、正式种子或 M0 E3正式实验。
