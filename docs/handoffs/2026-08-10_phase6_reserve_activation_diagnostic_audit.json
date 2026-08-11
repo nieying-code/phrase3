@@ -22,7 +22,8 @@
   },
   "failed_attempt": {
     "output_path": "outputs/phase6_reserve_activation_diagnostic_v1/run_20260810/result.json",
-    "execution_commit": "d701342",
+    "execution_commit": "d701342fd632310f79f5aaae7af5f69fe3f88c17",
+    "execution_tree": "ba33e3c528098c3b724f077e696fb9d4a1dbfbc0",
     "status": "runner_extraction_error",
     "message": "AttributeError: ExtensiveSolution has no attribute regular_purchase",
     "final_result_file_created": false,
@@ -74,10 +75,30 @@
     "0.75": {"waste_multiplier_count": 4, "reserve_ratio": 0.13283467769592186, "objective": 18052.43504004278},
     "0.5": {"waste_multiplier_count": 4, "reserve_ratio": 0.604093845219933, "objective": 11250.88067547729}
   },
+  "mechanism_surface_cases": [
+    {"case_id": "price_scale_1__waste_multiplier_1", "emergency_price_scale": 1.0, "waste_penalty_multiplier": 1.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "82a8bba99379ed27181057ce3c7a274ae57f5a4cf0b763d5476cc958c1a18dfb", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_1__waste_multiplier_4", "emergency_price_scale": 1.0, "waste_penalty_multiplier": 4.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "00d2c163fe2665c7d3bcb87874c5bb8cb8f38de07f058f265baffb10be0f1390", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_1__waste_multiplier_16", "emergency_price_scale": 1.0, "waste_penalty_multiplier": 16.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "0c33e07df369bb6d9030e68190743cba2de7e440a9e6aea8077c3ec878b44e63", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_1__waste_multiplier_64", "emergency_price_scale": 1.0, "waste_penalty_multiplier": 64.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "1930142dbba244f281692b515b0c6df153f57bd4db47353a3b7d43e4f0e56292", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_0.9__waste_multiplier_1", "emergency_price_scale": 0.9, "waste_penalty_multiplier": 1.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "03b7444913028ca54d2695318b6eb21dc03ca861faea2a1c7a877494ceea6ea3", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_0.9__waste_multiplier_4", "emergency_price_scale": 0.9, "waste_penalty_multiplier": 4.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "2ec265560c2b120dd970015eaa06ee0425b7ea7e9387e604a3fe647aa626c83b", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_0.9__waste_multiplier_16", "emergency_price_scale": 0.9, "waste_penalty_multiplier": 16.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "7f7a0ba62f50cfbcd087b3cc01386e2e2f7ce030287e3704cae9da1039f7a128", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_0.9__waste_multiplier_64", "emergency_price_scale": 0.9, "waste_penalty_multiplier": 64.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "dc4a09a3f217414fc0452e708e3775ddf56e03e9c7572b6a09b2e301dd3a4263", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_0.75__waste_multiplier_1", "emergency_price_scale": 0.75, "waste_penalty_multiplier": 1.0, "status": "optimal", "reserve": 179.7723016094747, "reserve_ratio": 0.13283467769592186, "objective": 18052.43504004278, "consistency_difference": 3.637978807091713e-12, "data_sha256": "4f2a118cd2aadf10b73db3a1d0910e1b39198ebf777850520e9d409622da40fe", "regular_purchase_sha256": "16d9f77ed8bcf480eb400752168db6f21fbfa45bb1bed20cf16a5a85b6ba5c53", "maximum_total_emergency_purchase": 101.54192792748943},
+    {"case_id": "price_scale_0.75__waste_multiplier_4", "emergency_price_scale": 0.75, "waste_penalty_multiplier": 4.0, "status": "optimal", "reserve": 179.7723016094747, "reserve_ratio": 0.13283467769592186, "objective": 18052.43504004278, "consistency_difference": 3.637978807091713e-12, "data_sha256": "7824c4fe6de6f851f8a115e25653babab20ba0972de2e047ad1b381ec7cfbddd", "regular_purchase_sha256": "16d9f77ed8bcf480eb400752168db6f21fbfa45bb1bed20cf16a5a85b6ba5c53", "maximum_total_emergency_purchase": 101.54192792748943},
+    {"case_id": "price_scale_0.75__waste_multiplier_16", "emergency_price_scale": 0.75, "waste_penalty_multiplier": 16.0, "status": "optimal", "reserve": 179.7723016094747, "reserve_ratio": 0.13283467769592186, "objective": 18052.43504004278, "consistency_difference": 0.0, "data_sha256": "f0d36a449dbf359f11b31e96a5efd04e35402f0a715d7adb542bbe2537b77db4", "regular_purchase_sha256": "16d9f77ed8bcf480eb400752168db6f21fbfa45bb1bed20cf16a5a85b6ba5c53", "maximum_total_emergency_purchase": 101.54192792748943},
+    {"case_id": "price_scale_0.75__waste_multiplier_64", "emergency_price_scale": 0.75, "waste_penalty_multiplier": 64.0, "status": "optimal", "reserve": 179.7723016094747, "reserve_ratio": 0.13283467769592186, "objective": 18052.43504004278, "consistency_difference": 0.0, "data_sha256": "84e7c852f5f2b17d86972fbbfe153f6f9eefa7309a6f621ae6e157e7cf801c76", "regular_purchase_sha256": "16d9f77ed8bcf480eb400752168db6f21fbfa45bb1bed20cf16a5a85b6ba5c53", "maximum_total_emergency_purchase": 101.54192792748943},
+    {"case_id": "price_scale_0.5__waste_multiplier_1", "emergency_price_scale": 0.5, "waste_penalty_multiplier": 1.0, "status": "optimal", "reserve": 817.5526363071021, "reserve_ratio": 0.604093845219933, "objective": 11250.88067547729, "consistency_difference": 1.8189894035458565e-12, "data_sha256": "d48c9ffaf312776f32839a6d87dc9d7f826b99f0961812842d984d1fb9f63fd1", "regular_purchase_sha256": "3bb09ab6d58f7b21b5c9280d45a1f11443ee20374af3e99f6f0923f7c098e68e", "maximum_total_emergency_purchase": 562.2041649679923},
+    {"case_id": "price_scale_0.5__waste_multiplier_4", "emergency_price_scale": 0.5, "waste_penalty_multiplier": 4.0, "status": "optimal", "reserve": 817.5526363071021, "reserve_ratio": 0.604093845219933, "objective": 11250.88067547729, "consistency_difference": 1.8189894035458565e-12, "data_sha256": "d0797c0d248d4bb51c1249a1144db24768a42ec53f7e12a79a998d918bdb6406", "regular_purchase_sha256": "3bb09ab6d58f7b21b5c9280d45a1f11443ee20374af3e99f6f0923f7c098e68e", "maximum_total_emergency_purchase": 562.2041649679923},
+    {"case_id": "price_scale_0.5__waste_multiplier_16", "emergency_price_scale": 0.5, "waste_penalty_multiplier": 16.0, "status": "optimal", "reserve": 817.5526363071021, "reserve_ratio": 0.604093845219933, "objective": 11250.88067547729, "consistency_difference": 1.8189894035458565e-12, "data_sha256": "c0fa11f005319430e0679ecc2e65286971756263cde6f5ac163fc3388191ce81", "regular_purchase_sha256": "3bb09ab6d58f7b21b5c9280d45a1f11443ee20374af3e99f6f0923f7c098e68e", "maximum_total_emergency_purchase": 562.2041649679923},
+    {"case_id": "price_scale_0.5__waste_multiplier_64", "emergency_price_scale": 0.5, "waste_penalty_multiplier": 64.0, "status": "optimal", "reserve": 817.5526363071021, "reserve_ratio": 0.604093845219933, "objective": 11250.88067547729, "consistency_difference": 1.8189894035458565e-12, "data_sha256": "03edc561e56835381a0b533a2acb4fab37210bed587c808e574453b76fd1e9ad", "regular_purchase_sha256": "3bb09ab6d58f7b21b5c9280d45a1f11443ee20374af3e99f6f0923f7c098e68e", "maximum_total_emergency_purchase": 562.2041649679923}
+  ],
   "waste_penalty_result": {
     "multipliers_tested": [1.0, 4.0, 16.0, 64.0],
     "objective_and_reserve_invariant_within_each_price_scale": true,
-    "interpretation": "In this seed and grid, disposal occurs outside the binding worst-case recourse pattern; raising its unit penalty does not alter the minimax solution."
+    "waste_penalty_is_decision_relevant_in_tested_grid": false,
+    "worst_case_disposal_channel_directly_verified": false,
+    "interpretation": "In this development seed and prespecified grid, increasing the disposal penalty through 64x does not alter the robust objective or reserve decision. This is consistent with a shortage-driven worst case, but the worst-case disposal channel was not directly retained and this is not a general proof."
   },
   "markup_attribution": {
     "baseline_objective": 18448.853760028822,
@@ -104,7 +125,8 @@
     "pure_emergency_markup_effect_under_zero_reserve": false,
     "current_relative_price_calibration_is_decisive": true,
     "unlimited_deterministic_regular_procurement_is_a_structural_contributor": true,
-    "minimax_worst_case_masks_nonbinding_low_demand_disposal_cost": true,
+    "waste_penalty_is_decision_relevant_in_tested_grid": false,
+    "worst_case_disposal_channel_directly_verified": false,
     "model_can_activate_positive_reserve_in_prespecified_positive_control": true,
     "positive_control_is_empirical_evidence": false
   },
@@ -121,4 +143,3 @@
     "formal_results_overwritten": false
   }
 }
-
