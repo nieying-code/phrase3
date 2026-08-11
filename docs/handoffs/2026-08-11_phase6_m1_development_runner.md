@@ -12,7 +12,8 @@
 - Remote implementation commit SHA：`a0244a77d9accc87f39bfaf14922846c7bb1e4a1`
 - Draft PR：https://github.com/nieying-code/phrase3/pull/40
 - Remote code-and-validation head before PR-link update：`18d5be9a3e693afc65e70c359a2e64e428a7cb61`
-- CI：`pending`
+- Validated code/audit head：`f1422b7e8dfcf513065a453185d1a5ad395e176d`
+- CI：[run 31466516513](https://github.com/nieying-code/phrase3/actions/runs/31466516513)，Linux `211 passed + 6 passed`，Windows `16 passed`，成功
 
 ## 修改内容
 
@@ -59,7 +60,7 @@
 - Windows复现专项：`16 passed in 7.79s`
 - 语法检查：通过
 - `git diff --check`：通过
-- GitHub Actions：`pending`
+- GitHub Actions：run `31466516513`，Linux `211 passed + 6 passed`、Windows `16 passed`，成功
 
 ## 明确未执行
 

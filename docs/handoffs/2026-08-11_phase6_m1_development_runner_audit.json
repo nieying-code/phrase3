@@ -57,6 +57,14 @@
     "full_regression": "217 passed; CI split: 211 passed in 54.60s + 6 passed in 6.00s",
     "windows_reproducibility": "16 passed in 7.79s",
     "git_diff_check": "passed",
-    "github_actions": "pending"
+    "github_actions": {
+      "validated_head_sha": "f1422b7e8dfcf513065a453185d1a5ad395e176d",
+      "run_id": 31466516513,
+      "url": "https://github.com/nieying-code/phrase3/actions/runs/31466516513",
+      "linux_unit_and_regression": "211 passed",
+      "phase5_end_to_end": "6 passed",
+      "windows_reproducibility": "16 passed",
+      "status": "success"
+    }
   }
 }
