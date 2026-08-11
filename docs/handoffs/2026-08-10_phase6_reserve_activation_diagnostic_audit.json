@@ -1,0 +1,145 @@
+{
+  "audit_schema": "phase6_reserve_activation_diagnostic_v1",
+  "status": "complete",
+  "scope": "exploratory_mechanism_diagnostic_only",
+  "formal_evidence": false,
+  "replaces_frozen_e5": false,
+  "execution": {
+    "successful_attempt_commit": "dbc0dc88c201cf4e1a625d7943269a96b486b817",
+    "successful_attempt_tree": "2aec4de34c3d20854f0783ac088a93d5180a5092",
+    "merged_pr37_commit": "595ed0025be82beb7b7283faca6f53282fa8ab22",
+    "merged_pr37_tree": "b3ce557e953c39f162f0abbc6e1af935f2359990",
+    "local_parent_commit": "24500085da0c2699282110283d87fc88d0a36466",
+    "local_parent_tree": "b3ce557e953c39f162f0abbc6e1af935f2359990",
+    "merged_main_and_local_parent_tree_equal": true,
+    "tracked_worktree_dirty": false,
+    "result_path": "outputs/phase6_reserve_activation_diagnostic_v1/run_20260810_attempt2/result.json",
+    "result_size_bytes": 35079,
+    "result_sha256": "e203da869e09959d36ba5b3d40f9f1f004980084479d76ea277549e7a03d4b1d",
+    "config_sha256": "79e3e7a3d757926632049b98ec257c15185a1a1c64b250a2303815dbea1d6a7d",
+    "matrix_file_sha256": "61de9544a4ca80a904700ddf5e12c3dd75e568c31b7d8d2bd24e76c59fabc731",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "failed_attempt": {
+    "output_path": "outputs/phase6_reserve_activation_diagnostic_v1/run_20260810/result.json",
+    "execution_commit": "d701342fd632310f79f5aaae7af5f69fe3f88c17",
+    "execution_tree": "ba33e3c528098c3b724f077e696fb9d4a1dbfbc0",
+    "status": "runner_extraction_error",
+    "message": "AttributeError: ExtensiveSolution has no attribute regular_purchase",
+    "final_result_file_created": false,
+    "gurobi_or_model_failure": false,
+    "same_output_path_reused": false
+  },
+  "environment": {
+    "python": "3.12.10",
+    "gurobi_optimizer": "13.0.2",
+    "gurobipy": "13.0.2",
+    "pyomo_interface": "gurobi_direct",
+    "threads": 1,
+    "highs_fallback": false
+  },
+  "design": {
+    "tier_id": "V1",
+    "seed": 20260723,
+    "items": 1,
+    "periods": 6,
+    "training_scenarios": 50,
+    "budget_factor": 1.1,
+    "reference_budget": 1230.3215390309174,
+    "budget": 1353.3536929340091,
+    "baseline_data_sha256": "82a8bba99379ed27181057ce3c7a274ae57f5a4cf0b763d5476cc958c1a18dfb",
+    "reserve_frontier_ratios": [0.0, 0.0025, 0.005, 0.01, 0.02, 0.05, 0.1],
+    "emergency_price_scales": [1.0, 0.9, 0.75, 0.5],
+    "waste_penalty_multipliers": [1.0, 4.0, 16.0, 64.0],
+    "markup_attribution_means": [0.15, 0.55]
+  },
+  "baseline": {
+    "objective": 18448.853760028822,
+    "reserve": 0.0,
+    "reserve_ratio": 0.0,
+    "maximum_emergency_purchase": 0.0,
+    "maximum_total_disposal": 234.6956623618919
+  },
+  "reserve_frontier": [
+    {"reserve_ratio": 0.0, "reserve": 0.0, "objective": 18448.853760028822, "delta_from_zero": 0.0},
+    {"reserve_ratio": 0.0025, "reserve": 3.3833842323350227, "objective": 18461.735130173325, "delta_from_zero": 12.881370144503308},
+    {"reserve_ratio": 0.005, "reserve": 6.7667684646700454, "objective": 18474.616500317832, "delta_from_zero": 25.762740289010253},
+    {"reserve_ratio": 0.01, "reserve": 13.533536929340091, "objective": 18500.37924060684, "delta_from_zero": 51.52548057801687},
+    {"reserve_ratio": 0.02, "reserve": 27.067073858680182, "objective": 18551.904721184863, "delta_from_zero": 103.05096115604101},
+    {"reserve_ratio": 0.05, "reserve": 67.66768464670047, "objective": 18706.481162918924, "delta_from_zero": 257.62740289010253},
+    {"reserve_ratio": 0.1, "reserve": 135.33536929340093, "objective": 18964.108565809016, "delta_from_zero": 515.2548057801941}
+  ],
+  "mechanism_surface_by_price_scale": {
+    "1.0": {"waste_multiplier_count": 4, "reserve_ratio": 0.0, "objective": 18448.853760028822},
+    "0.9": {"waste_multiplier_count": 4, "reserve_ratio": 0.0, "objective": 18448.853760028822},
+    "0.75": {"waste_multiplier_count": 4, "reserve_ratio": 0.13283467769592186, "objective": 18052.43504004278},
+    "0.5": {"waste_multiplier_count": 4, "reserve_ratio": 0.604093845219933, "objective": 11250.88067547729}
+  },
+  "mechanism_surface_cases": [
+    {"case_id": "price_scale_1__waste_multiplier_1", "emergency_price_scale": 1.0, "waste_penalty_multiplier": 1.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "82a8bba99379ed27181057ce3c7a274ae57f5a4cf0b763d5476cc958c1a18dfb", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_1__waste_multiplier_4", "emergency_price_scale": 1.0, "waste_penalty_multiplier": 4.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "00d2c163fe2665c7d3bcb87874c5bb8cb8f38de07f058f265baffb10be0f1390", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_1__waste_multiplier_16", "emergency_price_scale": 1.0, "waste_penalty_multiplier": 16.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "0c33e07df369bb6d9030e68190743cba2de7e440a9e6aea8077c3ec878b44e63", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_1__waste_multiplier_64", "emergency_price_scale": 1.0, "waste_penalty_multiplier": 64.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "1930142dbba244f281692b515b0c6df153f57bd4db47353a3b7d43e4f0e56292", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_0.9__waste_multiplier_1", "emergency_price_scale": 0.9, "waste_penalty_multiplier": 1.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "03b7444913028ca54d2695318b6eb21dc03ca861faea2a1c7a877494ceea6ea3", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_0.9__waste_multiplier_4", "emergency_price_scale": 0.9, "waste_penalty_multiplier": 4.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "2ec265560c2b120dd970015eaa06ee0425b7ea7e9387e604a3fe647aa626c83b", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_0.9__waste_multiplier_16", "emergency_price_scale": 0.9, "waste_penalty_multiplier": 16.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "7f7a0ba62f50cfbcd087b3cc01386e2e2f7ce030287e3704cae9da1039f7a128", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_0.9__waste_multiplier_64", "emergency_price_scale": 0.9, "waste_penalty_multiplier": 64.0, "status": "optimal", "reserve": 0.0, "reserve_ratio": 0.0, "objective": 18448.853760028822, "consistency_difference": 3.637978807091713e-12, "data_sha256": "dc4a09a3f217414fc0452e708e3775ddf56e03e9c7572b6a09b2e301dd3a4263", "regular_purchase_sha256": "70bd22a49ad97aa001120904dc683769c88fd4cd29ecfd7d3b4bd279e5460761", "maximum_total_emergency_purchase": 0.0},
+    {"case_id": "price_scale_0.75__waste_multiplier_1", "emergency_price_scale": 0.75, "waste_penalty_multiplier": 1.0, "status": "optimal", "reserve": 179.7723016094747, "reserve_ratio": 0.13283467769592186, "objective": 18052.43504004278, "consistency_difference": 3.637978807091713e-12, "data_sha256": "4f2a118cd2aadf10b73db3a1d0910e1b39198ebf777850520e9d409622da40fe", "regular_purchase_sha256": "16d9f77ed8bcf480eb400752168db6f21fbfa45bb1bed20cf16a5a85b6ba5c53", "maximum_total_emergency_purchase": 101.54192792748943},
+    {"case_id": "price_scale_0.75__waste_multiplier_4", "emergency_price_scale": 0.75, "waste_penalty_multiplier": 4.0, "status": "optimal", "reserve": 179.7723016094747, "reserve_ratio": 0.13283467769592186, "objective": 18052.43504004278, "consistency_difference": 3.637978807091713e-12, "data_sha256": "7824c4fe6de6f851f8a115e25653babab20ba0972de2e047ad1b381ec7cfbddd", "regular_purchase_sha256": "16d9f77ed8bcf480eb400752168db6f21fbfa45bb1bed20cf16a5a85b6ba5c53", "maximum_total_emergency_purchase": 101.54192792748943},
+    {"case_id": "price_scale_0.75__waste_multiplier_16", "emergency_price_scale": 0.75, "waste_penalty_multiplier": 16.0, "status": "optimal", "reserve": 179.7723016094747, "reserve_ratio": 0.13283467769592186, "objective": 18052.43504004278, "consistency_difference": 0.0, "data_sha256": "f0d36a449dbf359f11b31e96a5efd04e35402f0a715d7adb542bbe2537b77db4", "regular_purchase_sha256": "16d9f77ed8bcf480eb400752168db6f21fbfa45bb1bed20cf16a5a85b6ba5c53", "maximum_total_emergency_purchase": 101.54192792748943},
+    {"case_id": "price_scale_0.75__waste_multiplier_64", "emergency_price_scale": 0.75, "waste_penalty_multiplier": 64.0, "status": "optimal", "reserve": 179.7723016094747, "reserve_ratio": 0.13283467769592186, "objective": 18052.43504004278, "consistency_difference": 0.0, "data_sha256": "84e7c852f5f2b17d86972fbbfe153f6f9eefa7309a6f621ae6e157e7cf801c76", "regular_purchase_sha256": "16d9f77ed8bcf480eb400752168db6f21fbfa45bb1bed20cf16a5a85b6ba5c53", "maximum_total_emergency_purchase": 101.54192792748943},
+    {"case_id": "price_scale_0.5__waste_multiplier_1", "emergency_price_scale": 0.5, "waste_penalty_multiplier": 1.0, "status": "optimal", "reserve": 817.5526363071021, "reserve_ratio": 0.604093845219933, "objective": 11250.88067547729, "consistency_difference": 1.8189894035458565e-12, "data_sha256": "d48c9ffaf312776f32839a6d87dc9d7f826b99f0961812842d984d1fb9f63fd1", "regular_purchase_sha256": "3bb09ab6d58f7b21b5c9280d45a1f11443ee20374af3e99f6f0923f7c098e68e", "maximum_total_emergency_purchase": 562.2041649679923},
+    {"case_id": "price_scale_0.5__waste_multiplier_4", "emergency_price_scale": 0.5, "waste_penalty_multiplier": 4.0, "status": "optimal", "reserve": 817.5526363071021, "reserve_ratio": 0.604093845219933, "objective": 11250.88067547729, "consistency_difference": 1.8189894035458565e-12, "data_sha256": "d0797c0d248d4bb51c1249a1144db24768a42ec53f7e12a79a998d918bdb6406", "regular_purchase_sha256": "3bb09ab6d58f7b21b5c9280d45a1f11443ee20374af3e99f6f0923f7c098e68e", "maximum_total_emergency_purchase": 562.2041649679923},
+    {"case_id": "price_scale_0.5__waste_multiplier_16", "emergency_price_scale": 0.5, "waste_penalty_multiplier": 16.0, "status": "optimal", "reserve": 817.5526363071021, "reserve_ratio": 0.604093845219933, "objective": 11250.88067547729, "consistency_difference": 1.8189894035458565e-12, "data_sha256": "c0fa11f005319430e0679ecc2e65286971756263cde6f5ac163fc3388191ce81", "regular_purchase_sha256": "3bb09ab6d58f7b21b5c9280d45a1f11443ee20374af3e99f6f0923f7c098e68e", "maximum_total_emergency_purchase": 562.2041649679923},
+    {"case_id": "price_scale_0.5__waste_multiplier_64", "emergency_price_scale": 0.5, "waste_penalty_multiplier": 64.0, "status": "optimal", "reserve": 817.5526363071021, "reserve_ratio": 0.604093845219933, "objective": 11250.88067547729, "consistency_difference": 1.8189894035458565e-12, "data_sha256": "03edc561e56835381a0b533a2acb4fab37210bed587c808e574453b76fd1e9ad", "regular_purchase_sha256": "3bb09ab6d58f7b21b5c9280d45a1f11443ee20374af3e99f6f0923f7c098e68e", "maximum_total_emergency_purchase": 562.2041649679923}
+  ],
+  "waste_penalty_result": {
+    "multipliers_tested": [1.0, 4.0, 16.0, 64.0],
+    "objective_and_reserve_invariant_within_each_price_scale": true,
+    "waste_penalty_is_decision_relevant_in_tested_grid": false,
+    "worst_case_disposal_channel_directly_verified": false,
+    "interpretation": "In this development seed and prespecified grid, increasing the disposal penalty through 64x does not alter the robust objective or reserve decision. This is consistent with a shortage-driven worst case, but the worst-case disposal channel was not directly retained and this is not a general proof."
+  },
+  "markup_attribution": {
+    "baseline_objective": 18448.853760028822,
+    "markup_0.15": {
+      "pure_price_fixed_shortage_penalty_objective": 18448.853760028822,
+      "pure_price_delta": 0.0,
+      "coupled_price_and_shortage_penalty_objective": 16549.353752573836,
+      "coupled_delta": -1899.5000074549862,
+      "reserve": 0.0,
+      "maximum_emergency_purchase": 0.0
+    },
+    "markup_0.55": {
+      "pure_price_fixed_shortage_penalty_objective": 18448.853760028822,
+      "pure_price_delta": 0.0,
+      "coupled_price_and_shortage_penalty_objective": 20348.353767483797,
+      "coupled_delta": 1899.5000074549753,
+      "reserve": 0.0,
+      "maximum_emergency_purchase": 0.0
+    }
+  },
+  "diagnosis": {
+    "coarse_fixed_reserve_grid_is_root_cause": false,
+    "solver_or_reserve_variable_failure_is_root_cause": false,
+    "pure_emergency_markup_effect_under_zero_reserve": false,
+    "current_relative_price_calibration_is_decisive": true,
+    "unlimited_deterministic_regular_procurement_is_a_structural_contributor": true,
+    "waste_penalty_is_decision_relevant_in_tested_grid": false,
+    "worst_case_disposal_channel_directly_verified": false,
+    "model_can_activate_positive_reserve_in_prespecified_positive_control": true,
+    "positive_control_is_empirical_evidence": false
+  },
+  "recommended_paper_route": {
+    "route": "preserve_frozen_model_and_report_zero_reserve_boundary",
+    "reframe_claim": "endogenous reserve allocation and boundary characterization, not positive-reserve superiority",
+    "use_e4_tradeoff": "fixed reserve improves descriptive mean cost and service but does not consistently improve tail risk",
+    "future_extension": "separately review realistic regular-procurement capacity, lead-time or reliability limits and decouple shortage penalty from emergency markup",
+    "forbidden_shortcut": "do not lower emergency prices below regular prices merely to force positive reserve"
+  },
+  "stop_boundary": {
+    "e3_formal_started": false,
+    "frozen_matrix_modified": false,
+    "formal_results_overwritten": false
+  }
+}
