@@ -1,0 +1,326 @@
+{
+  "audit_id": "phase6_m1_development_grid_results_v1",
+  "audit_date": "2026-08-11",
+  "branch": "results/phase6-m1-development-grid",
+  "controlled_output_root": "D:\\新建文件夹\\项目交付\\阶段3-4修复同步\\phrase3\\outputs\\phase6_m1_procurement_cap_v1",
+  "execution": {
+    "git_sha": "5c899db05ff8d004d3ca1c90bfa58e30bafe1328",
+    "git_tree_sha": "f8baba05fa84ab717459065685049c4106cdc9f3",
+    "working_tree_dirty_at_start": false,
+    "tracked_modified_count_at_start": 0,
+    "untracked_execution_input_count_at_start": 0,
+    "python_version": "3.12.10",
+    "solver": "gurobi_direct",
+    "gurobi_optimizer_version": "13.0.2",
+    "gurobipy_version": "13.0.2",
+    "threads": 1,
+    "strict_serial_execution": true
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "6439d8a1945e44985cb1c8b20a20b7641617ed9a160db554680f3dc4680aa8c8",
+    "e3_component_sha256": "994e72479f0994c134d112bef1af78421ee3cca25593ab6a9d1146e153afbde2",
+    "family_component_sha256": "05065fba9dd69665bf556da2e6b44fde7e0f73d476172811aeb4d662b74a839d",
+    "runner_config_sha256": "4e39efe184877da9892e63852298bad4f9662b6d09af7ef5fedd6c4a09a13f3a",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "artifacts": {
+    "development_run_registry_sha256": "2694e0e7fdcf249f40f5e38cbfe4e9bdd3725735dce6bb1ab1faa88b099692e2",
+    "development_activation_projection_sha256": "005bedc92c59d16ebea2cece5302638c904d08a9f74db6d6df71c1ce8f68e8b7"
+  },
+  "projection_status": "completed_no_activation",
+  "required_primary_run_count": 63,
+  "verified_primary_run_count": 63,
+  "missing_case_ids": [],
+  "invalid_primary_run_ids": [],
+  "invalid_diagnostic_run_ids": [],
+  "duplicate_case_ids": [],
+  "diagnostic_run_ids": [],
+  "combination_count": 21,
+  "combinations": [
+    {
+      "beta": 0.9,
+      "kappa": null,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappaunbounded",
+        "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappaunbounded",
+        "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappaunbounded"
+      ]
+    },
+    {
+      "beta": 0.9,
+      "kappa": 1.5,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappa1p50",
+        "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa1p50",
+        "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa1p50"
+      ]
+    },
+    {
+      "beta": 0.9,
+      "kappa": 1.3,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappa1p30",
+        "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa1p30",
+        "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa1p30"
+      ]
+    },
+    {
+      "beta": 0.9,
+      "kappa": 1.2,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappa1p20",
+        "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa1p20",
+        "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa1p20"
+      ]
+    },
+    {
+      "beta": 0.9,
+      "kappa": 1.1,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappa1p10",
+        "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa1p10",
+        "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa1p10"
+      ]
+    },
+    {
+      "beta": 0.9,
+      "kappa": 1.0,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappa1p00",
+        "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa1p00",
+        "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa1p00"
+      ]
+    },
+    {
+      "beta": 0.9,
+      "kappa": 0.8,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappa0p80",
+        "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa0p80",
+        "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa0p80"
+      ]
+    },
+    {
+      "beta": 1.1,
+      "kappa": null,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappaunbounded",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappaunbounded",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappaunbounded"
+      ]
+    },
+    {
+      "beta": 1.1,
+      "kappa": 1.5,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa1p50",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa1p50",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa1p50"
+      ]
+    },
+    {
+      "beta": 1.1,
+      "kappa": 1.3,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa1p30",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa1p30",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa1p30"
+      ]
+    },
+    {
+      "beta": 1.1,
+      "kappa": 1.2,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa1p20",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa1p20",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa1p20"
+      ]
+    },
+    {
+      "beta": 1.1,
+      "kappa": 1.1,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa1p10",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa1p10",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa1p10"
+      ]
+    },
+    {
+      "beta": 1.1,
+      "kappa": 1.0,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa1p00",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa1p00",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa1p00"
+      ]
+    },
+    {
+      "beta": 1.1,
+      "kappa": 0.8,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa0p80",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa0p80",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa0p80"
+      ]
+    },
+    {
+      "beta": 1.3,
+      "kappa": null,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappaunbounded",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappaunbounded",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappaunbounded"
+      ]
+    },
+    {
+      "beta": 1.3,
+      "kappa": 1.5,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa1p50",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa1p50",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa1p50"
+      ]
+    },
+    {
+      "beta": 1.3,
+      "kappa": 1.3,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa1p30",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa1p30",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa1p30"
+      ]
+    },
+    {
+      "beta": 1.3,
+      "kappa": 1.2,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa1p20",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa1p20",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa1p20"
+      ]
+    },
+    {
+      "beta": 1.3,
+      "kappa": 1.1,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa1p10",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa1p10",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa1p10"
+      ]
+    },
+    {
+      "beta": 1.3,
+      "kappa": 1.0,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa1p00",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa1p00",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa1p00"
+      ]
+    },
+    {
+      "beta": 1.3,
+      "kappa": 0.8,
+      "completed_seed_count": 3,
+      "optimal_seed_count": 3,
+      "substantive_activation_seed_count": 0,
+      "gate_passed": false,
+      "run_ids": [
+        "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa0p80",
+        "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa0p80",
+        "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa0p80"
+      ]
+    }
+  ],
+  "combination_evidence_sha256": "65602736c6cfb6c65920b2b921cc09a930ff0e21d6548fa685899cb0d1a86621",
+  "passed_combinations": [],
+  "development_activation_gate_passed": false,
+  "formal_extension_authorized": false,
+  "stop_reason": "no_preregistered_combination_passed",
+  "selection_metrics_excluded": [
+    "cost",
+    "service_level",
+    "P95",
+    "CVaR",
+    "manual_trend"
+  ]
+}
