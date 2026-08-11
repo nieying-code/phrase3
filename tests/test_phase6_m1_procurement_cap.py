@@ -100,12 +100,14 @@ def degenerate_data() -> ProcurementData:
     return data
 
 
-def test_design_config_is_preregistered_and_execution_disabled() -> None:
+def test_development_config_is_preregistered_and_frozen() -> None:
     config = load_m1_config(ROOT / "configs/phase6_m1_procurement_cap.yaml")
     development = config["development_preregistration"]
-    assert config["status"] == "candidate_design_pending_review"
+    assert config["status"] == "frozen_for_development_execution"
     assert config["runner_namespace"] == "phase6_m1_procurement_cap"
     assert config["output_root"] == "outputs/phase6_m1_procurement_cap_v1"
+    # This historical flag records that the design-only PR ran no matrix;
+    # execution now requires both the frozen status and the separate CLI gate.
     assert development["execution_allowed_in_this_revision"] is False
     assert len(development["seeds"]) * len(development["beta"]) * len(
         development["kappa"]

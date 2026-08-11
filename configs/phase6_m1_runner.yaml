@@ -13,7 +13,10 @@ solver:
   optimality_tolerance: 1.0e-7
 
 execution:
-  design_revision_validate_only: true
+  design_revision_validate_only: false
+  development_matrix_frozen: true
+  development_execution_requires_explicit_authorization: true
+  formal_extension_authorized: false
   accept_M0_authorization: false
   accept_M0_registry: false
   accept_M0_projection: false

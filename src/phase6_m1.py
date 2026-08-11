@@ -64,6 +64,9 @@ M1_E3_COMPONENT_FILES = (
     "src/phase6_io.py",
     "src/phase6_m1.py",
     "src/run_phase6_m1.py",
+    "src/phase6_m1_development.py",
+    "src/run_phase6_m1_development.py",
+    "src/phase6_m1_status.py",
     "configs/phase6_m1_procurement_cap.yaml",
     "configs/phase6_m1_runner.yaml",
 )
@@ -541,7 +544,7 @@ def objective_tolerance(
     )
 
 
-def _solve_reserve_face_point(
+def solve_reserve_face_point(
     data: ProcurementData,
     *,
     master_optimum: float,
@@ -690,8 +693,8 @@ def analyze_reserve_interval(
         "feasibility_tolerance": feasibility_tolerance,
         "optimality_tolerance": optimality_tolerance,
     }
-    minimum = _solve_reserve_face_point(direction="min", **common)
-    maximum = _solve_reserve_face_point(direction="max", **common)
+    minimum = solve_reserve_face_point(direction="min", **common)
+    maximum = solve_reserve_face_point(direction="max", **common)
     if minimum.status != "optimal" or maximum.status != "optimal":
         return ReserveIntervalAnalysis(
             status="reserve_interval_failure",

@@ -1,0 +1,54 @@
+{
+  "audit_id": "phase6_m1_development_runner_freeze_v1",
+  "audit_date": "2026-08-11",
+  "base_merge_commit": "cf6847c9d25574bb70be73d9d96b81a875a52b93",
+  "branch": "agent/phase6-m1-development-runner",
+  "matrix": {
+    "status": "frozen_for_development_execution",
+    "tier_ids": ["V1"],
+    "seeds": [2026081101, 2026081102, 2026081103],
+    "beta": [0.9, 1.1, 1.3],
+    "kappa": [null, 1.5, 1.3, 1.2, 1.1, 1.0, 0.8],
+    "unbounded_cap_encoding": {"enabled": false, "kappa": null},
+    "configuration_count": 63
+  },
+  "activation": {
+    "numerical_ratio_strictly_greater_than": 0.0001,
+    "substantive_ratio_greater_than_or_equal_to": 0.01,
+    "required_optimal_seed_count": 3,
+    "required_substantive_seed_count": 2,
+    "selection_metrics_excluded": ["cost", "service_level", "P95", "CVaR", "manual_trend"],
+    "formal_extension_authorized": false
+  },
+  "execution_guards": {
+    "frozen_status_required": true,
+    "explicit_cli_authorization_required": true,
+    "preflight_before_scenario_generation": true,
+    "m0_authorization_accepted": false,
+    "immutable_terminal_run_ids": true,
+    "diagnostic_retry_requires_new_run_id_and_parent": true,
+    "strict_serial_execution": true,
+    "cross_process_registry_and_projection_locks": true,
+    "bounded_status_reader_parses_large_result_or_checkpoint": false
+  },
+  "approved_fingerprints": {
+    "scientific_config_sha256": "6439d8a1945e44985cb1c8b20a20b7641617ed9a160db554680f3dc4680aa8c8",
+    "e3_component_sha256": "4028461ade600cf6cf8db68cba8e1360fe7dcc838edffd0173aa4c98bbdf112c",
+    "family_component_sha256": "a39f24b2ef213a7e5dba860e375751c46c15aafb13a11d28b2ab8f295f5ff5e6",
+    "runner_config_sha256": "4e39efe184877da9892e63852298bad4f9662b6d09af7ef5fedd6c4a09a13f3a",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "execution_counts": {
+    "development_cases_run": 0,
+    "pilot_runs": 0,
+    "formal_runs": 0,
+    "m0_e3_runs": 0
+  },
+  "validation": {
+    "targeted_tests": "25 passed in 23.69s",
+    "full_regression": "217 passed in 61.06s; CI split: 211 passed in 57.27s + 6 passed in 7.33s",
+    "windows_reproducibility": "16 passed in 8.17s",
+    "git_diff_check": "passed",
+    "github_actions": "pending"
+  }
+}

@@ -52,15 +52,12 @@ def test_m1_design_audit_is_complete_and_reproducible() -> None:
         config_path=CONFIG,
         runner_config_path=RUNNER,
     )
-    assert {
-        key: value
-        for key, value in actual_fingerprints.items()
-        if key != "environment_sha256"
-    } == {
-        key: value
-        for key, value in EXPECTED_FINGERPRINTS.items()
-        if key != "environment_sha256"
-    }
+    # This file authenticates the historical PR #39 design revision.  The
+    # later development-runner revision intentionally updates component and
+    # runner fingerprints while preserving the scientific configuration.
+    assert actual_fingerprints["scientific_config_sha256"] == (
+        EXPECTED_FINGERPRINTS["scientific_config_sha256"]
+    )
     assert re.fullmatch(
         r"[0-9a-f]{64}", actual_fingerprints["environment_sha256"]
     )
@@ -71,7 +68,8 @@ def test_m1_design_audit_is_complete_and_reproducible() -> None:
     }
 
     protocol = audit["protocol"]
-    assert protocol["status"] == config["status"] == "candidate_design_pending_review"
+    assert protocol["status"] == "candidate_design_pending_review"
+    assert config["status"] == "frozen_for_development_execution"
     assert protocol["runner_namespace"] == config["runner_namespace"]
     assert protocol["output_root"] == config["output_root"]
     assert protocol["inherits_M0_authorization"] is False
