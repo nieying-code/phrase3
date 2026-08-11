@@ -10,7 +10,8 @@
 - Base branch：`main`
 - PR #39 merge/base：`cf6847c9d25574bb70be73d9d96b81a875a52b93`
 - Remote implementation commit SHA：`a0244a77d9accc87f39bfaf14922846c7bb1e4a1`
-- Draft PR：`pending`
+- Draft PR：https://github.com/nieying-code/phrase3/pull/40
+- Remote code-and-validation head before PR-link update：`18d5be9a3e693afc65e70c359a2e64e428a7cb61`
 - CI：`pending`
 
 ## 修改内容
