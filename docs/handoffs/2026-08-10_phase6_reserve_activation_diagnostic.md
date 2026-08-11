@@ -13,6 +13,8 @@
 - 本地起点 tree: `b3ce557e953c39f162f0abbc6e1af935f2359990`
 - 成功执行 commit: `dbc0dc88c201cf4e1a625d7943269a96b486b817`
 - Results documentation commit: `5b7457f`
+- 16 组机器审计闭环 commit: `9f31d1c0dc134cf77b8c32a44c8d79d4cd29cb54`
+- 机器审计闭环 CI: [run 31456966965](https://github.com/nieying-code/phrase3/actions/runs/31456966965)，Linux 与 Windows 均成功
 - Draft PR: https://github.com/nieying-code/phrase3/pull/38
 
 Git smart-HTTP 在同步合并提交时发生临时 443 reset；GitHub API 已确认合并提交和 tree。本地起点与合并后 `main` 的 tree 完全相同，因此诊断基线文件内容等价。诊断协议和运行器先提交，再在无 tracked 修改的工作树上执行。
