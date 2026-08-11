@@ -173,6 +173,16 @@ def test_execution_source_allows_only_untracked_output_artifacts(
         "untracked_paths": ["outputs/run/result.json"],
     }
     monkeypatch.setattr(reproducibility, "_git_metadata", lambda _: state)
+    monkeypatch.setattr(
+        reproducibility,
+        "_git_untracked_execution_inputs",
+        lambda _: [],
+    )
+    monkeypatch.setattr(
+        reproducibility,
+        "_require_git_tracked_files",
+        lambda *_args, **_kwargs: [],
+    )
     assert reproducibility.validate_execution_source(PROJECT_ROOT) == state
     state["untracked_paths"] = ["src/local_override.py"]
     with pytest.raises(RuntimeError, match="outside outputs"):
