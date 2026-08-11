@@ -58,13 +58,13 @@ EXPECTED_GLOBAL_ARTIFACTS = {
     ),
 }
 EXPECTED_RUN_EVIDENCE_SHA256 = (
-    "59f9bf02d503fe917d785c533b140dc0260f1e2140c64cfeeb1c12bf8efc3a05"
+    "aa8e1cf6704084a497325e82516340ca9d85b55eb16235e9978c80043bc2f545"
 )
 EXPECTED_COMBINATION_EVIDENCE_SHA256 = (
     "65602736c6cfb6c65920b2b921cc09a930ff0e21d6548fa685899cb0d1a86621"
 )
 EXPECTED_SUMMARY_SHA256 = (
-    "e88221b1e19509282b7ce3dbd653b957296d64178a3e3429c762975e031d8b5f"
+    "b1db285dc3336dbc14978bcc27b275a93f7862aaec6a12a7d87abca87d1a93a4"
 )
 EXPECTED_GITHUB_ACTIONS = {
     "validated_head_sha": "81f776920eb3c4222de110f0b90e0a5feb5c9a2e",
@@ -120,6 +120,15 @@ def test_m1_development_grid_run_evidence_is_complete_and_locked() -> None:
     assert _canonical_sha256(runs) == EXPECTED_RUN_EVIDENCE_SHA256
 
     for run in runs:
+        expected_case_id = _case_id(run["seed"], run["beta"], run["kappa"])
+        assert run["case_id"] == expected_case_id
+        assert run["run_id"] == f"m1dev_v1_20260811_{expected_case_id}"
+        assert (run["seed"], run["beta"], run["kappa"]) in {
+            (seed, beta, kappa)
+            for seed in seeds
+            for beta in betas
+            for kappa in kappas
+        }
         assert run["parent_run_id"] is None
         assert run["tier_id"] == "V1"
         assert run["status"] == "optimal"
@@ -146,12 +155,32 @@ def test_m1_development_grid_run_evidence_is_complete_and_locked() -> None:
             "minimum": {"infeasible": 0, "solver_failure": 0, "missing": 0},
             "maximum": {"infeasible": 0, "solver_failure": 0, "missing": 0},
         }
+        reserve_tolerance = audit["preregistration"][
+            "reserve_consistency_tolerance"
+        ]
+        assert reserve_tolerance == 1.0e-5
+        assert run["budget"] == run["beta"] * run["reference_budget"]
+        closed_form_difference = abs(
+            run["R_min_feas"] - run["R_min_feas_closed_form"]
+        )
+        assert run["R_min_feas_closed_form_difference"] == closed_form_difference
+        assert closed_form_difference <= reserve_tolerance
         assert run["R_star"] == run["R_min_feas"]
         assert run["R_min_opt"] == run["R_min_feas"]
-        assert run["R_disc_robust"] == 0.0
-        assert run["R_disc_robust_ratio"] == 0.0
-        assert run["numerical_activation"] is False
-        assert run["substantive_activation"] is False
+        recomputed_discretionary_reserve = max(
+            0.0, run["R_min_opt"] - run["R_min_feas"]
+        )
+        recomputed_discretionary_ratio = (
+            recomputed_discretionary_reserve / run["budget"]
+        )
+        assert run["R_disc_robust"] == recomputed_discretionary_reserve
+        assert run["R_disc_robust_ratio"] == recomputed_discretionary_ratio
+        assert run["numerical_activation"] is (
+            recomputed_discretionary_ratio > 1.0e-4
+        )
+        assert run["substantive_activation"] is (
+            recomputed_discretionary_ratio >= 0.01
+        )
         assert run["minimum_endpoint_consistency_difference"] <= (
             run["objective_tolerance"] + 1.0e-8
         )
@@ -162,6 +191,12 @@ def test_m1_development_grid_run_evidence_is_complete_and_locked() -> None:
         assert [policy["rho"] for policy in policies] == [0.0, 0.1, 0.3, 0.5]
         assert all(policy["status"] == "optimal" for policy in policies)
         assert all(len(policy["regular_purchase_sha256"]) == 64 for policy in policies)
+        for policy in policies:
+            expected_reserve = run["R_min_feas"] + policy["rho"] * (
+                run["budget"] - run["R_min_feas"]
+            )
+            assert policy["reserve"] == expected_reserve
+            assert policy["reserve_ratio"] == expected_reserve / run["budget"]
 
     counts = audit["counts"]
     assert counts == {
@@ -191,6 +226,7 @@ def test_m1_development_projection_recomputes_the_preregistered_gate() -> None:
     audit = json.loads(AUDIT_PATH.read_text(encoding="utf-8"))
     summary = json.loads(SUMMARY_PATH.read_text(encoding="utf-8"))
     combinations = summary["combinations"]
+    runs = audit["runs"]
 
     assert summary["execution"] == EXPECTED_EXECUTION
     assert summary["fingerprints"] == EXPECTED_FINGERPRINTS
@@ -200,6 +236,11 @@ def test_m1_development_projection_recomputes_the_preregistered_gate() -> None:
         EXPECTED_COMBINATION_EVIDENCE_SHA256
     )
     assert _canonical_sha256(combinations) == EXPECTED_COMBINATION_EVIDENCE_SHA256
+    assert summary["source_run_evidence_sha256"] == EXPECTED_RUN_EVIDENCE_SHA256
+    assert summary["aggregation_method"] == (
+        "independently_group_63_run_records_by_beta_and_kappa_then_recompute_"
+        "counts_and_gate"
+    )
 
     expected_pairs = {
         (beta, kappa)
@@ -207,16 +248,40 @@ def test_m1_development_projection_recomputes_the_preregistered_gate() -> None:
         for kappa in (None, 1.5, 1.3, 1.2, 1.1, 1.0, 0.8)
     }
     assert {(row["beta"], row["kappa"]) for row in combinations} == expected_pairs
+    runs_by_pair: dict[tuple[float, float | None], list[dict[str, object]]] = {}
+    for run in runs:
+        runs_by_pair.setdefault((run["beta"], run["kappa"]), []).append(run)
+    assert set(runs_by_pair) == expected_pairs
+
+    recomputed_gate_results = []
     for row in combinations:
-        assert row["completed_seed_count"] == 3
-        assert row["optimal_seed_count"] == 3
-        assert row["substantive_activation_seed_count"] == 0
-        expected_gate = (
-            row["optimal_seed_count"] == 3
-            and row["substantive_activation_seed_count"] >= 2
+        pair_runs = runs_by_pair[(row["beta"], row["kappa"])]
+        pair_runs.sort(key=lambda run: run["seed"])
+        completed_seed_count = len(pair_runs)
+        optimal_seed_count = sum(run["status"] == "optimal" for run in pair_runs)
+        substantive_activation_seed_count = sum(
+            bool(run["substantive_activation"]) for run in pair_runs
         )
-        assert row["gate_passed"] is expected_gate is False
-        assert len(row["run_ids"]) == 3
+        assert [run["seed"] for run in pair_runs] == [
+            2026081101,
+            2026081102,
+            2026081103,
+        ]
+        assert row["run_ids"] == [run["run_id"] for run in pair_runs]
+        assert row["completed_seed_count"] == completed_seed_count == 3
+        assert row["optimal_seed_count"] == optimal_seed_count == 3
+        assert (
+            row["substantive_activation_seed_count"]
+            == substantive_activation_seed_count
+            == 0
+        )
+        expected_gate = (
+            completed_seed_count == 3
+            and optimal_seed_count == 3
+            and substantive_activation_seed_count >= 2
+        )
+        assert row["gate_passed"] is expected_gate
+        recomputed_gate_results.append(expected_gate)
 
     assert summary["required_primary_run_count"] == 63
     assert summary["verified_primary_run_count"] == 63
@@ -229,10 +294,35 @@ def test_m1_development_projection_recomputes_the_preregistered_gate() -> None:
         "passed_combinations",
     ):
         assert summary[field] == []
-    assert summary["projection_status"] == "completed_no_activation"
-    assert summary["development_activation_gate_passed"] is False
+    no_projection_anomalies = all(
+        not summary[field]
+        for field in (
+            "missing_case_ids",
+            "invalid_primary_run_ids",
+            "invalid_diagnostic_run_ids",
+            "duplicate_case_ids",
+            "diagnostic_run_ids",
+        )
+    )
+    recomputed_development_gate = (
+        len(runs) == 63
+        and no_projection_anomalies
+        and any(recomputed_gate_results)
+    )
+    recomputed_status = (
+        "passed" if recomputed_development_gate else "completed_no_activation"
+    )
+    recomputed_stop_reason = (
+        None if recomputed_development_gate else "no_preregistered_combination_passed"
+    )
+    assert summary["projection_status"] == recomputed_status
+    assert (
+        summary["development_activation_gate_passed"]
+        is recomputed_development_gate
+        is False
+    )
     assert summary["formal_extension_authorized"] is False
-    assert summary["stop_reason"] == "no_preregistered_combination_passed"
+    assert summary["stop_reason"] == recomputed_stop_reason
     assert summary["selection_metrics_excluded"] == [
         "cost",
         "service_level",

@@ -322,5 +322,7 @@
     "P95",
     "CVaR",
     "manual_trend"
-  ]
+  ],
+  "source_run_evidence_sha256": "aa8e1cf6704084a497325e82516340ca9d85b55eb16235e9978c80043bc2f545",
+  "aggregation_method": "independently_group_63_run_records_by_beta_and_kappa_then_recompute_counts_and_gate"
 }

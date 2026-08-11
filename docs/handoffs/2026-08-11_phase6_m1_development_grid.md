@@ -75,6 +75,8 @@ stop_reason=no_preregistered_combination_passed
 - `2026-08-11_phase6_m1_development_grid_projection_summary.json`：21 个组合的机器门槛重汇总；
 - 专项审计测试：精确锁定执行提交、tree、五类指纹、全局制品哈希、63 个 case、21 个组合和最终停止结论。
 
+PR #41 首轮复审后，机器审计进一步补齐：每条 run 的 `reference_budget` 和 `budget`；`case_id/run_id` 与 seed-beta-kappa 的双向身份验证；最低可行储备与闭式下界的容差核验；由原始字段重算稳健自主储备及两个激活标志；四种固定自主储备金额公式；以及直接从 63 条 run 重新分组得到 21 个 beta-kappa 组合、3/3 完成数、激活数、组合门槛和最终停止原因。该修复只读取现有最终化制品，没有生成场景或调用 Gurobi。
+
 ## 验证结果
 
 - 审计专项测试：`2 passed in 0.07s`

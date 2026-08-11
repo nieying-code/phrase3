@@ -55,7 +55,8 @@
     "numerical_activation_ratio_strictly_greater_than": 0.0001,
     "substantive_activation_ratio_greater_than_or_equal_to": 0.01,
     "required_optimal_seed_count_per_combination": 3,
-    "required_substantive_seed_count_per_combination": 2
+    "required_substantive_seed_count_per_combination": 2,
+    "reserve_consistency_tolerance": 1e-05
   },
   "counts": {
     "primary_run_count": 63,
@@ -204,7 +205,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappa1p00",
@@ -307,7 +310,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappa1p10",
@@ -410,7 +415,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappa1p20",
@@ -513,7 +520,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappa1p30",
@@ -616,7 +625,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappa1p50",
@@ -719,7 +730,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta0p90_kappaunbounded",
@@ -822,7 +835,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa0p80",
@@ -925,7 +940,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa1p00",
@@ -1028,7 +1045,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa1p10",
@@ -1131,7 +1150,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa1p20",
@@ -1234,7 +1255,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa1p30",
@@ -1337,7 +1360,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappa1p50",
@@ -1440,7 +1465,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p10_kappaunbounded",
@@ -1543,7 +1570,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa0p80",
@@ -1646,7 +1675,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa1p00",
@@ -1749,7 +1780,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa1p10",
@@ -1852,7 +1885,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa1p20",
@@ -1955,7 +1990,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa1p30",
@@ -2058,7 +2095,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappa1p50",
@@ -2161,7 +2200,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081101_beta1p30_kappaunbounded",
@@ -2264,7 +2305,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa0p80",
@@ -2367,7 +2410,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa1p00",
@@ -2470,7 +2515,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa1p10",
@@ -2573,7 +2620,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa1p20",
@@ -2676,7 +2725,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa1p30",
@@ -2779,7 +2830,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappa1p50",
@@ -2882,7 +2935,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta0p90_kappaunbounded",
@@ -2985,7 +3040,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa0p80",
@@ -3088,7 +3145,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa1p00",
@@ -3191,7 +3250,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa1p10",
@@ -3294,7 +3355,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa1p20",
@@ -3397,7 +3460,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa1p30",
@@ -3500,7 +3565,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappa1p50",
@@ -3603,7 +3670,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p10_kappaunbounded",
@@ -3706,7 +3775,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa0p80",
@@ -3809,7 +3880,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa1p00",
@@ -3912,7 +3985,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa1p10",
@@ -4015,7 +4090,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa1p20",
@@ -4118,7 +4195,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa1p30",
@@ -4221,7 +4300,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappa1p50",
@@ -4324,7 +4405,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081102_beta1p30_kappaunbounded",
@@ -4427,7 +4510,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa0p80",
@@ -4530,7 +4615,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa1p00",
@@ -4633,7 +4720,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa1p10",
@@ -4736,7 +4825,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa1p20",
@@ -4839,7 +4930,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa1p30",
@@ -4942,7 +5035,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappa1p50",
@@ -5045,7 +5140,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta0p90_kappaunbounded",
@@ -5148,7 +5245,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1107.2893851278257
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa0p80",
@@ -5251,7 +5350,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa1p00",
@@ -5354,7 +5455,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa1p10",
@@ -5457,7 +5560,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa1p20",
@@ -5560,7 +5665,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa1p30",
@@ -5663,7 +5770,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappa1p50",
@@ -5766,7 +5875,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p10_kappaunbounded",
@@ -5869,7 +5980,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1353.3536929340091
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa0p80",
@@ -5972,7 +6085,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa1p00",
@@ -6075,7 +6190,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa1p10",
@@ -6178,7 +6295,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa1p20",
@@ -6281,7 +6400,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa1p30",
@@ -6384,7 +6505,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappa1p50",
@@ -6487,7 +6610,9 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     },
     {
       "run_id": "m1dev_v1_20260811_V1_seed2026081103_beta1p30_kappaunbounded",
@@ -6590,12 +6715,14 @@
       "solver": "gurobi_direct",
       "gurobi_optimizer_version": "13.0.2",
       "gurobipy_version": "13.0.2",
-      "threads": 1
+      "threads": 1,
+      "reference_budget": 1230.3215390309174,
+      "budget": 1599.4180007401926
     }
   ],
-  "run_evidence_sha256": "59f9bf02d503fe917d785c533b140dc0260f1e2140c64cfeeb1c12bf8efc3a05",
+  "run_evidence_sha256": "aa8e1cf6704084a497325e82516340ca9d85b55eb16235e9978c80043bc2f545",
   "projection_summary_path": "docs/handoffs/2026-08-11_phase6_m1_development_grid_projection_summary.json",
-  "projection_summary_sha256": "e88221b1e19509282b7ce3dbd653b957296d64178a3e3429c762975e031d8b5f",
+  "projection_summary_sha256": "b1db285dc3336dbc14978bcc27b275a93f7862aaec6a12a7d87abca87d1a93a4",
   "conclusion": {
     "passed_combinations": [],
     "development_activation_gate_passed": false,
