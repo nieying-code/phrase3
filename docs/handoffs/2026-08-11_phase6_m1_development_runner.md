@@ -50,11 +50,13 @@
 - Runner config：`4e39efe184877da9892e63852298bad4f9662b6d09af7ef5fedd6c4a09a13f3a`
 - Environment：`b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af`
 
+环境指纹锁定本地受控Gurobi执行主机；跨平台CI只验证其记录和格式，不要求Linux/Windows托管机与本地主机哈希相同。未来真实M1开发运行仍必须匹配上述本地批准值。
+
 ## 验证结果
 
-- M1 runner专项测试：`25 passed in 23.69s`
-- 完整回归：`217 passed in 61.06s`；CI拆分为 `211 passed in 57.27s + 6 passed in 7.33s`
-- Windows复现专项：`16 passed in 8.17s`
+- M1 runner专项测试：`25 passed in 25.71s`
+- 完整回归：`217 passed`；CI拆分为 `211 passed in 54.60s + 6 passed in 6.00s`
+- Windows复现专项：`16 passed in 7.79s`
 - 语法检查：通过
 - `git diff --check`：通过
 - GitHub Actions：`pending`

@@ -207,8 +207,20 @@ def test_frozen_approval_and_machine_audit_lock_current_m1_fingerprints() -> Non
         .read_text(encoding="utf-8")
     )
     assert config["status"] == "frozen_for_development_execution"
-    assert actual == approval["approved_fingerprints"] == expected
+    assert approval["approved_fingerprints"] == expected
     assert audit["approved_fingerprints"] == expected
+    assert {
+        key: value for key, value in actual.items() if key != "environment_sha256"
+    } == {
+        key: value for key, value in expected.items() if key != "environment_sha256"
+    }
+    assert len(actual["environment_sha256"]) == 64
+    int(actual["environment_sha256"], 16)
+    assert audit["environment_fingerprint_scope"] == {
+        "approved_value": "local_controlled_gurobi_execution_host",
+        "cross_platform_CI_expected_to_match": False,
+        "future_M1_development_runs_must_match_approved_local_value": True,
+    }
     assert audit["execution_counts"] == {
         "development_cases_run": 0,
         "pilot_runs": 0,
