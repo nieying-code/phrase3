@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from typing import Any, Sequence
 
+from .phase6_m1_development import resolve_run_directory
+
 
 MAX_STATUS_BYTES = 16 * 1024
 
@@ -17,7 +19,7 @@ def read_status(output_root: Path, run_id: str | None) -> dict[str, Any]:
         path = base / "development_activation_projection.json"
         kind = "projection"
     else:
-        path = base / "runs" / run_id / "status_summary.json"
+        path = resolve_run_directory(output_root, run_id) / "status_summary.json"
         kind = "status_summary"
     if not path.is_file():
         return {"status": "not_found", "source": str(path)}

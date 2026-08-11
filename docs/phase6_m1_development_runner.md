@@ -39,7 +39,15 @@
 
 ## 4. 最终化与不可变性
 
-终态按 `result → manifest → registry → projection` 顺序写入。manifest 锁定 result、checkpoint、status summary 和 heartbeat 的 SHA-256。任何已有 checkpoint、成功、失败或超时 run 目录均不可用相同 run ID 覆盖。
+终态按 `result → manifest → registry → projection` 顺序写入。manifest 锁定 result、checkpoint、status summary 和 heartbeat 的 SHA-256。任何已有 checkpoint、成功、失败、超时或中断 run 目录均不可用相同 run ID 覆盖。
+
+所有 run ID 只能包含字母、数字、点、下划线和连字符，且禁止 `..`；解析后的目录还必须是 M1 受控 `runs/` 目录的直接子目录。状态读取工具执行相同校验。
+
+V1 的最低可行储备、完整扩展式、容差最优面端点和固定自主储备策略均使用冻结的单次 Gurobi 调用时限 120 秒。`time_limit`、`master_time_limit` 及嵌套补救超时统一写为不可变 `timeout` 终态，同时保留原始求解状态和失败阶段。
+
+矩阵加载、科学求解、运行环境提取和制品最终化均纳入同一生命周期。普通基础设施异常写为 `runner_exception`；`KeyboardInterrupt` 写为 `interrupted`，不会留下含义不明的永久 `running` 状态。
+
+内存字段 `peak_memory_mb` 的正式含义为后台轻量采样器得到的进程 RSS 采样峰值，结果同时记录 `memory_metric=sampled_process_peak_rss_mb`，不再用阶段边界快照冒充峰值。
 
 registry、projection 和整批串行执行均使用跨进程文件锁。一个配置完全最终化后才进入下一配置；首次非最优状态会停止后续配置。
 

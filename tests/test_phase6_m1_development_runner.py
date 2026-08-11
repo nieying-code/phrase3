@@ -4,6 +4,7 @@ import csv
 from concurrent.futures import ProcessPoolExecutor
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import pytest
@@ -72,6 +73,14 @@ def _projection_process(
 
 def _write_approval(path: Path, fingerprints: dict[str, str]) -> None:
     path.write_text(
+        "approval_id: phase6_m1_development_execution_v1\n"
+        "status: frozen_for_development_execution\n"
+        "scientific_protocol: phase6_m1_procurement_cap_v1_0\n"
+        "runner_namespace: phase6_m1_procurement_cap\n"
+        "matrix_case_count: 63\n"
+        "explicit_cli_authorization_required: true\n"
+        "formal_extension_authorized: false\n"
+        "accept_m0_authorization: false\n"
         "approved_fingerprints:\n"
         + "".join(f"  {key}: {value}\n" for key, value in fingerprints.items()),
         encoding="utf-8",
@@ -194,8 +203,8 @@ def test_frozen_approval_and_machine_audit_lock_current_m1_fingerprints() -> Non
     )
     expected = {
         "scientific_config_sha256": "6439d8a1945e44985cb1c8b20a20b7641617ed9a160db554680f3dc4680aa8c8",
-        "e3_component_sha256": "4028461ade600cf6cf8db68cba8e1360fe7dcc838edffd0173aa4c98bbdf112c",
-        "family_component_sha256": "a39f24b2ef213a7e5dba860e375751c46c15aafb13a11d28b2ab8f295f5ff5e6",
+        "e3_component_sha256": "994e72479f0994c134d112bef1af78421ee3cca25593ab6a9d1146e153afbde2",
+        "family_component_sha256": "05065fba9dd69665bf556da2e6b44fde7e0f73d476172811aeb4d662b74a839d",
         "runner_config_sha256": "4e39efe184877da9892e63852298bad4f9662b6d09af7ef5fedd6c4a09a13f3a",
         "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
     }
@@ -209,6 +218,36 @@ def test_frozen_approval_and_machine_audit_lock_current_m1_fingerprints() -> Non
     assert config["status"] == "frozen_for_development_execution"
     assert approval["approved_fingerprints"] == expected
     assert audit["approved_fingerprints"] == expected
+    assert {
+        key: approval[key]
+        for key in (
+            "approval_id",
+            "status",
+            "scientific_protocol",
+            "runner_namespace",
+            "matrix_case_count",
+            "explicit_cli_authorization_required",
+            "formal_extension_authorized",
+            "accept_m0_authorization",
+        )
+    } == {
+        "approval_id": "phase6_m1_development_execution_v1",
+        "status": "frozen_for_development_execution",
+        "scientific_protocol": "phase6_m1_procurement_cap_v1_0",
+        "runner_namespace": "phase6_m1_procurement_cap",
+        "matrix_case_count": 63,
+        "explicit_cli_authorization_required": True,
+        "formal_extension_authorized": False,
+        "accept_m0_authorization": False,
+    }
+    guards = audit["execution_guards"]
+    assert guards["complete_extensive_solver_call_seconds"] == 120
+    assert guards["native_solver_time_limit_is_terminal_timeout"] is True
+    assert guards["matrix_load_and_finalization_in_unified_lifecycle"] is True
+    assert guards["keyboard_interrupt_terminal_status"] == "interrupted"
+    assert guards["resolved_run_path_must_remain_under_m1_output_root"] is True
+    assert guards["memory_metric"] == "sampled_process_peak_rss_mb"
+    assert guards["approval_metadata_exactly_validated"] is True
     assert {
         key: value for key, value in actual.items() if key != "environment_sha256"
     } == {
@@ -301,6 +340,207 @@ def test_fingerprint_mismatch_and_m0_authorization_cannot_authorize_m1(
 
 
 @pytest.mark.parametrize(
+    "field",
+    [
+        "approval_id",
+        "status",
+        "scientific_protocol",
+        "runner_namespace",
+        "matrix_case_count",
+        "explicit_cli_authorization_required",
+        "formal_extension_authorized",
+        "accept_m0_authorization",
+    ],
+)
+def test_approval_metadata_is_exactly_enforced(tmp_path: Path, field: str) -> None:
+    approval = tmp_path / "approval.yaml"
+    _write_approval(approval, FINGERPRINTS)
+    payload = approval.read_text(encoding="utf-8")
+    if field in {"matrix_case_count"}:
+        payload = payload.replace("matrix_case_count: 63", "matrix_case_count: 62")
+    elif field in {
+        "explicit_cli_authorization_required",
+        "formal_extension_authorized",
+        "accept_m0_authorization",
+    }:
+        old = f"{field}: " + ("true" if field == "explicit_cli_authorization_required" else "false")
+        payload = payload.replace(old, f"{field}: wrong")
+    else:
+        lines = payload.splitlines()
+        lines = [
+            f"{field}: wrong" if line.startswith(f"{field}:") else line
+            for line in lines
+        ]
+        payload = "\n".join(lines) + "\n"
+    approval.write_text(payload, encoding="utf-8")
+    with pytest.raises(ValueError, match="approval metadata mismatch"):
+        development.load_development_approval(approval)
+
+
+def test_extensive_optimum_receives_frozen_v1_solver_limit(monkeypatch) -> None:
+    config = development.load_m1_config(CONFIG_PATH)
+    case = development.build_development_cases(config)[0]
+    seen: dict[str, Any] = {}
+    monkeypatch.setattr(
+        development,
+        "generate_m1_data",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            data=object(), tier=SimpleNamespace(solver_call_seconds=120.0)
+        ),
+    )
+    monkeypatch.setattr(
+        development,
+        "solve_minimum_feasible_reserve",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            status="optimal", reserve=0.0, closed_form_difference=0.0
+        ),
+    )
+
+    def extensive(*_args, **kwargs):
+        seen.update(kwargs)
+        return SimpleNamespace(status="master_time_limit", objective=None)
+
+    monkeypatch.setattr(development, "solve_m1_endogenous_extensive", extensive)
+    with pytest.raises(development.DevelopmentStageError) as caught:
+        development.execute_development_case_science(
+            project_root=ROOT,
+            matrix={"budget_plan": {"reference_budget_by_tier": {"V1": 100.0}}},
+            matrix_path=ROOT / "configs/phase6_experiment_matrix.yaml",
+            config=config,
+            case=case,
+            progress=lambda *_args: None,
+        )
+    assert seen["time_limit_seconds"] == 120.0
+    assert caught.value.solver_status == "master_time_limit"
+
+
+def test_native_solver_timeout_becomes_timeout_terminal(
+    tmp_path: Path, monkeypatch
+) -> None:
+    monkeypatch.setattr(development, "capture_runtime_context", lambda **_kwargs: {})
+
+    def timed_out(**_kwargs):
+        raise development.DevelopmentStageError(
+            "complete_extensive_optimum",
+            "master_time_limit",
+            "frozen solver call reached its limit",
+        )
+
+    result = _run_case(tmp_path, "native-timeout", timed_out)
+    assert result["status"] == "timeout"
+    assert result["failure"]["stage"] == "complete_extensive_optimum"
+    assert result["failure"]["solver_status"] == "master_time_limit"
+    assert result["failure_counts"]["timeout"] == 1
+
+
+def test_matrix_load_failure_is_finalized_as_runner_exception(
+    tmp_path: Path, monkeypatch
+) -> None:
+    monkeypatch.setattr(
+        development,
+        "load_phase6_matrix",
+        lambda *_args: (_ for _ in ()).throw(ValueError("bad matrix")),
+    )
+    monkeypatch.setattr(development, "capture_runtime_context", lambda **_kwargs: {})
+    result = _run_case(tmp_path, "matrix-failure")
+    assert result["status"] == "runner_exception"
+    assert result["failure"]["stage"] == "matrix_load"
+    assert (tmp_path / "development/runs/matrix-failure/manifest.json").is_file()
+
+
+def test_runtime_context_failure_is_finalized_as_runner_exception(
+    tmp_path: Path, monkeypatch
+) -> None:
+    monkeypatch.setattr(
+        development,
+        "capture_runtime_context",
+        lambda **_kwargs: (_ for _ in ()).throw(RuntimeError("context failed")),
+    )
+    result = _run_case(tmp_path, "context-failure")
+    assert result["status"] == "runner_exception"
+    assert result["failure"]["stage"] == "runtime_context"
+    assert result["memory_metric"] == "sampled_process_peak_rss_mb"
+
+
+def test_manifest_failure_is_retried_as_runner_exception_terminal(
+    tmp_path: Path, monkeypatch
+) -> None:
+    monkeypatch.setattr(development, "capture_runtime_context", lambda **_kwargs: {})
+    original = development.atomic_write_json
+    failed = False
+
+    def fail_once(path, payload):
+        nonlocal failed
+        if Path(path).name == "manifest.json" and not failed:
+            failed = True
+            raise PermissionError("synthetic manifest failure")
+        return original(path, payload)
+
+    monkeypatch.setattr(development, "atomic_write_json", fail_once)
+    result = _run_case(tmp_path, "manifest-failure")
+    assert result["status"] == "runner_exception"
+    assert result["failure"]["stage"] == "artifact_finalization"
+    directory = tmp_path / "development/runs/manifest-failure"
+    assert (directory / "manifest.json").is_file()
+
+
+def test_registry_failure_is_retried_as_runner_exception_terminal(
+    tmp_path: Path, monkeypatch
+) -> None:
+    monkeypatch.setattr(development, "capture_runtime_context", lambda **_kwargs: {})
+    original = development.upsert_development_registry
+    failed = False
+
+    def fail_once(output_root, row):
+        nonlocal failed
+        if not failed:
+            failed = True
+            raise PermissionError("synthetic registry failure")
+        return original(output_root, row)
+
+    monkeypatch.setattr(development, "upsert_development_registry", fail_once)
+    result = _run_case(tmp_path, "registry-failure")
+    assert result["status"] == "runner_exception"
+    assert result["failure"]["stage"] == "registry_finalization"
+    rows = development._read_registry(
+        tmp_path / "development/development_run_registry.csv"
+    )
+    assert len(rows) == 1
+    assert rows[0]["status"] == "runner_exception"
+
+
+def test_unsafe_prefix_fails_before_preflight(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(
+        development,
+        "validate_development_preflight",
+        lambda **_kwargs: pytest.fail("preflight must not be reached"),
+    )
+    with pytest.raises(ValueError, match="run_id"):
+        development.run_development_matrix(
+            project_root=ROOT,
+            config_path=CONFIG_PATH,
+            runner_config_path=RUNNER_PATH,
+            approval_path=tmp_path / "unused.yaml",
+            authorize_development_execution=True,
+            run_id_prefix="../escape",
+        )
+
+
+@pytest.mark.parametrize(
+    "run_id",
+    ["../escape", "a/b", r"a\b", "..", "C:absolute"],
+)
+def test_unsafe_run_id_is_rejected_for_writes_and_status_reads(
+    tmp_path: Path, run_id: str
+) -> None:
+    with pytest.raises(ValueError, match="run_id"):
+        _run_case(tmp_path, run_id)
+    with pytest.raises(ValueError, match="run_id"):
+        read_status(tmp_path, run_id)
+    assert not (tmp_path.parent / "escape").exists()
+
+
+@pytest.mark.parametrize(
     ("executor", "expected_status"),
     [
         (_science, "optimal"),
@@ -335,7 +575,7 @@ def test_interruption_preserves_checkpoint_and_requires_new_run_id(
         _run_case(tmp_path, "interrupted", interrupted)
     directory = tmp_path / "development" / "runs" / "interrupted"
     checkpoint = json.loads((directory / "checkpoint.json").read_text(encoding="utf-8"))
-    assert checkpoint["status"] == "running"
+    assert checkpoint["status"] == "interrupted"
     assert checkpoint["current_stage"] == "complete_extensive_optimum"
     with pytest.raises(ValueError, match="immutable"):
         _run_case(tmp_path, "interrupted", _science)

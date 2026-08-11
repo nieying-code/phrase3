@@ -9,6 +9,8 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import re
+import threading
 from time import perf_counter
 from typing import Any, Callable, Mapping, Sequence
 
@@ -70,8 +72,114 @@ TERMINAL_STATUSES = {
     "timeout",
     "runner_exception",
     "preflight_failure",
+    "interrupted",
 }
-FAILURE_FIELDS = ("stage", "status", "message", "exception_type")
+FAILURE_FIELDS = (
+    "stage",
+    "status",
+    "solver_status",
+    "message",
+    "exception_type",
+)
+SAFE_RUN_ID = re.compile(r"^[A-Za-z0-9._-]+$")
+TIMEOUT_STATUSES = {
+    "time_limit",
+    "master_time_limit",
+    "oracle_time_limit",
+    "timeout",
+}
+
+
+class DevelopmentStageError(RuntimeError):
+    """Preserve a scientific stage's native terminal status."""
+
+    def __init__(self, stage: str, solver_status: str, message: str) -> None:
+        super().__init__(message)
+        self.stage = stage
+        self.solver_status = solver_status
+
+
+class PeakRSSSampler:
+    """Lightweight process-RSS sampler used for an actual sampled peak."""
+
+    def __init__(self, interval_seconds: float = 0.1) -> None:
+        self.interval_seconds = interval_seconds
+        self.peak_mb = 0.0
+        self._stop = threading.Event()
+        self._thread = threading.Thread(target=self._sample, daemon=True)
+
+    def _sample(self) -> None:
+        process = psutil.Process()
+        while not self._stop.is_set():
+            self.peak_mb = max(
+                self.peak_mb,
+                process.memory_info().rss / (1024.0 * 1024.0),
+            )
+            self._stop.wait(self.interval_seconds)
+
+    def start(self) -> None:
+        self._sample_once()
+        self._thread.start()
+
+    def _sample_once(self) -> None:
+        self.peak_mb = max(
+            self.peak_mb,
+            psutil.Process().memory_info().rss / (1024.0 * 1024.0),
+        )
+
+    def stop(self) -> float:
+        self._stop.set()
+        self._thread.join(timeout=max(1.0, self.interval_seconds * 5.0))
+        self._sample_once()
+        return self.peak_mb
+
+
+def validate_run_id(run_id: str) -> str:
+    """Allow one portable path component and reject traversal spellings."""
+
+    if not isinstance(run_id, str) or not run_id:
+        raise ValueError("M1 development run_id must be a nonempty string")
+    if not SAFE_RUN_ID.fullmatch(run_id) or ".." in run_id:
+        raise ValueError(
+            "M1 development run_id may contain only letters, digits, dots, "
+            "underscores, and hyphens, without '..'"
+        )
+    if Path(run_id).is_absolute() or Path(run_id).name != run_id:
+        raise ValueError("M1 development run_id must be one safe path component")
+    return run_id
+
+
+def resolve_run_directory(output_root: Path, run_id: str) -> Path:
+    validated = validate_run_id(run_id)
+    runs_root = (output_root / "development" / "runs").resolve()
+    directory = (runs_root / validated).resolve()
+    if directory.parent != runs_root:
+        raise ValueError("M1 development run path escapes the controlled root")
+    return directory
+
+
+def _is_timeout_status(status: str | None) -> bool:
+    normalized = str(status or "").strip().lower()
+    return normalized in TIMEOUT_STATUSES or normalized.endswith("_time_limit")
+
+
+def _require_optimal(stage: str, status: str, message: str) -> None:
+    if status != "optimal":
+        raise DevelopmentStageError(stage, status, message)
+
+
+def _native_failure_status(solution: Any) -> str:
+    """Expose a nested recourse timeout hidden by an oracle_failure wrapper."""
+
+    status = str(getattr(solution, "status", "unknown"))
+    if _is_timeout_status(status):
+        return status
+    evaluation = getattr(solution, "evaluation", None)
+    for result in getattr(evaluation, "scenario_results", {}).values():
+        nested = str(getattr(result, "status", "unknown"))
+        if _is_timeout_status(nested):
+            return nested
+    return status
 
 
 @dataclass(frozen=True)
@@ -148,6 +256,23 @@ def load_development_approval(path: Path) -> dict[str, Any]:
     fingerprints = payload.get("approved_fingerprints")
     if not isinstance(fingerprints, dict) or set(fingerprints) != required:
         raise ValueError("M1 development approval fingerprints are incomplete")
+    expected_metadata = {
+        "approval_id": "phase6_m1_development_execution_v1",
+        "status": M1_EXECUTION_READY_STATUS,
+        "scientific_protocol": "phase6_m1_procurement_cap_v1_0",
+        "runner_namespace": "phase6_m1_procurement_cap",
+        "matrix_case_count": 63,
+        "explicit_cli_authorization_required": True,
+        "formal_extension_authorized": False,
+        "accept_m0_authorization": False,
+    }
+    mismatches = {
+        key: {"expected": value, "actual": payload.get(key)}
+        for key, value in expected_metadata.items()
+        if payload.get(key) != value
+    }
+    if mismatches:
+        raise ValueError(f"M1 development approval metadata mismatch: {mismatches}")
     return payload
 
 
@@ -175,13 +300,13 @@ def validate_development_preflight(
     if execution.get("formal_extension_authorized") is not False:
         raise RuntimeError("M1 formal extension must remain unauthorized")
 
+    approval = load_development_approval(approval_path)
     locked = validate_locked_environment(project_root)
     actual = m1_fingerprints(
         project_root=project_root,
         config_path=config_path,
         runner_config_path=runner_config_path,
     )
-    approval = load_development_approval(approval_path)
     expected = approval["approved_fingerprints"]
     mismatches = {
         key: {"expected": expected[key], "actual": actual[key]}
@@ -269,8 +394,13 @@ def execute_development_case_science(
         solver_threads=1,
         time_limit_seconds=solver_call_seconds,
     )
-    if floor.status != "optimal" or floor.reserve is None:
-        raise RuntimeError(f"minimum feasible reserve failed: {floor.status}")
+    _require_optimal(
+        "minimum_feasible_reserve",
+        floor.status,
+        f"minimum feasible reserve failed: {floor.status}",
+    )
+    if floor.reserve is None:
+        raise RuntimeError("minimum feasible reserve returned no reserve")
     if (
         floor.closed_form_difference is None
         or float(floor.closed_form_difference) > absolute
@@ -281,10 +411,16 @@ def execute_development_case_science(
     optimum = solve_m1_endogenous_extensive(
         data,
         solver_threads=1,
+        time_limit_seconds=solver_call_seconds,
         consistency_tolerance=float(config["objective_tolerance"]["absolute_tolerance"]),
     )
-    if optimum.status != "optimal" or optimum.objective is None:
-        raise RuntimeError(f"complete extensive optimum failed: {optimum.status}")
+    _require_optimal(
+        "complete_extensive_optimum",
+        _native_failure_status(optimum),
+        f"complete extensive optimum failed: {optimum.status}",
+    )
+    if optimum.objective is None:
+        raise RuntimeError("complete extensive optimum returned no objective")
     tolerance = objective_tolerance(
         float(optimum.objective),
         absolute_tolerance=absolute,
@@ -303,12 +439,22 @@ def execute_development_case_science(
     }
     progress("minimum_tolerance_optimal_reserve", {})
     minimum = solve_reserve_face_point(direction="min", **common)
-    if minimum.status != "optimal" or minimum.reserve is None:
-        raise RuntimeError(f"minimum optimal reserve failed: {minimum.status}")
+    _require_optimal(
+        "minimum_tolerance_optimal_reserve",
+        _native_failure_status(minimum),
+        f"minimum optimal reserve failed: {minimum.status}",
+    )
+    if minimum.reserve is None:
+        raise RuntimeError("minimum optimal reserve returned no reserve")
     progress("maximum_tolerance_optimal_reserve", {})
     maximum = solve_reserve_face_point(direction="max", **common)
-    if maximum.status != "optimal" or maximum.reserve is None:
-        raise RuntimeError(f"maximum optimal reserve failed: {maximum.status}")
+    _require_optimal(
+        "maximum_tolerance_optimal_reserve",
+        _native_failure_status(maximum),
+        f"maximum optimal reserve failed: {maximum.status}",
+    )
+    if maximum.reserve is None:
+        raise RuntimeError("maximum optimal reserve returned no reserve")
 
     discretionary = max(0.0, float(minimum.reserve) - float(floor.reserve))
     ratio = discretionary / budget if budget > 0.0 else 0.0
@@ -323,8 +469,13 @@ def execute_development_case_science(
             time_limit_seconds=solver_call_seconds,
             consistency_tolerance=absolute,
         )
-        if solution.status != "optimal" or solution.objective is None:
-            raise RuntimeError(f"fixed reserve rho={rho} failed: {solution.status}")
+        _require_optimal(
+            f"fixed_autonomous_reserve_{rho:.1f}",
+            _native_failure_status(solution),
+            f"fixed reserve rho={rho} failed: {solution.status}",
+        )
+        if solution.objective is None:
+            raise RuntimeError(f"fixed reserve rho={rho} returned no objective")
         fixed.append(
             {
                 "rho": rho,
@@ -641,14 +792,19 @@ def run_development_case(
     parent_run_id: str | None = None,
     science_executor: Callable[..., dict[str, Any]] = execute_development_case_science,
 ) -> dict[str, Any]:
+    validate_run_id(run_id)
+    if parent_run_id is not None:
+        validate_run_id(parent_run_id)
     base = output_root / "development"
-    directory = base / "runs" / run_id
+    directory = resolve_run_directory(output_root, run_id)
     directory.mkdir(parents=True, exist_ok=True)
     with exclusive_file_lock(directory / ".run.lock"):
         if any(path.name != ".run.lock" for path in directory.iterdir()):
             raise ValueError(f"M1 development run_id is immutable: {run_id}")
         started = perf_counter()
         stages: list[dict[str, Any]] = []
+        sampler = PeakRSSSampler()
+        sampler_started = False
         peak_memory_mb = 0.0
         failure = None
         checkpoint = directory / "checkpoint.json"
@@ -683,23 +839,27 @@ def run_development_case(
         stage_started = 0.0
 
         def progress(stage: str, details: Mapping[str, Any]) -> None:
-            nonlocal active_stage_index, stage_started, peak_memory_mb
+            nonlocal active_stage_index, stage_started
             now = perf_counter()
             if active_stage_index is not None:
                 stages[active_stage_index]["status"] = "completed"
                 stages[active_stage_index]["runtime_seconds"] = now - stage_started
             stage_started = now
-            peak_memory_mb = max(
-                peak_memory_mb,
-                psutil.Process().memory_info().rss / (1024.0 * 1024.0),
-            )
             stages.append({"stage": stage, "status": "running", **details})
             active_stage_index = len(stages) - 1
             save("running", stage)
 
-        save("running", "initialization")
-        matrix = load_phase6_matrix(matrix_path)
+        science = None
+        status = "running"
+        runtime_context: dict[str, Any] | None = None
+        interrupted: KeyboardInterrupt | None = None
         try:
+            sampler.start()
+            sampler_started = True
+            save("running", "initialization")
+            progress("matrix_load", {"matrix_path": str(matrix_path)})
+            matrix = load_phase6_matrix(matrix_path)
+            progress("science_execution", {})
             science = science_executor(
                 project_root=project_root,
                 matrix=matrix,
@@ -714,15 +874,64 @@ def run_development_case(
                     perf_counter() - stage_started
                 )
             status = "optimal"
-        except Exception as exc:
-            status = "timeout" if isinstance(exc, TimeoutError) else "stage_failure"
+        except KeyboardInterrupt as exc:
+            interrupted = exc
+            status = "interrupted"
             failure = {
                 "stage": stages[-1]["stage"] if stages else "initialization",
+                "status": status,
+                "message": "KeyboardInterrupt",
+                "exception_type": "KeyboardInterrupt",
+            }
+        except DevelopmentStageError as exc:
+            status = "timeout" if _is_timeout_status(exc.solver_status) else "stage_failure"
+            failure = {
+                "stage": exc.stage,
+                "status": status,
+                "solver_status": exc.solver_status,
+                "message": f"{type(exc).__name__}: {exc}",
+                "exception_type": type(exc).__name__,
+            }
+        except Exception as exc:
+            current_stage = stages[-1]["stage"] if stages else "initialization"
+            status = (
+                "timeout"
+                if isinstance(exc, TimeoutError)
+                else "runner_exception"
+                if current_stage in {"initialization", "matrix_load"}
+                else "stage_failure"
+            )
+            failure = {
+                "stage": current_stage,
                 "status": status,
                 "message": f"{type(exc).__name__}: {exc}",
                 "exception_type": type(exc).__name__,
             }
-            science = None
+        finally:
+            if sampler_started:
+                peak_memory_mb = sampler.stop()
+
+        try:
+            runtime_context = capture_runtime_context(
+                solver_preference=("gurobi",),
+                project_root=project_root,
+                solver_threads=1,
+            )
+        except Exception as exc:
+            runtime_context = {
+                "status": "capture_failed",
+                "exception_type": type(exc).__name__,
+                "message": str(exc)[:1000],
+            }
+            if interrupted is None:
+                status = "runner_exception"
+                failure = {
+                    "stage": "runtime_context",
+                    "status": status,
+                    "message": f"{type(exc).__name__}: {exc}",
+                    "exception_type": type(exc).__name__,
+                }
+                science = None
         wall_seconds = perf_counter() - started
         failure_text = str((failure or {}).get("message", "")).lower()
         infeasible_failure = failure is not None and "infeasible" in failure_text
@@ -762,19 +971,19 @@ def run_development_case(
             },
             "wall_seconds": wall_seconds,
             "peak_memory_mb": peak_memory_mb,
+            "memory_metric": "sampled_process_peak_rss_mb",
             "fingerprints": dict(fingerprints),
             "git_sha": source["commit_sha"],
             "git_tree_sha": source["tree_sha"],
             "finished_at_utc": utc_now(),
         }
-        # Finalize compact progress before hashing terminal artifacts.
-        save(status, None)
         result_path = directory / "result.json"
-        atomic_write_json(result_path, result)
         manifest_path = directory / "manifest.json"
-        atomic_write_json(
-            manifest_path,
-            {
+        def write_terminal_artifacts() -> None:
+            terminal_stage = (failure or {}).get("stage") if status != "optimal" else None
+            save(status, terminal_stage)
+            atomic_write_json(result_path, result)
+            atomic_write_json(manifest_path, {
                 "artifact_state": "finalized",
                 "run_id": run_id,
                 "case_id": case.case_id,
@@ -786,13 +995,39 @@ def run_development_case(
                 "fingerprints": dict(fingerprints),
                 "source": dict(source),
                 "locked_environment": dict(locked_environment),
-                "runtime_context": capture_runtime_context(
-                    solver_preference=("gurobi",),
-                    project_root=project_root,
-                    solver_threads=1,
-                ),
-            },
-        )
+                "runtime_context": runtime_context,
+            })
+
+        try:
+            write_terminal_artifacts()
+        except Exception as exc:
+            status = "runner_exception"
+            failure = {
+                "stage": "artifact_finalization",
+                "status": status,
+                "message": f"{type(exc).__name__}: {exc}",
+                "exception_type": type(exc).__name__,
+            }
+            science = None
+            result.update({
+                "status": status,
+                "science": None,
+                "failure": failure,
+                "failure_counts": {
+                    "infeasible_recourse": 0,
+                    "solver_failure": 0,
+                    "runner_failure": 1,
+                    "timeout": 0,
+                    "missing": 1,
+                },
+                "finished_at_utc": utc_now(),
+            })
+            # Best-effort immutable terminal evidence. If storage itself is
+            # unavailable, the original exception remains visible to the CLI.
+            try:
+                write_terminal_artifacts()
+            except Exception:
+                raise exc
         row = {
             "run_id": run_id,
             "parent_run_id": parent_run_id or "",
@@ -814,12 +1049,68 @@ def run_development_case(
             "failure_stage": failure.get("stage") if failure else "",
             "updated_at_utc": result["finished_at_utc"],
         }
-        upsert_development_registry(output_root, row)
-        projection = update_development_projection(
-            output_root=output_root,
-            config=config,
-            fingerprints=fingerprints,
-        )
+        try:
+            upsert_development_registry(output_root, row)
+        except Exception as exc:
+            status = "runner_exception"
+            failure = {
+                "stage": "registry_finalization",
+                "status": status,
+                "message": f"{type(exc).__name__}: {exc}",
+                "exception_type": type(exc).__name__,
+            }
+            science = None
+            result.update({
+                "status": status,
+                "science": None,
+                "failure": failure,
+                "failure_counts": {
+                    "infeasible_recourse": 0,
+                    "solver_failure": 0,
+                    "runner_failure": 1,
+                    "timeout": 0,
+                    "missing": 1,
+                },
+                "finished_at_utc": utc_now(),
+            })
+            write_terminal_artifacts()
+            row.update({
+                "status": status,
+                "substantive_activation": False,
+                "manifest_sha256": sha256_file(manifest_path),
+                "failure_stage": "registry_finalization",
+                "updated_at_utc": result["finished_at_utc"],
+            })
+            atomic_write_json(
+                directory / "registry_failure.json",
+                compact_failure(failure),
+            )
+            if not any(
+                item.get("run_id") == run_id
+                for item in _read_registry(base / "development_run_registry.csv")
+            ):
+                upsert_development_registry(output_root, row)
+        try:
+            projection = update_development_projection(
+                output_root=output_root,
+                config=config,
+                fingerprints=fingerprints,
+            )
+        except Exception as exc:
+            # The finalized run remains immutable and registered. Record the
+            # aggregation failure separately without corrupting its hashes.
+            atomic_write_json(
+                directory / "projection_failure.json",
+                compact_failure({
+                    "stage": "projection_finalization",
+                    "status": "runner_exception",
+                    "message": f"{type(exc).__name__}: {exc}",
+                    "exception_type": type(exc).__name__,
+                }),
+            )
+            raise
+        if interrupted is not None:
+            raise interrupted
         return {**result, "projection": projection}
 
 
@@ -837,6 +1128,9 @@ def run_development_matrix(
 ) -> list[dict[str, Any]]:
     """Execute selected frozen cases strictly serially under one global lock."""
 
+    validate_run_id(run_id_prefix)
+    if parent_run_id is not None:
+        validate_run_id(parent_run_id)
     preflight = validate_development_preflight(
         project_root=project_root,
         config_path=config_path,
