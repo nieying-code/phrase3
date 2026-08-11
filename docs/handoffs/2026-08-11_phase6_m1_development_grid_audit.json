@@ -6605,6 +6605,12 @@
     "parameter_chasing_forbidden": true
   },
   "github_actions": {
-    "status": "pending"
+    "validated_head_sha": "81f776920eb3c4222de110f0b90e0a5feb5c9a2e",
+    "run_id": 31473988742,
+    "url": "https://github.com/nieying-code/phrase3/actions/runs/31473988742",
+    "linux_unit_and_regression": "233 passed",
+    "phase5_end_to_end": "6 passed",
+    "windows_reproducibility": "16 passed",
+    "status": "success"
   }
 }

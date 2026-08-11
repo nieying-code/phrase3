@@ -66,6 +66,15 @@ EXPECTED_COMBINATION_EVIDENCE_SHA256 = (
 EXPECTED_SUMMARY_SHA256 = (
     "e88221b1e19509282b7ce3dbd653b957296d64178a3e3429c762975e031d8b5f"
 )
+EXPECTED_GITHUB_ACTIONS = {
+    "validated_head_sha": "81f776920eb3c4222de110f0b90e0a5feb5c9a2e",
+    "run_id": 31473988742,
+    "url": "https://github.com/nieying-code/phrase3/actions/runs/31473988742",
+    "linux_unit_and_regression": "233 passed",
+    "phase5_end_to_end": "6 passed",
+    "windows_reproducibility": "16 passed",
+    "status": "success",
+}
 
 
 def _canonical_sha256(value: object) -> str:
@@ -90,6 +99,7 @@ def test_m1_development_grid_run_evidence_is_complete_and_locked() -> None:
     assert audit["artifacts"] == EXPECTED_GLOBAL_ARTIFACTS
     assert audit["projection_summary_sha256"] == EXPECTED_SUMMARY_SHA256
     assert hashlib.sha256(SUMMARY_PATH.read_bytes()).hexdigest() == EXPECTED_SUMMARY_SHA256
+    assert audit["github_actions"] == EXPECTED_GITHUB_ACTIONS
 
     seeds = (2026081101, 2026081102, 2026081103)
     betas = (0.9, 1.1, 1.3)

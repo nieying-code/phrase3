@@ -10,9 +10,9 @@
 - Base branch: `main`
 - PR #40 merge/execution commit: `5c899db05ff8d004d3ca1c90bfa58e30bafe1328`
 - Execution tree: `f8baba05fa84ab717459065685049c4106cdc9f3`
-- Draft PR: pending
-- Final results commit: pending
-- GitHub Actions: pending
+- Draft PR: https://github.com/nieying-code/phrase3/pull/41
+- Results evidence commit: `81f776920eb3c4222de110f0b90e0a5feb5c9a2e`
+- Results evidence CI: [run 31473988742](https://github.com/nieying-code/phrase3/actions/runs/31473988742), Linux/Windows success
 
 运行开始时工作树无已跟踪修改、无未跟踪执行输入，M1 受控输出目录不存在，且没有残留 Python 或 Gurobi 实验进程。
 
@@ -83,7 +83,7 @@ stop_reason=no_preregistered_combination_passed
 - Windows 复现专项：`16 passed in 7.86s`
 - 语法检查：通过
 - `git diff --check`：通过
-- GitHub Actions Linux/Windows：pending
+- GitHub Actions：结果证据提交对应 [run 31473988742](https://github.com/nieying-code/phrase3/actions/runs/31473988742)，Linux 普通回归与 Phase 5、Windows 可复现检查全部成功
 
 ## ChatGPT 审查清单
 
