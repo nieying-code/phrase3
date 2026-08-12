@@ -17,6 +17,9 @@ def test_m2_development_runner_audit_locks_scope_and_zero_execution() -> None:
         runner_config_path=ROOT / "configs/phase6_m2_runner.yaml",
     )
     assert audit["base_merge_sha"] == "29938da2982ba74608dc98f4fefac35850c6de65"
+    assert audit["status"] == "implementation_complete_pending_ci"
+    assert audit["draft_pr"] == "https://github.com/nieying-code/phrase3/pull/43"
+    assert audit["validated_implementation_commit"] == "673896cc4d2b301b4fa247fa56fb31d7daba1f06"
     assert audit["matrix"] == {
         "tier": "V1", "seeds": [2026081201, 2026081202, 2026081203],
         "beta": [0.9, 1.1, 1.3], "profiles": ["C0", "C1", "C2"],
@@ -32,3 +35,4 @@ def test_m2_development_runner_audit_locks_scope_and_zero_execution() -> None:
         "formal_extension_authorized": False,
     }
     assert set(audit["execution_counts"].values()) == {0}
+    assert audit["tests"] == {"focused": "42 passed", "full_regression": "282 passed"}
