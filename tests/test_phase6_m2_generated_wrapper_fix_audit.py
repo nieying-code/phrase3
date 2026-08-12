@@ -11,6 +11,9 @@ def test_m2_generated_wrapper_fix_audit_locks_new_identity() -> None:
     audit = json.loads((ROOT / "docs/handoffs/2026-08-12_phase6_m2_generated_wrapper_fix_audit.json").read_text(encoding="utf-8"))
     assert audit["branch"] == "agent/phase6-m2-generated-wrapper-fix"
     assert audit["implementation_commit"] == "29f61a5"
+    assert audit["ci_validated_fix_head"] == (
+        "6a2e4d443dd8c94d8c80b2b7d489e1f2b956c650"
+    )
     assert audit["draft_pr"] == "https://github.com/nieying-code/phrase3/pull/44"
     assert audit["base_merge_sha"] == "007c6ccf0c881466cfa556ca17dac283eea7a2f0"
     assert audit["failed_run"] == {
@@ -55,4 +58,10 @@ def test_m2_generated_wrapper_fix_audit_locks_new_identity() -> None:
         "phase5_end_to_end_passed": 6,
         "compileall_passed": True,
         "git_diff_check_passed": True,
+    }
+    assert audit["github_actions"] == {
+        "run_id": 31582201124,
+        "url": "https://github.com/nieying-code/phrase3/actions/runs/31582201124",
+        "linux": "success",
+        "windows": "success",
     }

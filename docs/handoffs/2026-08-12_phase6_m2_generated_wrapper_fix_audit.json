@@ -1,8 +1,9 @@
 {
   "audit_id": "phase6_m2_generated_wrapper_fix_v1",
-  "status": "implementation_complete_pending_ci",
+  "status": "fix_validated_no_experiment_execution",
   "branch": "agent/phase6-m2-generated-wrapper-fix",
   "implementation_commit": "29f61a5",
+  "ci_validated_fix_head": "6a2e4d443dd8c94d8c80b2b7d489e1f2b956c650",
   "draft_pr": "https://github.com/nieying-code/phrase3/pull/44",
   "base_merge_sha": "007c6ccf0c881466cfa556ca17dac283eea7a2f0",
   "root_cause": "GeneratedM2Data wrapper metadata was accessed as generated.tier",
@@ -44,5 +45,10 @@
     "compileall_passed": true,
     "git_diff_check_passed": true
   },
-  "github_actions": "pending"
+  "github_actions": {
+    "run_id": 31582201124,
+    "url": "https://github.com/nieying-code/phrase3/actions/runs/31582201124",
+    "linux": "success",
+    "windows": "success"
+  }
 }

@@ -5,8 +5,9 @@
 - Branch: `agent/phase6-m2-generated-wrapper-fix`
 - Base: merged PR #43, `007c6ccf0c881466cfa556ca17dac283eea7a2f0`
 - Implementation commit: `29f61a5`
+- CI-validated fix head: `6a2e4d443dd8c94d8c80b2b7d489e1f2b956c650`
 - Draft PR: https://github.com/nieying-code/phrase3/pull/44
-- CI: pending
+- CI: [run 31582201124](https://github.com/nieying-code/phrase3/actions/runs/31582201124), Linux and Windows passed
 
 ## Validation
 
