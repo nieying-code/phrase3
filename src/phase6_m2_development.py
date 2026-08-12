@@ -466,6 +466,7 @@ def execute_development_case_science(
                 "regular_purchase_sha256": _decision_sha256(
                     solution.master.regular_purchase
                 ),
+                "regular_purchase_reoptimized": True,
                 "status": solution.status,
             }
         )
@@ -499,6 +500,8 @@ def execute_development_case_science(
         "complete_extensive_objective": optimum.objective,
         "minimum_endpoint_exact_objective": minimum.exact_objective,
         "maximum_endpoint_exact_objective": maximum.exact_objective,
+        "minimum_endpoint_status": minimum.status,
+        "maximum_endpoint_status": maximum.status,
         "minimum_endpoint_consistency_difference": abs(
             float(minimum.exact_objective) - float(optimum.objective)
         ),
@@ -516,6 +519,7 @@ def execute_development_case_science(
         "fixed_reserve_policies": fixed,
         "fulfillment_statistics": generated.statistics.as_dict(),
         "joint_scenario_set_sha256": generated.joint_scenario_set_sha256,
+        "scenario_component_set_sha256": generated.component_set_sha256,
         "scenario_identity_count": len(generated.scenario_identities),
         "c0_alpha_exactly_one": (
             case.profile_id != "C0" or all(
@@ -624,6 +628,127 @@ def validate_run_artifacts(row: Mapping[str, str]) -> dict[str, Any]:
     return result
 
 
+def _recompute_scientific_evidence(
+    science: Mapping[str, Any], config: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Independently derive activation and verify all prerequisite evidence."""
+
+    budget = float(science["budget"])
+    if not math.isfinite(budget) or budget <= 0.0:
+        raise ValueError("M2 development budget must be finite and positive")
+    minimum_feasible = float(science["R_min_feas"])
+    minimum_optimal = float(science["R_min_opt"])
+    maximum_optimal = float(science["R_max_opt"])
+    if not all(math.isfinite(value) for value in (
+        minimum_feasible, minimum_optimal, maximum_optimal
+    )):
+        raise ValueError("M2 reserve interval contains a non-finite value")
+    if maximum_optimal + 1.0e-8 < minimum_optimal:
+        raise ValueError("M2 reserve interval endpoints are reversed")
+    robust_discretionary = max(0.0, minimum_optimal - minimum_feasible)
+    ratio = robust_discretionary / budget
+    numerical_threshold = float(
+        config["reserve_identification"][
+            "numerical_activation_ratio_strictly_greater_than"
+        ]
+    )
+    substantive_threshold = float(
+        config["reserve_identification"][
+            "substantive_activation_ratio_greater_than_or_equal_to"
+        ]
+    )
+    tolerance = float(science["objective_tolerance"])
+    optimum = float(science["complete_extensive_objective"])
+    stored_endpoint_differences = {
+        "minimum": float(science["minimum_endpoint_consistency_difference"]),
+        "maximum": float(science["maximum_endpoint_consistency_difference"]),
+    }
+    endpoint_objectives = {
+        "minimum": float(science["minimum_endpoint_exact_objective"]),
+        "maximum": float(science["maximum_endpoint_exact_objective"]),
+    }
+    if not math.isfinite(tolerance) or tolerance < 0.0:
+        raise ValueError("M2 objective tolerance is invalid")
+    for endpoint, endpoint_objective in endpoint_objectives.items():
+        if science.get(f"{endpoint}_endpoint_status") != "optimal":
+            raise ValueError(f"M2 {endpoint} endpoint is not optimal")
+        difference = abs(endpoint_objective - optimum)
+        if not math.isfinite(difference) or difference > tolerance + 1.0e-8:
+            raise ValueError(f"M2 {endpoint} endpoint exceeds objective tolerance")
+        if not math.isfinite(endpoint_objective):
+            raise ValueError(f"M2 {endpoint} endpoint objective is missing")
+        if endpoint_objective > optimum + tolerance + 1.0e-8:
+            raise ValueError(f"M2 {endpoint} endpoint is not tolerance-optimal")
+        if not math.isclose(stored_endpoint_differences[endpoint], difference,
+                            rel_tol=1.0e-10, abs_tol=1.0e-10):
+            raise ValueError(f"stored M2 {endpoint} endpoint difference is inconsistent")
+    endpoint_counts = science.get("endpoint_failure_counts")
+    if not isinstance(endpoint_counts, Mapping) or set(endpoint_counts) != {
+        "minimum", "maximum"
+    }:
+        raise ValueError("M2 endpoint exact-recourse counts are incomplete")
+    if any(
+        int(value) != 0
+        for counts in endpoint_counts.values()
+        for value in counts.values()
+    ):
+        raise ValueError("M2 endpoint exact-recourse evaluation is incomplete")
+
+    fixed = science.get("fixed_reserve_policies")
+    if not isinstance(fixed, list) or len(fixed) != 4:
+        raise ValueError("M2 fixed-reserve evidence must contain four policies")
+    expected_rhos = (0.0, 0.1, 0.3, 0.5)
+    for policy, rho in zip(fixed, expected_rhos):
+        if not math.isclose(float(policy.get("rho")), rho, abs_tol=1.0e-12):
+            raise ValueError("M2 fixed-reserve policy order or ratio is invalid")
+        if policy.get("status") != "optimal":
+            raise ValueError("M2 fixed-reserve policy is not optimal")
+        if policy.get("regular_purchase_reoptimized") is not True:
+            raise ValueError("M2 fixed-reserve procurement was not re-optimized")
+        if not re.fullmatch(r"[0-9a-f]{64}", str(
+            policy.get("regular_purchase_sha256", "")
+        )):
+            raise ValueError("M2 fixed-reserve procurement hash is invalid")
+        if not math.isclose(float(policy.get("reserve")), rho * budget,
+                            rel_tol=1.0e-9, abs_tol=1.0e-7):
+            raise ValueError("M2 fixed-reserve amount does not match rho * budget")
+        if not math.isfinite(float(policy.get("objective"))):
+            raise ValueError("M2 fixed-reserve objective is missing")
+
+    components = science.get("scenario_component_set_sha256")
+    component_fields = {
+        "latent_draw_sha256", "demand_sha256", "fulfillment_sha256",
+        "emergency_price_sha256", "emergency_supply_sha256",
+    }
+    if not isinstance(components, Mapping) or set(components) != component_fields:
+        raise ValueError("M2 scenario component-set identity is incomplete")
+    if any(not re.fullmatch(r"[0-9a-f]{64}", str(value))
+           for value in components.values()):
+        raise ValueError("M2 scenario component-set hash is invalid")
+
+    numerical = ratio > numerical_threshold
+    substantive = ratio >= substantive_threshold
+    if not math.isclose(float(science["R_min_robust_opt"]), robust_discretionary,
+                        rel_tol=1.0e-10, abs_tol=1.0e-8):
+        raise ValueError("stored robust discretionary reserve is inconsistent")
+    if not math.isclose(float(science["R_min_robust_opt_ratio"]), ratio,
+                        rel_tol=1.0e-10, abs_tol=1.0e-10):
+        raise ValueError("stored robust discretionary reserve ratio is inconsistent")
+    if science.get("numerical_activation") is not numerical:
+        raise ValueError("stored numerical activation is inconsistent")
+    if science.get("substantive_activation") is not substantive:
+        raise ValueError("stored substantive activation is inconsistent")
+    return {
+        "R_disc_robust": robust_discretionary,
+        "R_disc_robust_ratio": ratio,
+        "numerical_activation": numerical,
+        "substantive_activation": substantive,
+        "endpoint_evidence_complete": True,
+        "fixed_policy_evidence_complete": True,
+        "scenario_component_set_sha256": dict(components),
+    }
+
+
 def update_development_projection(
     *,
     output_root: Path,
@@ -645,9 +770,15 @@ def update_development_projection(
         invalid_primary: list[str] = []
         invalid_diagnostics: list[str] = []
         verified: dict[str, dict[str, Any]] = {}
+        recomputed: dict[str, dict[str, Any]] = {}
         for row in current:
             try:
-                verified[row["run_id"]] = validate_run_artifacts(row)
+                result = validate_run_artifacts(row)
+                verified[row["run_id"]] = result
+                if result.get("status") == "optimal":
+                    recomputed[row["run_id"]] = _recompute_scientific_evidence(
+                        result.get("science") or {}, config
+                    )
             except (OSError, TypeError, ValueError, KeyError, json.JSONDecodeError):
                 target = (
                     invalid_diagnostics
@@ -662,8 +793,54 @@ def update_development_projection(
             by_case.setdefault(row["case_id"], []).append(row)
         duplicates = sorted(case for case, values in by_case.items() if len(values) > 1)
         expected_cases = build_development_cases(config)
+        evidence_by_identity: dict[tuple[int, float, str], dict[str, Any]] = {}
+        for result in verified.values():
+            case = result.get("case") or {}
+            identity = (
+                int(case.get("seed")), float(case.get("beta")),
+                str(case.get("profile_id")),
+            )
+            if result["run_id"] in recomputed:
+                evidence_by_identity[identity] = recomputed[result["run_id"]]
+
+        common_random_number_checks: list[dict[str, Any]] = []
+        common_random_numbers_valid = True
+        common_fields = (
+            "latent_draw_sha256", "demand_sha256",
+            "emergency_price_sha256", "emergency_supply_sha256",
+        )
+        for seed in (2026081201, 2026081202, 2026081203):
+            for beta in (0.9, 1.1, 1.3):
+                identities = [(seed, beta, profile) for profile in ("C0", "C1", "C2")]
+                evidence = [evidence_by_identity.get(identity) for identity in identities]
+                field_matches = {
+                    field: (
+                        all(item is not None for item in evidence)
+                        and len({
+                            item["scenario_component_set_sha256"][field]
+                            for item in evidence if item is not None
+                        }) == 1
+                    )
+                    for field in common_fields
+                }
+                verified_pairing = all(field_matches.values())
+                common_random_numbers_valid &= verified_pairing
+                common_random_number_checks.append({
+                    "seed": seed,
+                    "beta": beta,
+                    "profiles": ["C0", "C1", "C2"],
+                    "field_matches": field_matches,
+                    "verified": verified_pairing,
+                    "fulfillment_hashes": {
+                        profile: (
+                            item["scenario_component_set_sha256"]["fulfillment_sha256"]
+                            if item is not None else None
+                        )
+                        for profile, item in zip(("C0", "C1", "C2"), evidence)
+                    },
+                })
         combinations: list[dict[str, Any]] = []
-        passed: list[dict[str, Any]] = []
+        candidate_by_beta_profile: dict[tuple[float, str], dict[str, Any]] = {}
         missing: list[str] = []
         for beta in (0.9, 1.1, 1.3):
             for profile_id in ("C0", "C1", "C2"):
@@ -684,11 +861,24 @@ def update_development_projection(
                 all_optimal = len(records) == 3 and all(
                     result.get("status") == "optimal" for result in records
                 )
-                substantive_count = sum(
-                    (result.get("science") or {}).get("substantive_activation") is True
+                evidence = [
+                    recomputed.get(result["run_id"])
                     for result in records
+                ]
+                science_complete = len(evidence) == 3 and all(
+                    item is not None for item in evidence
                 )
-                gate = all_optimal and substantive_count >= 2
+                numerical_count = sum(
+                    item["numerical_activation"] is True
+                    for item in evidence if item is not None
+                )
+                substantive_count = sum(
+                    item["substantive_activation"] is True
+                    for item in evidence if item is not None
+                )
+                raw_activation_gate = (
+                    all_optimal and science_complete and substantive_count >= 2
+                )
                 item = {
                     "beta": beta,
                     "profile_id": profile_id,
@@ -696,13 +886,48 @@ def update_development_projection(
                     "optimal_seed_count": sum(
                         result.get("status") == "optimal" for result in records
                     ),
+                    "scientific_evidence_seed_count": sum(
+                        item is not None for item in evidence
+                    ),
+                    "numerical_activation_seed_count": numerical_count,
                     "substantive_activation_seed_count": substantive_count,
-                    "gate_passed": gate,
+                    "raw_activation_gate_passed": raw_activation_gate,
+                    "gate_passed": False,
                     "run_ids": [result["run_id"] for result in records],
                 }
                 combinations.append(item)
-                if gate:
+                candidate_by_beta_profile[(beta, profile_id)] = item
+
+        passed: list[dict[str, Any]] = []
+        baseline_confounded_betas: list[float] = []
+        for beta in (0.9, 1.1, 1.3):
+            baseline = candidate_by_beta_profile[(beta, "C0")]
+            baseline_optimal = baseline["optimal_seed_count"] == 3
+            baseline_activates = baseline["raw_activation_gate_passed"]
+            if baseline_activates:
+                baseline_confounded_betas.append(beta)
+            for profile_id in ("C1", "C2"):
+                item = candidate_by_beta_profile[(beta, profile_id)]
+                pairing_ok = all(
+                    check["verified"]
+                    for check in common_random_number_checks
+                    if check["beta"] == beta
+                )
+                item["c0_all_three_seeds_optimal"] = baseline_optimal
+                item["c0_substantive_activation_seed_count"] = baseline[
+                    "substantive_activation_seed_count"
+                ]
+                item["common_random_numbers_verified"] = pairing_ok
+                item["gate_passed"] = bool(
+                    item["raw_activation_gate_passed"]
+                    and baseline_optimal
+                    and not baseline_activates
+                    and pairing_ok
+                )
+                if item["gate_passed"]:
                     passed.append(item)
+            baseline["gate_passed"] = False
+            baseline["control_profile_not_eligible"] = True
         verified_primary_ids = {
             row["run_id"]
             for row in primaries
@@ -721,7 +946,12 @@ def update_development_projection(
             for run_id, result in verified.items()
             if run_id in verified_primary_ids
         )
-        gate_passed = all_primary_optimal and bool(passed)
+        gate_passed = (
+            all_primary_optimal
+            and common_random_numbers_valid
+            and not baseline_confounded_betas
+            and bool(passed)
+        )
         payload = {
             "status": (
                 "passed" if gate_passed else "completed_no_activation"
@@ -738,9 +968,17 @@ def update_development_projection(
             "diagnostic_run_ids": diagnostics,
             "combinations": combinations,
             "passed_combinations": passed,
+            "baseline_activation_confounded_betas": baseline_confounded_betas,
+            "common_random_number_checks": common_random_number_checks,
+            "common_random_numbers_verified": common_random_numbers_valid,
             "development_activation_gate_passed": gate_passed,
             "formal_extension_authorized": False,
             "stop_reason": (
+                "baseline_activation_confounds_disruption_attribution"
+                if all_primary_optimal and baseline_confounded_betas
+                else "common_random_number_evidence_failed"
+                if all_primary_optimal and not common_random_numbers_valid
+                else
                 "no_preregistered_combination_passed"
                 if all_primary_optimal and not passed
                 else "development_primary_failure"

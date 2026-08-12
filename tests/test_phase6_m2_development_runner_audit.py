@@ -52,6 +52,12 @@ def test_m2_development_runner_audit_locks_scope_and_zero_execution() -> None:
         "all_three_seeds_optimal_required": True,
         "minimum_substantive_activation_seed_count": 2,
         "substantive_threshold": 0.01,
+        "eligible_profiles": ["C1", "C2"],
+        "C0_all_three_seeds_optimal_required": True,
+        "C0_substantive_activation_forbidden": True,
+        "projection_recomputes_activation_from_raw_values": True,
+        "common_random_number_component_hashes_required": True,
+        "endpoint_and_fixed_policy_evidence_required": True,
         "formal_extension_authorized": False,
     }
     assert set(audit["execution_counts"].values()) == {0}

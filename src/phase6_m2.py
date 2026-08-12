@@ -142,6 +142,21 @@ class GeneratedM2Data:
     joint_scenario_set_sha256: str
 
     @property
+    def component_set_sha256(self) -> dict[str, str]:
+        """Canonical ordered hashes used to audit common random numbers."""
+        ordered = [self.scenario_identities[s] for s in self.data.scenarios]
+        return {
+            field: _sha256_payload([getattr(identity, field) for identity in ordered])
+            for field in (
+                "latent_draw_sha256",
+                "demand_sha256",
+                "fulfillment_sha256",
+                "emergency_price_sha256",
+                "emergency_supply_sha256",
+            )
+        }
+
+    @property
     def data(self) -> ProcurementData:
         return self.generated.data
 

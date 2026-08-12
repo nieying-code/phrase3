@@ -28,9 +28,9 @@
 
 冻结使 `execution_allowed_in_this_revision` 从false变为true，并加入受保护的runner文件，因此科学配置和组件指纹按规则更新，不将其伪装为纯生命周期变化。
 
-- Scientific: `5ab7b5a31d388cc6da93f7588a146c6a9c6830c804ee30ce6b79fbe8b7c7778c`
-- E3: `c148f6eafdbd9241f2476135190ad7a372e11daaf0361512f3b2f33c8bf9541d`
-- Family: `da3d9a0f8edec26a7fda77dff428138f02b57ab259e4725fb222427f6fafee5e`
+- Scientific: `c041c4faf85ce0133f16e385f10878235da49d095241d15bc5ce8fbf2de29127`
+- E3: `3bc8850eb92c43200dd0c066d2d463e6fb0a33e7cca13ec61ddb7ae638523a01`
+- Family: `a2cd93bd92444e019d2174962a5712e0873e2e3310c265013dc125f44cf3f209`
 - Runner: `e7573848fa8dbd3e0807741bf8e729edd47eab7648a848948f637e557e389241`
 - Environment: `b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af`
 

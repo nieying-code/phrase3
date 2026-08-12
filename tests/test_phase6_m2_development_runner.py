@@ -64,11 +64,59 @@ def _populate(output_root: Path, activated: set[str]) -> dict[str, Any]:
         run_id = f"primary-{case.case_id}"
         directory = output_root / "development" / "runs" / run_id
         directory.mkdir(parents=True)
+        budget = case.beta * 100.0
+        is_activated = case.case_id in activated
+        minimum_optimal = 0.02 * budget if is_activated else 0.0
+        common_prefix = f"{case.seed}-{case.beta}"
+        component_hashes = {
+            "latent_draw_sha256": development.hashlib.sha256(
+                f"latent-{common_prefix}".encode()).hexdigest(),
+            "demand_sha256": development.hashlib.sha256(
+                f"demand-{common_prefix}".encode()).hexdigest(),
+            "fulfillment_sha256": development.hashlib.sha256(
+                f"fulfillment-{common_prefix}-{case.profile_id}".encode()).hexdigest(),
+            "emergency_price_sha256": development.hashlib.sha256(
+                f"price-{common_prefix}".encode()).hexdigest(),
+            "emergency_supply_sha256": development.hashlib.sha256(
+                f"supply-{common_prefix}".encode()).hexdigest(),
+        }
+        science = {
+            "budget": budget,
+            "R_min_feas": 0.0,
+            "R_min_opt": minimum_optimal,
+            "R_max_opt": minimum_optimal + 1.0e-7,
+            "R_min_robust_opt": minimum_optimal,
+            "R_min_robust_opt_ratio": minimum_optimal / budget,
+            "numerical_activation": is_activated,
+            "substantive_activation": is_activated,
+            "objective_tolerance": 1.1e-5,
+            "complete_extensive_objective": 100.0,
+            "minimum_endpoint_exact_objective": 100.0,
+            "maximum_endpoint_exact_objective": 100.0,
+            "minimum_endpoint_status": "optimal",
+            "maximum_endpoint_status": "optimal",
+            "minimum_endpoint_consistency_difference": 0.0,
+            "maximum_endpoint_consistency_difference": 0.0,
+            "endpoint_failure_counts": {
+                "minimum": {"infeasible": 0, "solver_failure": 0, "missing": 0},
+                "maximum": {"infeasible": 0, "solver_failure": 0, "missing": 0},
+            },
+            "fixed_reserve_policies": [
+                {
+                    "rho": rho, "reserve": rho * budget,
+                    "objective": 100.0 + rho,
+                    "status": "optimal", "regular_purchase_reoptimized": True,
+                    "regular_purchase_sha256": str(index + 1) * 64,
+                }
+                for index, rho in enumerate((0.0, 0.1, 0.3, 0.5))
+            ],
+            "scenario_component_set_sha256": component_hashes,
+        }
         result = {
             "run_id": run_id, "parent_run_id": None, "case_id": case.case_id,
             "case": case.as_dict(), "status": "optimal", "finalized": True,
             "wall_seconds": 1.0, "git_sha": "a" * 40, "git_tree_sha": "b" * 40,
-            "science": {"substantive_activation": case.case_id in activated},
+            "science": science,
             "fingerprints": FINGERPRINTS,
         }
         paths = {name: directory / name for name in (
@@ -90,7 +138,7 @@ def _populate(output_root: Path, activated: set[str]) -> dict[str, Any]:
         row.update({
             "run_id": run_id, "case_id": case.case_id, "tier_id": case.tier_id,
             "seed": case.seed, "beta": case.beta, "profile_id": case.profile_id,
-            "status": "optimal", "substantive_activation": str(case.case_id in activated),
+            "status": "optimal", "substantive_activation": str(is_activated),
             "wall_seconds": 1.0, **FINGERPRINTS,
             "result_path": str(paths["result.json"]),
             "manifest_path": str(paths["manifest.json"]),
@@ -213,6 +261,79 @@ def test_gate_requires_three_optimal_seeds_and_two_activations(tmp_path) -> None
     assert projection["development_activation_gate_passed"] is True
     assert projection["formal_extension_authorized"] is False
     assert [(x["beta"], x["profile_id"]) for x in projection["passed_combinations"]] == [(1.1, "C1")]
+    assert projection["common_random_numbers_verified"] is True
+    assert projection["baseline_activation_confounded_betas"] == []
+
+
+def test_projection_recomputes_activation_instead_of_trusting_boolean(tmp_path) -> None:
+    config = development.load_m2_config(CONFIG)
+    activated = {case.case_id for case in development.build_development_cases(config)
+                 if case.beta == 1.1 and case.profile_id == "C1" and case.seed != 2026081203}
+    _populate(tmp_path, activated)
+    row = development._read_registry(
+        tmp_path / "development/development_run_registry.csv"
+    )[0]
+    result_path = Path(row["result_path"])
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    result["science"]["substantive_activation"] = not result["science"]["substantive_activation"]
+    atomic_write_json(result_path, result)
+    manifest_path = Path(row["manifest_path"])
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["result_sha256"] = sha256_file(result_path)
+    atomic_write_json(manifest_path, manifest)
+    rows = development._read_registry(
+        tmp_path / "development/development_run_registry.csv"
+    )
+    rows[0]["manifest_sha256"] = sha256_file(manifest_path)
+    rows[0]["substantive_activation"] = str(
+        result["science"]["substantive_activation"]
+    )
+    atomic_write_csv(tmp_path / "development/development_run_registry.csv",
+                     development.REGISTRY_FIELDS, rows)
+    projection = development.update_development_projection(
+        output_root=tmp_path, config=config, fingerprints=FINGERPRINTS)
+    assert projection["development_activation_gate_passed"] is False
+    assert rows[0]["run_id"] in projection["invalid_primary_run_ids"]
+
+
+def test_c0_activation_blocks_disruption_attribution(tmp_path) -> None:
+    config = development.load_m2_config(CONFIG)
+    activated = {case.case_id for case in development.build_development_cases(config)
+                 if case.beta == 1.1 and case.profile_id in {"C0", "C1"}
+                 and case.seed != 2026081203}
+    projection = development.update_development_projection(
+        output_root=tmp_path, config=_populate(tmp_path, activated), fingerprints=FINGERPRINTS)
+    assert projection["development_activation_gate_passed"] is False
+    assert projection["passed_combinations"] == []
+    assert projection["baseline_activation_confounded_betas"] == [1.1]
+    assert projection["stop_reason"] == "baseline_activation_confounds_disruption_attribution"
+
+
+def test_common_random_number_component_mismatch_blocks_gate(tmp_path) -> None:
+    config = development.load_m2_config(CONFIG)
+    activated = {case.case_id for case in development.build_development_cases(config)
+                 if case.beta == 1.1 and case.profile_id == "C1" and case.seed != 2026081203}
+    _populate(tmp_path, activated)
+    rows = development._read_registry(
+        tmp_path / "development/development_run_registry.csv"
+    )
+    row = next(item for item in rows if item["seed"] == "2026081201"
+               and item["beta"] == "1.1" and item["profile_id"] == "C1")
+    result_path, manifest_path = Path(row["result_path"]), Path(row["manifest_path"])
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    result["science"]["scenario_component_set_sha256"]["demand_sha256"] = "f" * 64
+    atomic_write_json(result_path, result)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["result_sha256"] = sha256_file(result_path)
+    atomic_write_json(manifest_path, manifest)
+    row["manifest_sha256"] = sha256_file(manifest_path)
+    atomic_write_csv(tmp_path / "development/development_run_registry.csv",
+                     development.REGISTRY_FIELDS, rows)
+    projection = development.update_development_projection(
+        output_root=tmp_path, config=config, fingerprints=FINGERPRINTS)
+    assert projection["common_random_numbers_verified"] is False
+    assert projection["development_activation_gate_passed"] is False
+    assert projection["stop_reason"] == "common_random_number_evidence_failed"
 
 
 def test_no_activation_stops_without_parameter_chasing(tmp_path) -> None:

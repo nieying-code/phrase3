@@ -61,9 +61,17 @@ development_preregistration:
   success_rule:
     all_three_seeds_optimal: true
     minimum_substantive_activation_seed_count: 2
+    eligible_disruption_profiles: [C1, C2]
+    same_beta_C0_all_three_seeds_optimal_required: true
+    same_beta_C0_substantive_activation_forbidden: true
+    common_random_number_component_hashes_required: true
+    activation_recomputed_from_raw_reserve_interval: true
+    endpoint_and_fixed_policy_evidence_required: true
     cost_service_or_manual_trend_selection_forbidden: true
   stop_rule:
     if_no_profile_budget_combination_passes: stop_without_parameter_chasing
+    if_C0_substantive_activation_passes: baseline_activation_confounds_disruption_attribution
+    if_common_random_number_evidence_fails: common_random_number_evidence_failed
   multi_item_confirmation:
     allowed_only_after_V1_activation: true
     status: not_designed_or_authorized
@@ -95,6 +103,8 @@ audit_protocol:
   compact_machine_audit_required: true
   M0_or_M1_artifact_migration_forbidden: true
   raw_large_results_committed_to_git: false
+  scenario_component_set_hashes_required:
+    [latent_draw, demand, fulfillment, emergency_price, emergency_supply]
 
 execution_boundaries:
   development_matrix_started: false
