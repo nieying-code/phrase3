@@ -34,6 +34,7 @@ from .recourse_model import RecourseResult
 M2_PROTOCOL_ID = "phase6_m2_supply_disruption_v1_0"
 M2_RUNNER_NAMESPACE = "phase6_m2_supply_disruption"
 M2_OUTPUT_ROOT = "outputs/phase6_m2_supply_disruption_v1"
+M2_EXECUTION_READY_STATUS = "frozen_for_development_execution"
 M2_LIFECYCLE_FIELDS = ("status", "initial_draft_on", "revised_on")
 
 M2_E3_COMPONENT_FILES = (
@@ -52,6 +53,9 @@ M2_E3_COMPONENT_FILES = (
     "src/phase6_io.py",
     "src/phase6_m1.py",
     "src/phase6_m2.py",
+    "src/phase6_m2_development.py",
+    "src/run_phase6_m2_development.py",
+    "src/phase6_m2_status.py",
     "configs/phase6_m2_supply_disruption.yaml",
     "configs/phase6_m2_runner.yaml",
 )
@@ -136,6 +140,21 @@ class GeneratedM2Data:
     statistics: FulfillmentStatistics
     scenario_identities: Mapping[str, "JointScenarioIdentity"]
     joint_scenario_set_sha256: str
+
+    @property
+    def component_set_sha256(self) -> dict[str, str]:
+        """Canonical ordered hashes used to audit common random numbers."""
+        ordered = [self.scenario_identities[s] for s in self.data.scenarios]
+        return {
+            field: _sha256_payload([getattr(identity, field) for identity in ordered])
+            for field in (
+                "latent_draw_sha256",
+                "demand_sha256",
+                "fulfillment_sha256",
+                "emergency_price_sha256",
+                "emergency_supply_sha256",
+            )
+        }
 
     @property
     def data(self) -> ProcurementData:
@@ -226,6 +245,8 @@ def load_m2_config(path: str | Path) -> dict[str, Any]:
         raise M2ProtocolError("unexpected M2 disruption profiles")
     if int(development.get("configuration_count", -1)) != 27:
         raise M2ProtocolError("M2 development grid must contain 27 cases")
+    if development.get("execution_allowed_in_this_revision") is not True:
+        raise M2ProtocolError("M2 development execution is not enabled by this revision")
     return payload
 
 
@@ -569,6 +590,54 @@ def solve_m2_endogenous_extensive(data: DisruptedProcurementData, **kwargs: Any)
     from .extensive_model import solve_endogenous_extensive
     with m2_model_context():
         result = solve_endogenous_extensive(data, **kwargs)
+    return _algorithm_evidence(data, result)
+
+
+def solve_m2_fixed_reserve(
+    data: DisruptedProcurementData,
+    reserve_ratio: float,
+    **kwargs: Any,
+):
+    """Re-optimize regular contracts for one fixed total-reserve ratio."""
+    from .evaluation import evaluate_first_stage
+    from .extensive_model import ExtensiveSolution, solve_master
+
+    consistency_tolerance = float(kwargs.pop("consistency_tolerance", 1.0e-6))
+    with m2_model_context():
+        model = build_m2_inventory_model(
+            data,
+            scenario_names=data.scenarios,
+            model_name=f"M2FixedReserve[rho={reserve_ratio:.4f}]",
+            reserve_policy="fixed_ratio",
+            fixed_reserve_ratio=reserve_ratio,
+            objective_kind="robust",
+        )
+        master = solve_master(model, **kwargs)
+        if master.status != "optimal":
+            result = ExtensiveSolution(
+                status=f"master_{master.status}", master=master,
+                evaluation=None, consistency_difference=None,
+                tolerance=consistency_tolerance,
+            )
+        else:
+            evaluation = evaluate_first_stage(
+                data, master.regular_purchase, float(master.reserve), **kwargs
+            )
+            if evaluation.status != "optimal" or evaluation.robust_objective is None:
+                result = ExtensiveSolution(
+                    status=evaluation.status, master=master,
+                    evaluation=evaluation, consistency_difference=None,
+                    tolerance=consistency_tolerance,
+                )
+            else:
+                difference = abs(float(master.objective) - evaluation.robust_objective)
+                result = ExtensiveSolution(
+                    status=("optimal" if difference <= consistency_tolerance
+                            else "inconsistent_exact_recourse"),
+                    master=master, evaluation=evaluation,
+                    consistency_difference=difference,
+                    tolerance=consistency_tolerance,
+                )
     return _algorithm_evidence(data, result)
 
 
