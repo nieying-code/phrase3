@@ -15,6 +15,7 @@ import json
 import math
 from pathlib import Path
 from statistics import fmean
+from threading import RLock
 from typing import Any, Mapping, Sequence
 
 import yaml
@@ -76,6 +77,7 @@ class SupplyDisruptionProfile:
 @dataclass(frozen=True)
 class DisruptedProcurementData(ProcurementData):
     regular_fulfillment_rate: ScenarioSeries
+    m2_demand_latent: ScenarioSeries
 
     def validate(self) -> None:
         super().validate()
@@ -93,6 +95,7 @@ class DisruptedProcurementData(ProcurementData):
         result = DisruptedProcurementData(
             **values,
             regular_fulfillment_rate={s: self.regular_fulfillment_rate[s] for s in scenarios},
+            m2_demand_latent={s: self.m2_demand_latent[s] for s in scenarios},
         )
         result.validate()
         return result
@@ -101,7 +104,7 @@ class DisruptedProcurementData(ProcurementData):
 @dataclass(frozen=True)
 class FulfillmentStatistics:
     arithmetic_mean: float
-    demand_weighted_mean: float
+    demand_weighted_mean: float | None
     minimum: float
     p05: float
     full_interruption_rate: float
@@ -131,6 +134,8 @@ class GeneratedM2Data:
     generated: GeneratedPhase6Data
     profile: SupplyDisruptionProfile
     statistics: FulfillmentStatistics
+    scenario_identities: Mapping[str, "JointScenarioIdentity"]
+    joint_scenario_set_sha256: str
 
     @property
     def data(self) -> ProcurementData:
@@ -142,13 +147,55 @@ class M2RecourseResult:
     recourse: RecourseResult
     delivered_regular_purchase: dict[str, list[float]]
     undelivered_contract_quantity: dict[str, list[float]]
+    joint_scenario_sha256: str
 
     def as_dict(self) -> dict[str, Any]:
         payload = self.recourse.as_dict()
         payload.update(
             delivered_regular_purchase=self.delivered_regular_purchase,
             undelivered_contract_quantity=self.undelivered_contract_quantity,
+            joint_scenario_sha256=self.joint_scenario_sha256,
         )
+        return payload
+
+
+@dataclass(frozen=True)
+class JointScenarioIdentity:
+    scenario_id: str
+    latent_draw_sha256: str
+    demand_sha256: str
+    fulfillment_sha256: str
+    emergency_price_sha256: str
+    emergency_supply_sha256: str
+    joint_scenario_sha256: str
+
+    def as_dict(self) -> dict[str, str]:
+        return {
+            "scenario_id": self.scenario_id,
+            "latent_draw_sha256": self.latent_draw_sha256,
+            "demand_sha256": self.demand_sha256,
+            "fulfillment_sha256": self.fulfillment_sha256,
+            "emergency_price_sha256": self.emergency_price_sha256,
+            "emergency_supply_sha256": self.emergency_supply_sha256,
+            "joint_scenario_sha256": self.joint_scenario_sha256,
+        }
+
+
+@dataclass(frozen=True)
+class M2AlgorithmEvidence:
+    result: Any
+    joint_scenario_set_sha256: str
+    scenario_identities: Mapping[str, JointScenarioIdentity]
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.result, name)
+
+    def as_dict(self) -> dict[str, Any]:
+        payload = self.result.as_dict()
+        payload["joint_scenario_set_sha256"] = self.joint_scenario_set_sha256
+        payload["scenario_identities"] = {
+            key: value.as_dict() for key, value in self.scenario_identities.items()
+        }
         return payload
 
 
@@ -171,7 +218,7 @@ def load_m2_config(path: str | Path) -> dict[str, Any]:
     development = payload.get("development_preregistration")
     if not isinstance(development, Mapping):
         raise M2ProtocolError("development_preregistration must be a mapping")
-    if tuple(development.get("seeds", ())) != (2026081101, 2026081102, 2026081103):
+    if tuple(development.get("seeds", ())) != (2026081201, 2026081202, 2026081203):
         raise M2ProtocolError("unexpected M2 development seeds")
     if tuple(float(v) for v in development.get("beta", ())) != (0.9, 1.1, 1.3):
         raise M2ProtocolError("unexpected M2 budget factors")
@@ -264,7 +311,7 @@ def fulfillment_statistics(data: DisruptedProcurementData) -> FulfillmentStatist
     weight_sum = sum(demand_weights)
     weighted = (
         sum(a * w for a, w in zip(flat, demand_weights)) / weight_sum
-        if weight_sum > 0.0 else fmean(flat)
+        if weight_sum > 0.0 else None
     )
     ordered = sorted(flat)
     position = 0.05 * (len(ordered) - 1)
@@ -275,13 +322,28 @@ def fulfillment_statistics(data: DisruptedProcurementData) -> FulfillmentStatist
         fmean(float(rates[s][i][t]) for s in data.scenarios for i in data.items)
         for t in range(data.periods)
     )
-    totals = [sum(data.demand[s][i][t] for i in data.items for t in range(data.periods)) for s in data.scenarios]
-    scenario_alpha = []
+    totals: list[float] = []
+    scenario_alpha: list[float] = []
+    zero_total_demand = False
     for s in data.scenarios:
         weights = [data.demand[s][i][t] for i in data.items for t in range(data.periods)]
         values = [rates[s][i][t] for i in data.items for t in range(data.periods)]
-        scenario_alpha.append(sum(w * a for w, a in zip(weights, values)) / sum(weights))
-    if max(scenario_alpha) - min(scenario_alpha) <= 1.0e-15:
+        total = float(sum(weights))
+        if total <= 0.0:
+            zero_total_demand = True
+            continue
+        totals.append(total)
+        scenario_alpha.append(sum(w * a for w, a in zip(weights, values)) / total)
+    if zero_total_demand:
+        correlation = None
+        correlation_status = "zero_total_demand"
+    elif len(totals) < 2:
+        correlation = None
+        correlation_status = "insufficient_variation"
+    elif max(totals) - min(totals) <= 1.0e-15:
+        correlation = None
+        correlation_status = "constant_demand"
+    elif max(scenario_alpha) - min(scenario_alpha) <= 1.0e-15:
         correlation = None
         correlation_status = "constant_fulfillment"
     else:
@@ -289,7 +351,7 @@ def fulfillment_statistics(data: DisruptedProcurementData) -> FulfillmentStatist
         covariance = sum((x - mean_x) * (y - mean_y) for x, y in zip(totals, scenario_alpha))
         scale = math.sqrt(sum((x - mean_x) ** 2 for x in totals) * sum((y - mean_y) ** 2 for y in scenario_alpha))
         correlation = covariance / scale if scale > 0.0 else None
-        correlation_status = "defined" if correlation is not None else "degenerate"
+        correlation_status = "defined" if correlation is not None else "insufficient_variation"
     return FulfillmentStatistics(
         arithmetic_mean=fmean(flat), demand_weighted_mean=weighted,
         minimum=min(flat), p05=p05,
@@ -313,11 +375,49 @@ def apply_regular_supply_disruption(
         for field in fields(ProcurementData)
     }
     data = DisruptedProcurementData(
-        **base_fields, regular_fulfillment_rate=rates
+        **base_fields, regular_fulfillment_rate=rates, m2_demand_latent=demand_latent
     )
     data.validate()
     replaced = replace(generated, data=data)
-    return GeneratedM2Data(replaced, profile, fulfillment_statistics(data))
+    identities = joint_scenario_identities(data, demand_latent)
+    set_hash = _sha256_payload(
+        [identities[scenario].as_dict() for scenario in data.scenarios]
+    )
+    return GeneratedM2Data(
+        replaced, profile, fulfillment_statistics(data), identities, set_hash
+    )
+
+
+def _sha256_payload(payload: Any) -> str:
+    encoded = json.dumps(
+        payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def joint_scenario_identities(
+    data: DisruptedProcurementData, demand_latent: ScenarioSeries
+) -> dict[str, JointScenarioIdentity]:
+    result: dict[str, JointScenarioIdentity] = {}
+    for scenario in data.scenarios:
+        latent_hash = _sha256_payload(demand_latent[scenario])
+        demand_hash = _sha256_payload(data.demand[scenario])
+        fulfillment_hash = _sha256_payload(data.regular_fulfillment_rate[scenario])
+        emergency_price_hash = _sha256_payload(data.emergency_price[scenario])
+        emergency_supply_hash = _sha256_payload(data.emergency_supply[scenario])
+        components = {
+            "scenario_id": scenario,
+            "latent_draw_sha256": latent_hash,
+            "demand_sha256": demand_hash,
+            "fulfillment_sha256": fulfillment_hash,
+            "emergency_price_sha256": emergency_price_hash,
+            "emergency_supply_sha256": emergency_supply_hash,
+        }
+        result[scenario] = JointScenarioIdentity(
+            **components, joint_scenario_sha256=_sha256_payload(components)
+        )
+    return result
 
 
 def generate_m2_data(
@@ -365,6 +465,29 @@ def reconstruct_frozen_demand_latent(
     return result
 
 
+def reconstruct_demand_from_latent(
+    matrix: Mapping[str, Any], generated: GeneratedPhase6Data,
+    demand_latent: ScenarioSeries,
+) -> dict[str, dict[str, tuple[float, ...]]]:
+    """Reapply the frozen lognormal demand transform for replay auditing."""
+    demand_cv = float(matrix["controlled_synthetic_baseline"]["demand_cv"])
+    log_sigma = math.sqrt(math.log1p(demand_cv**2))
+    return {
+        scenario: {
+            item: tuple(
+                float(generated.theoretical_mean_demand[item][t])
+                * math.exp(
+                    log_sigma * float(demand_latent[scenario][item][t])
+                    - 0.5 * log_sigma**2
+                )
+                for t in range(generated.data.periods)
+            )
+            for item in generated.data.items
+        }
+        for scenario in generated.data.scenarios
+    }
+
+
 def build_m2_inventory_model(data: ProcurementData, **kwargs: Any) -> pyo.ConcreteModel:
     if not isinstance(data, DisruptedProcurementData):
         raise TypeError("M2 builder requires DisruptedProcurementData")
@@ -392,16 +515,46 @@ def build_m2_inventory_model(data: ProcurementData, **kwargs: Any) -> pyo.Concre
 @contextmanager
 def m2_model_context():
     """Route all shared solvers through the isolated M2 builder."""
-    from . import extensive_model, recourse_model
-    old_extensive = extensive_model.build_inventory_model
-    old_recourse = recourse_model.build_inventory_model
-    extensive_model.build_inventory_model = build_m2_inventory_model
-    recourse_model.build_inventory_model = build_m2_inventory_model
-    try:
-        yield
-    finally:
-        extensive_model.build_inventory_model = old_extensive
-        recourse_model.build_inventory_model = old_recourse
+    from . import ccg, extensive_model, phase6_m1, recourse_model
+    with _M2_MODEL_CONTEXT_LOCK:
+        old = {
+            "extensive_inventory": extensive_model.build_inventory_model,
+            "recourse_inventory": recourse_model.build_inventory_model,
+            "ccg_restricted": ccg.build_restricted_master,
+            "m1_restricted": phase6_m1.build_restricted_master,
+            "m1_evaluate": phase6_m1.evaluate_first_stage,
+        }
+
+        def m2_restricted(data: ProcurementData, scenario_names: Sequence[str]):
+            return build_m2_inventory_model(
+                data, scenario_names=tuple(scenario_names),
+                model_name="M2RestrictedMaster", reserve_policy="endogenous",
+                objective_kind="robust",
+            )
+
+        def m2_evaluate(*args: Any, **kwargs: Any):
+            from .evaluation import evaluate_first_stage
+            return evaluate_first_stage(*args, **kwargs)
+
+        extensive_model.build_inventory_model = build_m2_inventory_model
+        recourse_model.build_inventory_model = build_m2_inventory_model
+        ccg.build_restricted_master = m2_restricted
+        phase6_m1.build_restricted_master = m2_restricted
+        phase6_m1.evaluate_first_stage = m2_evaluate
+        try:
+            yield
+        finally:
+            extensive_model.build_inventory_model = old["extensive_inventory"]
+            recourse_model.build_inventory_model = old["recourse_inventory"]
+            ccg.build_restricted_master = old["ccg_restricted"]
+            phase6_m1.build_restricted_master = old["m1_restricted"]
+            phase6_m1.evaluate_first_stage = old["m1_evaluate"]
+
+
+def _algorithm_evidence(data: DisruptedProcurementData, result: Any) -> M2AlgorithmEvidence:
+    identities = joint_scenario_identities(data, data.m2_demand_latent)
+    set_hash = _sha256_payload([identities[s].as_dict() for s in data.scenarios])
+    return M2AlgorithmEvidence(result, set_hash, identities)
 
 
 def analyze_m2_reserve_interval(
@@ -415,19 +568,22 @@ def analyze_m2_reserve_interval(
 def solve_m2_endogenous_extensive(data: DisruptedProcurementData, **kwargs: Any):
     from .extensive_model import solve_endogenous_extensive
     with m2_model_context():
-        return solve_endogenous_extensive(data, **kwargs)
+        result = solve_endogenous_extensive(data, **kwargs)
+    return _algorithm_evidence(data, result)
 
 
 def run_m2_standard_ccg(data: DisruptedProcurementData, **kwargs: Any):
     from .ccg import run_standard_ccg
     with m2_model_context():
-        return run_standard_ccg(data, **kwargs)
+        result = run_standard_ccg(data, **kwargs)
+    return _algorithm_evidence(data, result)
 
 
 def run_m2_spw_ccg_budget_sequence(data: DisruptedProcurementData, budgets: Sequence[float], **kwargs: Any):
     from .spw_ccg import run_spw_ccg_budget_sequence
     with m2_model_context():
-        return run_spw_ccg_budget_sequence(data, budgets, **kwargs)
+        result = run_spw_ccg_budget_sequence(data, budgets, **kwargs)
+    return _algorithm_evidence(data, result)
 
 
 def solve_m2_recourse(data: DisruptedProcurementData, scenario: str, regular_purchase: Mapping[str, Sequence[float]], reserve: float, **kwargs: Any) -> M2RecourseResult:
@@ -440,7 +596,8 @@ def solve_m2_recourse(data: DisruptedProcurementData, scenario: str, regular_pur
         )
         result = solve_recourse_model(model, **kwargs)
     if result.status != "optimal":
-        return M2RecourseResult(result, {}, {})
+        identity = joint_scenario_identities(data, data.m2_demand_latent)[scenario]
+        return M2RecourseResult(result, {}, {}, identity.joint_scenario_sha256)
     delivered = {
         item: [float(pyo.value(model.delivered_regular_purchase[scenario, item, t])) for t in range(data.periods)]
         for item in data.items
@@ -449,7 +606,10 @@ def solve_m2_recourse(data: DisruptedProcurementData, scenario: str, regular_pur
         item: [float(pyo.value(model.undelivered_contract_quantity[scenario, item, t])) for t in range(data.periods)]
         for item in data.items
     }
-    return M2RecourseResult(result, delivered, undelivered)
+    identity = joint_scenario_identities(data, data.m2_demand_latent)[scenario]
+    return M2RecourseResult(
+        result, delivered, undelivered, identity.joint_scenario_sha256
+    )
 
 
 def contract_flow(
@@ -488,3 +648,6 @@ def m2_fingerprints(*, project_root: Path, config_path: Path, runner_config_path
         "runner_config_sha256": sha256_lf_text_file(runner_config_path),
         "environment_sha256": environment_sha256(locked),
     }
+
+
+_M2_MODEL_CONTEXT_LOCK = RLock()
