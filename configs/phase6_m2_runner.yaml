@@ -1,0 +1,15 @@
+runner_id: phase6_m2_supply_disruption_design_v1
+namespace: phase6_m2_supply_disruption
+output_root: outputs/phase6_m2_supply_disruption_v1
+execution_enabled: false
+solver:
+  preference: [gurobi]
+  interface: gurobi_direct
+  optimizer_version: 13.0.2
+  gurobipy_version: 13.0.2
+  threads: 1
+authorization:
+  inherit_M0_or_M1: false
+  development: false
+  pilot: false
+  formal: false
