@@ -8,8 +8,8 @@
 
 - Branch: `agent/phase6-m2-supply-disruption`
 - Base: PR #41 merge `1a9fa3063a18c482812b2328cb38aee5503f78d8`
-- Final commit: pending
-- Draft PR: pending
+- Validated implementation commits: `dae3ca1`, `3810d52`, `aefcec1`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/42
 - CI: pending
 
 ## 修改内容

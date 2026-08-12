@@ -3,6 +3,8 @@
   "status": "implementation_complete_pending_validation",
   "base_merge_sha": "1a9fa3063a18c482812b2328cb38aee5503f78d8",
   "branch": "agent/phase6-m2-supply-disruption",
+  "draft_pr": "https://github.com/nieying-code/phrase3/pull/42",
+  "validated_implementation_head": "aefcec1",
   "scientific_change": "scenario_dependent_paid_regular_contract_fulfillment_only",
   "accounting": {
     "budget_equality_unchanged": true,
