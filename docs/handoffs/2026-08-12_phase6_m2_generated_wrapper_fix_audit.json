@@ -1,6 +1,9 @@
 {
   "audit_id": "phase6_m2_generated_wrapper_fix_v1",
-  "status": "implementation_complete_pending_validation",
+  "status": "implementation_complete_pending_ci",
+  "branch": "agent/phase6-m2-generated-wrapper-fix",
+  "implementation_commit": "29f61a5",
+  "draft_pr": "https://github.com/nieying-code/phrase3/pull/44",
   "base_merge_sha": "007c6ccf0c881466cfa556ca17dac283eea7a2f0",
   "root_cause": "GeneratedM2Data wrapper metadata was accessed as generated.tier",
   "failed_run": {
@@ -33,6 +36,13 @@
     "pilot_runs": 0,
     "formal_runs": 0,
     "m0_e3_runs": 0
+  },
+  "validation": {
+    "focused_m2_tests_passed": 47,
+    "ordinary_regression_passed": 281,
+    "phase5_end_to_end_passed": 6,
+    "compileall_passed": true,
+    "git_diff_check_passed": true
   },
   "github_actions": "pending"
 }

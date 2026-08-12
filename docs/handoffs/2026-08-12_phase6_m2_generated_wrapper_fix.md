@@ -1,5 +1,22 @@
 # Phase 6 M2 Generated-Wrapper Fix Handoff
 
+## Branch and review
+
+- Branch: `agent/phase6-m2-generated-wrapper-fix`
+- Base: merged PR #43, `007c6ccf0c881466cfa556ca17dac283eea7a2f0`
+- Implementation commit: `29f61a5`
+- Draft PR: https://github.com/nieying-code/phrase3/pull/44
+- CI: pending
+
+## Validation
+
+- Focused M2 regression: `47 passed`
+- Ordinary full regression: `281 passed`
+- Phase 5 end-to-end: `6 passed`
+- `compileall`: passed
+- `git diff --check`: passed
+- Scientific executions in this fix PR: `0`
+
 ## 根因
 
 首次M2开发执行在首个C0配置的场景生成后停止。`generate_m2_data()`返回`GeneratedM2Data`包装对象，而runner错误地直接读取`generated.tier`；当时包装对象只公开`data`，导致`AttributeError`。失败发生在任何Gurobi调用之前。
