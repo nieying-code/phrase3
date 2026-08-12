@@ -21,6 +21,8 @@ def test_m2_design_audit_freezes_scope_and_zero_execution() -> None:
     grid = audit["development_preregistration"]
     assert len(grid["seeds"]) * len(grid["beta"]) * len(grid["profiles"]) == 27
     assert grid["configuration_count"] == 27
+    assert grid["seeds"] == [2026081201, 2026081202, 2026081203]
+    assert grid["disjoint_from_M1_development_seeds"] is True
     assert grid["started_count"] == 0
     assert audit["execution_boundaries"] == {
         "pilot_count": 0,
@@ -29,9 +31,9 @@ def test_m2_design_audit_freezes_scope_and_zero_execution() -> None:
         "M0_or_M1_outputs_modified": False,
     }
     assert audit["fingerprints"] == {
-        "scientific_config_sha256": "a2ac5dac56ee1e473a1397492e363eb76d330db9b9a69773b181304505784124",
-        "e3_component_sha256": "bb63ccda160312059179ea15446cee4f4f4db60975c47b13156d77976ffe8d67",
-        "family_component_sha256": "cfc69451989ad8d4771f7399f63b7a6e95fcf640516dd52564bc0fcb560300d3",
+        "scientific_config_sha256": "c354a91917c31ed51429d6b2e84a8b2c09dcefcc1ad145a58ef0f27e0e87742d",
+        "e3_component_sha256": "f4db040c9d62965e1c90f38d091a0b519b226e565c93c6c2972ce6263dec7f38",
+        "family_component_sha256": "d6b623cf16108681f263efc4f12f9961fa986833d24e2ca91d78959b09001f9d",
         "runner_config_sha256": "d9de25037d85b21e4cc086b73db29a1eb9d6c95066154001c0463de12d66eb10",
         "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
     }
