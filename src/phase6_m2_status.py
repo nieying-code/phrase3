@@ -31,7 +31,7 @@ def read_status(output_root: Path, run_id: str | None) -> dict[str, Any]:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output-root", default="outputs/phase6_m2_supply_disruption_v1")
+    parser.add_argument("--output-root", default="outputs/phase6_m2_supply_disruption_v1_1")
     parser.add_argument("--run-id")
     args = parser.parse_args(argv)
     root = Path(__file__).resolve().parents[1]
