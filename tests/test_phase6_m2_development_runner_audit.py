@@ -18,9 +18,10 @@ def test_m2_development_runner_audit_locks_scope_and_zero_execution() -> None:
         runner_config_path=ROOT / "configs/phase6_m2_runner.yaml",
     )
     assert audit["base_merge_sha"] == "29938da2982ba74608dc98f4fefac35850c6de65"
-    assert audit["status"] == "implementation_complete_pending_ci"
+    assert audit["status"] == "implementation_complete_ci_passed"
     assert audit["draft_pr"] == "https://github.com/nieying-code/phrase3/pull/43"
-    assert audit["validated_implementation_commit"] == "673896cc4d2b301b4fa247fa56fb31d7daba1f06"
+    assert audit["initial_implementation_commit"] == "673896cc4d2b301b4fa247fa56fb31d7daba1f06"
+    assert audit["validated_implementation_commit"] == "03dcb659121f5cdc75ad95f2d36adf9bcede36b4"
     assert audit["matrix"] == {
         "tier": "V1", "seeds": [2026081201, 2026081202, 2026081203],
         "beta": [0.9, 1.1, 1.3], "profiles": ["C0", "C1", "C2"],
@@ -55,3 +56,10 @@ def test_m2_development_runner_audit_locks_scope_and_zero_execution() -> None:
     }
     assert set(audit["execution_counts"].values()) == {0}
     assert audit["tests"] == {"focused": "42 passed", "full_regression": "282 passed"}
+    assert audit["github_actions"] == {
+        "run_id": 31572380358,
+        "url": "https://github.com/nieying-code/phrase3/actions/runs/31572380358",
+        "status": "success",
+        "linux": "276 passed + 6 passed",
+        "windows": "16 passed",
+    }
