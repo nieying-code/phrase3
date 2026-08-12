@@ -45,5 +45,11 @@
     "specialized": "13 passed",
     "full_regression": "252 passed"
   },
-  "github_actions": "pending"
+  "github_actions": {
+    "validated_head": "566b97d5ca40ae46b16ed969191bd06d9d994390",
+    "run_id": 31561123103,
+    "status": "success",
+    "linux": "passed",
+    "windows": "passed"
+  }
 }

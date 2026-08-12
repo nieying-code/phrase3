@@ -10,7 +10,8 @@
 - Base: PR #41 merge `1a9fa3063a18c482812b2328cb38aee5503f78d8`
 - Validated implementation commits: `dae3ca1`, `3810d52`, `aefcec1`
 - Draft PR: https://github.com/nieying-code/phrase3/pull/42
-- CI: pending
+- Validated implementation/documentation head: `566b97d5ca40ae46b16ed969191bd06d9d994390`
+- CI: [run 31561123103](https://github.com/nieying-code/phrase3/actions/runs/31561123103), Linux and Windows passed
 
 ## 修改内容
 
