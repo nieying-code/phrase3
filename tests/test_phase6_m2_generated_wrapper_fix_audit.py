@@ -30,7 +30,20 @@ def test_m2_generated_wrapper_fix_audit_locks_new_identity() -> None:
         config_path=ROOT / "configs/phase6_m2_supply_disruption.yaml",
         runner_config_path=ROOT / "configs/phase6_m2_runner.yaml",
     )
-    assert audit["approved_fingerprints"] == actual
+    # Four identities are checkout-content based and therefore reproduce on
+    # Linux and Windows.  The environment identity intentionally includes the
+    # executing platform and must remain the separately approved Windows/
+    # PyCharm value used for scientific runs.
+    for field in (
+        "scientific_config_sha256",
+        "e3_component_sha256",
+        "family_component_sha256",
+        "runner_config_sha256",
+    ):
+        assert audit["approved_fingerprints"][field] == actual[field]
+    assert audit["approved_fingerprints"]["environment_sha256"] == (
+        "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+    )
     assert audit["real_wrapper_boundary_test"] == {
         "tier": "V1", "scenario_count": 50,
         "solver_call_seconds": 120.0, "gurobi_called": False,
