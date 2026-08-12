@@ -72,8 +72,8 @@ LATENT = {
 def test_m2_development_config_is_isolated_and_frozen() -> None:
     config = load_m2_config(ROOT / "configs/phase6_m2_supply_disruption.yaml")
     assert config["status"] == "frozen_for_development_execution"
-    assert config["runner_namespace"] == "phase6_m2_supply_disruption"
-    assert config["output_root"] == "outputs/phase6_m2_supply_disruption_v1"
+    assert config["runner_namespace"] == "phase6_m2_supply_disruption_v1_1"
+    assert config["output_root"] == "outputs/phase6_m2_supply_disruption_v1_1"
     assert config["inherit_m0_or_m1_authorization"] is False
     assert config["development_preregistration"]["configuration_count"] == 27
     assert config["development_preregistration"]["seeds"] == [

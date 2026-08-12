@@ -251,10 +251,10 @@ def load_development_approval(path: Path) -> dict[str, Any]:
     if not isinstance(fingerprints, dict) or set(fingerprints) != required:
         raise ValueError("M2 development approval fingerprints are incomplete")
     expected_metadata = {
-        "approval_id": "phase6_m2_development_execution_v1",
+        "approval_id": "phase6_m2_development_execution_v1_1",
         "status": M2_EXECUTION_READY_STATUS,
-        "scientific_protocol": "phase6_m2_supply_disruption_v1_0",
-        "runner_namespace": "phase6_m2_supply_disruption",
+        "scientific_protocol": "phase6_m2_supply_disruption_v1_1",
+        "runner_namespace": "phase6_m2_supply_disruption_v1_1",
         "matrix_case_count": 27,
         "explicit_cli_authorization_required": True,
         "formal_extension_authorized": False,
@@ -288,7 +288,7 @@ def validate_development_preflight(
             "M2 development execution requires --authorize-development-execution"
         )
     runner = yaml.safe_load(runner_config_path.read_text(encoding="utf-8"))
-    if runner.get("namespace") != "phase6_m2_supply_disruption":
+    if runner.get("namespace") != "phase6_m2_supply_disruption_v1_1":
         raise RuntimeError("M2 runner namespace mismatch")
     if runner.get("output_root") != M2_OUTPUT_ROOT:
         raise RuntimeError("M2 runner output root mismatch")
@@ -390,7 +390,7 @@ def execute_development_case_science(
         profile_id=case.profile_id,
     )
     data = generated.data
-    solver_call_seconds = float(generated.tier.solver_call_seconds)
+    solver_call_seconds = float(generated.generated.tier.solver_call_seconds)
     absolute = float(config["objective_tolerance"]["absolute_tolerance"])
     relative = float(config["objective_tolerance"]["relative_tolerance"])
 

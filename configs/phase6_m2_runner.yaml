@@ -1,6 +1,6 @@
-runner_id: phase6_m2_supply_disruption_development_v1
-namespace: phase6_m2_supply_disruption
-output_root: outputs/phase6_m2_supply_disruption_v1
+runner_id: phase6_m2_supply_disruption_development_v1_1
+namespace: phase6_m2_supply_disruption_v1_1
+output_root: outputs/phase6_m2_supply_disruption_v1_1
 scientific_config: configs/phase6_m2_supply_disruption.yaml
 base_matrix: configs/phase6_experiment_matrix.yaml
 solver:

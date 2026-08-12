@@ -1,6 +1,7 @@
 {
   "audit_id": "phase6_m2_development_runner_v1",
-  "status": "implementation_complete_ci_passed",
+  "status": "superseded_after_first_run_wrapper_interface_failure",
+  "superseded_by_protocol": "phase6_m2_supply_disruption_v1_1",
   "base_merge_sha": "29938da2982ba74608dc98f4fefac35850c6de65",
   "branch": "agent/phase6-m2-development-runner",
   "draft_pr": "https://github.com/nieying-code/phrase3/pull/43",

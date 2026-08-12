@@ -158,6 +158,37 @@ def test_frozen_matrix_is_exact_27_case_cartesian_product() -> None:
     assert {case.profile_id for case in cases} == {"C0", "C1", "C2"}
 
 
+def test_real_generated_m2_wrapper_reaches_first_solver_stage(
+    monkeypatch,
+) -> None:
+    """Guard the real GeneratedM2Data/runner interface missed by mocks."""
+
+    config = development.load_m2_config(CONFIG)
+    matrix_path = ROOT / config["base_model"]["matrix_path"]
+    matrix = development.load_phase6_matrix(matrix_path)
+    case = development.build_development_cases(config)[0]
+    reached: dict[str, Any] = {}
+
+    def stop_at_first_solver(data, **kwargs):
+        reached["scenario_count"] = len(data.scenarios)
+        reached["time_limit_seconds"] = kwargs["time_limit_seconds"]
+        raise RuntimeError("first-solver-stage-reached")
+
+    monkeypatch.setattr(
+        development, "solve_minimum_feasible_reserve", stop_at_first_solver
+    )
+    with pytest.raises(RuntimeError, match="first-solver-stage-reached"):
+        development.execute_development_case_science(
+            project_root=ROOT,
+            matrix=matrix,
+            matrix_path=matrix_path,
+            config=config,
+            case=case,
+            progress=lambda *_: None,
+        )
+    assert reached == {"scenario_count": 50, "time_limit_seconds": 120.0}
+
+
 def test_missing_authorization_and_candidate_status_fail_before_environment(monkeypatch, tmp_path) -> None:
     monkeypatch.setattr(development, "validate_locked_environment",
                         lambda *_: pytest.fail("environment reached"))
@@ -177,10 +208,10 @@ def test_missing_authorization_and_candidate_status_fail_before_environment(monk
 def test_fingerprint_mismatch_and_m0_m1_authorization_are_rejected(tmp_path, monkeypatch) -> None:
     approval = tmp_path / "approval.yaml"
     approval.write_text(
-        "approval_id: phase6_m2_development_execution_v1\n"
+        "approval_id: phase6_m2_development_execution_v1_1\n"
         "status: frozen_for_development_execution\n"
-        "scientific_protocol: phase6_m2_supply_disruption_v1_0\n"
-        "runner_namespace: phase6_m2_supply_disruption\n"
+        "scientific_protocol: phase6_m2_supply_disruption_v1_1\n"
+        "runner_namespace: phase6_m2_supply_disruption_v1_1\n"
         "matrix_case_count: 27\n"
         "explicit_cli_authorization_required: true\n"
         "formal_extension_authorized: false\n"
@@ -345,8 +376,8 @@ def test_no_activation_stops_without_parameter_chasing(tmp_path) -> None:
 
 
 def test_full_primary_execution_rejects_nonempty_controlled_root(tmp_path, monkeypatch) -> None:
-    (tmp_path / "outputs/phase6_m2_supply_disruption_v1/development").mkdir(parents=True)
-    (tmp_path / "outputs/phase6_m2_supply_disruption_v1/development/old.txt").write_text("old")
+    (tmp_path / "outputs/phase6_m2_supply_disruption_v1_1/development").mkdir(parents=True)
+    (tmp_path / "outputs/phase6_m2_supply_disruption_v1_1/development/old.txt").write_text("old")
     monkeypatch.setattr(development, "validate_development_preflight", lambda **_: {
         "config": development.load_m2_config(CONFIG), "fingerprints": FINGERPRINTS,
         "locked_environment": {}, "source": {"commit_sha": "a" * 40, "tree_sha": "b" * 40},

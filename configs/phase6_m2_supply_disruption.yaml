@@ -1,5 +1,5 @@
-protocol_id: phase6_m2_supply_disruption_v1_0
-version: 1.0.0-development
+protocol_id: phase6_m2_supply_disruption_v1_1
+version: 1.1.0-development
 status: frozen_for_development_execution
 initial_draft_on: 2026-08-12
 revised_on: 2026-08-12
@@ -8,8 +8,8 @@ base_model:
   id: M0
   matrix_path: configs/phase6_experiment_matrix.yaml
   preserve_existing_results: true
-runner_namespace: phase6_m2_supply_disruption
-output_root: outputs/phase6_m2_supply_disruption_v1
+runner_namespace: phase6_m2_supply_disruption_v1_1
+output_root: outputs/phase6_m2_supply_disruption_v1_1
 inherit_m0_or_m1_authorization: false
 accept_m0_or_m1_registry_or_projection: false
 
@@ -99,7 +99,7 @@ fixed_reserve_policies:
   reoptimize_regular_purchase_for_every_policy: true
 
 audit_protocol:
-  namespace: phase6_m2_supply_disruption_v1
+  namespace: phase6_m2_supply_disruption_v1_1
   compact_machine_audit_required: true
   M0_or_M1_artifact_migration_forbidden: true
   raw_large_results_committed_to_git: false

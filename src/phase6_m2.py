@@ -31,9 +31,9 @@ from .phase6_protocol import GeneratedPhase6Data, generate_phase6_data
 from .recourse_model import RecourseResult
 
 
-M2_PROTOCOL_ID = "phase6_m2_supply_disruption_v1_0"
-M2_RUNNER_NAMESPACE = "phase6_m2_supply_disruption"
-M2_OUTPUT_ROOT = "outputs/phase6_m2_supply_disruption_v1"
+M2_PROTOCOL_ID = "phase6_m2_supply_disruption_v1_1"
+M2_RUNNER_NAMESPACE = "phase6_m2_supply_disruption_v1_1"
+M2_OUTPUT_ROOT = "outputs/phase6_m2_supply_disruption_v1_1"
 M2_EXECUTION_READY_STATUS = "frozen_for_development_execution"
 M2_LIFECYCLE_FIELDS = ("status", "initial_draft_on", "revised_on")
 
@@ -159,6 +159,35 @@ class GeneratedM2Data:
     @property
     def data(self) -> ProcurementData:
         return self.generated.data
+
+    @property
+    def tier(self):
+        """Expose the frozen tier metadata of the wrapped Phase 6 draw."""
+        return self.generated.tier
+
+    @property
+    def seed(self) -> int:
+        return self.generated.seed
+
+    @property
+    def budget(self) -> float:
+        return self.generated.budget
+
+    @property
+    def reference_budget(self) -> float:
+        return self.generated.reference_budget
+
+    @property
+    def budget_factor(self) -> float | None:
+        return self.generated.budget_factor
+
+    @property
+    def theoretical_mean_demand(self):
+        return self.generated.theoretical_mean_demand
+
+    @property
+    def generator_protocol_id(self) -> str:
+        return self.generated.generator_protocol_id
 
 
 @dataclass(frozen=True)
