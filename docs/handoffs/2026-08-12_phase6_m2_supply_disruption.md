@@ -8,10 +8,14 @@
 
 - Branch: `agent/phase6-m2-supply-disruption`
 - Base: PR #41 merge `1a9fa3063a18c482812b2328cb38aee5503f78d8`
-- Validated implementation commits: `dae3ca1`, `3810d52`, `aefcec1`
+- Intermediate implementation commits: `dae3ca1`, `3810d52`, `aefcec1`
 - Draft PR: https://github.com/nieying-code/phrase3/pull/42
-- Validated implementation/documentation head: `566b97d5ca40ae46b16ed969191bd06d9d994390`
-- CI: [run 31561123103](https://github.com/nieying-code/phrase3/actions/runs/31561123103), Linux and Windows passed
+- Intermediate documentation head: `566b97d5ca40ae46b16ed969191bd06d9d994390`
+- Intermediate CI: [run 31561123103](https://github.com/nieying-code/phrase3/actions/runs/31561123103), Linux and Windows passed
+- Final scientifically reviewed head: `aad5d3c7ad0fa344b17ffe1f4a75542b6acf4cf3`
+- Final scientifically reviewed CI: [run 31565293591](https://github.com/nieying-code/phrase3/actions/runs/31565293591), Linux and Windows passed
+- Final local validation at the reviewed head: M2 focused suite `20 passed`; full regression `259 passed`
+- Traceability-only synchronization after the reviewed head changes no model, algorithm, configuration, fingerprint, or experiment result; its final commit and CI are recorded in the PR description to avoid a self-referential SHA update loop.
 
 ## 修改内容
 

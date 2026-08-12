@@ -1,10 +1,16 @@
 {
   "audit_id": "phase6_m2_supply_disruption_design_v1",
-  "status": "implementation_complete_pending_validation",
+  "status": "implementation_validated_pending_manual_merge",
   "base_merge_sha": "1a9fa3063a18c482812b2328cb38aee5503f78d8",
   "branch": "agent/phase6-m2-supply-disruption",
   "draft_pr": "https://github.com/nieying-code/phrase3/pull/42",
-  "validated_implementation_head": "aefcec1",
+  "validated_implementation_head": "aad5d3c7ad0fa344b17ffe1f4a75542b6acf4cf3",
+  "intermediate_traceability": {
+    "initial_implementation_head": "aefcec14ead24d89931b27eae0ad4fe2ac02c7cb",
+    "initial_documentation_head": "566b97d5ca40ae46b16ed969191bd06d9d994390",
+    "initial_ci_run_id": 31561123103,
+    "classification": "intermediate_not_final_review_state"
+  },
   "scientific_change": "scenario_dependent_paid_regular_contract_fulfillment_only",
   "accounting": {
     "budget_equality_unchanged": true,
@@ -64,8 +70,8 @@
     "full_regression": "259 passed"
   },
   "github_actions": {
-    "validated_head": "566b97d5ca40ae46b16ed969191bd06d9d994390",
-    "run_id": 31561123103,
+    "validated_head": "aad5d3c7ad0fa344b17ffe1f4a75542b6acf4cf3",
+    "run_id": 31565293591,
     "status": "success",
     "linux": "passed",
     "windows": "passed"
