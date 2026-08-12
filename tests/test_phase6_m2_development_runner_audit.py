@@ -1,4 +1,5 @@
 import json
+import platform
 from pathlib import Path
 
 from src.phase6_m2 import m2_fingerprints
@@ -25,7 +26,25 @@ def test_m2_development_runner_audit_locks_scope_and_zero_execution() -> None:
         "beta": [0.9, 1.1, 1.3], "profiles": ["C0", "C1", "C2"],
         "case_count": 27, "ordering": ["seed", "beta", "profile"],
     }
-    assert approval["approved_fingerprints"] == audit["approved_fingerprints"] == actual
+    approved = approval["approved_fingerprints"]
+    assert approved == audit["approved_fingerprints"]
+    assert approved["environment_sha256"] == (
+        "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+    )
+    platform_independent_keys = {
+        "scientific_config_sha256",
+        "e3_component_sha256",
+        "family_component_sha256",
+        "runner_config_sha256",
+    }
+    assert {key: approved[key] for key in platform_independent_keys} == {
+        key: actual[key] for key in platform_independent_keys
+    }
+    # The approved execution environment is the Windows/PyCharm Gurobi
+    # environment.  Linux CI validates the platform-independent fingerprints
+    # but must not replace or reinterpret that approved environment identity.
+    if platform.system() == "Windows":
+        assert actual["environment_sha256"] == approved["environment_sha256"]
     assert approval["formal_extension_authorized"] is False
     assert approval["accept_m0_or_m1_authorization"] is False
     assert audit["activation"] == {
