@@ -26,6 +26,7 @@ from src.phase6_m2 import (
     run_m2_spw_ccg_budget_sequence,
     run_m2_standard_ccg,
     solve_m2_endogenous_extensive,
+    solve_m2_fixed_reserve,
     solve_m2_recourse,
 )
 from src.phase6_protocol import (
@@ -68,9 +69,9 @@ LATENT = {
 }
 
 
-def test_m2_design_config_is_isolated_and_not_executable() -> None:
+def test_m2_development_config_is_isolated_and_frozen() -> None:
     config = load_m2_config(ROOT / "configs/phase6_m2_supply_disruption.yaml")
-    assert config["status"] == "candidate_design_pending_review"
+    assert config["status"] == "frozen_for_development_execution"
     assert config["runner_namespace"] == "phase6_m2_supply_disruption"
     assert config["output_root"] == "outputs/phase6_m2_supply_disruption_v1"
     assert config["inherit_m0_or_m1_authorization"] is False
@@ -81,6 +82,7 @@ def test_m2_design_config_is_isolated_and_not_executable() -> None:
     assert not set(config["development_preregistration"]["seeds"]) & {
         2026081101, 2026081102, 2026081103
     }
+    assert config["development_preregistration"]["execution_allowed_in_this_revision"] is True
     assert config["execution_boundaries"] == {
         "development_matrix_started": False,
         "pilot_started": False,
@@ -293,6 +295,21 @@ def test_budget_and_emergency_reserve_accounting_are_unchanged() -> None:
     result = solve_m2_recourse(data, "high", {"food": [2.0, 0.0]}, 2.0, solver_threads=1)
     assert result.recourse.status == "optimal"
     assert result.recourse.emergency_spend <= 2.0 + 1e-7
+
+
+def test_fixed_reserve_reoptimizes_under_m2_fulfillment() -> None:
+    disrupted = apply_regular_supply_disruption(
+        generated(), SupplyDisruptionProfile("C1", True, 0.5, 0.0),
+        demand_latent=LATENT,
+    ).data
+    zero = solve_m2_fixed_reserve(disrupted, 0.0, solver_threads=1)
+    positive = solve_m2_fixed_reserve(disrupted, 0.3, solver_threads=1)
+    assert zero.status == positive.status == "optimal"
+    assert zero.reserve == pytest.approx(0.0)
+    assert positive.reserve == pytest.approx(0.3 * disrupted.budget)
+    assert zero.joint_scenario_set_sha256 == positive.joint_scenario_set_sha256
+    assert zero.master.regular_purchase is not positive.master.regular_purchase
+    assert zero.evaluation.status == positive.evaluation.status == "optimal"
 
 
 def test_extensive_standard_ccg_and_spw_match_under_disruption() -> None:

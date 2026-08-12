@@ -1,7 +1,8 @@
-runner_id: phase6_m2_supply_disruption_design_v1
+runner_id: phase6_m2_supply_disruption_development_v1
 namespace: phase6_m2_supply_disruption
 output_root: outputs/phase6_m2_supply_disruption_v1
-execution_enabled: false
+scientific_config: configs/phase6_m2_supply_disruption.yaml
+base_matrix: configs/phase6_experiment_matrix.yaml
 solver:
   preference: [gurobi]
   interface: gurobi_direct
@@ -10,6 +11,15 @@ solver:
   threads: 1
 authorization:
   inherit_M0_or_M1: false
-  development: false
+  development: true
   pilot: false
   formal: false
+execution:
+  development_matrix_frozen: true
+  development_execution_requires_explicit_authorization: true
+  formal_extension_authorized: false
+  accept_M0_or_M1_authorization: false
+  accept_M0_or_M1_registry: false
+  accept_M0_or_M1_projection: false
+  immutable_run_ids: true
+  independent_manifest_and_registry_required: true

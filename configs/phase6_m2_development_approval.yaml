@@ -1,0 +1,22 @@
+approval_id: phase6_m2_development_execution_v1
+status: frozen_for_development_execution
+approved_on: 2026-08-12
+scientific_protocol: phase6_m2_supply_disruption_v1_0
+runner_namespace: phase6_m2_supply_disruption
+matrix_case_count: 27
+explicit_cli_authorization_required: true
+formal_extension_authorized: false
+accept_m0_or_m1_authorization: false
+
+approved_fingerprints:
+  scientific_config_sha256: 5ab7b5a31d388cc6da93f7588a146c6a9c6830c804ee30ce6b79fbe8b7c7778c
+  e3_component_sha256: c148f6eafdbd9241f2476135190ad7a372e11daaf0361512f3b2f33c8bf9541d
+  family_component_sha256: da3d9a0f8edec26a7fda77dff428138f02b57ab259e4725fb222427f6fafee5e
+  runner_config_sha256: e7573848fa8dbd3e0807741bf8e729edd47eab7648a848948f637e557e389241
+  environment_sha256: b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af
+
+execution_counts_in_this_revision:
+  development_cases: 0
+  pilot_runs: 0
+  formal_runs: 0
+  m0_e3_runs: 0
