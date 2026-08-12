@@ -6,6 +6,7 @@
   "draft_pr": "https://github.com/nieying-code/phrase3/pull/43",
   "initial_implementation_commit": "673896cc4d2b301b4fa247fa56fb31d7daba1f06",
   "validated_implementation_commit": "03dcb659121f5cdc75ad95f2d36adf9bcede36b4",
+  "validated_scientific_gate_fix_commit": "bdc1b47dfb93af6c8e9e3018b534b32a385321cc",
   "matrix": {
     "tier": "V1",
     "seeds": [2026081201, 2026081202, 2026081203],
@@ -51,12 +52,12 @@
     "formal_runs": 0,
     "m0_e3_runs": 0
   },
-  "tests": {"focused": "42 passed", "full_regression": "282 passed"},
+  "tests": {"focused": "45 passed", "full_regression": "285 passed"},
   "github_actions": {
-    "run_id": 31572380358,
-    "url": "https://github.com/nieying-code/phrase3/actions/runs/31572380358",
+    "run_id": 31575140393,
+    "url": "https://github.com/nieying-code/phrase3/actions/runs/31575140393",
     "status": "success",
-    "linux": "276 passed + 6 passed",
+    "linux": "279 passed + 6 passed",
     "windows": "16 passed"
   }
 }

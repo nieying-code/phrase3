@@ -10,8 +10,9 @@
 - Base: PR #42 merge `29938da2982ba74608dc98f4fefac35850c6de65`
 - Initial implementation commit: `673896cc4d2b301b4fa247fa56fb31d7daba1f06`
 - Validated implementation and audit fix commit: `03dcb659121f5cdc75ad95f2d36adf9bcede36b4`
+- Validated scientific-gate fix commit: `bdc1b47dfb93af6c8e9e3018b534b32a385321cc`
 - Draft PR: https://github.com/nieying-code/phrase3/pull/43
-- Validated CI: run `31572380358`，Linux 与 Windows 均成功
+- Validated scientific-gate CI: run `31575140393`，Linux 与 Windows 均成功
 
 ## 关键实现
 
@@ -36,10 +37,10 @@
 
 ## 验证与停止边界
 
-- M2专项测试：`42 passed`
-- 完整本地回归：`282 passed`
+- M2专项测试：`45 passed`
+- 完整本地回归：`285 passed`（普通回归279项 + Phase 5六项）
 - 语法检查及 `git diff --check`：通过
-- GitHub Actions：run `31572380358` 成功（Linux：`276 passed + 6 passed`；Windows 复现检查：`16 passed`）
+- GitHub Actions：run `31575140393` 成功（Linux：`279 passed + 6 passed`；Windows 复现检查：`16 passed`）
 - 27组开发配置运行数：0
 - pilot运行数：0
 - 正式运行数：0

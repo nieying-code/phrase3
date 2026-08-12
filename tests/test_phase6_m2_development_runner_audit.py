@@ -22,6 +22,7 @@ def test_m2_development_runner_audit_locks_scope_and_zero_execution() -> None:
     assert audit["draft_pr"] == "https://github.com/nieying-code/phrase3/pull/43"
     assert audit["initial_implementation_commit"] == "673896cc4d2b301b4fa247fa56fb31d7daba1f06"
     assert audit["validated_implementation_commit"] == "03dcb659121f5cdc75ad95f2d36adf9bcede36b4"
+    assert audit["validated_scientific_gate_fix_commit"] == "bdc1b47dfb93af6c8e9e3018b534b32a385321cc"
     assert audit["matrix"] == {
         "tier": "V1", "seeds": [2026081201, 2026081202, 2026081203],
         "beta": [0.9, 1.1, 1.3], "profiles": ["C0", "C1", "C2"],
@@ -61,11 +62,11 @@ def test_m2_development_runner_audit_locks_scope_and_zero_execution() -> None:
         "formal_extension_authorized": False,
     }
     assert set(audit["execution_counts"].values()) == {0}
-    assert audit["tests"] == {"focused": "42 passed", "full_regression": "282 passed"}
+    assert audit["tests"] == {"focused": "45 passed", "full_regression": "285 passed"}
     assert audit["github_actions"] == {
-        "run_id": 31572380358,
-        "url": "https://github.com/nieying-code/phrase3/actions/runs/31572380358",
+        "run_id": 31575140393,
+        "url": "https://github.com/nieying-code/phrase3/actions/runs/31575140393",
         "status": "success",
-        "linux": "276 passed + 6 passed",
+        "linux": "279 passed + 6 passed",
         "windows": "16 passed",
     }
