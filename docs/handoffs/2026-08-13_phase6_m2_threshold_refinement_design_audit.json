@@ -1,0 +1,67 @@
+{
+  "audit_id": "phase6_m2_threshold_refinement_design_v1",
+  "status": "candidate_design_pending_review",
+  "base_merge_sha": "aa3a3aa48e44cc5978afdc08da2d380a1fa4c4b0",
+  "base_tree_sha": "6745efb0fa4073355c57f0e0a819340e365fb037",
+  "branch": "agent/phase6-m2-threshold-refinement-design",
+  "design_artifacts": {
+    "config_path": "configs/phase6_m2_threshold_refinement.yaml",
+    "config_sha256": "0eb986321f5956596b86505827e0e9ff3dce5b1b3bea3fc7c541a4f2d0eeb276",
+    "preregistration_path": "docs/phase6_m2_threshold_refinement_preregistration.md",
+    "preregistration_sha256": "216146d0c8f7acb9bfc064c731a5f78cc938432f8e03dfc3c7d5fb1e1bfe9071"
+  },
+  "parent_evidence": {
+    "audit_path": "docs/handoffs/2026-08-13_phase6_m2_development_grid_audit.json",
+    "audit_sha256": "01e3025566c0701f41b4fde6b51d1e13347068e8b8c025873c2578cfbdb349a2",
+    "run_artifact_mapping_sha256": "5e8dedaf26113bf1602bcf9813265a77990b734540e25a2bef314a9940b6275a",
+    "science_evidence_mapping_sha256": "619c40b858ca32728f33b2cccb32df150ef957307ab9d62840ab0037f285c4b0",
+    "lower_anchor": {"profile_id": "C1", "loss_scale": 0.2, "substantive_activation_runs": 0, "primary_runs": 9},
+    "upper_anchor": {"profile_id": "C2", "loss_scale": 0.6, "substantive_activation_runs": 9, "primary_runs": 9}
+  },
+  "new_matrix": {
+    "tier_id": "V1",
+    "seeds": [2026081201, 2026081202, 2026081203],
+    "betas": [0.9, 1.1, 1.3],
+    "profiles": [
+      {"profile_id": "T03", "loss_scale": 0.3, "recovery_fraction": 0.0},
+      {"profile_id": "T04", "loss_scale": 0.4, "recovery_fraction": 0.0},
+      {"profile_id": "T05", "loss_scale": 0.5, "recovery_fraction": 0.0}
+    ],
+    "configuration_count": 27,
+    "strictly_serial": true,
+    "adaptive_profile_selection": false,
+    "common_random_numbers_with_parent": true
+  },
+  "gates": {
+    "numerical_activation_ratio_strictly_greater_than": 0.0001,
+    "substantive_activation_ratio_greater_than_or_equal_to": 0.01,
+    "minimum_substantive_activation_seed_count": 2,
+    "moderate_autonomous_reserve_ratio_interval": [0.05, 0.5],
+    "minimum_moderate_activation_seed_count": 2,
+    "all_three_seeds_optimal_required": true,
+    "excluded_selection_metrics": ["cost", "service_level", "P95", "CVaR95", "wall_time", "manual_trend"]
+  },
+  "stop_rules": {
+    "no_activation": "retain_bracket_0p5_to_0p6_and_stop",
+    "activation_without_moderate_reserve": "report_state_transition_and_stop",
+    "moderate_activation": "permit_separate_multi_item_design_PR_only",
+    "new_loss_scales_after_results": "forbidden",
+    "formal_extension_authorized": false
+  },
+  "independent_identity": {
+    "protocol_id": "phase6_m2_threshold_refinement_v1_0",
+    "runner_namespace": "phase6_m2_threshold_refinement_v1_0",
+    "output_root": "outputs/phase6_m2_threshold_refinement_v1_0",
+    "inherits_parent_authorization": false,
+    "inherits_parent_registry_or_projection": false
+  },
+  "execution_counts_in_this_pr": {
+    "refinement_development_runs": 0,
+    "pilot_runs": 0,
+    "formal_extension_runs": 0,
+    "multi_item_confirmation_runs": 0,
+    "M0_E3_runs": 0
+  },
+  "draft_pr": "pending",
+  "github_actions": "pending"
+}
