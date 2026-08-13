@@ -15,6 +15,8 @@ parent_evidence:
 
 scientific_model:
   base_model: M2_supply_disruption
+  tier_id: M2C2
+  inherited_V1_reference_budget_forbidden: true
   item_count: 2
   periods: 6
   training_scenario_count: 50
@@ -37,6 +39,30 @@ scientific_model:
   fulfillment_formula_when_enabled: clip_one_minus_profile_loss_scale_times_item_vulnerability_multiplier_times_normal_cdf_demand_latent
   item_vulnerability_is_deterministic_and_adds_no_random_draws: true
   C0_forces_fulfillment_exactly_one_for_every_item_period_scenario: true
+
+two_item_deterministic_baseline:
+  reference_budget:
+    formula: sum_over_two_items_and_six_periods_of_regular_price_times_theoretical_mean_demand
+    expectation_source: frozen_generator_theoretical_expectation
+    first_item_base_demand_per_period: 100.0
+    seasonality: [1.1, 1.1232050807568876, 1.1232050807568876, 1.1, 0.7767949192431124, 0.7767949192431123]
+    item_theoretical_mean_demand:
+      relief_food_1: [110.00000000000001, 112.32050807568876, 112.32050807568876, 110.00000000000001, 77.67949192431124, 77.67949192431122]
+      relief_food_2: [82.5, 84.24038105676657, 84.24038105676657, 82.5, 58.25961894323343, 58.25961894323342]
+    item_regular_price:
+      relief_food_1: [2.0, 2.063301270189222, 2.083301270189222, 2.06, 2.036698729810778, 2.056698729810778]
+      relief_food_2: [2.4, 2.4759615242270665, 2.4999615242270665, 2.472, 2.4440384757729334, 2.4680384757729334]
+    exact_value: 2337.610924158743
+    recomputation_absolute_tolerance: 1.0e-9
+  budgets_by_beta:
+    "1.1": 2571.372016574617
+    "1.3": 3038.894201406366
+  storage_capacity:
+    formula: factor_times_sum_two_item_theoretical_mean_demand_by_period
+    factor: 1.5
+    values: [288.75, 294.841333698683, 294.841333698683, 288.75, 203.908666301317, 203.90866630131694]
+    recomputation_absolute_tolerance: 1.0e-9
+  runner_must_recompute_and_reject_mismatch_before_scenario_generation: true
 
 confirmation_preregistration:
   execution_allowed_in_this_revision: false
@@ -84,19 +110,38 @@ machine_gates:
     cost_service_or_manual_trend_selection_forbidden: true
   shared_reserve_cross_item_evidence:
     evaluated_only_for_T03_at_each_beta: true
+    first_stage_plan_source: complete_extensive_model_R_min_opt_endpoint
+    arbitrary_initial_R_star_plan_forbidden: true
+    exact_recourse_evaluation_scenario_count: 50
+    item_scenario_emergency_spend_formula: sum_over_periods_of_emergency_price_times_emergency_purchase
+    scenario_total_emergency_spend_formula: sum_over_items_of_item_scenario_emergency_spend
+    item1_share_formula_when_total_spend_exceeds_tolerance: item1_scenario_emergency_spend_divided_by_scenario_total_emergency_spend
+    item1_share_range_formula: maximum_share_minus_minimum_share_over_positive_total_spend_scenarios
     minimum_seed_count: 3
     both_items_each_have_positive_emergency_spend_in_at_least_one_scenario: true
     emergency_spend_positive_tolerance: 1.0e-7
     scenario_allocation_share_variation_required: true
     minimum_absolute_item1_emergency_spend_share_range: 1.0e-4
     minimum_scenarios_with_positive_total_emergency_spend: 2
-    interpretation: shared_pool_is_adaptively_reallocated_across_items_and_scenarios
+    interpretation: observed_cross_item_dynamic_allocation_for_the_selected_R_min_opt_endpoint_plan
+    universal_claim_over_all_optimal_recourse_solutions_forbidden: true
   overall_confirmation:
     minimum_passing_beta_count: 1
     formula: completeness_and_CRN_and_at_least_one_beta_passes_activation_moderate_and_cross_item_gates
     success_decision: permit_separate_formal_extension_design_PR_only
     failure_decision: two_item_confirmation_not_established_and_stop
     formal_extension_authorized: false
+    one_passing_beta_scope: formal_design_may_include_only_that_beta_and_budget_effect_claims_are_forbidden
+    two_passing_betas_scope: formal_design_may_compare_beta_1_1_and_1_3_budget_moderation
+
+C0_equivalence_gate:
+  fulfillment_must_equal_one_elementwise: true
+  comparison_model: identical_two_item_model_with_regular_supply_disruption_disabled
+  robust_objective_difference_within_frozen_tolerance: true
+  tolerance_optimal_reserve_interval_endpoints_within_frozen_tolerance: true
+  bidirectional_fixed_first_stage_exact_recourse_evaluation_required: true
+  all_50_scenario_recourse_objectives_within_frozen_tolerance: true
+  C0_zero_activation_alone_is_insufficient: true
 
 fixed_autonomous_reserve_policies:
   rho: [0.0, 0.1, 0.3, 0.5]
