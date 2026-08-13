@@ -2,6 +2,7 @@
   "audit_id": "phase6_m2_supply_disruption_v1_1_development_grid_v1",
   "status": "development_grid_complete_pending_review",
   "results_evidence_commit": "98fabff",
+  "ci_validated_audit_head": "eace428",
   "draft_pr": "https://github.com/nieying-code/phrase3/pull/45",
   "execution": {
     "branch": "results/phase6-m2-development-grid-v1-1",
@@ -3767,6 +3768,11 @@
     "m0_e3_runs": 0,
     "multi_item_confirmation_runs": 0
   },
-  "github_actions": "pending",
+  "github_actions": {
+    "run_id": 31662287525,
+    "url": "https://github.com/nieying-code/phrase3/actions/runs/31662287525",
+    "linux": "success",
+    "windows": "success"
+  },
   "generated_at_utc": "2026-08-13T02:46:58.920180+00:00"
 }

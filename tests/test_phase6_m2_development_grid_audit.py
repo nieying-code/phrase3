@@ -26,6 +26,7 @@ def _case_id(seed: int, beta: float, profile: str) -> str:
 def test_m2_development_grid_rebuilds_run_and_gate_evidence() -> None:
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
     assert audit["results_evidence_commit"] == "98fabff"
+    assert audit["ci_validated_audit_head"] == "eace428"
     assert audit["draft_pr"] == "https://github.com/nieying-code/phrase3/pull/45"
     assert audit["execution"]["git_sha"] == "2cdb09bd887bc8887ab956a0a0281d7c30170a40"
     assert audit["execution"]["git_tree_sha"] == "8a3a6865e56b8214160ac97e0958041025a89ee0"
@@ -99,3 +100,9 @@ def test_m2_development_grid_rebuilds_run_and_gate_evidence() -> None:
     assert audit["aggregate"]["substantive_activation_run_count"] == 9
     assert audit["aggregate"]["failure_count"] == 0
     assert set(audit["execution_boundaries"].values()) == {0, 27}
+    assert audit["github_actions"] == {
+        "run_id": 31662287525,
+        "url": "https://github.com/nieying-code/phrase3/actions/runs/31662287525",
+        "linux": "success",
+        "windows": "success",
+    }

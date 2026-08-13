@@ -10,6 +10,7 @@ No M0 E3, pilot, formal extension, or multi-item confirmation experiment was sta
 
 - Branch: `results/phase6-m2-development-grid-v1-1`
 - Results evidence commit: `98fabff`
+- CI-validated audit head: `eace428`
 - Draft PR: https://github.com/nieying-code/phrase3/pull/45
 - Source commit: `2cdb09bd887bc8887ab956a0a0281d7c30170a40`
 - Source tree: `8a3a6865e56b8214160ac97e0958041025a89ee0`
@@ -47,7 +48,7 @@ The C2 autonomous-reserve ratios are very high (roughly 0.905 to almost 1.0). Th
 - Compact machine audit: `docs/handoffs/2026-08-13_phase6_m2_development_grid_audit.json`
 - Projection summary: `docs/handoffs/2026-08-13_phase6_m2_development_grid_projection_summary.json`
 - Raw artifacts remain on the D drive and are not committed.
-- CI: pending
+- CI: [run 31662287525](https://github.com/nieying-code/phrase3/actions/runs/31662287525), Linux and Windows passed
 
 ## Stop boundary
 
