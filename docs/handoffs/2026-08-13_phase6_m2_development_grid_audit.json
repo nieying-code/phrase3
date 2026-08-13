@@ -1,6 +1,8 @@
 {
   "audit_id": "phase6_m2_supply_disruption_v1_1_development_grid_v1",
   "status": "development_grid_complete_pending_review",
+  "results_evidence_commit": "98fabff",
+  "draft_pr": "https://github.com/nieying-code/phrase3/pull/45",
   "execution": {
     "branch": "results/phase6-m2-development-grid-v1-1",
     "run_id_prefix": "m2dev_v1_1_20260813",

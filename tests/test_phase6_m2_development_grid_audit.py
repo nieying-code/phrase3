@@ -25,6 +25,8 @@ def _case_id(seed: int, beta: float, profile: str) -> str:
 
 def test_m2_development_grid_rebuilds_run_and_gate_evidence() -> None:
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
+    assert audit["results_evidence_commit"] == "98fabff"
+    assert audit["draft_pr"] == "https://github.com/nieying-code/phrase3/pull/45"
     assert audit["execution"]["git_sha"] == "2cdb09bd887bc8887ab956a0a0281d7c30170a40"
     assert audit["execution"]["git_tree_sha"] == "8a3a6865e56b8214160ac97e0958041025a89ee0"
     assert audit["execution"]["working_tree_dirty"] is False
