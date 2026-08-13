@@ -45,6 +45,7 @@ formal_extension_authorized=false
 
 - 紧凑机器审计：`docs/handoffs/2026-08-13_phase6_m2_threshold_refinement_grid_audit.json`
 - 投影摘要：`docs/handoffs/2026-08-13_phase6_m2_threshold_refinement_projection_summary.json`
+- 审计直接锁定并读取 PR #45 父级审计，逐 seed—beta 将 C1/C2 与 T03/T04/T05 原始证据共同复算 CRN、完整激活序列、单调性、阈值和最终决策。
 - 原始大型制品仅保留在 D 盘受控输出根目录，不提交 GitHub。
 - 本地验证：阈值 runner 与审计专项 `19 passed`；完整回归 `309 passed`；Phase 5 `6 passed`；`compileall` 与 `git diff --check` 通过。
 - Draft PR：[PR #48](https://github.com/nieying-code/phrase3/pull/48)。
