@@ -1,0 +1,18 @@
+runner_id: phase6_m2c2_confirmation_execution_v1_0
+namespace: phase6_m2c2_confirmation_v1_0
+output_root: outputs/phase6_m2c2_confirmation_v1_0
+scientific_config: configs/phase6_m2_two_item_confirmation.yaml
+base_matrix: configs/phase6_experiment_matrix.yaml
+solver:
+  preference: [gurobi]
+  interface: gurobi_direct
+  optimizer_version: 13.0.2
+  gurobipy_version: 13.0.2
+  threads: 1
+execution:
+  strictly_serial: true
+  confirmation_execution_requires_explicit_authorization: true
+  immutable_run_ids: true
+  full_primary_matrix_required: true
+  M0_M1_or_single_item_M2_authorization_forbidden: true
+  formal_extension_authorized: false
