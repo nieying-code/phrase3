@@ -210,6 +210,7 @@ def test_cross_process_registry_writes_preserve_all_rows(tmp_path) -> None:
 
 def test_primary_requires_full_matrix_and_stops_after_first_failed_case(monkeypatch,tmp_path) -> None:
     config=runner.load_refinement_config(CONFIG); cases=runner.build_refinement_cases(config)
+    monkeypatch.setattr(runner,"OUTPUT_ROOT",str(tmp_path))
     monkeypatch.setattr(runner,"validate_preflight",lambda **_:{"config":config,"fingerprints":FINGERPRINTS,"anchors":_anchors(),"locked_environment":{},"source":{"commit_sha":"a"*40,"tree_sha":"b"*40}})
     calls=[]
     def fake_run_case(**kwargs):
