@@ -1,0 +1,69 @@
+{
+  "audit_id": "phase6_m2_two_item_confirmation_design_v1_0",
+  "status": "candidate_design_pending_review",
+  "parent_results_pr": 48,
+  "parent_evidence": {
+    "audit_path": "docs/handoffs/2026-08-13_phase6_m2_threshold_refinement_grid_audit.json",
+    "audit_sha256": "886a1657c511e1df13b252bb909b037cfd1d2a3790471b49e219a1d4f345d6ba",
+    "required_overall_decision": "permit_separate_multi_item_design_PR_only",
+    "eligible_combinations": [
+      {"beta": 1.1, "profile_id": "T03"},
+      {"beta": 1.3, "profile_id": "T03"}
+    ],
+    "formal_extension_authorized": false
+  },
+  "design_config": {
+    "path": "configs/phase6_m2_two_item_confirmation.yaml",
+    "sha256": "c3aead6f7c18eb0e74cc0de16803e8f56d15052a8055b56c7a4244ad8ad6847a"
+  },
+  "design": {
+    "tier_id": "M2C2",
+    "items": 2,
+    "periods": 6,
+    "training_scenarios": 50,
+    "seeds": [2026081301, 2026081302, 2026081303, 2026081304, 2026081305],
+    "betas": [1.1, 1.3],
+    "profiles": ["C0", "C1", "T03"],
+    "configuration_count": 30,
+    "reference_budget": 2337.610924158743,
+    "budgets": [2571.372016574617, 3038.894201406366],
+    "storage_capacity": [288.75, 294.841333698683, 294.841333698683, 288.75, 203.908666301317, 203.90866630131694]
+  },
+  "scientific_rules": {
+    "C0_exact_fulfillment": true,
+    "common_random_numbers": true,
+    "item_vulnerability_multipliers": {"relief_food_1": 0.8, "relief_food_2": 1.2},
+    "shared_emergency_reserve_pool": true,
+    "cross_item_plan_source": "complete_extensive_model_R_min_opt_endpoint",
+    "cross_item_claim_scope": "observed_for_selected_endpoint_plan_not_all_optimal_recourse_solutions",
+    "C0_full_no_disruption_equivalence_required": true,
+    "one_passing_beta_budget_effect_claim_forbidden": true,
+    "formal_extension_authorized": false
+  },
+  "execution_counts": {
+    "confirmation_runs": 0,
+    "pilot_runs": 0,
+    "formal_extension_runs": 0,
+    "M0_E3_runs": 0,
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0
+  },
+  "validation": {
+    "specialized_passed": 8,
+    "complete_regression_passed": 317,
+    "phase5_passed": 6,
+    "compileall_passed": true,
+    "git_diff_check_passed": true
+  },
+  "draft_pr": "https://github.com/nieying-code/phrase3/pull/49",
+  "initial_design_head": "fea81fe01bea593f9a9710b1312f93abbf7ae7a9",
+  "final_scientific_design_baseline_head": "2d623f111afdce8b782d6b4b008bb4580eb7c290",
+  "final_scientific_design_baseline_github_actions": {
+    "run_id": 31680792963,
+    "url": "https://github.com/nieying-code/phrase3/actions/runs/31680792963",
+    "status": "success",
+    "linux": "success",
+    "windows": "success"
+  },
+  "traceability_note": "The SHA of any later trace-only commit is recorded only in the PR body to avoid infinite self-reference; it does not change the preregistered design or authorize execution."
+}
