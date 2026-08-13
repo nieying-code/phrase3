@@ -217,7 +217,14 @@ def test_preflight_rejects_missing_authorization_before_environment(monkeypatch)
 def test_approval_locks_current_fingerprints_and_zero_execution_counts() -> None:
     approval = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))
     actual = runner.confirmation_fingerprints(ROOT, CONFIG, RUNNER)
-    assert approval["approved_fingerprints"] == actual
+    approved = approval["approved_fingerprints"]
+    for field in runner.FINGERPRINT_FIELDS[:-1]:
+        assert approved[field] == actual[field]
+    # Linux CI deliberately has a different platform/hardware identity. The
+    # runtime preflight still compares all five approved fields strictly.
+    assert approved["environment_sha256"] == (
+        "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+    )
     assert approval["matrix_case_count"] == 30
     assert approval["formal_extension_authorized"] is False
     assert approval["accept_prior_track_authorization"] is False

@@ -31,6 +31,12 @@ def test_runner_audit_locks_matrix_fingerprints_and_zero_execution() -> None:
     }
     assert len(cases) == 30
     actual = runner.confirmation_fingerprints(ROOT, CONFIG, RUNNER)
-    assert audit["fingerprints"] == approval["approved_fingerprints"] == actual
+    approved = approval["approved_fingerprints"]
+    assert audit["fingerprints"] == approved
+    for field in runner.FINGERPRINT_FIELDS[:-1]:
+        assert approved[field] == actual[field]
+    assert approved["environment_sha256"] == (
+        "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+    )
     assert set(audit["execution_counts"].values()) == {0}
     assert audit["safety"]["formal_extension_authorized"] is False
