@@ -9,6 +9,6 @@
 - 成功必须同时满足完整性、CRN、C0零激活、T03激活与适度门槛，以及共享储备跨物资动态配置证据。
 - `formal_extension_authorized=false`。
 
-分支：`agent/phase6-m2-two-item-confirmation-design`。Draft PR、最终提交和 CI 待发布后补充。
+分支：`agent/phase6-m2-two-item-confirmation-design`；Draft PR：[#49](https://github.com/nieying-code/phrase3/pull/49)。科学设计提交：`fea81fe01bea593f9a9710b1312f93abbf7ae7a9`；对应 CI [run 31679477052](https://github.com/nieying-code/phrase3/actions/runs/31679477052) 的 Linux 与 Windows 作业均成功。后续如仅追加本追溯记录，其提交不改变设计、指纹或执行边界。
 
 本地验证：专项 `4 passed`；完整回归 `313 passed`；Phase 5 `6 passed`；`compileall` 与 `git diff --check` 通过。
