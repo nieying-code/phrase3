@@ -19,9 +19,18 @@ Implemented the frozen, independently authorized runner for the 27 preregistered
 - Activation is recomputed from reserve-face raw values rather than stored booleans.
 - Endpoint exact-recourse evidence and four fixed-policy reoptimizations are required.
 - Common-random-number hashes are compared against C1 per seed and beta.
+- A CRN mismatch is a hard gate with status `common_random_number_mismatch`.
 - Each beta independently evaluates `C1,T03,T04,T05,C2`.
 - Nonmonotone activation excludes that beta from threshold and multi-item candidates.
 - Moderate activation is the conjunction of combination activation and at least two moderate seeds.
+- Multi-item candidates must additionally come from a monotone, CRN-verified beta.
+
+## Execution and failure semantics
+
+- Primary execution is the complete frozen 27-case matrix from an empty namespace; partial primary execution is rejected.
+- A diagnostic run requires exactly one case and an immutable failed/timed-out/interrupted primary parent for that same case.
+- Every failed primary remains in the projection and permanently prevents a complete gate in that namespace.
+- Runtime-context and artifact/registry/projection finalization failures produce bounded terminal diagnostics and stop the matrix.
 
 ## Execution counts
 
@@ -33,4 +42,4 @@ Refinement development runs, pilots, formal extensions, multi-item confirmations
 - Branch: `agent/phase6-m2-threshold-refinement-runner`.
 - Draft PR: pending.
 - Final commit and CI: pending.
-- Local validation: threshold-runner specialized `10 passed`; ordinary regression `294 passed`; Phase 5 `6 passed`; compileall and `git diff --check` passed.
+- Local validation after review fixes: threshold-runner specialized `18 passed`; complete regression `308 passed`; Phase 5 `6 passed`; compileall and `git diff --check` passed. No scenario generation or Gurobi call occurred.

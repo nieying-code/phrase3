@@ -304,6 +304,7 @@ def update_projection(
                 if all(row.get(key) == value for key, value in fingerprints.items())]
         verified: dict[tuple[int, float, str], tuple[dict[str, Any], dict[str, Any]]] = {}
         invalid, invalid_diagnostics, diagnostics, duplicates = [], [], [], []
+        failed_primary_run_ids: list[str] = []
         for row in rows:
             try:
                 result = _validate_artifact(row)
@@ -317,6 +318,8 @@ def update_projection(
                     continue
                 if result["status"] == "optimal":
                     verified[identity] = (result, _derive_science(result["science"], config))
+                else:
+                    failed_primary_run_ids.append(row["run_id"])
             except Exception:
                 (invalid_diagnostics if row.get("parent_run_id") else invalid).append(row["run_id"])
 
@@ -334,6 +337,7 @@ def update_projection(
                     "completed_seed_count": len(derived),
                     "substantive_activation_seed_count": substantive,
                     "moderate_seed_count": moderate,
+                    "raw_combination_activation_gate_passed": activation,
                     "combination_activation_gate_passed": activation,
                     "moderate_gate_passed": activation and moderate >= 2,
                     "run_ids": [entry[0]["run_id"] for entry in entries if entry],
@@ -360,25 +364,65 @@ def update_projection(
                     fields = ("latent_draw_sha256", "demand_sha256", "emergency_price_sha256", "emergency_supply_sha256")
                     match = bool(entry) and all(entry[1]["components"][field] == anchor[field] for field in fields)
                     crn_checks.append({"seed": seed, "profile_id": profile, "verified": match})
+            crn_verified = all(item["verified"] for item in crn_checks)
             first = next((i for i, value in enumerate(activation) if value), None)
             nonmonotone = first is not None and any(not value for value in activation[first:])
-            bracket = None if first in (None, 0) or nonmonotone else {
+            bracket = None if first in (None, 0) or nonmonotone or not crn_verified else {
                 "lower_profile": profile_order[first - 1], "upper_profile": profile_order[first],
                 "lower_loss_scale": scale[profile_order[first - 1]], "upper_loss_scale": scale[profile_order[first]],
             }
+            status = (
+                "common_random_number_mismatch" if not crn_verified else
+                "nonmonotone_activation_pattern" if nonmonotone else
+                "monotone_activation" if first is not None else "no_activation"
+            )
+            eligible = []
+            for profile in ("T03", "T04", "T05"):
+                item = new_by_beta_profile[(beta, profile)]
+                item["beta_common_random_numbers_verified"] = crn_verified
+                item["beta_activation_monotone"] = not nonmonotone
+                item["combination_activation_gate_passed"] = bool(
+                    item["raw_combination_activation_gate_passed"] and crn_verified
+                )
+                item["moderate_gate_passed"] = bool(
+                    item["combination_activation_gate_passed"]
+                    and item["moderate_seed_count"] >= 2
+                )
+                item["eligible_moderate_combination"] = bool(
+                    item["moderate_gate_passed"] and not nonmonotone
+                )
+                if item["eligible_moderate_combination"]:
+                    eligible.append({"beta": beta, "profile_id": profile})
             beta_assessments.append({
                 "beta": beta, "profile_order": list(profile_order), "activation_sequence": activation,
-                "status": "nonmonotone_activation_pattern" if nonmonotone else "monotone_activation" if first is not None else "no_activation",
+                "status": status,
                 "threshold_bracket": bracket, "common_random_number_checks": crn_checks,
-                "common_random_numbers_verified": all(item["verified"] for item in crn_checks),
-                "multi_item_candidate_allowed": bool(bracket) and not nonmonotone,
+                "common_random_numbers_verified": crn_verified,
+                "eligible_moderate_combinations": eligible,
+                "multi_item_candidate_allowed": bool(eligible),
             })
 
-        complete = len(verified) == 27 and not invalid and not duplicates and not diagnostics and not invalid_diagnostics
+        finalization_failure_run_ids = sorted(
+            path.parent.name
+            for name in ("runner_exception.json", "registry_failure.json", "projection_failure.json")
+            for path in (base / "runs").glob(f"*/{name}")
+        ) if (base / "runs").is_dir() else []
+        crn_verified = all(item["common_random_numbers_verified"] for item in beta_assessments)
+        complete = (
+            len(verified) == 27 and not invalid and not duplicates and not diagnostics
+            and not invalid_diagnostics and not failed_primary_run_ids
+            and not finalization_failure_run_ids and crn_verified
+        )
         any_activation = any(item["combination_activation_gate_passed"] for item in combinations)
-        any_moderate = any(item["moderate_gate_passed"] for item in combinations)
+        eligible_moderate = [
+            {"beta": item["beta"], "profile_id": item["profile_id"]}
+            for item in combinations if item["eligible_moderate_combination"]
+        ]
+        any_moderate = bool(eligible_moderate)
         any_nonmonotone = any(item["status"] == "nonmonotone_activation_pattern" for item in beta_assessments)
-        if complete and not any_activation:
+        if not crn_verified:
+            decision = "common_random_number_mismatch"
+        elif complete and not any_activation:
             decision = "no_intermediate_activation_and_stop"
         elif complete and any_activation and not any_moderate:
             decision = "boundary_jump_and_stop"
@@ -392,8 +436,12 @@ def update_projection(
             "verified_primary_run_count": len(verified), "invalid_primary_run_ids": sorted(invalid),
             "invalid_diagnostic_run_ids": sorted(invalid_diagnostics),
             "diagnostic_run_ids": sorted(diagnostics), "duplicate_case_ids": sorted(set(duplicates)),
+            "failed_primary_run_ids": sorted(failed_primary_run_ids),
+            "finalization_failure_run_ids": finalization_failure_run_ids,
             "combinations": combinations,
             "beta_assessments": beta_assessments, "any_nonmonotone_beta": any_nonmonotone,
+            "common_random_numbers_verified": crn_verified,
+            "eligible_moderate_combinations": eligible_moderate,
             "overall_decision": decision,
             "development_activation_gate_passed": complete and any_activation,
             "moderate_activation_gate_passed": complete and any_moderate,
@@ -410,6 +458,49 @@ def _run_directory(output_root: Path, run_id: str) -> Path:
     if path.parent != root:
         raise ValueError("run path escapes controlled root")
     return path
+
+
+def _write_terminal_diagnostic(
+    directory: Path, *, run_id: str, case_id: str, stage: str,
+    status: str, error: BaseException,
+) -> None:
+    """Best-effort bounded evidence for failures outside the scientific solve."""
+    failure = {
+        "stage": stage, "status": status,
+        "message": f"{type(error).__name__}: {error}"[:1000],
+        "exception_type": type(error).__name__,
+    }
+    payload = {
+        "run_id": run_id, "case_id": case_id, "status": status,
+        "current_stage": stage, "completed_stage_count": 0,
+        "failure": failure, "updated_at_utc": utc_now(),
+    }
+    for path, value in (
+        (directory / "runner_exception.json", payload),
+        (directory / "status_summary.json", payload),
+        (directory / "heartbeat.json", payload),
+    ):
+        try:
+            atomic_write_json(path, value)
+        except Exception:
+            pass
+
+
+def _validate_diagnostic_parent(
+    output_root: Path, *, case_id: str, parent_run_id: str,
+) -> None:
+    validate_run_id(parent_run_id)
+    rows = _read_registry(output_root / "development/refinement_run_registry.csv")
+    matches = [row for row in rows if row.get("run_id") == parent_run_id]
+    if len(matches) != 1:
+        raise ValueError("diagnostic parent_run_id must identify one existing run")
+    parent = matches[0]
+    if parent.get("parent_run_id", "").strip():
+        raise ValueError("diagnostic parent must be a primary run")
+    if parent.get("case_id") != case_id:
+        raise ValueError("diagnostic parent must belong to the same case")
+    if parent.get("status") not in {"stage_failure", "timeout", "runner_exception", "interrupted"}:
+        raise ValueError("diagnostic parent must be a failed, timed-out, or interrupted run")
 
 
 def run_case(
@@ -443,18 +534,30 @@ def run_case(
         except Exception as exc:
             status = "timeout" if isinstance(exc, TimeoutError) or "time_limit" in str(exc) else "stage_failure"
             failure = {"stage": stages[-1]["stage"] if stages else "initialization", "status": status, "message": f"{type(exc).__name__}: {exc}"[:1000], "exception_type": type(exc).__name__}
-        peak = sampler.stop(); wall = perf_counter() - started
-        runtime = capture_runtime_context(solver_preference=("gurobi",), project_root=root, solver_threads=1)
-        result = {"run_id": run_id, "parent_run_id": parent_run_id, "case_id": case.case_id, "case": case.as_dict(), "status": status, "finalized": True, "science": science, "stages": stages, "failure": failure, "wall_seconds": wall, "peak_memory_mb": peak, "fingerprints": dict(fingerprints), "git_sha": source["commit_sha"], "git_tree_sha": source["tree_sha"], "finished_at_utc": utc_now()}
-        result_path, manifest_path = directory / "result.json", directory / "manifest.json"
-        compact = {"run_id": run_id, "case_id": case.case_id, "status": status, "current_stage": failure.get("stage") if failure else None, "completed_stage_count": len(stages), "failure": compact_failure(failure), "updated_at_utc": utc_now()}
-        atomic_write_json(checkpoint, {"run_id":run_id,"case":case.as_dict(),"status":status,"completed_stages":stages,"failure":compact_failure(failure),"updated_at_utc":utc_now()})
-        atomic_write_json(status_path, compact); atomic_write_json(heartbeat, compact)
-        atomic_write_json(result_path, result)
-        atomic_write_json(manifest_path, {"artifact_state": "finalized", "run_id": run_id, "case_id": case.case_id, "result_sha256": sha256_file(result_path), "checkpoint_sha256":sha256_file(checkpoint), "status_summary_sha256": sha256_file(status_path), "heartbeat_sha256": sha256_file(heartbeat), "fingerprints": dict(fingerprints), "source": dict(source), "locked_environment": dict(locked_environment), "runtime_context": runtime})
-        row = {"run_id": run_id, "parent_run_id": parent_run_id or "", "case_id": case.case_id, "tier_id": case.tier_id, "seed": case.seed, "beta": case.beta, "profile_id": case.profile_id, "status": status, "wall_seconds": wall, "peak_memory_mb": peak, **dict(fingerprints), "result_path": str(result_path.resolve()), "manifest_path": str(manifest_path.resolve()), "manifest_sha256": sha256_file(manifest_path), "failure_stage": failure.get("stage") if failure else "", "updated_at_utc": result["finished_at_utc"]}
-        _write_registry(output_root, row)
-        projection = update_projection(output_root=output_root, config=config, fingerprints=fingerprints, anchors=anchors)
+        finalization_stage = "memory_sampling"
+        try:
+            peak = sampler.stop(); wall = perf_counter() - started
+            finalization_stage = "runtime_context"
+            runtime = capture_runtime_context(solver_preference=("gurobi",), project_root=root, solver_threads=1)
+            result = {"run_id": run_id, "parent_run_id": parent_run_id, "case_id": case.case_id, "case": case.as_dict(), "status": status, "finalized": True, "science": science, "stages": stages, "failure": failure, "wall_seconds": wall, "peak_memory_mb": peak, "fingerprints": dict(fingerprints), "git_sha": source["commit_sha"], "git_tree_sha": source["tree_sha"], "finished_at_utc": utc_now()}
+            result_path, manifest_path = directory / "result.json", directory / "manifest.json"
+            compact = {"run_id": run_id, "case_id": case.case_id, "status": status, "current_stage": failure.get("stage") if failure else None, "completed_stage_count": len(stages), "failure": compact_failure(failure), "updated_at_utc": utc_now()}
+            finalization_stage = "artifact_finalization"
+            atomic_write_json(checkpoint, {"run_id":run_id,"case":case.as_dict(),"status":status,"completed_stages":stages,"failure":compact_failure(failure),"updated_at_utc":utc_now()})
+            atomic_write_json(status_path, compact); atomic_write_json(heartbeat, compact)
+            atomic_write_json(result_path, result)
+            atomic_write_json(manifest_path, {"artifact_state": "finalized", "run_id": run_id, "case_id": case.case_id, "result_sha256": sha256_file(result_path), "checkpoint_sha256":sha256_file(checkpoint), "status_summary_sha256": sha256_file(status_path), "heartbeat_sha256": sha256_file(heartbeat), "fingerprints": dict(fingerprints), "source": dict(source), "locked_environment": dict(locked_environment), "runtime_context": runtime})
+            row = {"run_id": run_id, "parent_run_id": parent_run_id or "", "case_id": case.case_id, "tier_id": case.tier_id, "seed": case.seed, "beta": case.beta, "profile_id": case.profile_id, "status": status, "wall_seconds": wall, "peak_memory_mb": peak, **dict(fingerprints), "result_path": str(result_path.resolve()), "manifest_path": str(manifest_path.resolve()), "manifest_sha256": sha256_file(manifest_path), "failure_stage": failure.get("stage") if failure else "", "updated_at_utc": result["finished_at_utc"]}
+            finalization_stage = "registry_finalization"
+            _write_registry(output_root, row)
+            finalization_stage = "projection_finalization"
+            projection = update_projection(output_root=output_root, config=config, fingerprints=fingerprints, anchors=anchors)
+        except KeyboardInterrupt as exc:
+            _write_terminal_diagnostic(directory, run_id=run_id, case_id=case.case_id, stage=finalization_stage, status="interrupted", error=exc)
+            raise
+        except Exception as exc:
+            _write_terminal_diagnostic(directory, run_id=run_id, case_id=case.case_id, stage=finalization_stage, status="runner_exception", error=exc)
+            raise
         if status == "interrupted":
             raise KeyboardInterrupt
         return {**result, "projection": projection}
@@ -469,15 +572,22 @@ def run_matrix(
     validate_run_id(run_id_prefix)
     preflight = validate_preflight(root=root, config_path=config_path, runner_path=runner_path, approval_path=approval_path, authorize=authorize)
     cases = build_refinement_cases(preflight["config"])
-    requested = set(case_ids or [case.case_id for case in cases])
-    if requested - {case.case_id for case in cases}:
+    all_case_ids = {case.case_id for case in cases}
+    if parent_run_id is None and case_ids is not None:
+        raise ValueError("primary execution must run the complete frozen 27-case matrix")
+    if parent_run_id is not None and (case_ids is None or len(case_ids) != 1):
+        raise ValueError("diagnostic execution requires exactly one case_id and parent_run_id")
+    requested = set(case_ids or all_case_ids)
+    if requested - all_case_ids:
         raise ValueError("unknown threshold-refinement case")
     selected = [case for case in cases if case.case_id in requested]
     output_root = root / OUTPUT_ROOT; results = []
     with exclusive_file_lock(output_root / "development/.serial-execution.lock", timeout_seconds=1.0):
         existing = output_root / "development"
-        if case_ids is None and parent_run_id is None and existing.exists() and any(path.name != ".serial-execution.lock" for path in existing.iterdir()):
+        if parent_run_id is None and existing.exists() and any(path.name != ".serial-execution.lock" for path in existing.iterdir()):
             raise RuntimeError("primary refinement matrix requires an empty controlled output root")
+        if parent_run_id is not None:
+            _validate_diagnostic_parent(output_root, case_id=selected[0].case_id, parent_run_id=parent_run_id)
         for case in selected:
             result = run_case(root=root, output_root=output_root, matrix_path=root / "configs/phase6_experiment_matrix.yaml", config=preflight["config"], fingerprints=preflight["fingerprints"], anchors=preflight["anchors"], locked_environment=preflight["locked_environment"], source=preflight["source"], case=case, run_id=f"{run_id_prefix}_{case.case_id}", parent_run_id=parent_run_id, science_executor=science_executor)
             results.append(result)

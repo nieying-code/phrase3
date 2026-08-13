@@ -127,6 +127,37 @@ def test_projection_recomputes_activation_moderate_gate_crn_and_per_beta_bracket
     assert all(item["common_random_numbers_verified"] for item in projection["beta_assessments"])
     t04=[x for x in projection["combinations"] if x["profile_id"]=="T04"]
     assert all(item["combination_activation_gate_passed"] and item["moderate_gate_passed"] for item in t04)
+    assert projection["eligible_moderate_combinations"] == [
+        {"beta": beta, "profile_id": profile}
+        for beta in (0.9, 1.1, 1.3) for profile in ("T04", "T05")
+    ]
+    assert projection["overall_decision"] == "permit_separate_multi_item_design_PR_only"
+
+
+def test_crn_mismatch_is_a_hard_gate_and_blocks_candidates(tmp_path) -> None:
+    config=runner.load_refinement_config(CONFIG); _populate(tmp_path,config)
+    registry_path=tmp_path/"development/refinement_run_registry.csv"
+    rows=runner._read_registry(registry_path)
+    row=next(item for item in rows if item["seed"]=="2026081201" and item["beta"]=="0.9" and item["profile_id"]=="T04")
+    result_path=Path(row["result_path"]); manifest_path=Path(row["manifest_path"])
+    result=json.loads(result_path.read_text())
+    result["science"]["scenario_component_set_sha256"]["demand_sha256"]="f"*64
+    atomic_write_json(result_path,result)
+    manifest=json.loads(manifest_path.read_text()); manifest["result_sha256"]=sha256_file(result_path)
+    atomic_write_json(manifest_path,manifest); row["manifest_sha256"]=sha256_file(manifest_path)
+    runner.atomic_write_csv(registry_path,runner.REGISTRY_FIELDS,rows)
+    projection=runner.update_projection(output_root=tmp_path,config=config,fingerprints=FINGERPRINTS,anchors=_anchors())
+    beta=next(item for item in projection["beta_assessments"] if item["beta"]==0.9)
+    assert beta["status"]=="common_random_number_mismatch"
+    assert beta["threshold_bracket"] is None and not beta["multi_item_candidate_allowed"]
+    assert projection["common_random_numbers_verified"] is False
+    assert projection["eligible_moderate_combinations"] == [
+        {"beta": beta_value, "profile_id": profile}
+        for beta_value in (1.1,1.3) for profile in ("T04","T05")
+    ]
+    assert projection["overall_decision"]=="common_random_number_mismatch"
+    assert projection["development_activation_gate_passed"] is False
+    assert projection["moderate_activation_gate_passed"] is False
 
 
 def test_nonmonotone_pattern_blocks_beta_bracket_and_candidate(tmp_path) -> None:
@@ -134,6 +165,8 @@ def test_nonmonotone_pattern_blocks_beta_bracket_and_candidate(tmp_path) -> None
     projection=runner.update_projection(output_root=tmp_path,config=config,fingerprints=FINGERPRINTS,anchors=_anchors())
     assert all(item["status"]=="nonmonotone_activation_pattern" for item in projection["beta_assessments"])
     assert all(item["threshold_bracket"] is None and not item["multi_item_candidate_allowed"] for item in projection["beta_assessments"])
+    assert projection["eligible_moderate_combinations"] == []
+    assert projection["moderate_activation_gate_passed"] is False
 
 
 def test_moderate_count_cannot_pass_without_combination_activation(tmp_path) -> None:
@@ -162,6 +195,10 @@ def test_run_id_immutability_failure_stop_and_bounded_status(tmp_path,monkeypatc
     with pytest.raises(ValueError,match="immutable"): runner.run_case(root=ROOT,output_root=tmp_path,matrix_path=ROOT/"configs/phase6_experiment_matrix.yaml",config=config,fingerprints=FINGERPRINTS,anchors=_anchors(),locked_environment={},source={"commit_sha":"a"*40,"tree_sha":"b"*40},case=case,run_id="immutable",science_executor=_science)
     status_path=tmp_path/"development/runs/immutable/status_summary.json"
     assert status_path.stat().st_size < 16*1024
+    projection=runner.update_projection(output_root=tmp_path,config=config,fingerprints=FINGERPRINTS,anchors=_anchors())
+    assert projection["failed_primary_run_ids"]==["immutable"]
+    assert projection["status"]=="incomplete"
+    assert projection["development_activation_gate_passed"] is False
 
 
 def test_cross_process_registry_writes_preserve_all_rows(tmp_path) -> None:
@@ -171,7 +208,7 @@ def test_cross_process_registry_writes_preserve_all_rows(tmp_path) -> None:
     assert {row["run_id"] for row in rows}==set(run_ids)
 
 
-def test_matrix_stops_after_first_failed_case(monkeypatch,tmp_path) -> None:
+def test_primary_requires_full_matrix_and_stops_after_first_failed_case(monkeypatch,tmp_path) -> None:
     config=runner.load_refinement_config(CONFIG); cases=runner.build_refinement_cases(config)
     monkeypatch.setattr(runner,"validate_preflight",lambda **_:{"config":config,"fingerprints":FINGERPRINTS,"anchors":_anchors(),"locked_environment":{},"source":{"commit_sha":"a"*40,"tree_sha":"b"*40}})
     calls=[]
@@ -179,8 +216,67 @@ def test_matrix_stops_after_first_failed_case(monkeypatch,tmp_path) -> None:
         calls.append(kwargs["case"].case_id)
         return {"status":"stage_failure"}
     monkeypatch.setattr(runner,"run_case",fake_run_case)
-    rows=runner.run_matrix(root=ROOT,config_path=CONFIG,runner_path=RUNNER,approval_path=APPROVAL,authorize=True,run_id_prefix="stop",case_ids=[cases[0].case_id,cases[1].case_id])
+    with pytest.raises(ValueError,match="complete frozen 27-case"):
+        runner.run_matrix(root=ROOT,config_path=CONFIG,runner_path=RUNNER,approval_path=APPROVAL,authorize=True,run_id_prefix="partial",case_ids=[cases[0].case_id])
+    rows=runner.run_matrix(root=ROOT,config_path=CONFIG,runner_path=RUNNER,approval_path=APPROVAL,authorize=True,run_id_prefix="stop")
     assert len(rows)==1 and len(calls)==1
+
+
+def test_diagnostic_requires_one_case_and_matching_failed_primary(monkeypatch,tmp_path) -> None:
+    config=runner.load_refinement_config(CONFIG); cases=runner.build_refinement_cases(config)
+    monkeypatch.setattr(runner,"OUTPUT_ROOT",str(tmp_path.relative_to(ROOT)) if tmp_path.is_relative_to(ROOT) else str(tmp_path))
+    # Validate the parent rule directly against a controlled registry.
+    row={field:"" for field in runner.REGISTRY_FIELDS}
+    row.update({"run_id":"failed-parent","case_id":cases[0].case_id,"status":"timeout"})
+    runner._write_registry(tmp_path,row)
+    runner._validate_diagnostic_parent(tmp_path,case_id=cases[0].case_id,parent_run_id="failed-parent")
+    with pytest.raises(ValueError,match="same case"):
+        runner._validate_diagnostic_parent(tmp_path,case_id=cases[1].case_id,parent_run_id="failed-parent")
+    row2={field:"" for field in runner.REGISTRY_FIELDS}
+    row2.update({"run_id":"successful-parent","case_id":cases[0].case_id,"status":"optimal"})
+    runner._write_registry(tmp_path,row2)
+    with pytest.raises(ValueError,match="failed"):
+        runner._validate_diagnostic_parent(tmp_path,case_id=cases[0].case_id,parent_run_id="successful-parent")
+
+
+def test_run_matrix_diagnostic_requires_exactly_one_case(monkeypatch,tmp_path) -> None:
+    config=runner.load_refinement_config(CONFIG); cases=runner.build_refinement_cases(config)
+    monkeypatch.setattr(runner,"OUTPUT_ROOT",str(tmp_path))
+    monkeypatch.setattr(runner,"validate_preflight",lambda **_: {"config":config,"fingerprints":FINGERPRINTS,"anchors":_anchors(),"locked_environment":{},"source":{"commit_sha":"a"*40,"tree_sha":"b"*40}})
+    row={field:"" for field in runner.REGISTRY_FIELDS}
+    row.update({"run_id":"failed-parent","case_id":cases[0].case_id,"status":"timeout"})
+    runner._write_registry(tmp_path,row)
+    with pytest.raises(ValueError,match="exactly one"):
+        runner.run_matrix(root=ROOT,config_path=CONFIG,runner_path=RUNNER,approval_path=APPROVAL,authorize=True,run_id_prefix="diag",case_ids=[cases[0].case_id,cases[1].case_id],parent_run_id="failed-parent")
+
+
+@pytest.mark.parametrize("failure_point", ["runtime_context", "manifest", "registry", "projection"])
+def test_finalization_failures_leave_bounded_terminal_diagnostic(tmp_path,monkeypatch,failure_point) -> None:
+    config=runner.load_refinement_config(CONFIG); case=runner.build_refinement_cases(config)[0]
+    monkeypatch.setattr(runner,"capture_runtime_context",lambda **_: {} if failure_point!="runtime_context" else (_ for _ in ()).throw(RuntimeError("x"*20000)))
+    original_write=runner.atomic_write_json
+    if failure_point=="manifest":
+        monkeypatch.setattr(runner,"atomic_write_json",lambda path,payload: (_ for _ in ()).throw(PermissionError("manifest locked")) if Path(path).name=="manifest.json" else original_write(path,payload))
+    if failure_point=="registry":
+        monkeypatch.setattr(runner,"_write_registry",lambda *_args,**_kwargs: (_ for _ in ()).throw(OSError("registry failed")))
+    if failure_point=="projection":
+        monkeypatch.setattr(runner,"update_projection",lambda **_: (_ for _ in ()).throw(OSError("projection failed")))
+    with pytest.raises(Exception):
+        runner.run_case(root=ROOT,output_root=tmp_path,matrix_path=ROOT/"configs/phase6_experiment_matrix.yaml",config=config,fingerprints=FINGERPRINTS,anchors=_anchors(),locked_environment={},source={"commit_sha":"a"*40,"tree_sha":"b"*40},case=case,run_id=f"finalize-{failure_point}",science_executor=_science)
+    path=tmp_path/"development/runs"/f"finalize-{failure_point}"/"runner_exception.json"
+    payload=json.loads(path.read_text())
+    assert payload["status"]=="runner_exception"
+    assert len(payload["failure"]["message"])<=1000
+    assert path.stat().st_size < 16*1024
+
+
+def test_keyboard_interrupt_during_finalization_is_recorded(tmp_path,monkeypatch) -> None:
+    config=runner.load_refinement_config(CONFIG); case=runner.build_refinement_cases(config)[0]
+    monkeypatch.setattr(runner,"capture_runtime_context",lambda **_: (_ for _ in ()).throw(KeyboardInterrupt()))
+    with pytest.raises(KeyboardInterrupt):
+        runner.run_case(root=ROOT,output_root=tmp_path,matrix_path=ROOT/"configs/phase6_experiment_matrix.yaml",config=config,fingerprints=FINGERPRINTS,anchors=_anchors(),locked_environment={},source={"commit_sha":"a"*40,"tree_sha":"b"*40},case=case,run_id="finalize-interrupt",science_executor=_science)
+    payload=json.loads((tmp_path/"development/runs/finalize-interrupt/runner_exception.json").read_text())
+    assert payload["status"]=="interrupted" and payload["current_stage"]=="runtime_context"
 
 
 def test_preflight_uses_independent_namespace_and_never_accepts_parent_registry() -> None:
