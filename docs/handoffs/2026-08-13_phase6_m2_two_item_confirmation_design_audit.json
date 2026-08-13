@@ -56,13 +56,14 @@
     "git_diff_check_passed": true
   },
   "draft_pr": "https://github.com/nieying-code/phrase3/pull/49",
-  "design_head": "fea81fe01bea593f9a9710b1312f93abbf7ae7a9",
-  "design_github_actions": {
-    "run_id": 31679477052,
-    "url": "https://github.com/nieying-code/phrase3/actions/runs/31679477052",
+  "initial_design_head": "fea81fe01bea593f9a9710b1312f93abbf7ae7a9",
+  "final_scientific_design_baseline_head": "2d623f111afdce8b782d6b4b008bb4580eb7c290",
+  "final_scientific_design_baseline_github_actions": {
+    "run_id": 31680792963,
+    "url": "https://github.com/nieying-code/phrase3/actions/runs/31680792963",
     "status": "success",
     "linux": "success",
     "windows": "success"
   },
-  "traceability_note": "Any later trace-only commit does not change the preregistered design or authorize execution."
+  "traceability_note": "The SHA of any later trace-only commit is recorded only in the PR body to avoid infinite self-reference; it does not change the preregistered design or authorize execution."
 }
