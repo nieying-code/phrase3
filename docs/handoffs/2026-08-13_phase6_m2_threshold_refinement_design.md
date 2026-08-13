@@ -43,4 +43,3 @@ No result-dependent parameter insertion is allowed. If activation remains a near
 - Branch: `agent/phase6-m2-threshold-refinement-design`.
 - Draft PR: pending.
 - CI: pending.
-

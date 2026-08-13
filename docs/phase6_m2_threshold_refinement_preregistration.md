@@ -41,4 +41,3 @@ To distinguish a potentially interpretable interior response from another bounda
 ## Reproducibility and isolation
 
 The parent audit and both mapping hashes are immutable anchors. A future runner must use an independent namespace, output root, fingerprints, registry, projection, immutable run IDs, and explicit execution authorization. Parent results cannot authorize the refinement run and cannot be copied into its registry.
-

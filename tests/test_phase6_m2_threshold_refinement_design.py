@@ -81,4 +81,3 @@ def test_threshold_refinement_design_is_frozen_but_not_executable() -> None:
         "inherits_parent_authorization": False,
         "inherits_parent_registry_or_projection": False,
     }
-

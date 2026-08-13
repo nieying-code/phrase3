@@ -6,9 +6,9 @@
   "branch": "agent/phase6-m2-threshold-refinement-design",
   "design_artifacts": {
     "config_path": "configs/phase6_m2_threshold_refinement.yaml",
-    "config_sha256": "0eb986321f5956596b86505827e0e9ff3dce5b1b3bea3fc7c541a4f2d0eeb276",
+    "config_sha256": "0a3302e833261fb2f6d244a67ee460c760e610d9eeef5c81aa6ecb008c974e55",
     "preregistration_path": "docs/phase6_m2_threshold_refinement_preregistration.md",
-    "preregistration_sha256": "216146d0c8f7acb9bfc064c731a5f78cc938432f8e03dfc3c7d5fb1e1bfe9071"
+    "preregistration_sha256": "58966300f6f3889efe7e9da81e96969fe95c15863940687566934c8c64f808b0"
   },
   "parent_evidence": {
     "audit_path": "docs/handoffs/2026-08-13_phase6_m2_development_grid_audit.json",
