@@ -4,6 +4,7 @@
   "base_merge_sha": "aa3a3aa48e44cc5978afdc08da2d380a1fa4c4b0",
   "base_tree_sha": "6745efb0fa4073355c57f0e0a819340e365fb037",
   "branch": "agent/phase6-m2-threshold-refinement-design",
+  "design_implementation_commit": "dd47401",
   "design_artifacts": {
     "config_path": "configs/phase6_m2_threshold_refinement.yaml",
     "config_sha256": "0a3302e833261fb2f6d244a67ee460c760e610d9eeef5c81aa6ecb008c974e55",
@@ -62,6 +63,15 @@
     "multi_item_confirmation_runs": 0,
     "M0_E3_runs": 0
   },
-  "draft_pr": "pending",
+  "validation": {
+    "design_audit_passed": 1,
+    "ordinary_regression_passed": 283,
+    "phase5_end_to_end_passed": 6,
+    "compileall_passed": true,
+    "git_diff_check_passed": true,
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0
+  },
+  "draft_pr": "https://github.com/nieying-code/phrase3/pull/46",
   "github_actions": "pending"
 }

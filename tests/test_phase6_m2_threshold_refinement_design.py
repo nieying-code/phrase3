@@ -27,6 +27,17 @@ def test_threshold_refinement_design_is_frozen_but_not_executable() -> None:
     assert config["stop_rules"]["formal_extension_authorized"] is False
     assert set(config["execution_boundaries"].values()) == {0}
     assert set(audit["execution_counts_in_this_pr"].values()) == {0}
+    assert audit["design_implementation_commit"] == "dd47401"
+    assert audit["draft_pr"] == "https://github.com/nieying-code/phrase3/pull/46"
+    assert audit["validation"] == {
+        "design_audit_passed": 1,
+        "ordinary_regression_passed": 283,
+        "phase5_end_to_end_passed": 6,
+        "compileall_passed": True,
+        "git_diff_check_passed": True,
+        "scenario_generation_count": 0,
+        "gurobi_call_count": 0,
+    }
 
     assert audit["base_merge_sha"] == "aa3a3aa48e44cc5978afdc08da2d380a1fa4c4b0"
     assert audit["base_tree_sha"] == "6745efb0fa4073355c57f0e0a819340e365fb037"

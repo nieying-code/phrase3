@@ -41,5 +41,7 @@ No result-dependent parameter insertion is allowed. If activation remains a near
 
 - Base merge: PR #45, `aa3a3aa48e44cc5978afdc08da2d380a1fa4c4b0`.
 - Branch: `agent/phase6-m2-threshold-refinement-design`.
-- Draft PR: pending.
+- Design implementation commit: `dd47401`.
+- Draft PR: https://github.com/nieying-code/phrase3/pull/46.
+- Local validation: design audit `1 passed`; ordinary regression `283 passed`; Phase 5 `6 passed`; compileall and diff check passed.
 - CI: pending.
