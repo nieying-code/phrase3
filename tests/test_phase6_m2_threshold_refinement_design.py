@@ -25,8 +25,8 @@ def test_threshold_refinement_design_is_frozen_but_not_executable() -> None:
     parent = json.loads(PARENT_AUDIT.read_text(encoding="utf-8"))
 
     assert config["protocol_id"] == "phase6_m2_threshold_refinement_v1_0"
-    assert config["status"] == "candidate_design_pending_review"
-    assert config["refinement_preregistration"]["execution_allowed_in_this_revision"] is False
+    assert config["status"] == "frozen_for_development_execution"
+    assert config["refinement_preregistration"]["execution_allowed_in_this_revision"] is True
     assert config["stop_rules"]["formal_extension_authorized"] is False
     assert set(config["execution_boundaries"].values()) == {0}
     assert set(audit["execution_counts_in_this_pr"].values()) == {0}

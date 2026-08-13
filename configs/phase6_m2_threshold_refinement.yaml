@@ -1,6 +1,6 @@
 protocol_id: phase6_m2_threshold_refinement_v1_0
-version: 1.0.0-candidate
-status: candidate_design_pending_review
+version: 1.0.0-development
+status: frozen_for_development_execution
 initial_draft_on: 2026-08-13
 revised_on: 2026-08-13
 
@@ -50,7 +50,7 @@ anchor_profiles:
   anchors_count_toward_new_matrix: false
 
 refinement_preregistration:
-  execution_allowed_in_this_revision: false
+  execution_allowed_in_this_revision: true
   seeds: [2026081201, 2026081202, 2026081203]
   beta: [0.9, 1.1, 1.3]
   profiles:

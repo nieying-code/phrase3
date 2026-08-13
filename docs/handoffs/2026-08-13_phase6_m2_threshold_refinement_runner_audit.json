@@ -1,0 +1,50 @@
+{
+  "audit_id": "phase6_m2_threshold_refinement_runner_v1_0",
+  "status": "implementation_complete_pending_review",
+  "base_merge_sha": "9cdd7bb8d735cc82590ac25f2227b84e17ada2af",
+  "branch": "agent/phase6-m2-threshold-refinement-runner",
+  "identity": {
+    "protocol_id": "phase6_m2_threshold_refinement_v1_0",
+    "runner_namespace": "phase6_m2_threshold_refinement_v1_0",
+    "output_root": "outputs/phase6_m2_threshold_refinement_v1_0",
+    "matrix_case_count": 27,
+    "formal_extension_authorized": false
+  },
+  "approved_fingerprints": {
+    "scientific_config_sha256": "488f86d69c442844471feb37c9a701e2ecda54111ba5a3bc2baa47f2d38462f0",
+    "e3_component_sha256": "17449c3a0e652e9354f09e9382879bc1e466a57742e2c18cc80a9351f2cfd745",
+    "family_component_sha256": "9970f16d68734423c972ed0a7854de023d72ebc1c134f529ab28a7137d2b99d1",
+    "runner_config_sha256": "80f51004dd94cd14d8d3536d9facd33ff115cf9c49abc52adfde285e0eff40f5",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "parent_evidence": {
+    "audit_path": "docs/handoffs/2026-08-13_phase6_m2_development_grid_audit.json",
+    "audit_sha256": "01e3025566c0701f41b4fde6b51d1e13347068e8b8c025873c2578cfbdb349a2",
+    "anchor_run_count": 18,
+    "C1_activation_by_beta": {"0.9": "0/3", "1.1": "0/3", "1.3": "0/3"},
+    "C2_activation_by_beta": {"0.9": "3/3", "1.1": "3/3", "1.3": "3/3"}
+  },
+  "machine_rules": {
+    "activation_recomputed_from_raw_reserve_interval": true,
+    "moderate_gate_is_conjunctive": true,
+    "threshold_evaluated_independently_by_beta": true,
+    "nonmonotone_status": "nonmonotone_activation_pattern",
+    "parent_registry_or_projection_import_forbidden": true,
+    "strictly_serial": true,
+    "immutable_run_ids": true,
+    "failure_stops_later_cases": true
+  },
+  "execution_counts": {
+    "refinement_development_runs": 0,
+    "pilot_runs": 0,
+    "formal_extension_runs": 0,
+    "multi_item_confirmation_runs": 0,
+    "M0_E3_runs": 0,
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0
+  },
+  "validation": {"specialized_passed": 10, "ordinary_regression_passed": 294, "phase5_passed": 6, "compileall_passed": true, "git_diff_check_passed": true},
+  "draft_pr": "pending",
+  "final_head": "pending",
+  "github_actions": "pending"
+}
