@@ -3156,6 +3156,12 @@
     "git_diff_check_passed": true
   },
   "formal_extension_authorized": false,
-  "draft_pr": "pending",
-  "github_actions": "pending"
+  "draft_pr": "https://github.com/nieying-code/phrase3/pull/48",
+  "results_evidence_commit": "5a17ca471685df7dd58669310d123f91f7a4a1b5",
+  "github_actions": {
+    "run_id": 31674421152,
+    "url": "https://github.com/nieying-code/phrase3/actions/runs/31674421152",
+    "linux": "success",
+    "windows": "success"
+  }
 }

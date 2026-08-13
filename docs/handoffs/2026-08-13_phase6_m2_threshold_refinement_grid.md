@@ -47,4 +47,7 @@ formal_extension_authorized=false
 - 投影摘要：`docs/handoffs/2026-08-13_phase6_m2_threshold_refinement_projection_summary.json`
 - 原始大型制品仅保留在 D 盘受控输出根目录，不提交 GitHub。
 - 本地验证：阈值 runner 与审计专项 `19 passed`；完整回归 `309 passed`；Phase 5 `6 passed`；`compileall` 与 `git diff --check` 通过。
-- Draft PR、最终提交和 CI 将在发布后补充。
+- Draft PR：[PR #48](https://github.com/nieying-code/phrase3/pull/48)。
+- 结果证据提交：`5a17ca471685df7dd58669310d123f91f7a4a1b5`。
+- 结果证据 CI：[run 31674421152](https://github.com/nieying-code/phrase3/actions/runs/31674421152)，Linux 与 Windows 均成功。
+- 后续若存在纯追溯提交，只更新本记录，不改变实验结果、科学指纹或审计值。
