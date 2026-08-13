@@ -341,8 +341,12 @@ def _cross_item_metrics(data: Any, endpoint: Any, tolerance: float) -> dict[str,
     share_range = max(shares) - min(shares) if len(shares) >= 2 else 0.0
     return {
         "plan_source": "complete_extensive_model_R_min_opt_endpoint",
+        "endpoint_reserve": float(endpoint.reserve),
+        "endpoint_regular_purchase_sha256": _decision_sha256(endpoint.regular_purchase),
+        "endpoint_exact_objective": float(endpoint.exact_objective),
         "scenario_count": len(scenario_spend),
         "scenario_item_emergency_spend": scenario_spend,
+        "scenario_item_emergency_spend_sha256": _sha256_payload(scenario_spend),
         "positive_total_emergency_spend_scenario_count": positive_total,
         "both_items_each_positive_in_at_least_one_scenario": all(item_positive.values()),
         "item1_emergency_spend_share_range": share_range,
@@ -645,8 +649,23 @@ def _write_registry(root: Path, row: Mapping[str, Any]) -> None:
         atomic_write_csv(path, REGISTRY_FIELDS, rows)
 
 
-def _validate_artifact(row: Mapping[str, str]) -> dict[str, Any]:
-    result_path, manifest_path = Path(row["result_path"]), Path(row["manifest_path"])
+def _controlled_artifact_paths(
+    output_root: Path, row: Mapping[str, str]
+) -> tuple[Path, Path]:
+    run_id = str(row["run_id"])
+    validate_run_id(run_id)
+    expected_directory = (output_root / "confirmation/runs" / run_id).resolve()
+    expected_result = expected_directory / "result.json"
+    expected_manifest = expected_directory / "manifest.json"
+    result_path = Path(row["result_path"]).resolve()
+    manifest_path = Path(row["manifest_path"]).resolve()
+    if result_path != expected_result or manifest_path != expected_manifest:
+        raise ValueError("registry artifact path escapes or mismatches controlled run directory")
+    return result_path, manifest_path
+
+
+def _validate_artifact(output_root: Path, row: Mapping[str, str]) -> dict[str, Any]:
+    result_path, manifest_path = _controlled_artifact_paths(output_root, row)
     if sha256_file(manifest_path) != row["manifest_sha256"]:
         raise ValueError("manifest hash mismatch")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -690,7 +709,42 @@ def _validate_artifact(row: Mapping[str, str]) -> dict[str, Any]:
     return result
 
 
-def _derive_science(science: Mapping[str, Any], config: Mapping[str, Any]) -> dict[str, Any]:
+def _derive_science(
+    science: Mapping[str, Any], config: Mapping[str, Any], expected_case: Mapping[str, Any]
+) -> dict[str, Any]:
+    if (
+        science.get("tier_id") != "M2C2"
+        or int(science.get("seed")) != int(expected_case["seed"])
+        or not math.isclose(
+            float(science.get("beta")), float(expected_case["beta"]),
+            rel_tol=0.0, abs_tol=1.0e-12,
+        )
+        or science.get("profile_id") != expected_case["profile_id"]
+    ):
+        raise ValueError("science identity mismatches the registered case")
+    frozen = config["two_item_deterministic_baseline"]
+    reference = float(frozen["reference_budget"]["exact_value"])
+    expected_budget = float(frozen["budgets_by_beta"][str(float(expected_case["beta"]))])
+    if not math.isclose(float(science["reference_budget"]), reference, rel_tol=0.0, abs_tol=1.0e-9):
+        raise ValueError("science reference budget mismatches M2C2")
+    if not math.isclose(float(science["budget"]), expected_budget, rel_tol=0.0, abs_tol=1.0e-9):
+        raise ValueError("science budget mismatches beta times M2C2 reference budget")
+    expected_capacity = tuple(float(value) for value in frozen["storage_capacity"]["values"])
+    actual_capacity = tuple(float(value) for value in science["storage_capacity"])
+    if len(actual_capacity) != len(expected_capacity) or any(
+        not math.isclose(a, b, rel_tol=0.0, abs_tol=1.0e-9)
+        for a, b in zip(actual_capacity, expected_capacity, strict=True)
+    ):
+        raise ValueError("science storage capacity mismatches M2C2")
+    if int(science.get("scenario_identity_count", -1)) != 50:
+        raise ValueError("science scenario identity count must equal 50")
+    if (
+        science.get("solver") != "gurobi_direct"
+        or science.get("gurobi_optimizer_version") != "13.0.2"
+        or science.get("gurobipy_version") != "13.0.2"
+        or int(science.get("threads", -1)) != 1
+    ):
+        raise ValueError("science solver identity mismatches frozen execution environment")
     budget = float(science["budget"])
     ratio = max(0.0, float(science["R_min_opt"]) - float(science["R_min_feas"])) / budget
     tolerance = float(science["objective_tolerance"])
@@ -723,9 +777,17 @@ def _derive_science(science: Mapping[str, Any], config: Mapping[str, Any]) -> di
         raise ValueError("cross-item allocation uses the wrong first-stage plan")
     if int(cross.get("scenario_count", -1)) != 50:
         raise ValueError("cross-item allocation must use all 50 training scenarios")
+    if not math.isclose(float(cross.get("endpoint_reserve", math.nan)), float(science["R_min_opt"]), rel_tol=0.0, abs_tol=1.0e-8):
+        raise ValueError("cross-item allocation reserve is not bound to R_min_opt")
+    if cross.get("endpoint_regular_purchase_sha256") != science["minimum_endpoint_regular_purchase_sha256"]:
+        raise ValueError("cross-item allocation procurement is not bound to R_min_opt endpoint")
+    if not math.isclose(float(cross.get("endpoint_exact_objective", math.nan)), float(science["minimum_endpoint_exact_objective"]), rel_tol=0.0, abs_tol=1.0e-8):
+        raise ValueError("cross-item allocation objective is not bound to R_min_opt endpoint")
     spend = cross.get("scenario_item_emergency_spend") or {}
     if len(spend) != 50:
         raise ValueError("cross-item scenario spending evidence is incomplete")
+    if cross.get("scenario_item_emergency_spend_sha256") != _sha256_payload(spend):
+        raise ValueError("cross-item scenario spending mapping hash mismatch")
     positive_tolerance = 1.0e-7
     item_names = ("relief_food_1", "relief_food_2")
     item_positive = {item: False for item in item_names}
@@ -785,7 +847,7 @@ def update_projection(
         failed_primary_run_ids: list[str] = []
         for row in rows:
             try:
-                result = _validate_artifact(row)
+                result = _validate_artifact(output_root, row)
                 if row.get("parent_run_id", "").strip():
                     diagnostics.append(row["run_id"])
                     continue
@@ -795,7 +857,10 @@ def update_projection(
                     duplicates.append(result["case_id"])
                     continue
                 if result["status"] == "optimal":
-                    verified[identity] = (result, _derive_science(result["science"], config))
+                    verified[identity] = (
+                        result,
+                        _derive_science(result["science"], config, case),
+                    )
                 else:
                     failed_primary_run_ids.append(row["run_id"])
             except Exception:
@@ -835,7 +900,11 @@ def update_projection(
                         "emergency_price_sha256", "emergency_supply_sha256",
                         "scenario_order_sha256",
                     )
-                    match = bool(entry) and all(entry[1]["components"][field] == anchor[field] for field in fields)
+                    match = bool(anchor_entry and entry) and all(
+                        entry[1]["components"].get(field) == anchor.get(field)
+                        and anchor.get(field) is not None
+                        for field in fields
+                    )
                     crn_checks.append({"seed": seed, "profile_id": profile, "verified": match})
             crn_verified = all(item["verified"] for item in crn_checks)
             c0, c1, t03 = (by_beta_profile[(beta, profile)] for profile in ("C0", "C1", "T03"))

@@ -43,7 +43,11 @@ def _registry_process(output_root: str, index: int) -> str:
 
 def _science(case: runner.ConfirmationCase) -> dict[str, Any]:
     ratio = 0.10 if case.profile_id == "T03" else 0.0
-    budget = 100.0 * case.beta
+    reference_budget = 2337.610924158743
+    budget = {1.1: 2571.372016574617, 1.3: 3038.894201406366}[case.beta]
+    endpoint_purchase_sha256 = hashlib.sha256(
+        f"endpoint-purchase-{case.case_id}".encode()
+    ).hexdigest()
     shared = {
         name: hashlib.sha256(f"{name}-{case.seed}-{case.beta}".encode()).hexdigest()
         for name in (
@@ -54,9 +58,26 @@ def _science(case: runner.ConfirmationCase) -> dict[str, Any]:
     shared["fulfillment_sha256"] = hashlib.sha256(
         f"fulfillment-{case.profile_id}-{case.seed}-{case.beta}".encode()
     ).hexdigest()
+    scenario_spend = {
+        f"s{index:04d}": {
+            "relief_food_1": (1.0 + index if case.profile_id == "T03" else 0.0),
+            "relief_food_2": (50.0 - index if case.profile_id == "T03" else 0.0),
+            "total": (51.0 if case.profile_id == "T03" else 0.0),
+        }
+        for index in range(50)
+    }
     return {
+        "tier_id": "M2C2",
+        "seed": case.seed,
+        "beta": case.beta,
         "profile_id": case.profile_id,
         "budget": budget,
+        "reference_budget": reference_budget,
+        "storage_capacity": [
+            288.75, 294.841333698683, 294.841333698683,
+            288.75, 203.908666301317, 203.90866630131694,
+        ],
+        "scenario_identity_count": 50,
         "R_min_feas": 0.0,
         "R_min_opt": ratio * budget,
         "R_max_opt": ratio * budget,
@@ -70,6 +91,10 @@ def _science(case: runner.ConfirmationCase) -> dict[str, Any]:
         "maximum_endpoint_status": "optimal",
         "minimum_endpoint_exact_objective": 100.0,
         "maximum_endpoint_exact_objective": 100.0,
+        "minimum_endpoint_regular_purchase_sha256": endpoint_purchase_sha256,
+        "maximum_endpoint_regular_purchase_sha256": hashlib.sha256(
+            f"maximum-purchase-{case.case_id}".encode()
+        ).hexdigest(),
         "endpoint_failure_counts": {
             "minimum": {"infeasible": 0, "solver_failure": 0, "missing": 0},
             "maximum": {"infeasible": 0, "solver_failure": 0, "missing": 0},
@@ -88,15 +113,12 @@ def _science(case: runner.ConfirmationCase) -> dict[str, Any]:
         "scenario_component_set_sha256": shared,
         "cross_item_allocation": {
             "plan_source": "complete_extensive_model_R_min_opt_endpoint",
+            "endpoint_reserve": ratio * budget,
+            "endpoint_regular_purchase_sha256": endpoint_purchase_sha256,
+            "endpoint_exact_objective": 100.0,
             "scenario_count": 50,
-            "scenario_item_emergency_spend": {
-                f"s{index:04d}": {
-                    "relief_food_1": (1.0 + index if case.profile_id == "T03" else 0.0),
-                    "relief_food_2": (50.0 - index if case.profile_id == "T03" else 0.0),
-                    "total": (51.0 if case.profile_id == "T03" else 0.0),
-                }
-                for index in range(50)
-            },
+            "scenario_item_emergency_spend": scenario_spend,
+            "scenario_item_emergency_spend_sha256": runner._sha256_payload(scenario_spend),
         },
         "c0_equivalence": {
             "required": case.profile_id == "C0",
@@ -108,6 +130,10 @@ def _science(case: runner.ConfirmationCase) -> dict[str, Any]:
             "fulfillment_exactly_one": case.profile_id == "C0",
             "scenario_count_each_direction": 50 if case.profile_id == "C0" else 0,
         },
+        "solver": "gurobi_direct",
+        "gurobi_optimizer_version": "13.0.2",
+        "gurobipy_version": "13.0.2",
+        "threads": 1,
     }
 
 
@@ -129,6 +155,17 @@ def _results(config: dict[str, Any]) -> list[tuple[dict[str, str], dict[str, Any
         }
         values.append((row, result))
     return values
+
+
+def _projection_from_evidence(monkeypatch, tmp_path, config, evidence):
+    monkeypatch.setattr(runner, "_read_registry", lambda _path: [row for row, _ in evidence])
+    by_id = {row["run_id"]: result for row, result in evidence}
+    monkeypatch.setattr(
+        runner, "_validate_artifact", lambda _root, row: by_id[row["run_id"]]
+    )
+    return runner.update_projection(
+        output_root=tmp_path, config=config, fingerprints=FINGERPRINTS,
+    )
 
 
 def test_exact_30_case_cartesian_product_and_identity() -> None:
@@ -252,7 +289,7 @@ def test_projection_recomputes_all_gates_and_claim_scope(monkeypatch, tmp_path) 
     evidence = _results(config)
     monkeypatch.setattr(runner, "_read_registry", lambda _path: [row for row, _ in evidence])
     by_id = {row["run_id"]: result for row, result in evidence}
-    monkeypatch.setattr(runner, "_validate_artifact", lambda row: by_id[row["run_id"]])
+    monkeypatch.setattr(runner, "_validate_artifact", lambda _root, row: by_id[row["run_id"]])
     projection = runner.update_projection(
         output_root=tmp_path, config=config, fingerprints=FINGERPRINTS,
     )
@@ -278,7 +315,7 @@ def test_crn_mismatch_blocks_confirmation(monkeypatch, tmp_path) -> None:
     target["science"]["scenario_component_set_sha256"]["demand_sha256"] = "f" * 64
     monkeypatch.setattr(runner, "_read_registry", lambda _path: [row for row, _ in evidence])
     by_id = {row["run_id"]: result for row, result in evidence}
-    monkeypatch.setattr(runner, "_validate_artifact", lambda row: by_id[row["run_id"]])
+    monkeypatch.setattr(runner, "_validate_artifact", lambda _root, row: by_id[row["run_id"]])
     projection = runner.update_projection(
         output_root=tmp_path, config=config, fingerprints=FINGERPRINTS,
     )
@@ -299,7 +336,7 @@ def test_scenario_order_mismatch_blocks_confirmation(monkeypatch, tmp_path) -> N
     target["science"]["scenario_component_set_sha256"]["scenario_order_sha256"] = "f" * 64
     monkeypatch.setattr(runner, "_read_registry", lambda _path: [row for row, _ in evidence])
     by_id = {row["run_id"]: result for row, result in evidence}
-    monkeypatch.setattr(runner, "_validate_artifact", lambda row: by_id[row["run_id"]])
+    monkeypatch.setattr(runner, "_validate_artifact", lambda _root, row: by_id[row["run_id"]])
     projection = runner.update_projection(
         output_root=tmp_path, config=config, fingerprints=FINGERPRINTS,
     )
@@ -314,7 +351,94 @@ def test_fixed_autonomous_reserve_formula_is_recomputed() -> None:
     science = _science(case)
     science["fixed_reserve_policies"][1]["reserve"] += 1.0
     with pytest.raises(ValueError, match="fixed autonomous reserve formula"):
-        runner._derive_science(science, config)
+        runner._derive_science(science, config, case.as_dict())
+
+
+@pytest.mark.parametrize(
+    ("field", "bad_value"),
+    [
+        ("tier_id", "V1"),
+        ("seed", 2026081399),
+        ("beta", 1.3),
+        ("profile_id", "C1"),
+        ("reference_budget", 853.5),
+        ("budget", 999.0),
+        ("storage_capacity", [1.0] * 6),
+        ("scenario_identity_count", 49),
+        ("solver", "highs"),
+        ("gurobi_optimizer_version", "13.0.1"),
+        ("gurobipy_version", "13.0.1"),
+        ("threads", 2),
+    ],
+)
+def test_science_identity_tampering_becomes_invalid_primary(
+    monkeypatch, tmp_path, field, bad_value
+) -> None:
+    config = runner.load_confirmation_config(CONFIG)
+    evidence = _results(config)
+    target = evidence[0][1]
+    target["science"][field] = bad_value
+    projection = _projection_from_evidence(monkeypatch, tmp_path, config, evidence)
+    assert target["run_id"] in projection["invalid_primary_run_ids"]
+    assert projection["confirmation_gate_passed"] is False
+
+
+@pytest.mark.parametrize(
+    ("field", "bad_value"),
+    [
+        ("endpoint_reserve", 999.0),
+        ("endpoint_regular_purchase_sha256", "f" * 64),
+        ("endpoint_exact_objective", 999.0),
+        ("scenario_item_emergency_spend_sha256", "f" * 64),
+    ],
+)
+def test_cross_item_endpoint_binding_tampering_becomes_invalid_primary(
+    monkeypatch, tmp_path, field, bad_value
+) -> None:
+    config = runner.load_confirmation_config(CONFIG)
+    evidence = _results(config)
+    target = next(
+        result for _, result in evidence if result["case"]["profile_id"] == "T03"
+    )
+    target["science"]["cross_item_allocation"][field] = bad_value
+    projection = _projection_from_evidence(monkeypatch, tmp_path, config, evidence)
+    assert target["run_id"] in projection["invalid_primary_run_ids"]
+    assert projection["confirmation_gate_passed"] is False
+
+
+@pytest.mark.parametrize(
+    ("result_path", "manifest_path"),
+    [
+        ("../other/result.json", "../other/manifest.json"),
+        ("confirmation/runs/other/result.json", "confirmation/runs/other/manifest.json"),
+        ("confirmation/runs/safe/not-result.json", "confirmation/runs/safe/manifest.json"),
+    ],
+)
+def test_registry_artifact_paths_cannot_escape_controlled_run_directory(
+    tmp_path, result_path, manifest_path
+) -> None:
+    row = {field: "" for field in runner.REGISTRY_FIELDS}
+    row.update({
+        "run_id": "safe",
+        "result_path": str(tmp_path / result_path),
+        "manifest_path": str(tmp_path / manifest_path),
+    })
+    with pytest.raises(ValueError, match="artifact path"):
+        runner._controlled_artifact_paths(tmp_path, row)
+
+
+def test_registry_artifact_paths_accept_only_exact_controlled_paths(tmp_path) -> None:
+    directory = tmp_path / "confirmation/runs/safe"
+    row = {field: "" for field in runner.REGISTRY_FIELDS}
+    row.update({
+        "run_id": "safe",
+        "result_path": str(directory / "result.json"),
+        "manifest_path": str(directory / "manifest.json"),
+    })
+    assert runner._controlled_artifact_paths(tmp_path, row) == (
+        (directory / "result.json").resolve(),
+        (directory / "manifest.json").resolve(),
+    )
 
 
 def test_one_passing_beta_forbids_budget_effect_claim(monkeypatch, tmp_path) -> None:
@@ -331,7 +455,7 @@ def test_one_passing_beta_forbids_budget_effect_claim(monkeypatch, tmp_path) -> 
             science["substantive_activation"] = False
     monkeypatch.setattr(runner, "_read_registry", lambda _path: [row for row, _ in evidence])
     by_id = {row["run_id"]: result for row, result in evidence}
-    monkeypatch.setattr(runner, "_validate_artifact", lambda row: by_id[row["run_id"]])
+    monkeypatch.setattr(runner, "_validate_artifact", lambda _root, row: by_id[row["run_id"]])
     projection = runner.update_projection(
         output_root=tmp_path, config=config, fingerprints=FINGERPRINTS,
     )

@@ -8,4 +8,4 @@
 
 本修订执行计数均为0：确认实验、诊断、pilot、正式扩展、M0 E3、场景生成和Gurobi科学调用均未发生。Draft PR、最终提交、测试和CI在发布后记录于PR正文，避免追溯文件自引用。
 
-本地验证：M2C2专项在加入最终跨进程锁测试前为 `26 passed`；普通完整回归 `329 passed`；Phase 5端到端 `6 passed`。最终专项数量与Linux/Windows CI由PR正文记录。
+本地基线验证为普通完整回归 `329 passed`、Phase 5端到端 `6 passed`；复审修复后的最终专项数量、完整回归与Linux/Windows CI由PR正文记录，避免文档自引用。
