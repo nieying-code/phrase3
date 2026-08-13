@@ -26,15 +26,22 @@ For every beta–profile combination, all three seeds must be optimal and all en
 
 `R_disc_robust / B >= 0.01`.
 
-The first ascending loss scale that passes defines the upper endpoint of the refined activation bracket; the preceding tested scale (or the C1 anchor at 0.2) defines the lower endpoint.
+Threshold identification is performed independently for each budget factor (`beta=0.9`, `1.1`, and `1.3`). Within each beta, the frozen order is `C1, T03, T04, T05, C2`. The approved parent evidence is locked separately by beta: C1 has 0/3 substantive activations and C2 has 3/3 substantive activations at every beta.
 
-To distinguish a potentially interpretable interior response from another boundary jump, a separate descriptive gate requires at least two seeds with autonomous reserve ratios in the preregistered inclusive interval `[0.05, 0.50]`. The 5% and 50% values are management-relevance bounds, not statistical significance thresholds.
+The first ascending loss scale that passes defines the upper endpoint of that beta's refined activation bracket; the preceding tested scale defines its lower endpoint. A bracket is reported only when the binary activation sequence is monotone nondecreasing: once activation occurs, later profiles may not return to inactive. A sequence such as inactive-active-inactive is recorded as `nonmonotone_activation_pattern`; that beta produces neither a threshold bracket nor a multi-item candidate. Numerical reserve ratios themselves need not be monotone.
+
+To distinguish a potentially interpretable interior response from another boundary jump, the moderate gate is the logical conjunction:
+
+`moderate_gate_passed = combination_activation_gate_passed AND moderate_seed_count >= 2`.
+
+The moderate interval is the preregistered inclusive range `[0.05, 0.50]`. The 5% and 50% values are management-relevance bounds, not statistical significance thresholds. A moderate count can never pass by itself when a run failed or the full combination activation gate did not pass.
 
 ## Decisions fixed before results
 
-- If no new profile activates, retain `(0.5, 0.6]` as the unresolved bracket and stop.
-- If activation occurs but no profile passes the moderate-reserve gate, report a state transition/boundary response and stop parameter refinement.
-- If a profile passes both gates, it may support a separately reviewed multi-item confirmation design; it does not authorize that experiment.
+- If none of the nine beta-profile combinations activates, report no intermediate activation and stop.
+- If at least one combination activates but none passes the conjunctive moderate gate, report a boundary transition and stop.
+- If at least one combination passes both activation and moderate gates, it may support a separately reviewed multi-item confirmation design; it does not authorize that experiment.
+- Any beta with a nonmonotone activation pattern is excluded from threshold reporting and multi-item candidate selection, regardless of other metrics.
 - Cost, service level, P95, CVaR95, runtime, and manual trend interpretation cannot select a configuration.
 - New loss scales may not be added after results under this protocol.
 

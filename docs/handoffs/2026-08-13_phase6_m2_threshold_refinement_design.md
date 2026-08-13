@@ -6,7 +6,7 @@ Preregister a small C1–C2 threshold-refinement experiment after the approved M
 
 ## Design
 
-- Parent anchors: C1 loss scale 0.2 (0/9 activation) and C2 loss scale 0.6 (9/9 activation).
+- Parent anchors: at each beta, C1 loss scale 0.2 has 0/3 activation and C2 loss scale 0.6 has 3/3 activation (0/9 and 9/9 in total).
 - New fixed profiles: 0.3, 0.4, and 0.5.
 - Seeds: 2026081201, 2026081202, 2026081203.
 - Budget factors: 0.9, 1.1, 1.3.
@@ -17,7 +17,9 @@ The same development seeds are reused solely for paired common-random-number com
 
 ## Decision rules
 
-Combination activation requires 3/3 optimal runs and at least 2/3 substantive activation (`R_disc_robust/B >= 0.01`). A separate moderate-response gate requires at least 2/3 ratios in `[0.05, 0.50]`.
+Combination activation requires 3/3 optimal runs and at least 2/3 substantive activation (`R_disc_robust/B >= 0.01`). The moderate-response gate is not independent: it requires the complete combination activation gate to pass **and** at least 2/3 ratios in `[0.05, 0.50]`.
+
+Thresholds are identified separately for beta 0.9, 1.1, and 1.3 in the fixed order `C1, T03, T04, T05, C2`. Only a monotone inactive-to-active binary sequence may yield a bracket. A return to inactivity is recorded as `nonmonotone_activation_pattern`, and that beta is excluded from threshold and multi-item candidate selection. Reserve ratios need not themselves be monotone.
 
 No result-dependent parameter insertion is allowed. If activation remains a near-100% jump, the mechanism is reported as a state transition rather than a calibrated reserve recommendation.
 
@@ -41,7 +43,8 @@ No result-dependent parameter insertion is allowed. If activation remains a near
 
 - Base merge: PR #45, `aa3a3aa48e44cc5978afdc08da2d380a1fa4c4b0`.
 - Branch: `agent/phase6-m2-threshold-refinement-design`.
-- Design implementation commit: `dd47401`.
+- Initial design implementation commit: `dd47401`.
 - Draft PR: https://github.com/nieying-code/phrase3/pull/46.
-- Local validation: design audit `1 passed`; ordinary regression `283 passed`; Phase 5 `6 passed`; compileall and diff check passed.
-- CI: pending.
+- Local validation after review fixes: design audit `2 passed`; ordinary regression `284 passed`; Phase 5 `6 passed`; compileall and diff check passed.
+- Reviewed design head: `8b859c0f41f438f22db0948818c18071cd71c3f0`.
+- GitHub Actions: run [31664853790](https://github.com/nieying-code/phrase3/actions/runs/31664853790), Linux and Windows successful.

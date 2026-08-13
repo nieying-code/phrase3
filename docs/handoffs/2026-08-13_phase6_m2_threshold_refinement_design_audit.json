@@ -7,17 +7,37 @@
   "design_implementation_commit": "dd47401",
   "design_artifacts": {
     "config_path": "configs/phase6_m2_threshold_refinement.yaml",
-    "config_sha256": "0a3302e833261fb2f6d244a67ee460c760e610d9eeef5c81aa6ecb008c974e55",
+    "config_sha256": "93a4df08a8efd7b695952a7299dc166ea5d255066643a5e79048e92e91562399",
     "preregistration_path": "docs/phase6_m2_threshold_refinement_preregistration.md",
-    "preregistration_sha256": "58966300f6f3889efe7e9da81e96969fe95c15863940687566934c8c64f808b0"
+    "preregistration_sha256": "165412633de096d9bf20d3657dea529931eb109c499e606c803cce9078b6847c"
   },
   "parent_evidence": {
     "audit_path": "docs/handoffs/2026-08-13_phase6_m2_development_grid_audit.json",
     "audit_sha256": "01e3025566c0701f41b4fde6b51d1e13347068e8b8c025873c2578cfbdb349a2",
     "run_artifact_mapping_sha256": "5e8dedaf26113bf1602bcf9813265a77990b734540e25a2bef314a9940b6275a",
     "science_evidence_mapping_sha256": "619c40b858ca32728f33b2cccb32df150ef957307ab9d62840ab0037f285c4b0",
-    "lower_anchor": {"profile_id": "C1", "loss_scale": 0.2, "substantive_activation_runs": 0, "primary_runs": 9},
-    "upper_anchor": {"profile_id": "C2", "loss_scale": 0.6, "substantive_activation_runs": 9, "primary_runs": 9}
+    "lower_anchor": {
+      "profile_id": "C1",
+      "loss_scale": 0.2,
+      "substantive_activation_runs": 0,
+      "primary_runs": 9,
+      "activation_by_beta": {
+        "0.9": {"optimal_seed_count": 3, "substantive_activation_seed_count": 0},
+        "1.1": {"optimal_seed_count": 3, "substantive_activation_seed_count": 0},
+        "1.3": {"optimal_seed_count": 3, "substantive_activation_seed_count": 0}
+      }
+    },
+    "upper_anchor": {
+      "profile_id": "C2",
+      "loss_scale": 0.6,
+      "substantive_activation_runs": 9,
+      "primary_runs": 9,
+      "activation_by_beta": {
+        "0.9": {"optimal_seed_count": 3, "substantive_activation_seed_count": 3},
+        "1.1": {"optimal_seed_count": 3, "substantive_activation_seed_count": 3},
+        "1.3": {"optimal_seed_count": 3, "substantive_activation_seed_count": 3}
+      }
+    }
   },
   "new_matrix": {
     "tier_id": "V1",
@@ -39,13 +59,22 @@
     "minimum_substantive_activation_seed_count": 2,
     "moderate_autonomous_reserve_ratio_interval": [0.05, 0.5],
     "minimum_moderate_activation_seed_count": 2,
+    "moderate_gate_formula": "combination_activation_gate_passed AND moderate_seed_count >= 2",
+    "threshold_evaluated_independently_by_beta": true,
+    "ordered_profiles_per_beta": ["C1", "T03", "T04", "T05", "C2"],
+    "activation_status_must_be_monotone_nondecreasing": true,
+    "numerical_reserve_ratio_monotonicity_required": false,
+    "nonmonotone_status": "nonmonotone_activation_pattern",
+    "nonmonotone_beta_threshold_bracket_allowed": false,
+    "nonmonotone_beta_multi_item_candidate_allowed": false,
     "all_three_seeds_optimal_required": true,
     "excluded_selection_metrics": ["cost", "service_level", "P95", "CVaR95", "wall_time", "manual_trend"]
   },
   "stop_rules": {
-    "no_activation": "retain_bracket_0p5_to_0p6_and_stop",
-    "activation_without_moderate_reserve": "report_state_transition_and_stop",
-    "moderate_activation": "permit_separate_multi_item_design_PR_only",
+    "no_activated_refinement_combination": "no_intermediate_activation_and_stop",
+    "activation_without_any_moderate_combination": "boundary_jump_and_stop",
+    "activation_and_moderate_combination": "permit_separate_multi_item_design_PR_only",
+    "nonmonotone_beta": "exclude_beta_from_threshold_and_multi_item_candidates",
     "new_loss_scales_after_results": "forbidden",
     "formal_extension_authorized": false
   },
@@ -64,8 +93,8 @@
     "M0_E3_runs": 0
   },
   "validation": {
-    "design_audit_passed": 1,
-    "ordinary_regression_passed": 283,
+    "design_audit_passed": 2,
+    "ordinary_regression_passed": 284,
     "phase5_end_to_end_passed": 6,
     "compileall_passed": true,
     "git_diff_check_passed": true,
@@ -73,5 +102,11 @@
     "gurobi_call_count": 0
   },
   "draft_pr": "https://github.com/nieying-code/phrase3/pull/46",
-  "github_actions": "pending"
+  "reviewed_design_head": "8b859c0f41f438f22db0948818c18071cd71c3f0",
+  "github_actions": {
+    "run_id": 31664853790,
+    "url": "https://github.com/nieying-code/phrase3/actions/runs/31664853790",
+    "linux": "success",
+    "windows": "success"
+  }
 }

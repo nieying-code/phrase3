@@ -33,11 +33,19 @@ anchor_profiles:
     role: lower_zero_activation_anchor
     primary_runs: 9
     substantive_activation_runs: 0
+    activation_by_beta:
+      "0.9": {optimal_seed_count: 3, substantive_activation_seed_count: 0}
+      "1.1": {optimal_seed_count: 3, substantive_activation_seed_count: 0}
+      "1.3": {optimal_seed_count: 3, substantive_activation_seed_count: 0}
   C2:
     loss_scale: 0.6
     role: upper_full_activation_anchor
     primary_runs: 9
     substantive_activation_runs: 9
+    activation_by_beta:
+      "0.9": {optimal_seed_count: 3, substantive_activation_seed_count: 3}
+      "1.1": {optimal_seed_count: 3, substantive_activation_seed_count: 3}
+      "1.3": {optimal_seed_count: 3, substantive_activation_seed_count: 3}
   anchors_are_read_only_evidence: true
   anchors_count_toward_new_matrix: false
 
@@ -71,18 +79,28 @@ machine_gates:
     common_random_number_component_hashes_required: true
   moderate_activation:
     minimum_seed_count_in_moderate_interval: 2
+    requires_combination_activation_gate_passed: true
+    formula: combination_activation_gate_passed_and_moderate_seed_count_greater_than_or_equal_to_2
     eligible_for_multi_item_design_only_if_passed: true
   threshold_bracket:
+    evaluated_independently_by_beta: true
+    ordered_profiles: [C1, T03, T04, T05, C2]
     identify_first_ascending_loss_scale_with_combination_activation: true
     lower_endpoint_is_previous_tested_scale_or_C1_anchor: true
     upper_endpoint_is_first_passing_scale: true
+    activation_status_must_be_monotone_nondecreasing: true
+    numerical_reserve_ratio_monotonicity_required: false
+    nonmonotone_status: nonmonotone_activation_pattern
+    nonmonotone_beta_threshold_bracket_allowed: false
+    nonmonotone_beta_multi_item_candidate_allowed: false
   selection_metrics_excluded:
     [cost, service_level, P95, CVaR95, wall_time, manual_trend]
 
 stop_rules:
-  no_refinement_profile_activates: retain_bracket_0p5_to_0p6_and_stop
-  activation_without_moderate_reserve: report_state_transition_and_stop
-  moderate_activation_found: permit_separate_multi_item_design_PR_only
+  no_activated_refinement_combination: no_intermediate_activation_and_stop
+  activation_without_any_moderate_combination: boundary_jump_and_stop
+  activation_and_moderate_combination: permit_separate_multi_item_design_PR_only
+  nonmonotone_beta: exclude_beta_from_threshold_and_multi_item_candidates
   parameter_chasing_or_new_loss_scales_after_results: forbidden
   formal_extension_authorized: false
 
