@@ -1,0 +1,39 @@
+{
+  "audit_id": "phase6_m2_two_item_confirmation_design_v1_0",
+  "status": "candidate_design_pending_review",
+  "parent_results_pr": 48,
+  "design": {
+    "items": 2,
+    "periods": 6,
+    "training_scenarios": 50,
+    "seeds": [2026081301, 2026081302, 2026081303, 2026081304, 2026081305],
+    "betas": [1.1, 1.3],
+    "profiles": ["C0", "C1", "T03"],
+    "configuration_count": 30
+  },
+  "scientific_rules": {
+    "C0_exact_fulfillment": true,
+    "common_random_numbers": true,
+    "item_vulnerability_multipliers": {"relief_food_1": 0.8, "relief_food_2": 1.2},
+    "shared_emergency_reserve_pool": true,
+    "formal_extension_authorized": false
+  },
+  "execution_counts": {
+    "confirmation_runs": 0,
+    "pilot_runs": 0,
+    "formal_extension_runs": 0,
+    "M0_E3_runs": 0,
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0
+  },
+  "validation": {
+    "specialized_passed": 4,
+    "complete_regression_passed": 313,
+    "phase5_passed": 6,
+    "compileall_passed": true,
+    "git_diff_check_passed": true
+  },
+  "draft_pr": "pending",
+  "final_head": "pending",
+  "github_actions": "pending"
+}

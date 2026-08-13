@@ -1,0 +1,128 @@
+protocol_id: phase6_m2_two_item_confirmation_design_v1_0
+version: 1.0.0-candidate
+status: candidate_design_pending_review
+initial_draft_on: 2026-08-13
+revised_on: 2026-08-13
+
+parent_evidence:
+  threshold_results_pr: 48
+  threshold_audit: docs/handoffs/2026-08-13_phase6_m2_threshold_refinement_grid_audit.json
+  threshold_audit_sha256: 886a1657c511e1df13b252bb909b037cfd1d2a3790471b49e219a1d4f345d6ba
+  required_parent_decision: permit_separate_multi_item_design_PR_only
+  eligible_parent_combinations:
+    - {beta: 1.1, profile_id: T03}
+    - {beta: 1.3, profile_id: T03}
+
+scientific_model:
+  base_model: M2_supply_disruption
+  item_count: 2
+  periods: 6
+  training_scenario_count: 50
+  shared_emergency_reserve_pool: true
+  first_stage_budget_equality_unchanged: true
+  relative_complete_recourse_unchanged: true
+  emergency_price_and_shortage_penalty: frozen_M2_baseline
+  item_archetype_source: first_two_frozen_phase6_item_archetypes
+  items:
+    - id: relief_food_1
+      demand_multiplier: 1.0
+      regular_price_multiplier: 1.0
+      shelf_life_periods: 6
+      supply_vulnerability_multiplier: 0.8
+    - id: relief_food_2
+      demand_multiplier: 0.75
+      regular_price_multiplier: 1.2
+      shelf_life_periods: 4
+      supply_vulnerability_multiplier: 1.2
+  fulfillment_formula_when_enabled: clip_one_minus_profile_loss_scale_times_item_vulnerability_multiplier_times_normal_cdf_demand_latent
+  item_vulnerability_is_deterministic_and_adds_no_random_draws: true
+  C0_forces_fulfillment_exactly_one_for_every_item_period_scenario: true
+
+confirmation_preregistration:
+  execution_allowed_in_this_revision: false
+  seeds: [2026081301, 2026081302, 2026081303, 2026081304, 2026081305]
+  seeds_must_be_disjoint_from_all_M0_M1_M2_development_pilot_formal_and_test_seeds: true
+  beta: [1.1, 1.3]
+  profiles:
+    C0: {enabled: false, loss_scale: 0.0, recovery_fraction: 0.0, role: no_disruption_control}
+    C1: {enabled: true, loss_scale: 0.2, recovery_fraction: 0.0, role: light_disruption_control}
+    T03: {enabled: true, loss_scale: 0.3, recovery_fraction: 0.0, role: threshold_neighborhood_treatment}
+  configuration_count: 30
+  execution_order: seed_then_beta_then_C0_C1_T03
+  strictly_serial: true
+  all_profiles_run_without_adaptive_stopping: true
+  common_random_numbers_within_seed_beta:
+    required_equal_components: [latent_draw, demand, emergency_price, emergency_supply, scenario_order]
+    fulfillment_component_expected_to_differ_by_profile: true
+    new_random_draws_for_disruption: 0
+
+reserve_identification:
+  minimum_feasible_reserve: 0.0_without_procurement_cap
+  tolerance_optimal_interval: complete_finite_scenario_extensive_model
+  restricted_CCG_master_for_interval_forbidden: true
+  numerical_activation_ratio_strictly_greater_than: 1.0e-4
+  substantive_activation_ratio_greater_than_or_equal_to: 0.01
+  moderate_autonomous_reserve_ratio_interval: [0.05, 0.50]
+  moderate_interval_endpoints_inclusive: true
+
+machine_gates:
+  completeness:
+    required_primary_runs: 30
+    all_runs_optimal: true
+    failed_timeout_invalid_duplicate_or_diagnostic_runs_allowed: 0
+    all_endpoint_exact_recourse_evaluations_optimal: true
+    all_fixed_reserve_policies_reoptimized: true
+  common_random_numbers:
+    all_seed_beta_profile_triplets_verified: true
+    mismatch_status: common_random_number_mismatch
+    mismatch_blocks_all_confirmation_conclusions: true
+  per_beta_confirmation:
+    C0_substantive_activation_seed_count_maximum: 0
+    T03_substantive_activation_seed_count_minimum: 3
+    T03_moderate_seed_count_minimum: 3
+    T03_activation_seed_count_must_be_strictly_greater_than_C1: true
+    cost_service_or_manual_trend_selection_forbidden: true
+  shared_reserve_cross_item_evidence:
+    evaluated_only_for_T03_at_each_beta: true
+    minimum_seed_count: 3
+    both_items_each_have_positive_emergency_spend_in_at_least_one_scenario: true
+    emergency_spend_positive_tolerance: 1.0e-7
+    scenario_allocation_share_variation_required: true
+    minimum_absolute_item1_emergency_spend_share_range: 1.0e-4
+    minimum_scenarios_with_positive_total_emergency_spend: 2
+    interpretation: shared_pool_is_adaptively_reallocated_across_items_and_scenarios
+  overall_confirmation:
+    minimum_passing_beta_count: 1
+    formula: completeness_and_CRN_and_at_least_one_beta_passes_activation_moderate_and_cross_item_gates
+    success_decision: permit_separate_formal_extension_design_PR_only
+    failure_decision: two_item_confirmation_not_established_and_stop
+    formal_extension_authorized: false
+
+fixed_autonomous_reserve_policies:
+  rho: [0.0, 0.1, 0.3, 0.5]
+  reserve_formula: R_min_feas_plus_rho_times_budget_minus_R_min_feas
+  reoptimize_regular_purchase_for_every_policy: true
+
+required_outputs:
+  run_identity: [run_id, case_id, seed, beta, profile_id, git_sha, git_tree_sha, five_fingerprints]
+  reserve: [budget, reference_budget, R_star, R_min_feas, R_min_opt, R_max_opt, R_disc_robust, R_disc_robust_ratio, numerical_activation, substantive_activation, moderate_activation]
+  per_item: [contract_purchase, delivered_regular_quantity, undelivered_contract_quantity, emergency_purchase, emergency_spend, emergency_spend_share, shortage, demand_weighted_service_level, early_disposal, expired_waste, total_disposal]
+  shared_pool: [scenario_total_emergency_spend, scenario_item_emergency_spend_shares, reserve_binding_scenario_count, item1_emergency_spend_share_range, both_items_channel_active]
+  scenario_identity: [joint_scenario_set_sha256, latent_draw_sha256, demand_sha256, fulfillment_sha256, emergency_price_sha256, emergency_supply_sha256, scenario_order_sha256]
+  validation: [endpoint_exact_objectives, endpoint_failure_counts, fixed_policy_results, stage_runtimes, total_wall_seconds, sampled_peak_RSS_mb]
+
+statistical_role:
+  type: finite_descriptive_mechanism_confirmation
+  independent_unit: seed
+  technical_repetitions: 1
+  strong_significance_claims_forbidden: true
+  test_scenarios_or_service_metrics_used_for_configuration_selection: false
+
+execution_boundaries:
+  runner_implemented: false
+  confirmation_runs: 0
+  pilot_runs: 0
+  formal_extension_runs: 0
+  M0_E3_runs: 0
+  scenario_generation_count: 0
+  gurobi_call_count: 0
