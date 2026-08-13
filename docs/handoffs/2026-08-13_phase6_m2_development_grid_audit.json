@@ -1,0 +1,3770 @@
+{
+  "audit_id": "phase6_m2_supply_disruption_v1_1_development_grid_v1",
+  "status": "development_grid_complete_pending_review",
+  "execution": {
+    "branch": "results/phase6-m2-development-grid-v1-1",
+    "run_id_prefix": "m2dev_v1_1_20260813",
+    "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+    "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+    "working_tree_dirty": false,
+    "untracked_execution_input_count_at_start": 0,
+    "strictly_serial": true
+  },
+  "design": {
+    "tier_id": "V1",
+    "seeds": [
+      2026081201,
+      2026081202,
+      2026081203
+    ],
+    "betas": [
+      0.9,
+      1.1,
+      1.3
+    ],
+    "profiles": [
+      "C0",
+      "C1",
+      "C2"
+    ],
+    "required_case_count": 27,
+    "activation_thresholds": {
+      "numerical_strictly_greater_than": 0.0001,
+      "substantive_greater_than_or_equal_to": 0.01
+    }
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+    "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+    "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+    "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "runs": [
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081201_beta0p90_profileC0",
+      "case_id": "V1_seed2026081201_beta0p90_profileC0",
+      "tier_id": "V1",
+      "seed": 2026081201,
+      "beta": 0.9,
+      "profile_id": "C0",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "535c80c7697a4cd95fad06ff3094e090008ee42ceacbd003293240c9ab8bebf1",
+        "manifest_sha256": "d3276f976eb2a65b6ccfc9d8041b583addda35d0a4bd89c19f8c11d38c11b36d",
+        "status_summary_sha256": "14588d8977504fc445f90b089f9cfd33a4f8d0d686005255da2e199883dc2588",
+        "heartbeat_sha256": "14588d8977504fc445f90b089f9cfd33a4f8d0d686005255da2e199883dc2588"
+      },
+      "budget": 1107.2893851278257,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.00035332924209296887,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 22340.831343062495,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.002244083138066344,
+      "maximum_endpoint_consistency_difference": 0.0022440831307903863,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 22340.831343062495,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "84e7c8b04e73f8dda7c04234d5d01267bc6afd798fa5964e013676ea98e9ffec"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 110.72893851278258,
+          "objective": 23044.09875732414,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "c41eefab32f134a4ad0c8ef7c5d35663a4c993689adc1470853f0004dd4a7dfc"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 332.1868155383477,
+          "objective": 24523.407252695088,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "e561143bf3597dddd67beb80201ac74006bcaf48434c20e2c60064a43b46b95c"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 553.6446925639128,
+          "objective": 26016.688739113913,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "0ba00106821c71c1b27fff17a50079f8adbd7d2a27d97eddff9944a499100129"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 1.0,
+        "demand_weighted_mean": 1.0,
+        "minimum": 1.0,
+        "p05": 1.0,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "total_demand_weighted_fulfillment_correlation": null,
+        "correlation_status": "constant_fulfillment"
+      },
+      "joint_scenario_set_sha256": "0a7da1c3b72f37578906626ab099bf2fc657ade59746fc6e253d2a4bdbc56e86",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "e0fa40f9de7af19ba22177bb5c9d4aa7feaed859ea2fcceb0cf788c2ddf20b86",
+        "demand_sha256": "cbfa409342021b4fa2456b2fd34124e7df003e18876846383577edaa1b719c50",
+        "fulfillment_sha256": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+        "emergency_price_sha256": "02c10d0ecea019d0ef003a25333dff803387a41afce83ccda3fb92a5ce115970",
+        "emergency_supply_sha256": "cb9b0ee02648db28c5c49c01b67dcfcbb64e0abab1f36e44131b19db9c6af8a9"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.7755379000000175,
+      "peak_memory_mb": 98.82421875,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0022440831343062493
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081201_beta0p90_profileC1",
+      "case_id": "V1_seed2026081201_beta0p90_profileC1",
+      "tier_id": "V1",
+      "seed": 2026081201,
+      "beta": 0.9,
+      "profile_id": "C1",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "63a3ccf6fd4b78b2217832d832f141ba25d96c96a2965169dd31379721ef5b40",
+        "manifest_sha256": "10fae27df144e6de475d36a1f90f2daa1887c619c93c153295645d64f7cb1f52",
+        "status_summary_sha256": "4064ce533c94f382dfff4469304e6c77f1a868578cde0f67db090ee0f15d4019",
+        "heartbeat_sha256": "4064ce533c94f382dfff4469304e6c77f1a868578cde0f67db090ee0f15d4019"
+      },
+      "budget": 1107.2893851278257,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.0010784978414066415,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 26619.515501845897,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.002671951548109064,
+      "maximum_endpoint_consistency_difference": 0.002671951548109064,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 26619.515501845897,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "3ecf3c72887b51647f58bab7248500479a7f3ea672d8f4ad3110d3822bb14868"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 110.72893851278258,
+          "objective": 26893.843689914556,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "97ab58b758b9c9f473ccab9aa3d173ac72f672e7f224b8abfd8a63e27700e66b"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 332.1868155383477,
+          "objective": 27524.35777860621,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "ebd7c5f45c1e221f8ce2a5087ac8e442920d2c81ad591c585a2f0725d40ac7b6"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 553.6446925639128,
+          "objective": 28194.37750838567,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "58f8b610865e44c5586e68c0ab63b2c62d41b31bcd42336217f2f3354dc89cd5"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.8961596957007862,
+        "demand_weighted_mean": 0.879664350369373,
+        "minimum": 0.800395260944513,
+        "p05": 0.8110014520948725,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          0.898286400566178,
+          0.8955003946126464,
+          0.8866064239236525,
+          0.8952385482192589,
+          0.8969516815464434,
+          0.9043747253365376
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9689890907892245,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "9fd4617ced91fc30e2baa5a3c681855fa0f17ac2d45c7d72f89e39987406f7c9",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "e0fa40f9de7af19ba22177bb5c9d4aa7feaed859ea2fcceb0cf788c2ddf20b86",
+        "demand_sha256": "cbfa409342021b4fa2456b2fd34124e7df003e18876846383577edaa1b719c50",
+        "fulfillment_sha256": "7f91ecea260e023d7e0e3b87117ce3261504fc99b08b60b70f1b793d1b161ed4",
+        "emergency_price_sha256": "02c10d0ecea019d0ef003a25333dff803387a41afce83ccda3fb92a5ce115970",
+        "emergency_supply_sha256": "cb9b0ee02648db28c5c49c01b67dcfcbb64e0abab1f36e44131b19db9c6af8a9"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.6349987999999485,
+      "peak_memory_mb": 96.578125,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.00267195155018459
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081201_beta0p90_profileC2",
+      "case_id": "V1_seed2026081201_beta0p90_profileC2",
+      "tier_id": "V1",
+      "seed": 2026081201,
+      "beta": 0.9,
+      "profile_id": "C2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "a79f609bfbe8a0e843281d5c02d9ef83f46e9708eb5de1cf52b96574814e486d",
+        "manifest_sha256": "fcf29db0cbc24960f1b7a6285c097d97299ff736d7878f719cfe9d74330befca",
+        "status_summary_sha256": "a0fb6aadc79c8ae06784853dffaf9c168935f386498634c71cf72c67117a4f2c",
+        "heartbeat_sha256": "a0fb6aadc79c8ae06784853dffaf9c168935f386498634c71cf72c67117a4f2c"
+      },
+      "budget": 1107.2893851278257,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 1107.2893851278257,
+      "R_star_ratio": 1.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 1107.2883486651824,
+      "R_max_opt": 1107.2893851278257,
+      "R_disc_robust": 1107.2883486651824,
+      "R_disc_robust_ratio": 0.9999990639640756,
+      "numerical_activation": true,
+      "substantive_activation": true,
+      "complete_extensive_objective": 30388.852587234644,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.003048885253519984,
+      "maximum_endpoint_consistency_difference": 0.0,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 34753.39938280898,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "2a2c9954cf3d9653e58bd4c4f8771221b02709a9658ac19c1a9d2ae3b9f2e1b0"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 110.72893851278258,
+          "objective": 34208.83418900472,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "b9dc340cb85d28304701834d135301a21f957cfdcdb407d70b5267749f01c605"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 332.1868155383477,
+          "objective": 33248.262236195886,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "5ee855cd121ddb8a259462342391ec8518fe41b77097fa2de31b486f0ce6a439"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 553.6446925639128,
+          "objective": 32309.851884926804,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "d94538464bfebd4e261d852a1cdaa54b5f8483a4ddd7620122b643e561f7bbcc"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.6884790871023585,
+        "demand_weighted_mean": 0.6389930511081191,
+        "minimum": 0.4011857828335389,
+        "p05": 0.4330043562846176,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.15666666666666668,
+        "period_means": [
+          0.6948592016985341,
+          0.6865011838379392,
+          0.6598192717709576,
+          0.6857156446577765,
+          0.6908550446393305,
+          0.7131241760096126
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9689890907892243,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "a60142425f1e335ce59fc3a9ddd3f8af789f24bf2f6e5313d0bd9d792a1d854d",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "e0fa40f9de7af19ba22177bb5c9d4aa7feaed859ea2fcceb0cf788c2ddf20b86",
+        "demand_sha256": "cbfa409342021b4fa2456b2fd34124e7df003e18876846383577edaa1b719c50",
+        "fulfillment_sha256": "e7cdba035e722aa3a507c1e13441741087dc815b54ae6aa87ae5051ca215ef9b",
+        "emergency_price_sha256": "02c10d0ecea019d0ef003a25333dff803387a41afce83ccda3fb92a5ce115970",
+        "emergency_supply_sha256": "cb9b0ee02648db28c5c49c01b67dcfcbb64e0abab1f36e44131b19db9c6af8a9"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.581830200000013,
+      "peak_memory_mb": 100.4453125,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0030488852587234644
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081201_beta1p10_profileC0",
+      "case_id": "V1_seed2026081201_beta1p10_profileC0",
+      "tier_id": "V1",
+      "seed": 2026081201,
+      "beta": 1.1,
+      "profile_id": "C0",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "d1de6d53b27bab90ed1aa48b7221e7ff2ddbac7f7c5ca60c9e6d99bddc90a3fe",
+        "manifest_sha256": "de7e51488f49ce3efe003d2cba4fe942aa3a5f5185a4ee871a42ec6f511a1cb5",
+        "status_summary_sha256": "18414627c918ac5a52c94e47abba2b486f334eaf2c3cc45092ff040284a156f3",
+        "heartbeat_sha256": "18414627c918ac5a52c94e47abba2b486f334eaf2c3cc45092ff040284a156f3"
+      },
+      "budget": 1353.3536929340091,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.000275352054397778,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 17188.935629440246,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.001728893559629796,
+      "maximum_endpoint_consistency_difference": 0.001728893559629796,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 17188.935629440246,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "f5b7f55e5eb56f2d4d84a9af5ba849caba372e6f9fc698c25e000a006651a1d6"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 135.33536929340093,
+          "objective": 18038.8851198489,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "0d12582ba5aa568f4554840a5ccf5f78e01c240930c340690a17bfa1cd3b6c5d"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 406.0061078802027,
+          "objective": 19829.531695727565,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "8e854dd0053938bac90d96b0e66c09ea85517bdab6118d447f32ec9cabb7308a"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 676.6768464670046,
+          "objective": 21666.205871040835,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "63cafb6cf472985eff33729eb5d3e81635423b3df3e136e122e1a45e26342a19"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 1.0,
+        "demand_weighted_mean": 1.0,
+        "minimum": 1.0,
+        "p05": 1.0,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "total_demand_weighted_fulfillment_correlation": null,
+        "correlation_status": "constant_fulfillment"
+      },
+      "joint_scenario_set_sha256": "0a7da1c3b72f37578906626ab099bf2fc657ade59746fc6e253d2a4bdbc56e86",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "e0fa40f9de7af19ba22177bb5c9d4aa7feaed859ea2fcceb0cf788c2ddf20b86",
+        "demand_sha256": "cbfa409342021b4fa2456b2fd34124e7df003e18876846383577edaa1b719c50",
+        "fulfillment_sha256": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+        "emergency_price_sha256": "02c10d0ecea019d0ef003a25333dff803387a41afce83ccda3fb92a5ce115970",
+        "emergency_supply_sha256": "cb9b0ee02648db28c5c49c01b67dcfcbb64e0abab1f36e44131b19db9c6af8a9"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.618871300000023,
+      "peak_memory_mb": 96.98828125,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0017288935629440245
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081201_beta1p10_profileC1",
+      "case_id": "V1_seed2026081201_beta1p10_profileC1",
+      "tier_id": "V1",
+      "seed": 2026081201,
+      "beta": 1.1,
+      "profile_id": "C1",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "af32b13785b102c10ee096023a3c52b069588a671f235305464c1c4e9c34ea4c",
+        "manifest_sha256": "0d5d85d75fad776345a872b256a8fa06acea948dd92c4dcecd4c645374fa879f",
+        "status_summary_sha256": "c5cbda36cbb700834cef0df8aa220ada6cacee8926a0d5cca51fb73452f44ffd",
+        "heartbeat_sha256": "c5cbda36cbb700834cef0df8aa220ada6cacee8926a0d5cca51fb73452f44ffd"
+      },
+      "budget": 1353.3536929340091,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.0009069959793495773,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 22370.599607944037,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0022470599542430136,
+      "maximum_endpoint_consistency_difference": 0.0022470599542430136,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 22370.599607944037,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "8fc1f0422e0b31562fdc41d09a9b91305cc85c2761d2ef5bbc79e37556ebf2da"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 135.33536929340093,
+          "objective": 22705.889615583506,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "03d12b1c1046ff698168470924696ffbb2f1679fbf9e6d86d4c770721f819187"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 406.0061078802027,
+          "objective": 23489.618528065937,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "005d8c2dbdadd8b46ac9906e28ecc78d22b1a414991b896b8daeae1ce2f2bcb6"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 676.6768464670046,
+          "objective": 24290.507078993523,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "add013ccf7b00c357d310891f158cd0ba952b3c0d8f4e507278c5609813ea32f"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.8961596957007862,
+        "demand_weighted_mean": 0.879664350369373,
+        "minimum": 0.800395260944513,
+        "p05": 0.8110014520948725,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          0.898286400566178,
+          0.8955003946126464,
+          0.8866064239236525,
+          0.8952385482192589,
+          0.8969516815464434,
+          0.9043747253365376
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9689890907892245,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "9fd4617ced91fc30e2baa5a3c681855fa0f17ac2d45c7d72f89e39987406f7c9",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "e0fa40f9de7af19ba22177bb5c9d4aa7feaed859ea2fcceb0cf788c2ddf20b86",
+        "demand_sha256": "cbfa409342021b4fa2456b2fd34124e7df003e18876846383577edaa1b719c50",
+        "fulfillment_sha256": "7f91ecea260e023d7e0e3b87117ce3261504fc99b08b60b70f1b793d1b161ed4",
+        "emergency_price_sha256": "02c10d0ecea019d0ef003a25333dff803387a41afce83ccda3fb92a5ce115970",
+        "emergency_supply_sha256": "cb9b0ee02648db28c5c49c01b67dcfcbb64e0abab1f36e44131b19db9c6af8a9"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.6160798999999315,
+      "peak_memory_mb": 96.9375,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0022470599607944037
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081201_beta1p10_profileC2",
+      "case_id": "V1_seed2026081201_beta1p10_profileC2",
+      "tier_id": "V1",
+      "seed": 2026081201,
+      "beta": 1.1,
+      "profile_id": "C2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "6c4e229310a1fb1dd79616bf2058f2c526a105eed33981e6329353e6dfcc3c1c",
+        "manifest_sha256": "dd51b2485b7215f4e22133fb7b15f9d92fb66b58a341421c35fba7e764255525",
+        "status_summary_sha256": "8526fb38235c4326eb105567a973b0e47f8ff99ec843164d57cd8231c003e330",
+        "heartbeat_sha256": "8526fb38235c4326eb105567a973b0e47f8ff99ec843164d57cd8231c003e330"
+      },
+      "budget": 1353.3536929340091,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 1353.3536929340091,
+      "R_star_ratio": 1.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 1353.3516087117391,
+      "R_max_opt": 1353.3536929340091,
+      "R_disc_robust": 1353.3516087117391,
+      "R_disc_robust_ratio": 0.9999984599574517,
+      "numerical_activation": true,
+      "substantive_activation": true,
+      "complete_extensive_objective": 27532.979980835284,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0027632979981717654,
+      "maximum_endpoint_consistency_difference": 0.0,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 32325.056359231574,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "dbcf726c629320f093faf31f26afa2a11fb1733f9dcbd8554d51dc0c0c8636b1"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 135.33536929340093,
+          "objective": 31599.160332347965,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "3f3eb5357b3e8b4b8763788cf222541d73145b4098a4d9007d62b8d010d843e5"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 406.0061078802027,
+          "objective": 30452.275689088,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "299030ca723400fdbdb18b0d3ff210f29ffa0ccac30157eb3e218a10cd7475b1"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 676.6768464670046,
+          "objective": 29310.308926680344,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "217d8f4771e1c2aa49f8fd311396b64cc0e2c4373c1b1c573ab48b3aedc08d72"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.6884790871023585,
+        "demand_weighted_mean": 0.6389930511081191,
+        "minimum": 0.4011857828335389,
+        "p05": 0.4330043562846176,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.15666666666666668,
+        "period_means": [
+          0.6948592016985341,
+          0.6865011838379392,
+          0.6598192717709576,
+          0.6857156446577765,
+          0.6908550446393305,
+          0.7131241760096126
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9689890907892243,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "a60142425f1e335ce59fc3a9ddd3f8af789f24bf2f6e5313d0bd9d792a1d854d",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "e0fa40f9de7af19ba22177bb5c9d4aa7feaed859ea2fcceb0cf788c2ddf20b86",
+        "demand_sha256": "cbfa409342021b4fa2456b2fd34124e7df003e18876846383577edaa1b719c50",
+        "fulfillment_sha256": "e7cdba035e722aa3a507c1e13441741087dc815b54ae6aa87ae5051ca215ef9b",
+        "emergency_price_sha256": "02c10d0ecea019d0ef003a25333dff803387a41afce83ccda3fb92a5ce115970",
+        "emergency_supply_sha256": "cb9b0ee02648db28c5c49c01b67dcfcbb64e0abab1f36e44131b19db9c6af8a9"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.542367399999989,
+      "peak_memory_mb": 100.7578125,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.002763297998083528
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081201_beta1p30_profileC0",
+      "case_id": "V1_seed2026081201_beta1p30_profileC0",
+      "tier_id": "V1",
+      "seed": 2026081201,
+      "beta": 1.3,
+      "profile_id": "C0",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "059452d2c7b74d884d00ebd57edd5b72279f5e0c27e8541afffc5433799a7cd0",
+        "manifest_sha256": "42a8d3bc4ddb42a398f55948a3a7dd8a0e5cadbf9d39dbb7d60c72f827ca3bc9",
+        "status_summary_sha256": "a3cb6ffc053b6ce6151bdc25adedfb463a7aa52fb855cd80f959c74f2c4af05c",
+        "heartbeat_sha256": "a3cb6ffc053b6ce6151bdc25adedfb463a7aa52fb855cd80f959c74f2c4af05c"
+      },
+      "budget": 1599.4180007401926,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.00019401256367162869,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 12061.170131906021,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0012161170143372146,
+      "maximum_endpoint_consistency_difference": 0.0012161170106992358,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 12061.170131906021,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "629a721df8990ee8eb5a29121207a30da57620829943823c2063c41a7ef19692"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 159.94180007401928,
+          "objective": 13068.559568067341,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "2e6c0680ff2e3bb50c65d24efdda5696d85c3096db8048cd0feae40ffefa8c51"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 479.82540022205774,
+          "objective": 15142.769826034459,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "2d07823168a2c4c23606e3b98cb7e11fefeb8a91a65eea0ed97e9d67797d830d"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 799.7090003700963,
+          "objective": 17345.43622010186,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "86f33a2937353bcc4c8ad45b0cd9cb62a049d88d450d743517d5280d99e3f1ed"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 1.0,
+        "demand_weighted_mean": 1.0,
+        "minimum": 1.0,
+        "p05": 1.0,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "total_demand_weighted_fulfillment_correlation": null,
+        "correlation_status": "constant_fulfillment"
+      },
+      "joint_scenario_set_sha256": "0a7da1c3b72f37578906626ab099bf2fc657ade59746fc6e253d2a4bdbc56e86",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "e0fa40f9de7af19ba22177bb5c9d4aa7feaed859ea2fcceb0cf788c2ddf20b86",
+        "demand_sha256": "cbfa409342021b4fa2456b2fd34124e7df003e18876846383577edaa1b719c50",
+        "fulfillment_sha256": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+        "emergency_price_sha256": "02c10d0ecea019d0ef003a25333dff803387a41afce83ccda3fb92a5ce115970",
+        "emergency_supply_sha256": "cb9b0ee02648db28c5c49c01b67dcfcbb64e0abab1f36e44131b19db9c6af8a9"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.511733000000049,
+      "peak_memory_mb": 100.59765625,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.001216117013190602
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081201_beta1p30_profileC1",
+      "case_id": "V1_seed2026081201_beta1p30_profileC1",
+      "tier_id": "V1",
+      "seed": 2026081201,
+      "beta": 1.3,
+      "profile_id": "C1",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "7dff97b645e4ec30b9a567d8a62ca94bc099be9fa9d0934a02621000ffffdd04",
+        "manifest_sha256": "07e9f536f127501a871af15b97ab14b4cdfa6ead2abe507b8b5b9aa083a9531c",
+        "status_summary_sha256": "188b04788a3644a1246cbb8a07098012c2a2129e5e49c166231d1bce45c3421b",
+        "heartbeat_sha256": "188b04788a3644a1246cbb8a07098012c2a2129e5e49c166231d1bce45c3421b"
+      },
+      "budget": 1599.4180007401926,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.0007613630191684354,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 18174.923521014254,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0018274923495482653,
+      "maximum_endpoint_consistency_difference": 0.0018274923495482653,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 18174.923521014254,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "a971aff7b4cebb63b562f7f7505fc6c6105dd984845e52388734ba7170c6ffc3"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 159.94180007401928,
+          "objective": 18559.493790853965,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "b5aa2dfb98fb2d66d0bbbd64a2d9900079399e84a78f9418295333a0e2877790"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 479.82540022205774,
+          "objective": 19457.3203421951,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "4bd213b61dcd70afc807eae310d93a29a2296ce92395183f0f58519e537e0ddd"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 799.7090003700963,
+          "objective": 20440.549075502586,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "003e5e5d3f785238334726aaab970cdeecff8fbc6a3fd2751d47810a4126db7d"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.8961596957007862,
+        "demand_weighted_mean": 0.879664350369373,
+        "minimum": 0.800395260944513,
+        "p05": 0.8110014520948725,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          0.898286400566178,
+          0.8955003946126464,
+          0.8866064239236525,
+          0.8952385482192589,
+          0.8969516815464434,
+          0.9043747253365376
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9689890907892245,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "9fd4617ced91fc30e2baa5a3c681855fa0f17ac2d45c7d72f89e39987406f7c9",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "e0fa40f9de7af19ba22177bb5c9d4aa7feaed859ea2fcceb0cf788c2ddf20b86",
+        "demand_sha256": "cbfa409342021b4fa2456b2fd34124e7df003e18876846383577edaa1b719c50",
+        "fulfillment_sha256": "7f91ecea260e023d7e0e3b87117ce3261504fc99b08b60b70f1b793d1b161ed4",
+        "emergency_price_sha256": "02c10d0ecea019d0ef003a25333dff803387a41afce83ccda3fb92a5ce115970",
+        "emergency_supply_sha256": "cb9b0ee02648db28c5c49c01b67dcfcbb64e0abab1f36e44131b19db9c6af8a9"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.497402800000032,
+      "peak_memory_mb": 100.36328125,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0018274923521014253
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081201_beta1p30_profileC2",
+      "case_id": "V1_seed2026081201_beta1p30_profileC2",
+      "tier_id": "V1",
+      "seed": 2026081201,
+      "beta": 1.3,
+      "profile_id": "C2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "49c18bd453d88328c9837b81b425dbe6c9c75d7a141c9e8c7a96439cf6313f29",
+        "manifest_sha256": "d0f98852dc035a2a4e2d969f3ae11f0afdd26eb8e1369484b8cce10151971243",
+        "status_summary_sha256": "cc4dc8b9801769ba88c7f25043589824527026cdc6470ff0ab3327622c96bfd7",
+        "heartbeat_sha256": "cc4dc8b9801769ba88c7f25043589824527026cdc6470ff0ab3327622c96bfd7"
+      },
+      "budget": 1599.4180007401926,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 1448.1863037041437,
+      "R_star_ratio": 0.9054457953042541,
+      "R_min_feas": 0.0,
+      "R_min_opt": 1448.1844166726928,
+      "R_max_opt": 1448.1865510735522,
+      "R_disc_robust": 1448.1844166726928,
+      "R_disc_robust_ratio": 0.9054446154804369,
+      "numerical_activation": true,
+      "substantive_activation": true,
+      "complete_extensive_objective": 24918.589893202487,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.002501858994946815,
+      "maximum_endpoint_consistency_difference": 0.0025018589731189422,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 29952.373903482043,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "0810ccfffaddbf91babde166804ebac1bd8758d162fb8cec77400443e2420975"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 159.94180007401928,
+          "objective": 29106.36912180712,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "40f38864a9d8351fd3a536484b002e5fa1be78d2a9d5c4e8c3218439e197d9a7"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 479.82540022205774,
+          "objective": 27688.95155094905,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "8fc6d56d6f775fb3051e88f2e37eea2fa242a543af3c501f934d7e76a5aea9ce"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 799.7090003700963,
+          "objective": 26388.52886382449,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "e9220957f075219acaf03932e7d0072ece6c2a67698770f1c1f4f71dd94019f4"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.6884790871023585,
+        "demand_weighted_mean": 0.6389930511081191,
+        "minimum": 0.4011857828335389,
+        "p05": 0.4330043562846176,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.15666666666666668,
+        "period_means": [
+          0.6948592016985341,
+          0.6865011838379392,
+          0.6598192717709576,
+          0.6857156446577765,
+          0.6908550446393305,
+          0.7131241760096126
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9689890907892243,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "a60142425f1e335ce59fc3a9ddd3f8af789f24bf2f6e5313d0bd9d792a1d854d",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "e0fa40f9de7af19ba22177bb5c9d4aa7feaed859ea2fcceb0cf788c2ddf20b86",
+        "demand_sha256": "cbfa409342021b4fa2456b2fd34124e7df003e18876846383577edaa1b719c50",
+        "fulfillment_sha256": "e7cdba035e722aa3a507c1e13441741087dc815b54ae6aa87ae5051ca215ef9b",
+        "emergency_price_sha256": "02c10d0ecea019d0ef003a25333dff803387a41afce83ccda3fb92a5ce115970",
+        "emergency_supply_sha256": "cb9b0ee02648db28c5c49c01b67dcfcbb64e0abab1f36e44131b19db9c6af8a9"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.525039099999958,
+      "peak_memory_mb": 100.5390625,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0025018589893202486
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081202_beta0p90_profileC0",
+      "case_id": "V1_seed2026081202_beta0p90_profileC0",
+      "tier_id": "V1",
+      "seed": 2026081202,
+      "beta": 0.9,
+      "profile_id": "C0",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "79a11e08e27dc4c3db644e8537571f3a15453422c575deb90a943300d52b9aa9",
+        "manifest_sha256": "8cede68d517f6a8632e2c579ba89f96cd7618373a186f7a3a446bb0c93f3a9f4",
+        "status_summary_sha256": "0de160ef73c44d59aecb26b17d69546f1d022d14c790a7294858ca6b77f5faf5",
+        "heartbeat_sha256": "0de160ef73c44d59aecb26b17d69546f1d022d14c790a7294858ca6b77f5faf5"
+      },
+      "budget": 1107.2893851278257,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.0003520141023568733,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 16571.243202539637,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0016671243247401435,
+      "maximum_endpoint_consistency_difference": 0.0016671243247401435,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 16571.243202539637,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "4141cf80555deba13b61f73c7e5abe086e1c9312239f912d22b276299d8601f5"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 110.72893851278258,
+          "objective": 17108.939674507918,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "cef9f23dbfb66e7e66e64e72402f1f592560eab4e80ed84e1aa76e382eb85944"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 332.1868155383477,
+          "objective": 18207.45241428427,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "d3bad7b6da82ae5b5345fd44d585afcee30b0140fb892a8eab6888962487f17a"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 553.6446925639128,
+          "objective": 19500.44278842262,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "6b88bd8589f49e800632ad29483def2812e85d0303b34e1968225e77c25ae883"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 1.0,
+        "demand_weighted_mean": 1.0,
+        "minimum": 1.0,
+        "p05": 1.0,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "total_demand_weighted_fulfillment_correlation": null,
+        "correlation_status": "constant_fulfillment"
+      },
+      "joint_scenario_set_sha256": "63a4362c469e35ca84d6b85261d04f628f6b5131183980f4cb3cecd05d867b20",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "46cc1af42c2f731a8a7533c1fd4e3fa2e1558967783b2a08d598b04798509d31",
+        "demand_sha256": "e5feb7e0e41adeab66f0646f237badc429d49e8a1ab47b513d8e88068ea87aa1",
+        "fulfillment_sha256": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+        "emergency_price_sha256": "096402b5dd11981be1ecaf76b8376bc15c411c5c31b4fecaa27877d17e35c4b9",
+        "emergency_supply_sha256": "5592c5407b71580ba568516740b03612a88299138732aad5633e7902e8cc4063"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.519362699999988,
+      "peak_memory_mb": 100.59765625,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0016671243202539636
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081202_beta0p90_profileC1",
+      "case_id": "V1_seed2026081202_beta0p90_profileC1",
+      "tier_id": "V1",
+      "seed": 2026081202,
+      "beta": 0.9,
+      "profile_id": "C1",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "8d6ed8e1b99b77f652248ce518aec6fccbebee48a7841eda8e23db21dd4331ee",
+        "manifest_sha256": "d384d314a33e52e3eec4dc08f6f7fbbae8a87202e7f6510ac184d4561e62eb1c",
+        "status_summary_sha256": "3b2190dee66af8adeb5b0f73a911404e163e4fefcc77463f61f8b2e59cc68263",
+        "heartbeat_sha256": "3b2190dee66af8adeb5b0f73a911404e163e4fefcc77463f61f8b2e59cc68263"
+      },
+      "budget": 1107.2893851278257,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.0019688963256470926,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 20944.649716312462,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0021044649656687398,
+      "maximum_endpoint_consistency_difference": 0.0021044649729446974,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 20944.649716312462,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "2bff24671bfd89181d676f9670cbfdaa314a8422cf96db026fed6c21435b48e4"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 110.72893851278258,
+          "objective": 21063.00291200923,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "b36ca22ad643117be90ed567696c16c8fc3cce12e02c9ae45f492489b863d0b2"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 332.1868155383477,
+          "objective": 21299.709303402753,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "44870609c5b3673f6ef7fe683ea20f83e8a77cf98b565e63f58b76d5003ccd42"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 553.6446925639128,
+          "objective": 21689.94270873461,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "345bef6a3293a014f0d47f71d3244d24b28cba792ccfd982d9da23d7413ce9f6"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.9095334212818339,
+        "demand_weighted_mean": 0.8918464591637976,
+        "minimum": 0.8013546028067623,
+        "p05": 0.8117683023704849,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          0.9077252152527064,
+          0.9137492479470696,
+          0.9065437074171929,
+          0.9067811669867966,
+          0.9072617618925436,
+          0.9151394281946946
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9906666896383503,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "4632a793ab0372182c8000d392f31c9a10c9fd2fe615a92e1944522cdb67e910",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "46cc1af42c2f731a8a7533c1fd4e3fa2e1558967783b2a08d598b04798509d31",
+        "demand_sha256": "e5feb7e0e41adeab66f0646f237badc429d49e8a1ab47b513d8e88068ea87aa1",
+        "fulfillment_sha256": "37a601bdb737a47a9acc5dfb37cf3169d473a52d76c53cabe6c28687e6556ffc",
+        "emergency_price_sha256": "096402b5dd11981be1ecaf76b8376bc15c411c5c31b4fecaa27877d17e35c4b9",
+        "emergency_supply_sha256": "5592c5407b71580ba568516740b03612a88299138732aad5633e7902e8cc4063"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.524891899999943,
+      "peak_memory_mb": 100.91796875,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0021044649716312463
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081202_beta0p90_profileC2",
+      "case_id": "V1_seed2026081202_beta0p90_profileC2",
+      "tier_id": "V1",
+      "seed": 2026081202,
+      "beta": 0.9,
+      "profile_id": "C2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "b1cdd770fb4811d2cb48e97bbed70ab209077f30fb983e8ed95aa41fff18cf69",
+        "manifest_sha256": "47597c87bc3867770b5de04c11eeaf01fb8da921d964b942a884e03b228e88ba",
+        "status_summary_sha256": "ef86d3404acc810b6336d4281df9bbc9c0cfba6ce98511619178914b1eb624a8",
+        "heartbeat_sha256": "ef86d3404acc810b6336d4281df9bbc9c0cfba6ce98511619178914b1eb624a8"
+      },
+      "budget": 1107.2893851278257,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 1107.2893851278257,
+      "R_star_ratio": 1.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 1107.288768890003,
+      "R_max_opt": 1107.2893851278257,
+      "R_disc_robust": 1107.288768890003,
+      "R_disc_robust_ratio": 0.999999443471751,
+      "numerical_activation": true,
+      "substantive_activation": true,
+      "complete_extensive_objective": 23600.0068391697,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.002370000682276441,
+      "maximum_endpoint_consistency_difference": 0.0,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 29481.658941510126,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "dd02cf95e4c3b3712d9b2d340b80781f915f711db34b2aa8b7b46412733a4eab"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 110.72893851278258,
+          "objective": 28729.455280127495,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "87a40c9a1f3ae454832490b797a9a58391b20f3edbe1dcb67677bb565c945c68"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 332.1868155383477,
+          "objective": 27225.04795736223,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "8923793ec875fe956015ba8967de85b13a96d19320246d00e3dfcc8d4a1324a8"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 553.6446925639128,
+          "objective": 25965.92563787508,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "58f8b610865e44c5586e68c0ab63b2c62d41b31bcd42336217f2f3354dc89cd5"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.7286002638455019,
+        "demand_weighted_mean": 0.6755393774913926,
+        "minimum": 0.4040638084202869,
+        "p05": 0.4353049071114548,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.13666666666666666,
+        "period_means": [
+          0.7231756457581194,
+          0.7412477438412085,
+          0.7196311222515788,
+          0.7203435009603899,
+          0.7217852856776307,
+          0.745418284584084
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9906666896383504,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "a3ad60da80fee3e4c910bbb99aa58651e6f0b7a7f2c13b8fcf2559ba3bc27c22",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "46cc1af42c2f731a8a7533c1fd4e3fa2e1558967783b2a08d598b04798509d31",
+        "demand_sha256": "e5feb7e0e41adeab66f0646f237badc429d49e8a1ab47b513d8e88068ea87aa1",
+        "fulfillment_sha256": "315a454468f09448daf1c26d8d9462f24609e6ec66a04dd8acdf35961ba4b45d",
+        "emergency_price_sha256": "096402b5dd11981be1ecaf76b8376bc15c411c5c31b4fecaa27877d17e35c4b9",
+        "emergency_supply_sha256": "5592c5407b71580ba568516740b03612a88299138732aad5633e7902e8cc4063"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.574703899999918,
+      "peak_memory_mb": 101.6171875,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0023700006839169696
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081202_beta1p10_profileC0",
+      "case_id": "V1_seed2026081202_beta1p10_profileC0",
+      "tier_id": "V1",
+      "seed": 2026081202,
+      "beta": 1.1,
+      "profile_id": "C0",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "eddc0a5a7b80da3eda5951c3b5a4fad010f361b8652389b65566be56cd13ceac",
+        "manifest_sha256": "9ab064843b8f520f37f197674f2154ebeed16726dbc677bec27824f631a48f08",
+        "status_summary_sha256": "58745c8936bc299e043e5dd77c0dc77351444563b21c260252e0663afcc777cf",
+        "heartbeat_sha256": "58745c8936bc299e043e5dd77c0dc77351444563b21c260252e0663afcc777cf"
+      },
+      "budget": 1353.3536929340091,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.00024371408710521794,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 11442.199046259202,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0011542199026735034,
+      "maximum_endpoint_consistency_difference": 0.001154219900854514,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 11442.199046259202,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "8a04b3a772fc20be68f9b926f4238edcc71a6cc7102762ee1a97ef5da0719329"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 135.33536929340093,
+          "objective": 12100.613085663841,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "ae156a309694f33383474700efd865eb31a390e0e1da003b9557a4363804a567"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 406.0061078802027,
+          "objective": 13444.992813105762,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "5372d43f6cceb35b38c780a563cfddc493337f0fee11d919082238bab9be2687"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 676.6768464670046,
+          "objective": 15111.295993607098,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "5923b1755178a4bc8902714d3d3bb66269108d4b0304aa2ed241a6ca9084472e"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 1.0,
+        "demand_weighted_mean": 1.0,
+        "minimum": 1.0,
+        "p05": 1.0,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "total_demand_weighted_fulfillment_correlation": null,
+        "correlation_status": "constant_fulfillment"
+      },
+      "joint_scenario_set_sha256": "63a4362c469e35ca84d6b85261d04f628f6b5131183980f4cb3cecd05d867b20",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "46cc1af42c2f731a8a7533c1fd4e3fa2e1558967783b2a08d598b04798509d31",
+        "demand_sha256": "e5feb7e0e41adeab66f0646f237badc429d49e8a1ab47b513d8e88068ea87aa1",
+        "fulfillment_sha256": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+        "emergency_price_sha256": "096402b5dd11981be1ecaf76b8376bc15c411c5c31b4fecaa27877d17e35c4b9",
+        "emergency_supply_sha256": "5592c5407b71580ba568516740b03612a88299138732aad5633e7902e8cc4063"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.577111500000001,
+      "peak_memory_mb": 101.421875,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0011542199046259201
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081202_beta1p10_profileC1",
+      "case_id": "V1_seed2026081202_beta1p10_profileC1",
+      "tier_id": "V1",
+      "seed": 2026081202,
+      "beta": 1.1,
+      "profile_id": "C1",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "957de792d62d098326d5fdf8d1aeea5f739eae1f3400a9c16782adb96417e7f4",
+        "manifest_sha256": "c2c8df4cdfd1dfeb0c56ffb86cfa1bb4e88ddb64e5923d791af501109e2382e7",
+        "status_summary_sha256": "6be5f515c44351f67d14a1369aeee98d23919fabf9916995ec2e6b166ac97953",
+        "heartbeat_sha256": "6be5f515c44351f67d14a1369aeee98d23919fabf9916995ec2e6b166ac97953"
+      },
+      "budget": 1353.3536929340091,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.00193914584247068,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 16787.221347334696,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0016887221281649545,
+      "maximum_endpoint_consistency_difference": 0.0016887221281649545,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 16787.221347334696,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "e817259571c2aea165171261eb8708853937f253aa6fe1584d52a8faa10c61f7"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 135.33536929340093,
+          "objective": 16921.86556957742,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "33c99c0c0c88999958161cc64eba1fc3f5aa68f7b34b03ff8881b32783b49092"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 406.0061078802027,
+          "objective": 17221.74148526261,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "735e79ea959bad77d60d78da3f9be46ae1ba19f60dbf572f739b42c61238e2c0"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 676.6768464670046,
+          "objective": 17794.534253943977,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "c6f0c06d8983dc1118ea33ed49505a59d0efbee64951be4eaed4a19cc7b82b6f"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.9095334212818339,
+        "demand_weighted_mean": 0.8918464591637976,
+        "minimum": 0.8013546028067623,
+        "p05": 0.8117683023704849,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          0.9077252152527064,
+          0.9137492479470696,
+          0.9065437074171929,
+          0.9067811669867966,
+          0.9072617618925436,
+          0.9151394281946946
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9906666896383503,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "4632a793ab0372182c8000d392f31c9a10c9fd2fe615a92e1944522cdb67e910",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "46cc1af42c2f731a8a7533c1fd4e3fa2e1558967783b2a08d598b04798509d31",
+        "demand_sha256": "e5feb7e0e41adeab66f0646f237badc429d49e8a1ab47b513d8e88068ea87aa1",
+        "fulfillment_sha256": "37a601bdb737a47a9acc5dfb37cf3169d473a52d76c53cabe6c28687e6556ffc",
+        "emergency_price_sha256": "096402b5dd11981be1ecaf76b8376bc15c411c5c31b4fecaa27877d17e35c4b9",
+        "emergency_supply_sha256": "5592c5407b71580ba568516740b03612a88299138732aad5633e7902e8cc4063"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.635037699999998,
+      "peak_memory_mb": 101.85546875,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0016887221347334695
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081202_beta1p10_profileC2",
+      "case_id": "V1_seed2026081202_beta1p10_profileC2",
+      "tier_id": "V1",
+      "seed": 2026081202,
+      "beta": 1.1,
+      "profile_id": "C2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "c6cd465f979bcc701bf89f75aaa1c0749311175fdad394dcca86b2ccd286425a",
+        "manifest_sha256": "82eb11233d889cfd449c8842d26dd7d05bbddb4064c5b0158acb4e033387f8e3",
+        "status_summary_sha256": "998105fd39ac9921e55d1b7d11669f36d15a1b205c8ea4142f37bd5f385527f5",
+        "heartbeat_sha256": "998105fd39ac9921e55d1b7d11669f36d15a1b205c8ea4142f37bd5f385527f5"
+      },
+      "budget": 1353.3536929340091,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 1353.3536929340091,
+      "R_star_ratio": 1.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 1353.3531630638083,
+      "R_max_opt": 1353.3536929340091,
+      "R_disc_robust": 1353.3531630638083,
+      "R_disc_robust_ratio": 0.9999996084761851,
+      "numerical_activation": true,
+      "substantive_activation": true,
+      "complete_extensive_objective": 20278.378145319064,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.002037837813986698,
+      "maximum_endpoint_consistency_difference": 0.0,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 27136.198789184265,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "2cb890e9693e751e0e261f6ddfa4aa038f2c4faecd60453b042165f894fc5e5f"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 135.33536929340093,
+          "objective": 26294.146576072682,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "ebad7088730df1c1028c56970f6fbd31ad5b5f878c0916418f061aff1651b39f"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 406.0061078802027,
+          "objective": 24614.046553122233,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "84b9b679781f451f2e31cb46db4d6db86720ed04c0059e7bebc9078886c1a67e"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 676.6768464670046,
+          "objective": 22968.53381361942,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "ccb67af5dbc3eb3686289fd023b31d0e7611669a6c364d19915ebedfea0a7da3"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.7286002638455019,
+        "demand_weighted_mean": 0.6755393774913926,
+        "minimum": 0.4040638084202869,
+        "p05": 0.4353049071114548,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.13666666666666666,
+        "period_means": [
+          0.7231756457581194,
+          0.7412477438412085,
+          0.7196311222515788,
+          0.7203435009603899,
+          0.7217852856776307,
+          0.745418284584084
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9906666896383504,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "a3ad60da80fee3e4c910bbb99aa58651e6f0b7a7f2c13b8fcf2559ba3bc27c22",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "46cc1af42c2f731a8a7533c1fd4e3fa2e1558967783b2a08d598b04798509d31",
+        "demand_sha256": "e5feb7e0e41adeab66f0646f237badc429d49e8a1ab47b513d8e88068ea87aa1",
+        "fulfillment_sha256": "315a454468f09448daf1c26d8d9462f24609e6ec66a04dd8acdf35961ba4b45d",
+        "emergency_price_sha256": "096402b5dd11981be1ecaf76b8376bc15c411c5c31b4fecaa27877d17e35c4b9",
+        "emergency_supply_sha256": "5592c5407b71580ba568516740b03612a88299138732aad5633e7902e8cc4063"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.630785500000002,
+      "peak_memory_mb": 101.6875,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.002037837814531906
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081202_beta1p30_profileC0",
+      "case_id": "V1_seed2026081202_beta1p30_profileC0",
+      "tier_id": "V1",
+      "seed": 2026081202,
+      "beta": 1.3,
+      "profile_id": "C0",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "916df530775df88e2ca9de13775387914fd069f564a97b0f0c6bedb67c2ed095",
+        "manifest_sha256": "d92d85c83e1eeacfcf66e42c22cf9af9fc600e1b88e4975bb716a90d656b1a77",
+        "status_summary_sha256": "9448becc52773f1e92d9175f6214c0bb1cab7393d9a87a3680c12d3aaa02122f",
+        "heartbeat_sha256": "9448becc52773f1e92d9175f6214c0bb1cab7393d9a87a3680c12d3aaa02122f"
+      },
+      "budget": 1599.4180007401926,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.00013574499494831244,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 6318.5411043119275,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0006418541133825784,
+      "maximum_endpoint_consistency_difference": 0.0006418541124730837,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 6318.5411043119275,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "72b6ebf57f501d7a861c646eaafbbf2c358823241540dec202db3a9d29e3c18e"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 159.94180007401928,
+          "objective": 7096.426105054112,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "cb02b9356fadab40a092d3fb331c7249a96089bc44f7de82df24c52ba559c85d"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 479.82540022205774,
+          "objective": 8761.551360971333,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "3703f2998b9884828db86b79fc5ec41a802230e79e59485287849badb8e37b76"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 799.7090003700963,
+          "objective": 10839.042977988016,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "478ce53b24534bb064f00bac9ddc302af64c0226ef6e836ba3d218a120822ec8"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 1.0,
+        "demand_weighted_mean": 1.0,
+        "minimum": 1.0,
+        "p05": 1.0,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "total_demand_weighted_fulfillment_correlation": null,
+        "correlation_status": "constant_fulfillment"
+      },
+      "joint_scenario_set_sha256": "63a4362c469e35ca84d6b85261d04f628f6b5131183980f4cb3cecd05d867b20",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "46cc1af42c2f731a8a7533c1fd4e3fa2e1558967783b2a08d598b04798509d31",
+        "demand_sha256": "e5feb7e0e41adeab66f0646f237badc429d49e8a1ab47b513d8e88068ea87aa1",
+        "fulfillment_sha256": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+        "emergency_price_sha256": "096402b5dd11981be1ecaf76b8376bc15c411c5c31b4fecaa27877d17e35c4b9",
+        "emergency_supply_sha256": "5592c5407b71580ba568516740b03612a88299138732aad5633e7902e8cc4063"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.494694200000026,
+      "peak_memory_mb": 101.23828125,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0006418541104311927
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081202_beta1p30_profileC1",
+      "case_id": "V1_seed2026081202_beta1p30_profileC1",
+      "tier_id": "V1",
+      "seed": 2026081202,
+      "beta": 1.3,
+      "profile_id": "C1",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "4c65b06ba1cf7a07bd8d629dcfd383b25e1140b4b1232cc5bac65e3cf000d475",
+        "manifest_sha256": "4026c336c639b734e8b10568d1f7391bb447cc6af446a6e6fb287fd0282773b0",
+        "status_summary_sha256": "b0be3530a5550063566081c7bd81aae14fe2d4818391cca1e058b8c207f4e244",
+        "heartbeat_sha256": "b0be3530a5550063566081c7bd81aae14fe2d4818391cca1e058b8c207f4e244"
+      },
+      "budget": 1599.4180007401926,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.0014663969767525487,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 12670.246431727306,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0012770246376021532,
+      "maximum_endpoint_consistency_difference": 0.0012770246448781108,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 12670.246431727306,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "2231e36dbaa4ac8dd435b634ca1c7cc20207b1eddd4ba1eebf1de65b77f25105"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 159.94180007401928,
+          "objective": 12830.940585320144,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "20d7f3550355c081f80ab4a2b8df42c22e79ec8b82423384418b4fff693e92c9"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 479.82540022205774,
+          "objective": 13247.364772314073,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "dae2b8222c917d75db3b4b99ad5410a4b64899d10194a24afc52cde3a330a969"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 799.7090003700963,
+          "objective": 14013.872568717656,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "db05f43b8b07fc64a467781334f862eddaf36a7dc5a59b0920c3afd613f0c559"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.9095334212818339,
+        "demand_weighted_mean": 0.8918464591637976,
+        "minimum": 0.8013546028067623,
+        "p05": 0.8117683023704849,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          0.9077252152527064,
+          0.9137492479470696,
+          0.9065437074171929,
+          0.9067811669867966,
+          0.9072617618925436,
+          0.9151394281946946
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9906666896383503,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "4632a793ab0372182c8000d392f31c9a10c9fd2fe615a92e1944522cdb67e910",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "46cc1af42c2f731a8a7533c1fd4e3fa2e1558967783b2a08d598b04798509d31",
+        "demand_sha256": "e5feb7e0e41adeab66f0646f237badc429d49e8a1ab47b513d8e88068ea87aa1",
+        "fulfillment_sha256": "37a601bdb737a47a9acc5dfb37cf3169d473a52d76c53cabe6c28687e6556ffc",
+        "emergency_price_sha256": "096402b5dd11981be1ecaf76b8376bc15c411c5c31b4fecaa27877d17e35c4b9",
+        "emergency_supply_sha256": "5592c5407b71580ba568516740b03612a88299138732aad5633e7902e8cc4063"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.589251699999977,
+      "peak_memory_mb": 101.81640625,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0012770246431727307
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081202_beta1p30_profileC2",
+      "case_id": "V1_seed2026081202_beta1p30_profileC2",
+      "tier_id": "V1",
+      "seed": 2026081202,
+      "beta": 1.3,
+      "profile_id": "C2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "8589ae4dc50ef730b9a9c8dcdf1c060958a45d1ede314382186c9473eda4a500",
+        "manifest_sha256": "90e57ba631db142383941b4daef6c20fc20eef84386d83015edfeb6f77719978",
+        "status_summary_sha256": "24d2519412acff9dd17ca06c40b1cad0d627e27388acf7dbeca1fc1fec57c67e",
+        "heartbeat_sha256": "24d2519412acff9dd17ca06c40b1cad0d627e27388acf7dbeca1fc1fec57c67e"
+      },
+      "budget": 1599.4180007401926,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 1599.4180007401926,
+      "R_star_ratio": 1.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 1599.4168010471221,
+      "R_max_opt": 1599.4180007401926,
+      "R_disc_robust": 1599.4168010471221,
+      "R_disc_robust_ratio": 0.9999992499189894,
+      "numerical_activation": true,
+      "substantive_activation": true,
+      "complete_extensive_objective": 17438.67944304889,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0017538679421704728,
+      "maximum_endpoint_consistency_difference": 0.0,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 25003.321409175624,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "6c1d1ec56d1049e34f328d3757b1fa3c010ae9a501a777709363ffcf83f666a3"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 159.94180007401928,
+          "objective": 23999.95748277108,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "5e271659b2761478cf848b76cfe34b1d01c98bff1c781e0b4f8e2ea0749f34f7"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 479.82540022205774,
+          "objective": 22017.687600527304,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "cc139ab816e7bb88c5fcff8cb4f87d4c737864e382f396f01869529224e39412"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 799.7090003700963,
+          "objective": 20166.90213124163,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "e99ac9c3eb394a92ef6df80b3ecaa8b13f9007786eee7050e7903c3b9d733739"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.7286002638455019,
+        "demand_weighted_mean": 0.6755393774913926,
+        "minimum": 0.4040638084202869,
+        "p05": 0.4353049071114548,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.13666666666666666,
+        "period_means": [
+          0.7231756457581194,
+          0.7412477438412085,
+          0.7196311222515788,
+          0.7203435009603899,
+          0.7217852856776307,
+          0.745418284584084
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9906666896383504,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "a3ad60da80fee3e4c910bbb99aa58651e6f0b7a7f2c13b8fcf2559ba3bc27c22",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "46cc1af42c2f731a8a7533c1fd4e3fa2e1558967783b2a08d598b04798509d31",
+        "demand_sha256": "e5feb7e0e41adeab66f0646f237badc429d49e8a1ab47b513d8e88068ea87aa1",
+        "fulfillment_sha256": "315a454468f09448daf1c26d8d9462f24609e6ec66a04dd8acdf35961ba4b45d",
+        "emergency_price_sha256": "096402b5dd11981be1ecaf76b8376bc15c411c5c31b4fecaa27877d17e35c4b9",
+        "emergency_supply_sha256": "5592c5407b71580ba568516740b03612a88299138732aad5633e7902e8cc4063"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.47798499999999,
+      "peak_memory_mb": 101.97265625,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0017538679443048892
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081203_beta0p90_profileC0",
+      "case_id": "V1_seed2026081203_beta0p90_profileC0",
+      "tier_id": "V1",
+      "seed": 2026081203,
+      "beta": 0.9,
+      "profile_id": "C0",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "b4880ddea98114aef75f5600b61fda4f55126c6184c6c19f7ca3b2fbd0c9ab5f",
+        "manifest_sha256": "d3d97afc9519512c6cdad54c26e92760109a47cd576fbfcede47f4a1bee900f4",
+        "status_summary_sha256": "c80b55a18d66b8d958f36f03274f1559f23c463171fd952f9e0c9ddd9ad956ee",
+        "heartbeat_sha256": "c80b55a18d66b8d958f36f03274f1559f23c463171fd952f9e0c9ddd9ad956ee"
+      },
+      "budget": 1107.2893851278257,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.00045800048462751874,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 22941.621215502248,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0023041621170705184,
+      "maximum_endpoint_consistency_difference": 0.0023041621207084972,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 22941.621215502248,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "c4f418790a5fdee994d289a127018d7808a00d1e794fc5bb028fab034818c306"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 110.72893851278258,
+          "objective": 23498.689240933516,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "423ab1aee18b09d6b37e47b97be3218bffd3b7d8681b3ea4a08e4b58a9d93bcb"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 332.1868155383477,
+          "objective": 24894.97593783471,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "bc4af2bf73d82a566dcaea14787651aa408decce51a1800dd67aeb511ffcae4f"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 553.6446925639128,
+          "objective": 26745.295026765634,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "58f8b610865e44c5586e68c0ab63b2c62d41b31bcd42336217f2f3354dc89cd5"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 1.0,
+        "demand_weighted_mean": 1.0,
+        "minimum": 1.0,
+        "p05": 1.0,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "total_demand_weighted_fulfillment_correlation": null,
+        "correlation_status": "constant_fulfillment"
+      },
+      "joint_scenario_set_sha256": "1852eea6ea81f323708fa1e3a159d89284581585076af9fa9cea0aba3a1a36fa",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "f809996e2c54c0068db661dd3065ca3833228c99bcde18586279420ee76985cc",
+        "demand_sha256": "3863bb0dc04d6452f421d620b463c8a6f3ee6f32d162707d955e79b7c84d7278",
+        "fulfillment_sha256": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+        "emergency_price_sha256": "17f391a43ed0297857401816b0616671d58772622fd9978d9a2344de9b75f4ab",
+        "emergency_supply_sha256": "c1cb40bef9f775cf44ca2c1112eb2d4040131260c3c420b461f16dd1676ff5ec"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.58307549999995,
+      "peak_memory_mb": 101.88671875,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0023041621215502245
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081203_beta0p90_profileC1",
+      "case_id": "V1_seed2026081203_beta0p90_profileC1",
+      "tier_id": "V1",
+      "seed": 2026081203,
+      "beta": 0.9,
+      "profile_id": "C1",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "195f6c42e449db3e299617d6c4edb56d7290dcadcb4e0b4cabd8dabec7dd8d81",
+        "manifest_sha256": "f789a0cb37124def4ce6573f9880285b0cd237542e7331b72b899165854dbc12",
+        "status_summary_sha256": "99c2d4ba8e70e8ba7feec35e77459d9c04c2f560ac4ad6993fba927183739822",
+        "heartbeat_sha256": "99c2d4ba8e70e8ba7feec35e77459d9c04c2f560ac4ad6993fba927183739822"
+      },
+      "budget": 1107.2893851278257,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.0036661967047564303,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 27772.854770444323,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0027872854698216543,
+      "maximum_endpoint_consistency_difference": 0.002787285477097612,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 27772.854770444323,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "3bdf8bfffe192fad2c63062c359d78a732dbff5edef26a878c3ed249d7c03706"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 110.72893851278258,
+          "objective": 27857.038240904283,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "1fff91d4a3095203d057ccd08fa63d461f264e53ae670d4a92b48b04760b2663"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 332.1868155383477,
+          "objective": 28342.91962128787,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "8923793ec875fe956015ba8967de85b13a96d19320246d00e3dfcc8d4a1324a8"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 553.6446925639128,
+          "objective": 29214.591384457926,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "58f8b610865e44c5586e68c0ab63b2c62d41b31bcd42336217f2f3354dc89cd5"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.9013396327505098,
+        "demand_weighted_mean": 0.8837861677755278,
+        "minimum": 0.8007241851355613,
+        "p05": 0.8108514035605069,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          0.9107529550525821,
+          0.9047969379465228,
+          0.895459850223475,
+          0.8964006098196191,
+          0.899522145729472,
+          0.9011052977313878
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9758682105588095,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "5cdd61e2c82c749d87385f23c62d1f1181d166216fe80c8d47b0d8446c3b048a",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "f809996e2c54c0068db661dd3065ca3833228c99bcde18586279420ee76985cc",
+        "demand_sha256": "3863bb0dc04d6452f421d620b463c8a6f3ee6f32d162707d955e79b7c84d7278",
+        "fulfillment_sha256": "7091966c30c76a2679bd23037d4fbe8cd433f1c93bc23f831bd0753eaf48d447",
+        "emergency_price_sha256": "17f391a43ed0297857401816b0616671d58772622fd9978d9a2344de9b75f4ab",
+        "emergency_supply_sha256": "c1cb40bef9f775cf44ca2c1112eb2d4040131260c3c420b461f16dd1676ff5ec"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.565065499999946,
+      "peak_memory_mb": 102.63671875,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.002787285477044432
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081203_beta0p90_profileC2",
+      "case_id": "V1_seed2026081203_beta0p90_profileC2",
+      "tier_id": "V1",
+      "seed": 2026081203,
+      "beta": 0.9,
+      "profile_id": "C2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "a37ae7655a3ac9470728e024764a2a26c505f47877f46f487b801ce710b5af4a",
+        "manifest_sha256": "09bf12a7fc97bab6730b2e3fcd41ea637424c245613f97e1a57b702f4dd8d950",
+        "status_summary_sha256": "ba23c50ea4e9cf8533906b76306cfd631c698ef9467418220b3b2a25b9761f56",
+        "heartbeat_sha256": "ba23c50ea4e9cf8533906b76306cfd631c698ef9467418220b3b2a25b9761f56"
+      },
+      "budget": 1107.2893851278257,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 1107.2893851278257,
+      "R_star_ratio": 1.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 1107.2885773613236,
+      "R_max_opt": 1107.2893851278257,
+      "R_disc_robust": 1107.2885773613236,
+      "R_disc_robust_ratio": 0.9999992705009975,
+      "numerical_activation": true,
+      "substantive_activation": true,
+      "complete_extensive_objective": 31625.303708674706,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.00317253036701004,
+      "maximum_endpoint_consistency_difference": 0.0,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 37268.197012094206,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "2a2c9954cf3d9653e58bd4c4f8771221b02709a9658ac19c1a9d2ae3b9f2e1b0"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 110.72893851278258,
+          "objective": 36423.124175877274,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "b9dc340cb85d28304701834d135301a21f957cfdcdb407d70b5267749f01c605"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 332.1868155383477,
+          "objective": 35015.12914948208,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "5ee855cd121ddb8a259462342391ec8518fe41b77097fa2de31b486f0ce6a439"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 553.6446925639128,
+          "objective": 33980.45533316807,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "d94538464bfebd4e261d852a1cdaa54b5f8483a4ddd7620122b643e561f7bbcc"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.7040188982515293,
+        "demand_weighted_mean": 0.6513585033265833,
+        "minimum": 0.4021725554066842,
+        "p05": 0.43255421068152056,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.19333333333333333,
+        "period_means": [
+          0.7322588651577462,
+          0.7143908138395684,
+          0.686379550670425,
+          0.6892018294588571,
+          0.6985664371884162,
+          0.7033158931941632
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9758682105588096,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "e50554ce16660551f94a0cfa558071f3f805b27ce6af088ea89ef3552f9f430a",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "f809996e2c54c0068db661dd3065ca3833228c99bcde18586279420ee76985cc",
+        "demand_sha256": "3863bb0dc04d6452f421d620b463c8a6f3ee6f32d162707d955e79b7c84d7278",
+        "fulfillment_sha256": "c0859a572cac8876745218763544e45aefab9bb505aed8c89705beaaf09d613d",
+        "emergency_price_sha256": "17f391a43ed0297857401816b0616671d58772622fd9978d9a2344de9b75f4ab",
+        "emergency_supply_sha256": "c1cb40bef9f775cf44ca2c1112eb2d4040131260c3c420b461f16dd1676ff5ec"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.574740700000007,
+      "peak_memory_mb": 102.234375,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0031725303708674706
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081203_beta1p10_profileC0",
+      "case_id": "V1_seed2026081203_beta1p10_profileC0",
+      "tier_id": "V1",
+      "seed": 2026081203,
+      "beta": 1.1,
+      "profile_id": "C0",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "279392e4bc74e55d32ee28d62d0a58e531d63ae5247cb346ed77c48335ca5462",
+        "manifest_sha256": "da35c4e75c31093b033a66f34b5a8d030922b856ee7a65c01de323c7bd273f44",
+        "status_summary_sha256": "87adf19bdfe01f962c943bbe3bb726432f5d0618c46b961167b7ea3fa6e68b14",
+        "heartbeat_sha256": "87adf19bdfe01f962c943bbe3bb726432f5d0618c46b961167b7ea3fa6e68b14"
+      },
+      "budget": 1353.3536929340091,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.00035939131290939363,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 17776.160364051644,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0017876160345622338,
+      "maximum_endpoint_consistency_difference": 0.0017876160382002126,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 17776.160364051644,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "dd5b2306cb55c7d8fcdf01276429a325c517b8ef79327ec7f06b7152826231b5"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 135.33536929340093,
+          "objective": 18449.319864480698,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "89545d2342b1b158d99d53d581042083284cedb62f9c85e997ebe487a147006f"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 406.0061078802027,
+          "objective": 20293.389515629693,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "6494f1a48d026de2dafc4d7894da9d7acbc82964dd60b9225281b71634e6edad"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 676.6768464670046,
+          "objective": 22503.114535677167,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "ccb67af5dbc3eb3686289fd023b31d0e7611669a6c364d19915ebedfea0a7da3"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 1.0,
+        "demand_weighted_mean": 1.0,
+        "minimum": 1.0,
+        "p05": 1.0,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "total_demand_weighted_fulfillment_correlation": null,
+        "correlation_status": "constant_fulfillment"
+      },
+      "joint_scenario_set_sha256": "1852eea6ea81f323708fa1e3a159d89284581585076af9fa9cea0aba3a1a36fa",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "f809996e2c54c0068db661dd3065ca3833228c99bcde18586279420ee76985cc",
+        "demand_sha256": "3863bb0dc04d6452f421d620b463c8a6f3ee6f32d162707d955e79b7c84d7278",
+        "fulfillment_sha256": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+        "emergency_price_sha256": "17f391a43ed0297857401816b0616671d58772622fd9978d9a2344de9b75f4ab",
+        "emergency_supply_sha256": "c1cb40bef9f775cf44ca2c1112eb2d4040131260c3c420b461f16dd1676ff5ec"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.663001699999995,
+      "peak_memory_mb": 101.7578125,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0017876160364051644
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081203_beta1p10_profileC1",
+      "case_id": "V1_seed2026081203_beta1p10_profileC1",
+      "tier_id": "V1",
+      "seed": 2026081203,
+      "beta": 1.1,
+      "profile_id": "C1",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "085d9d5ec4f74aaa847ced2702aa9a9f23e724c881ab264ddd64975dbe7e00e9",
+        "manifest_sha256": "e2f03e9f74a264d8bfc78d7a910c5ca62e6ff4846e32a96c06978362d39e5209",
+        "status_summary_sha256": "31975c86f2535104a737ddb2bf6d26fad00bb03c3c435bb6764af17665b4683b",
+        "heartbeat_sha256": "31975c86f2535104a737ddb2bf6d26fad00bb03c3c435bb6764af17665b4683b"
+      },
+      "budget": 1353.3536929340091,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.003121692097522555,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 23633.170148249297,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0023733170128252823,
+      "maximum_endpoint_consistency_difference": 0.00237331702010124,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 23633.170148249297,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "11f21ec082b5a72fa81e02759b90e82ff5663f117eca93b6b94d22ed6381c280"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 135.33536929340093,
+          "objective": 23736.061056589246,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "d99833cc20e776243cdab389ffd658e0e30ea09abdeec32806983a589353a821"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 406.0061078802027,
+          "objective": 24441.56760227988,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "daa656b9ab266e0076e774fbc99c6b48f333130be6c8eea47e90287300a5f1e2"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 676.6768464670046,
+          "objective": 25521.143417301082,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "ccb67af5dbc3eb3686289fd023b31d0e7611669a6c364d19915ebedfea0a7da3"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.9013396327505098,
+        "demand_weighted_mean": 0.8837861677755278,
+        "minimum": 0.8007241851355613,
+        "p05": 0.8108514035605069,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          0.9107529550525821,
+          0.9047969379465228,
+          0.895459850223475,
+          0.8964006098196191,
+          0.899522145729472,
+          0.9011052977313878
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9758682105588095,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "5cdd61e2c82c749d87385f23c62d1f1181d166216fe80c8d47b0d8446c3b048a",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "f809996e2c54c0068db661dd3065ca3833228c99bcde18586279420ee76985cc",
+        "demand_sha256": "3863bb0dc04d6452f421d620b463c8a6f3ee6f32d162707d955e79b7c84d7278",
+        "fulfillment_sha256": "7091966c30c76a2679bd23037d4fbe8cd433f1c93bc23f831bd0753eaf48d447",
+        "emergency_price_sha256": "17f391a43ed0297857401816b0616671d58772622fd9978d9a2344de9b75f4ab",
+        "emergency_supply_sha256": "c1cb40bef9f775cf44ca2c1112eb2d4040131260c3c420b461f16dd1676ff5ec"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.662296200000014,
+      "peak_memory_mb": 101.95703125,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0023733170148249297
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081203_beta1p10_profileC2",
+      "case_id": "V1_seed2026081203_beta1p10_profileC2",
+      "tier_id": "V1",
+      "seed": 2026081203,
+      "beta": 1.1,
+      "profile_id": "C2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "cfbc0b699c9b86bf29d686b16113605bc541b4af42d822192cc98eabf789e1ea",
+        "manifest_sha256": "2ab0c8b9cb2d2218e41ff9f18a4418fd4ab05c2ee31bf3eaeddc1133a90ae3dd",
+        "status_summary_sha256": "92a51b79809e1c15058b74439641a54d57aa764de24db9ebafbd984a9104464d",
+        "heartbeat_sha256": "92a51b79809e1c15058b74439641a54d57aa764de24db9ebafbd984a9104464d"
+      },
+      "budget": 1353.3536929340091,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 1353.3536929340091,
+      "R_star_ratio": 1.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 1353.3527055211443,
+      "R_max_opt": 1353.3536929340091,
+      "R_disc_robust": 1353.3527055211443,
+      "R_disc_robust_ratio": 0.9999992703955589,
+      "numerical_activation": true,
+      "substantive_activation": true,
+      "complete_extensive_objective": 28649.15038093315,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.002874915040592896,
+      "maximum_endpoint_consistency_difference": 0.0,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 35193.526404736695,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "2e6e293f33e1992bfc6644485c2cdda1770ff2bc5cbd84a4235a80d01343642d"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 135.33536929340093,
+          "objective": 34160.65960491601,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "3f3eb5357b3e8b4b8763788cf222541d73145b4098a4d9007d62b8d010d843e5"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 406.0061078802027,
+          "objective": 32594.650734285366,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "299030ca723400fdbdb18b0d3ff210f29ffa0ccac30157eb3e218a10cd7475b1"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 676.6768464670046,
+          "objective": 31346.088243502378,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "217d8f4771e1c2aa49f8fd311396b64cc0e2c4373c1b1c573ab48b3aedc08d72"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.7040188982515293,
+        "demand_weighted_mean": 0.6513585033265833,
+        "minimum": 0.4021725554066842,
+        "p05": 0.43255421068152056,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.19333333333333333,
+        "period_means": [
+          0.7322588651577462,
+          0.7143908138395684,
+          0.686379550670425,
+          0.6892018294588571,
+          0.6985664371884162,
+          0.7033158931941632
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9758682105588096,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "e50554ce16660551f94a0cfa558071f3f805b27ce6af088ea89ef3552f9f430a",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "f809996e2c54c0068db661dd3065ca3833228c99bcde18586279420ee76985cc",
+        "demand_sha256": "3863bb0dc04d6452f421d620b463c8a6f3ee6f32d162707d955e79b7c84d7278",
+        "fulfillment_sha256": "c0859a572cac8876745218763544e45aefab9bb505aed8c89705beaaf09d613d",
+        "emergency_price_sha256": "17f391a43ed0297857401816b0616671d58772622fd9978d9a2344de9b75f4ab",
+        "emergency_supply_sha256": "c1cb40bef9f775cf44ca2c1112eb2d4040131260c3c420b461f16dd1676ff5ec"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.514696599999979,
+      "peak_memory_mb": 101.9140625,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.002874915038093315
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081203_beta1p30_profileC0",
+      "case_id": "V1_seed2026081203_beta1p30_profileC0",
+      "tier_id": "V1",
+      "seed": 2026081203,
+      "beta": 1.3,
+      "profile_id": "C0",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "8b135f4ddde486309eda2b3aff6f7497210cffe84bee6b2c4d87f742fce41d86",
+        "manifest_sha256": "0b6b5da48f5519d7d5e46944804aa2c92a319de988a85230a58ece9a2c35d649",
+        "status_summary_sha256": "cbd002950eb23e68bbb192ae4a600de0da081f62200bb5ba3f39aacd96d4fbe1",
+        "heartbeat_sha256": "cbd002950eb23e68bbb192ae4a600de0da081f62200bb5ba3f39aacd96d4fbe1"
+      },
+      "budget": 1599.4180007401926,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.00025627443089769585,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 12647.116207771205,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.0012747116215905407,
+      "maximum_endpoint_consistency_difference": 0.0012747116234095301,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 12647.116207771205,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "1429273236e1c57eb2fcea4e49f7a575c648a1ce7c033f08644a6dfb26492e5c"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 159.94180007401928,
+          "objective": 13442.668344641907,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "4b232c32e000619ec63ede301337f863987c6231b870c2aac9c4936c68bf2cb2"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 479.82540022205774,
+          "objective": 15733.427555660699,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "c20d3ed9e14c63cd61d2a7b1e5ee54f6143bc11e8359704f1bdb12a14237883d"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 799.7090003700963,
+          "objective": 18326.43779190215,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "488d07251caf310a358303e58820af9b1affe0f90f58db2320cd4eda980f4aa9"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 1.0,
+        "demand_weighted_mean": 1.0,
+        "minimum": 1.0,
+        "p05": 1.0,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "total_demand_weighted_fulfillment_correlation": null,
+        "correlation_status": "constant_fulfillment"
+      },
+      "joint_scenario_set_sha256": "1852eea6ea81f323708fa1e3a159d89284581585076af9fa9cea0aba3a1a36fa",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "f809996e2c54c0068db661dd3065ca3833228c99bcde18586279420ee76985cc",
+        "demand_sha256": "3863bb0dc04d6452f421d620b463c8a6f3ee6f32d162707d955e79b7c84d7278",
+        "fulfillment_sha256": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+        "emergency_price_sha256": "17f391a43ed0297857401816b0616671d58772622fd9978d9a2344de9b75f4ab",
+        "emergency_supply_sha256": "c1cb40bef9f775cf44ca2c1112eb2d4040131260c3c420b461f16dd1676ff5ec"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.62102880000009,
+      "peak_memory_mb": 99.08984375,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0012747116207771204
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081203_beta1p30_profileC1",
+      "case_id": "V1_seed2026081203_beta1p30_profileC1",
+      "tier_id": "V1",
+      "seed": 2026081203,
+      "beta": 1.3,
+      "profile_id": "C1",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "8770f504052d6564f6aaa3557dc273222e7e78d78a424c766db4e74ae16cd462",
+        "manifest_sha256": "4cd9186fe99065d57704878f9911208a85630206e6e1f1630b1e1cfae5d4bf49",
+        "status_summary_sha256": "b9dabf73c302c723516bf0df635d6b15dfa4562487395e287c099c9640822faa",
+        "heartbeat_sha256": "b9dabf73c302c723516bf0df635d6b15dfa4562487395e287c099c9640822faa"
+      },
+      "budget": 1599.4180007401926,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 0.0,
+      "R_star_ratio": 0.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 0.0,
+      "R_max_opt": 0.0025948963466206165,
+      "R_disc_robust": 0.0,
+      "R_disc_robust_ratio": 0.0,
+      "numerical_activation": false,
+      "substantive_activation": false,
+      "complete_extensive_objective": 19498.72854083641,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.001959872850420652,
+      "maximum_endpoint_consistency_difference": 0.0019598728540586308,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 19498.72854083641,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "4f2448a12c1d9e5387345bd0b032e41f0b1ed4e6126bfa2ee2c88e957bf39d5c"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 159.94180007401928,
+          "objective": 19619.52935524979,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "021d2ad258fd0a3ed388abc66f0f7196079a107f2dbedd83222f8e459a7a8970"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 479.82540022205774,
+          "objective": 20575.5793766969,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "e27b6b650b015b0d44e75e9d219473df9abeccec55a13dd41575dab62edcfc28"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 799.7090003700963,
+          "objective": 21850.325310427255,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "35a69ec1e68dbb2171c5fe52514096f2fb016bed26f49bf49ff282cfb368ca59"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.9013396327505098,
+        "demand_weighted_mean": 0.8837861677755278,
+        "minimum": 0.8007241851355613,
+        "p05": 0.8108514035605069,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.0,
+        "period_means": [
+          0.9107529550525821,
+          0.9047969379465228,
+          0.895459850223475,
+          0.8964006098196191,
+          0.899522145729472,
+          0.9011052977313878
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9758682105588095,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "5cdd61e2c82c749d87385f23c62d1f1181d166216fe80c8d47b0d8446c3b048a",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "f809996e2c54c0068db661dd3065ca3833228c99bcde18586279420ee76985cc",
+        "demand_sha256": "3863bb0dc04d6452f421d620b463c8a6f3ee6f32d162707d955e79b7c84d7278",
+        "fulfillment_sha256": "7091966c30c76a2679bd23037d4fbe8cd433f1c93bc23f831bd0753eaf48d447",
+        "emergency_price_sha256": "17f391a43ed0297857401816b0616671d58772622fd9978d9a2344de9b75f4ab",
+        "emergency_supply_sha256": "c1cb40bef9f775cf44ca2c1112eb2d4040131260c3c420b461f16dd1676ff5ec"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.6079030000000785,
+      "peak_memory_mb": 99.109375,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.001959872854083641
+    },
+    {
+      "run_id": "m2dev_v1_1_20260813_V1_seed2026081203_beta1p30_profileC2",
+      "case_id": "V1_seed2026081203_beta1p30_profileC2",
+      "tier_id": "V1",
+      "seed": 2026081203,
+      "beta": 1.3,
+      "profile_id": "C2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "git_sha": "2cdb09bd887bc8887ab956a0a0281d7c30170a40",
+      "git_tree_sha": "8a3a6865e56b8214160ac97e0958041025a89ee0",
+      "fingerprints": {
+        "scientific_config_sha256": "9c552774ade43ceaa906b2e24fa2559a802108fa42a7ff65ca70977f054e8e48",
+        "e3_component_sha256": "3d3b29d6dba5b191a5cc8c2f660c789bafcf33cc192e4b45f34724aca0336cf5",
+        "family_component_sha256": "455cd02cf8afbc6ce9e93a222cd320182da1ea37f65f0ea7962f4496820cd87a",
+        "runner_config_sha256": "83a045e44149e7a899a3549c6f3d49a0a002e3230841efbaace7edef1034ae8c",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "artifacts": {
+        "result_sha256": "f3346b57015c67b24803dbb6c9bc881c905cdc7f12a0205b17afe57b6db95430",
+        "manifest_sha256": "5642a398ce159b5e796d18eab257c36e7cc32e43e56c204f12db740a037a7d61",
+        "status_summary_sha256": "171c428a351f894c0a75a4ea4fd5fe9826d81f54abd7521b7e2e724b6a0dfc54",
+        "heartbeat_sha256": "171c428a351f894c0a75a4ea4fd5fe9826d81f54abd7521b7e2e724b6a0dfc54"
+      },
+      "budget": 1599.4180007401926,
+      "reference_budget": 1230.3215390309174,
+      "R_star": 1599.4180007401926,
+      "R_star_ratio": 1.0,
+      "R_min_feas": 0.0,
+      "R_min_opt": 1599.417109190002,
+      "R_max_opt": 1599.4180007401926,
+      "R_disc_robust": 1599.417109190002,
+      "R_disc_robust_ratio": 0.999999442578369,
+      "numerical_activation": true,
+      "substantive_activation": true,
+      "complete_extensive_objective": 25858.047970993994,
+      "minimum_endpoint_status": "optimal",
+      "maximum_endpoint_status": "optimal",
+      "minimum_endpoint_consistency_difference": 0.002595804795419099,
+      "maximum_endpoint_consistency_difference": 0.0,
+      "fixed_reserve_policies": [
+        {
+          "rho": 0.0,
+          "reserve": 0.0,
+          "objective": 33119.459031370505,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "3dcb41918f1c57ff1756cd687337497cd3c53d0f141152894c2705194a7422ad"
+        },
+        {
+          "rho": 0.1,
+          "reserve": 159.94180007401928,
+          "objective": 31898.19503395474,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "e91857f558eb5a754a3291d321ebcfebf997720e42d9e2c3b12b81cd40cfaffc"
+        },
+        {
+          "rho": 0.3,
+          "reserve": 479.82540022205774,
+          "objective": 30174.17231908865,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "3665ceef9f54bc57675622f5ee3f2af2d79a870414d85a238374a94361451a68"
+        },
+        {
+          "rho": 0.5,
+          "reserve": 799.7090003700963,
+          "objective": 28734.351014119697,
+          "status": "optimal",
+          "regular_purchase_reoptimized": true,
+          "regular_purchase_sha256": "67fa254a204e059130370812084639b5d4d1ead6d17c14ea7cb89f4f0b26880b"
+        }
+      ],
+      "fulfillment_statistics": {
+        "arithmetic_mean": 0.7040188982515293,
+        "demand_weighted_mean": 0.6513585033265833,
+        "minimum": 0.4021725554066842,
+        "p05": 0.43255421068152056,
+        "full_interruption_rate": 0.0,
+        "severe_interruption_rate": 0.19333333333333333,
+        "period_means": [
+          0.7322588651577462,
+          0.7143908138395684,
+          0.686379550670425,
+          0.6892018294588571,
+          0.6985664371884162,
+          0.7033158931941632
+        ],
+        "total_demand_weighted_fulfillment_correlation": -0.9758682105588096,
+        "correlation_status": "defined"
+      },
+      "joint_scenario_set_sha256": "e50554ce16660551f94a0cfa558071f3f805b27ce6af088ea89ef3552f9f430a",
+      "scenario_component_set_sha256": {
+        "latent_draw_sha256": "f809996e2c54c0068db661dd3065ca3833228c99bcde18586279420ee76985cc",
+        "demand_sha256": "3863bb0dc04d6452f421d620b463c8a6f3ee6f32d162707d955e79b7c84d7278",
+        "fulfillment_sha256": "c0859a572cac8876745218763544e45aefab9bb505aed8c89705beaaf09d613d",
+        "emergency_price_sha256": "17f391a43ed0297857401816b0616671d58772622fd9978d9a2344de9b75f4ab",
+        "emergency_supply_sha256": "c1cb40bef9f775cf44ca2c1112eb2d4040131260c3c420b461f16dd1676ff5ec"
+      },
+      "scenario_identity_count": 50,
+      "endpoint_failure_counts": {
+        "minimum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        },
+        "maximum": {
+          "infeasible": 0,
+          "solver_failure": 0,
+          "missing": 0
+        }
+      },
+      "wall_seconds": 6.666853800000013,
+      "peak_memory_mb": 102.50390625,
+      "solver": "gurobi_direct",
+      "gurobi_optimizer_version": "13.0.2",
+      "gurobipy_version": "13.0.2",
+      "threads": 1,
+      "objective_tolerance": 0.0025958047970993992
+    }
+  ],
+  "mapping_hashes": {
+    "run_artifact_mapping_sha256": "5e8dedaf26113bf1602bcf9813265a77990b734540e25a2bef314a9940b6275a",
+    "science_evidence_mapping_sha256": "619c40b858ca32728f33b2cccb32df150ef957307ab9d62840ab0037f285c4b0"
+  },
+  "global_artifacts": {
+    "registry_sha256": "e54f662fce95b966944eb712678e781c1dd59e534c889efaf693b5aa7049d61a",
+    "projection_sha256": "7128c3673ba58255b5dbff805f22a50d674cf637f043dda22bb7de230a5376b8"
+  },
+  "projection": {
+    "status": "passed",
+    "required_primary_run_count": 27,
+    "verified_primary_run_count": 27,
+    "missing_case_ids": [],
+    "invalid_primary_run_ids": [],
+    "invalid_diagnostic_run_ids": [],
+    "duplicate_case_ids": [],
+    "diagnostic_run_ids": [],
+    "combinations": [
+      {
+        "beta": 0.9,
+        "profile_id": "C0",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 0,
+        "substantive_activation_seed_count": 0,
+        "raw_activation_gate_passed": false,
+        "gate_passed": false,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta0p90_profileC0",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta0p90_profileC0",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta0p90_profileC0"
+        ],
+        "control_profile_not_eligible": true
+      },
+      {
+        "beta": 0.9,
+        "profile_id": "C1",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 0,
+        "substantive_activation_seed_count": 0,
+        "raw_activation_gate_passed": false,
+        "gate_passed": false,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta0p90_profileC1",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta0p90_profileC1",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta0p90_profileC1"
+        ],
+        "c0_all_three_seeds_optimal": true,
+        "c0_substantive_activation_seed_count": 0,
+        "common_random_numbers_verified": true
+      },
+      {
+        "beta": 0.9,
+        "profile_id": "C2",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 3,
+        "substantive_activation_seed_count": 3,
+        "raw_activation_gate_passed": true,
+        "gate_passed": true,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta0p90_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta0p90_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta0p90_profileC2"
+        ],
+        "c0_all_three_seeds_optimal": true,
+        "c0_substantive_activation_seed_count": 0,
+        "common_random_numbers_verified": true
+      },
+      {
+        "beta": 1.1,
+        "profile_id": "C0",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 0,
+        "substantive_activation_seed_count": 0,
+        "raw_activation_gate_passed": false,
+        "gate_passed": false,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta1p10_profileC0",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta1p10_profileC0",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta1p10_profileC0"
+        ],
+        "control_profile_not_eligible": true
+      },
+      {
+        "beta": 1.1,
+        "profile_id": "C1",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 0,
+        "substantive_activation_seed_count": 0,
+        "raw_activation_gate_passed": false,
+        "gate_passed": false,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta1p10_profileC1",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta1p10_profileC1",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta1p10_profileC1"
+        ],
+        "c0_all_three_seeds_optimal": true,
+        "c0_substantive_activation_seed_count": 0,
+        "common_random_numbers_verified": true
+      },
+      {
+        "beta": 1.1,
+        "profile_id": "C2",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 3,
+        "substantive_activation_seed_count": 3,
+        "raw_activation_gate_passed": true,
+        "gate_passed": true,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta1p10_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta1p10_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta1p10_profileC2"
+        ],
+        "c0_all_three_seeds_optimal": true,
+        "c0_substantive_activation_seed_count": 0,
+        "common_random_numbers_verified": true
+      },
+      {
+        "beta": 1.3,
+        "profile_id": "C0",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 0,
+        "substantive_activation_seed_count": 0,
+        "raw_activation_gate_passed": false,
+        "gate_passed": false,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta1p30_profileC0",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta1p30_profileC0",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta1p30_profileC0"
+        ],
+        "control_profile_not_eligible": true
+      },
+      {
+        "beta": 1.3,
+        "profile_id": "C1",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 0,
+        "substantive_activation_seed_count": 0,
+        "raw_activation_gate_passed": false,
+        "gate_passed": false,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta1p30_profileC1",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta1p30_profileC1",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta1p30_profileC1"
+        ],
+        "c0_all_three_seeds_optimal": true,
+        "c0_substantive_activation_seed_count": 0,
+        "common_random_numbers_verified": true
+      },
+      {
+        "beta": 1.3,
+        "profile_id": "C2",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 3,
+        "substantive_activation_seed_count": 3,
+        "raw_activation_gate_passed": true,
+        "gate_passed": true,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta1p30_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta1p30_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta1p30_profileC2"
+        ],
+        "c0_all_three_seeds_optimal": true,
+        "c0_substantive_activation_seed_count": 0,
+        "common_random_numbers_verified": true
+      }
+    ],
+    "passed_combinations": [
+      {
+        "beta": 0.9,
+        "profile_id": "C2",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 3,
+        "substantive_activation_seed_count": 3,
+        "raw_activation_gate_passed": true,
+        "gate_passed": true,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta0p90_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta0p90_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta0p90_profileC2"
+        ],
+        "c0_all_three_seeds_optimal": true,
+        "c0_substantive_activation_seed_count": 0,
+        "common_random_numbers_verified": true
+      },
+      {
+        "beta": 1.1,
+        "profile_id": "C2",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 3,
+        "substantive_activation_seed_count": 3,
+        "raw_activation_gate_passed": true,
+        "gate_passed": true,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta1p10_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta1p10_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta1p10_profileC2"
+        ],
+        "c0_all_three_seeds_optimal": true,
+        "c0_substantive_activation_seed_count": 0,
+        "common_random_numbers_verified": true
+      },
+      {
+        "beta": 1.3,
+        "profile_id": "C2",
+        "completed_seed_count": 3,
+        "optimal_seed_count": 3,
+        "scientific_evidence_seed_count": 3,
+        "numerical_activation_seed_count": 3,
+        "substantive_activation_seed_count": 3,
+        "raw_activation_gate_passed": true,
+        "gate_passed": true,
+        "run_ids": [
+          "m2dev_v1_1_20260813_V1_seed2026081201_beta1p30_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081202_beta1p30_profileC2",
+          "m2dev_v1_1_20260813_V1_seed2026081203_beta1p30_profileC2"
+        ],
+        "c0_all_three_seeds_optimal": true,
+        "c0_substantive_activation_seed_count": 0,
+        "common_random_numbers_verified": true
+      }
+    ],
+    "baseline_activation_confounded_betas": [],
+    "common_random_number_checks": [
+      {
+        "seed": 2026081201,
+        "beta": 0.9,
+        "profiles": [
+          "C0",
+          "C1",
+          "C2"
+        ],
+        "field_matches": {
+          "latent_draw_sha256": true,
+          "demand_sha256": true,
+          "emergency_price_sha256": true,
+          "emergency_supply_sha256": true
+        },
+        "verified": true,
+        "fulfillment_hashes": {
+          "C0": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+          "C1": "7f91ecea260e023d7e0e3b87117ce3261504fc99b08b60b70f1b793d1b161ed4",
+          "C2": "e7cdba035e722aa3a507c1e13441741087dc815b54ae6aa87ae5051ca215ef9b"
+        }
+      },
+      {
+        "seed": 2026081201,
+        "beta": 1.1,
+        "profiles": [
+          "C0",
+          "C1",
+          "C2"
+        ],
+        "field_matches": {
+          "latent_draw_sha256": true,
+          "demand_sha256": true,
+          "emergency_price_sha256": true,
+          "emergency_supply_sha256": true
+        },
+        "verified": true,
+        "fulfillment_hashes": {
+          "C0": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+          "C1": "7f91ecea260e023d7e0e3b87117ce3261504fc99b08b60b70f1b793d1b161ed4",
+          "C2": "e7cdba035e722aa3a507c1e13441741087dc815b54ae6aa87ae5051ca215ef9b"
+        }
+      },
+      {
+        "seed": 2026081201,
+        "beta": 1.3,
+        "profiles": [
+          "C0",
+          "C1",
+          "C2"
+        ],
+        "field_matches": {
+          "latent_draw_sha256": true,
+          "demand_sha256": true,
+          "emergency_price_sha256": true,
+          "emergency_supply_sha256": true
+        },
+        "verified": true,
+        "fulfillment_hashes": {
+          "C0": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+          "C1": "7f91ecea260e023d7e0e3b87117ce3261504fc99b08b60b70f1b793d1b161ed4",
+          "C2": "e7cdba035e722aa3a507c1e13441741087dc815b54ae6aa87ae5051ca215ef9b"
+        }
+      },
+      {
+        "seed": 2026081202,
+        "beta": 0.9,
+        "profiles": [
+          "C0",
+          "C1",
+          "C2"
+        ],
+        "field_matches": {
+          "latent_draw_sha256": true,
+          "demand_sha256": true,
+          "emergency_price_sha256": true,
+          "emergency_supply_sha256": true
+        },
+        "verified": true,
+        "fulfillment_hashes": {
+          "C0": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+          "C1": "37a601bdb737a47a9acc5dfb37cf3169d473a52d76c53cabe6c28687e6556ffc",
+          "C2": "315a454468f09448daf1c26d8d9462f24609e6ec66a04dd8acdf35961ba4b45d"
+        }
+      },
+      {
+        "seed": 2026081202,
+        "beta": 1.1,
+        "profiles": [
+          "C0",
+          "C1",
+          "C2"
+        ],
+        "field_matches": {
+          "latent_draw_sha256": true,
+          "demand_sha256": true,
+          "emergency_price_sha256": true,
+          "emergency_supply_sha256": true
+        },
+        "verified": true,
+        "fulfillment_hashes": {
+          "C0": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+          "C1": "37a601bdb737a47a9acc5dfb37cf3169d473a52d76c53cabe6c28687e6556ffc",
+          "C2": "315a454468f09448daf1c26d8d9462f24609e6ec66a04dd8acdf35961ba4b45d"
+        }
+      },
+      {
+        "seed": 2026081202,
+        "beta": 1.3,
+        "profiles": [
+          "C0",
+          "C1",
+          "C2"
+        ],
+        "field_matches": {
+          "latent_draw_sha256": true,
+          "demand_sha256": true,
+          "emergency_price_sha256": true,
+          "emergency_supply_sha256": true
+        },
+        "verified": true,
+        "fulfillment_hashes": {
+          "C0": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+          "C1": "37a601bdb737a47a9acc5dfb37cf3169d473a52d76c53cabe6c28687e6556ffc",
+          "C2": "315a454468f09448daf1c26d8d9462f24609e6ec66a04dd8acdf35961ba4b45d"
+        }
+      },
+      {
+        "seed": 2026081203,
+        "beta": 0.9,
+        "profiles": [
+          "C0",
+          "C1",
+          "C2"
+        ],
+        "field_matches": {
+          "latent_draw_sha256": true,
+          "demand_sha256": true,
+          "emergency_price_sha256": true,
+          "emergency_supply_sha256": true
+        },
+        "verified": true,
+        "fulfillment_hashes": {
+          "C0": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+          "C1": "7091966c30c76a2679bd23037d4fbe8cd433f1c93bc23f831bd0753eaf48d447",
+          "C2": "c0859a572cac8876745218763544e45aefab9bb505aed8c89705beaaf09d613d"
+        }
+      },
+      {
+        "seed": 2026081203,
+        "beta": 1.1,
+        "profiles": [
+          "C0",
+          "C1",
+          "C2"
+        ],
+        "field_matches": {
+          "latent_draw_sha256": true,
+          "demand_sha256": true,
+          "emergency_price_sha256": true,
+          "emergency_supply_sha256": true
+        },
+        "verified": true,
+        "fulfillment_hashes": {
+          "C0": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+          "C1": "7091966c30c76a2679bd23037d4fbe8cd433f1c93bc23f831bd0753eaf48d447",
+          "C2": "c0859a572cac8876745218763544e45aefab9bb505aed8c89705beaaf09d613d"
+        }
+      },
+      {
+        "seed": 2026081203,
+        "beta": 1.3,
+        "profiles": [
+          "C0",
+          "C1",
+          "C2"
+        ],
+        "field_matches": {
+          "latent_draw_sha256": true,
+          "demand_sha256": true,
+          "emergency_price_sha256": true,
+          "emergency_supply_sha256": true
+        },
+        "verified": true,
+        "fulfillment_hashes": {
+          "C0": "d3115f6e3e68f4ce7ac5301a51f64d6e74c7d34c9cce97f6d67d68bc1962be61",
+          "C1": "7091966c30c76a2679bd23037d4fbe8cd433f1c93bc23f831bd0753eaf48d447",
+          "C2": "c0859a572cac8876745218763544e45aefab9bb505aed8c89705beaaf09d613d"
+        }
+      }
+    ],
+    "common_random_numbers_verified": true,
+    "development_activation_gate_passed": true,
+    "formal_extension_authorized": false,
+    "stop_reason": null
+  },
+  "aggregate": {
+    "optimal_run_count": 27,
+    "substantive_activation_run_count": 9,
+    "max_R_disc_robust_ratio": 0.9999996084761851,
+    "max_endpoint_consistency_difference": 0.00317253036701004,
+    "total_wall_seconds": 177.78634629999988,
+    "peak_memory_mb": 102.63671875,
+    "failure_count": 0
+  },
+  "execution_boundaries": {
+    "development_runs": 27,
+    "pilot_runs": 0,
+    "formal_extension_runs": 0,
+    "m0_e3_runs": 0,
+    "multi_item_confirmation_runs": 0
+  },
+  "github_actions": "pending",
+  "generated_at_utc": "2026-08-13T02:46:58.920180+00:00"
+}
