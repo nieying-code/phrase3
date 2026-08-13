@@ -1,4 +1,5 @@
 import itertools
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -23,6 +24,16 @@ def _case_id(seed: int, beta: float, profile: str) -> str:
     return f"V1_seed{seed}_beta{beta:.2f}_profile{profile}".replace(".", "p")
 
 
+def _canonical_sha256(value: object) -> str:
+    payload = json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
 def test_m2_development_grid_rebuilds_run_and_gate_evidence() -> None:
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
     assert audit["results_evidence_commit"] == "98fabff"
@@ -33,10 +44,11 @@ def test_m2_development_grid_rebuilds_run_and_gate_evidence() -> None:
     assert audit["execution"]["working_tree_dirty"] is False
     assert audit["execution"]["untracked_execution_input_count_at_start"] == 0
     assert audit["fingerprints"] == EXPECTED_FINGERPRINTS
-    assert audit["mapping_hashes"] == {
+    expected_mapping_hashes = {
         "run_artifact_mapping_sha256": "5e8dedaf26113bf1602bcf9813265a77990b734540e25a2bef314a9940b6275a",
         "science_evidence_mapping_sha256": "619c40b858ca32728f33b2cccb32df150ef957307ab9d62840ab0037f285c4b0",
     }
+    assert audit["mapping_hashes"] == expected_mapping_hashes
     assert audit["global_artifacts"] == {
         "registry_sha256": "e54f662fce95b966944eb712678e781c1dd59e534c889efaf693b5aa7049d61a",
         "projection_sha256": "7128c3673ba58255b5dbff805f22a50d674cf637f043dda22bb7de230a5376b8",
@@ -80,6 +92,84 @@ def test_m2_development_grid_rebuilds_run_and_gate_evidence() -> None:
         assert [policy["rho"] for policy in row["fixed_reserve_policies"]] == [0.0, 0.1, 0.3, 0.5]
         assert all(policy["status"] == "optimal" and policy["regular_purchase_reoptimized"] for policy in row["fixed_reserve_policies"])
 
+    artifact_mapping = {
+        row["run_id"]: row["artifacts"]
+        for row in runs
+    }
+    science_fields = (
+        "case_id",
+        "seed",
+        "beta",
+        "profile_id",
+        "budget",
+        "R_star",
+        "R_min_feas",
+        "R_min_opt",
+        "R_max_opt",
+        "R_disc_robust",
+        "R_disc_robust_ratio",
+        "numerical_activation",
+        "substantive_activation",
+        "joint_scenario_set_sha256",
+    )
+    science_mapping = {
+        row["run_id"]: {field: row[field] for field in science_fields}
+        for row in runs
+    }
+    assert _canonical_sha256(artifact_mapping) == expected_mapping_hashes[
+        "run_artifact_mapping_sha256"
+    ]
+    assert _canonical_sha256(science_mapping) == expected_mapping_hashes[
+        "science_evidence_mapping_sha256"
+    ]
+
+    component_fields = (
+        "latent_draw_sha256",
+        "demand_sha256",
+        "emergency_price_sha256",
+        "emergency_supply_sha256",
+    )
+    rebuilt_crn_checks = []
+    for seed, beta in itertools.product(SEEDS, BETAS):
+        triplet = sorted(
+            (
+                row
+                for row in runs
+                if row["seed"] == seed and row["beta"] == beta
+            ),
+            key=lambda row: row["profile_id"],
+        )
+        assert [row["profile_id"] for row in triplet] == list(PROFILES)
+        field_matches = {
+            field: len(
+                {
+                    row["scenario_component_set_sha256"][field]
+                    for row in triplet
+                }
+            )
+            == 1
+            for field in component_fields
+        }
+        fulfillment_hashes = {
+            row["profile_id"]: row["scenario_component_set_sha256"][
+                "fulfillment_sha256"
+            ]
+            for row in triplet
+        }
+        assert all(field_matches.values())
+        assert len(set(fulfillment_hashes.values())) == 3
+        rebuilt_crn_checks.append(
+            {
+                "seed": seed,
+                "beta": beta,
+                "profiles": list(PROFILES),
+                "field_matches": field_matches,
+                "verified": True,
+                "fulfillment_hashes": fulfillment_hashes,
+            }
+        )
+    assert audit["projection"]["common_random_number_checks"] == rebuilt_crn_checks
+
     rebuilt = []
     for beta, profile in itertools.product(BETAS, PROFILES):
         members = [row for row in runs if row["beta"] == beta and row["profile_id"] == profile]
@@ -96,10 +186,45 @@ def test_m2_development_grid_rebuilds_run_and_gate_evidence() -> None:
     assert audit["projection"]["missing_case_ids"] == []
     assert audit["projection"]["invalid_primary_run_ids"] == []
     assert audit["projection"]["duplicate_case_ids"] == []
-    assert audit["aggregate"]["optimal_run_count"] == 27
-    assert audit["aggregate"]["substantive_activation_run_count"] == 9
-    assert audit["aggregate"]["failure_count"] == 0
-    assert set(audit["execution_boundaries"].values()) == {0, 27}
+    rebuilt_aggregate = {
+        "optimal_run_count": sum(row["status"] == "optimal" for row in runs),
+        "substantive_activation_run_count": sum(
+            row["substantive_activation"] for row in runs
+        ),
+        "max_R_disc_robust_ratio": max(
+            row["R_disc_robust_ratio"] for row in runs
+        ),
+        "max_endpoint_consistency_difference": max(
+            max(
+                abs(row["minimum_endpoint_consistency_difference"]),
+                abs(row["maximum_endpoint_consistency_difference"]),
+            )
+            for row in runs
+        ),
+        "total_wall_seconds": sum(row["wall_seconds"] for row in runs),
+        "peak_memory_mb": max(row["peak_memory_mb"] for row in runs),
+        "failure_count": sum(
+            any(
+                count
+                for endpoint in row["endpoint_failure_counts"].values()
+                for count in endpoint.values()
+            )
+            for row in runs
+        ),
+    }
+    for field, expected_value in rebuilt_aggregate.items():
+        actual_value = audit["aggregate"][field]
+        if isinstance(expected_value, float):
+            assert math.isclose(actual_value, expected_value, abs_tol=1e-12)
+        else:
+            assert actual_value == expected_value
+    assert audit["execution_boundaries"] == {
+        "development_runs": len(runs),
+        "pilot_runs": 0,
+        "formal_extension_runs": 0,
+        "m0_e3_runs": 0,
+        "multi_item_confirmation_runs": 0,
+    }
     assert audit["github_actions"] == {
         "run_id": 31662287525,
         "url": "https://github.com/nieying-code/phrase3/actions/runs/31662287525",
