@@ -15,15 +15,16 @@ CONFIG = ROOT / "configs/phase6_m2_two_item_confirmation.yaml"
 AUDIT = ROOT / "docs/handoffs/2026-08-13_phase6_m2_two_item_confirmation_design_audit.json"
 PARENT_AUDIT = ROOT / "docs/handoffs/2026-08-13_phase6_m2_threshold_refinement_grid_audit.json"
 PARENT_AUDIT_SHA256 = "886a1657c511e1df13b252bb909b037cfd1d2a3790471b49e219a1d4f345d6ba"
-CONFIG_SHA256 = "c3aead6f7c18eb0e74cc0de16803e8f56d15052a8055b56c7a4244ad8ad6847a"
+DESIGN_BASELINE_CONFIG_SHA256 = "c3aead6f7c18eb0e74cc0de16803e8f56d15052a8055b56c7a4244ad8ad6847a"
+RUNNER_CONFIG_SHA256 = "d6e28d2171aceacd750a74bcc58a01c3c7383ffdab7ce7fca53e7451fe5f39a5"
 
 
 def test_two_item_confirmation_design_is_exact_and_not_executable() -> None:
     config = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
-    assert config["protocol_id"] == "phase6_m2_two_item_confirmation_design_v1_0"
-    assert config["status"] == "candidate_design_pending_review"
+    assert config["protocol_id"] == "phase6_m2c2_confirmation_v1_0"
+    assert config["status"] == "frozen_for_confirmation_execution"
     design = config["confirmation_preregistration"]
-    assert design["execution_allowed_in_this_revision"] is False
+    assert design["execution_allowed_in_this_revision"] is True
     seeds = tuple(design["seeds"])
     betas = tuple(float(value) for value in design["beta"])
     profiles = tuple(design["profiles"])
@@ -46,7 +47,7 @@ def test_confirmation_seeds_are_disjoint_from_all_existing_project_seeds() -> No
         for path in folder.rglob("*"):
             if not path.is_file() or path.resolve() == CONFIG.resolve():
                 continue
-            if "phase6_m2_two_item_confirmation" in path.name:
+            if "phase6_m2_two_item_confirmation" in path.name or "phase6_m2c2_confirmation" in path.name:
                 continue
             if path.suffix.lower() not in {".yaml", ".yml", ".json", ".md", ".py"}:
                 continue
@@ -165,10 +166,11 @@ def test_parent_evidence_and_design_config_bytes_are_locked() -> None:
     assert parent["formal_extension_authorized"] is False
     assert audit["parent_evidence"]["audit_sha256"] == PARENT_AUDIT_SHA256
     assert audit["parent_evidence"]["eligible_combinations"] == config["parent_evidence"]["eligible_parent_combinations"]
-    assert hashlib.sha256(CONFIG.read_bytes()).hexdigest() == CONFIG_SHA256
+    assert audit["design_config"]["sha256"] == DESIGN_BASELINE_CONFIG_SHA256
+    assert hashlib.sha256(CONFIG.read_bytes()).hexdigest() == RUNNER_CONFIG_SHA256
     assert audit["design_config"] == {
         "path": "configs/phase6_m2_two_item_confirmation.yaml",
-        "sha256": CONFIG_SHA256,
+        "sha256": DESIGN_BASELINE_CONFIG_SHA256,
     }
 
 
@@ -190,8 +192,10 @@ def test_C0_equivalence_and_passing_beta_claim_boundaries_are_frozen() -> None:
     assert overall["two_passing_betas_scope"] == "formal_design_may_compare_beta_1_1_and_1_3_budget_moderation"
 
 
-def test_design_has_zero_execution_and_no_runner_artifact() -> None:
+def test_design_execution_counts_stay_zero_and_runner_is_now_separate() -> None:
     config = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
-    assert all(value in (False, 0) for value in config["execution_boundaries"].values())
-    assert not (ROOT / "src/phase6_m2_two_item_confirmation.py").exists()
-    assert not (ROOT / "src/run_phase6_m2_two_item_confirmation.py").exists()
+    boundaries = config["execution_boundaries"]
+    assert boundaries["runner_implemented"] is True
+    assert all(value == 0 for key, value in boundaries.items() if key != "runner_implemented")
+    assert (ROOT / "src/phase6_m2c2_confirmation.py").is_file()
+    assert (ROOT / "src/run_phase6_m2c2_confirmation.py").is_file()
