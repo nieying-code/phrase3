@@ -7,7 +7,7 @@
   "design_implementation_commit": "dd47401",
   "design_artifacts": {
     "config_path": "configs/phase6_m2_threshold_refinement.yaml",
-    "config_sha256": "93a4df08a8efd7b695952a7299dc166ea5d255066643a5e79048e92e91562399",
+    "config_sha256": "5f2725cd486241443a0497a690ac61dce2956807d4582d5798a2dab05d48999e",
     "preregistration_path": "docs/phase6_m2_threshold_refinement_preregistration.md",
     "preregistration_sha256": "165412633de096d9bf20d3657dea529931eb109c499e606c803cce9078b6847c"
   },

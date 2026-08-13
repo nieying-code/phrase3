@@ -1,0 +1,20 @@
+runner_id: phase6_m2_threshold_refinement_development_v1_0
+namespace: phase6_m2_threshold_refinement_v1_0
+output_root: outputs/phase6_m2_threshold_refinement_v1_0
+scientific_config: configs/phase6_m2_threshold_refinement.yaml
+parent_scientific_config: configs/phase6_m2_supply_disruption.yaml
+base_matrix: configs/phase6_experiment_matrix.yaml
+solver:
+  preference: [gurobi]
+  interface: gurobi_direct
+  optimizer_version: 13.0.2
+  gurobipy_version: 13.0.2
+  threads: 1
+execution:
+  strictly_serial: true
+  development_execution_requires_explicit_authorization: true
+  immutable_run_ids: true
+  parent_anchors_read_only: true
+  parent_registry_or_projection_import_forbidden: true
+  adaptive_profile_insertion_forbidden: true
+  formal_extension_authorized: false
