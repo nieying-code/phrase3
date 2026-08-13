@@ -50,7 +50,8 @@
     "gurobi_call_count": 0
   },
   "validation": {"specialized_passed": 18, "ordinary_regression_passed": 308, "phase5_passed": 6, "compileall_passed": true, "git_diff_check_passed": true},
-  "draft_pr": "pending",
-  "final_head": "pending",
-  "github_actions": "pending"
+  "draft_pr": "https://github.com/nieying-code/phrase3/pull/47",
+  "review_fix_implementation_head": "4dcd0e07823ade5a0e05d051775974e563e2e811",
+  "review_fix_github_actions": {"run_id": 31672601349, "status": "success", "linux": "success", "windows": "success"},
+  "trace_only_followup_commit_expected": true
 }

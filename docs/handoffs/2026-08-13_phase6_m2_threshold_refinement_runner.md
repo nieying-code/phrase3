@@ -40,6 +40,8 @@ Refinement development runs, pilots, formal extensions, multi-item confirmations
 
 - Base: PR #46 merge `9cdd7bb8d735cc82590ac25f2227b84e17ada2af`.
 - Branch: `agent/phase6-m2-threshold-refinement-runner`.
-- Draft PR: pending.
-- Final commit and CI: pending.
+- Draft PR: [#47](https://github.com/nieying-code/phrase3/pull/47).
+- Review-fix implementation commit: `4dcd0e07823ade5a0e05d051775974e563e2e811`.
+- Review-fix CI: [run 31672601349](https://github.com/nieying-code/phrase3/actions/runs/31672601349), Linux and Windows successful.
+- A later trace-only commit may update this record; it does not alter the reviewed runner behavior or approved fingerprints.
 - Local validation after review fixes: threshold-runner specialized `18 passed`; complete regression `308 passed`; Phase 5 `6 passed`; compileall and `git diff --check` passed. No scenario generation or Gurobi call occurred.
