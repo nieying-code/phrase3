@@ -13,7 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs/phase6_m2_formal_extension.yaml"
 AUDIT = ROOT / "docs/handoffs/2026-08-14_phase6_m2_formal_extension_design_audit.json"
 PARENT = ROOT / "docs/handoffs/2026-08-14_phase6_m2c2_confirmation_grid_audit.json"
-CONFIG_SHA256 = "c2c46333896f2c9fada020bddc90ca9eb56a30e28bff5e9f8b2bcdc3d32a7b70"
+INITIAL_CONFIG_SHA256 = "c2c46333896f2c9fada020bddc90ca9eb56a30e28bff5e9f8b2bcdc3d32a7b70"
+CONFIG_SHA256 = "e3eb0ae4c79e9e0859ecc33e4707aecc7ce1a7a1aed3166453f8af2ed2db6792"
 PARENT_SHA256 = "92f326e30b5f36b10025261382dc37335c7a00b00ee0b409aecac6573b5a24e2"
 PILOT = tuple(range(2026081601, 2026081604))
 PILOT_TEST = (2026081701,)
@@ -50,12 +51,12 @@ def test_design_bytes_and_pilot_only_state_are_locked() -> None:
     assert hashlib.sha256(CONFIG.read_bytes()).hexdigest() == CONFIG_SHA256
     assert audit["design_config"] == {
         "path": "configs/phase6_m2_formal_extension.yaml",
-        "sha256": CONFIG_SHA256,
+        "sha256": INITIAL_CONFIG_SHA256,
     }
-    assert config["protocol_id"] == "phase6_m2_formal_extension_design_v1_0"
+    assert config["protocol_id"] == "phase6_m2_formal_extension_design_v1_1"
     assert config["status"] == "frozen_for_pilot_execution"
-    assert config["runner_namespace"] == "phase6_m2_formal_extension_v1_0"
-    assert config["output_root"] == "outputs/phase6_m2_formal_extension_v1_0"
+    assert config["runner_namespace"] == "phase6_m2_formal_extension_v1_1"
+    assert config["output_root"] == "outputs/phase6_m2_formal_extension_v1_1"
     boundaries = config["execution_boundaries"]
     assert boundaries["runner_implemented"] is True
     assert all(value == 0 for key, value in boundaries.items() if key not in {"runner_implemented", "formal_extension_authorized"})

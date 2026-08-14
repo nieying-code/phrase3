@@ -55,9 +55,9 @@ from .phase6_protocol import generate_phase6_data, load_phase6_matrix
 from .reproducibility import capture_runtime_context, sha256_file, validate_execution_source
 
 
-PROTOCOL_ID = "phase6_m2_formal_extension_design_v1_0"
-RUNNER_NAMESPACE = "phase6_m2_formal_extension_v1_0"
-OUTPUT_ROOT = "outputs/phase6_m2_formal_extension_v1_0"
+PROTOCOL_ID = "phase6_m2_formal_extension_design_v1_1"
+RUNNER_NAMESPACE = "phase6_m2_formal_extension_v1_1"
+OUTPUT_ROOT = "outputs/phase6_m2_formal_extension_v1_1"
 READY_STATUS = "frozen_for_pilot_execution"
 APPROVAL_PATH = "configs/phase6_m2_formal_extension_pilot_approval.yaml"
 ENDPOINT_OBJECTIVE_COMPARISON_SLACK = 1.0e-8
@@ -710,7 +710,7 @@ def validate_preflight(
         raise RuntimeError("formal-extension runner safety metadata mismatch")
     approval = yaml.safe_load(approval_path.read_text(encoding="utf-8"))
     expected_approval = {
-        "approval_id": "phase6_m2_formal_extension_pilot_v1_0",
+        "approval_id": "phase6_m2_formal_extension_pilot_v1_1",
         "status": READY_STATUS,
         "scientific_protocol": PROTOCOL_ID,
         "runner_namespace": RUNNER_NAMESPACE,

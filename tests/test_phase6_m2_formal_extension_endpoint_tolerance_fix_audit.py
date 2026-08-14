@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 
@@ -28,7 +27,10 @@ def test_endpoint_tolerance_fix_audit_closes_diagnostic_and_stop_boundary() -> N
     assert audit["fresh_namespace_required_before_rerun"] is True
     assert audit["formal_extension_authorized"] is False
     source = audit["corrected_runner_source"]
-    assert hashlib.sha256((ROOT / source["path"]).read_bytes()).hexdigest() == source["sha256"]
+    assert source == {
+        "path": "src/phase6_m2_formal_extension.py",
+        "sha256": "1b56aa49932376da86617749af196f108f66b7807f252b8f0602cb6619c1daee",
+    }
 
 
 def test_only_protected_component_fingerprints_change() -> None:

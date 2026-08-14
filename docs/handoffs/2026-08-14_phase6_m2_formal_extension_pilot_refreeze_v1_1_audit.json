@@ -1,0 +1,76 @@
+{
+  "audit_id": "phase6_m2_formal_extension_pilot_refreeze_v1_1",
+  "status": "frozen_for_pilot_execution_pending_review",
+  "base_merge_commit": "5c955f738aff8f379c0ff8bb59ac97c91a43399e",
+  "base_tree": "e9f53836c947b361a02cf26f2418fe3a739b4b65",
+  "protocol_id": "phase6_m2_formal_extension_design_v1_1",
+  "runner_namespace": "phase6_m2_formal_extension_v1_1",
+  "output_root": "outputs/phase6_m2_formal_extension_v1_1",
+  "approval_id": "phase6_m2_formal_extension_pilot_v1_1",
+  "controlled_files": {
+    "scientific_config": {
+      "path": "configs/phase6_m2_formal_extension.yaml",
+      "sha256": "e3eb0ae4c79e9e0859ecc33e4707aecc7ce1a7a1aed3166453f8af2ed2db6792"
+    },
+    "runner_config": {
+      "path": "configs/phase6_m2_formal_extension_runner.yaml",
+      "sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e"
+    },
+    "pilot_approval": {
+      "path": "configs/phase6_m2_formal_extension_pilot_approval.yaml",
+      "sha256": "8f115d31e65861065faa3875c173ffffd8b86354bd5b15ef61f1927c75df31e0"
+    },
+    "runner_source": {
+      "path": "src/phase6_m2_formal_extension.py",
+      "sha256": "0e8bb1fa889ab7ea603110678884f0950d9e490156cfb3fc8725bc24b0868b89"
+    },
+    "cli_source": {
+      "path": "src/run_phase6_m2_formal_extension.py",
+      "sha256": "63d4bd769d7508e713d8b5024cf97b2240e53812b166371b33beddb5e9983025"
+    },
+    "status_source": {
+      "path": "src/phase6_m2_formal_extension_status.py",
+      "sha256": "326dac13e02775babd187fb15dcced60098e75d648a6649dbe54ca285950336b"
+    }
+  },
+  "approved_fingerprints": {
+    "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+    "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+    "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+    "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "endpoint_fix_evidence": {
+    "merge_commit": "5c955f738aff8f379c0ff8bb59ac97c91a43399e",
+    "audit_path": "docs/handoffs/2026-08-14_phase6_m2_formal_extension_endpoint_tolerance_fix_audit.json",
+    "audit_sha256": "f32da97e0ad93876d94f05fb94da27e4528f0f67c947c7f9c6c3c38f945e117c",
+    "finite_nonnegative_required": true,
+    "comparison_slack": 1e-08
+  },
+  "pilot_matrix": {
+    "mechanism_run_count": 15,
+    "OOS_probe_run_count": 1,
+    "training_seeds": [2026081601, 2026081602, 2026081603],
+    "OOS_test_seed": 2026081701,
+    "mechanism_case_ids_unchanged": true,
+    "OOS_case_id_unchanged": true
+  },
+  "namespace_isolation": {
+    "old_namespace": "phase6_m2_formal_extension_v1_0",
+    "old_output_root": "outputs/phase6_m2_formal_extension_v1_0",
+    "old_results_accepted": false,
+    "registry_or_projection_migration_allowed": false,
+    "new_output_root_required_empty_before_execution": true
+  },
+  "execution_counts": {
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0,
+    "pilot_mechanism_runs": 0,
+    "pilot_OOS_probe_runs": 0,
+    "formal_mechanism_runs": 0,
+    "formal_OOS_runs": 0,
+    "algorithm_performance_runs": 0,
+    "M0_E3_runs": 0
+  },
+  "formal_extension_authorized": false
+}
