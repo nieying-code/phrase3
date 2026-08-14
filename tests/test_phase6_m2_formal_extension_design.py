@@ -13,9 +13,10 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs/phase6_m2_formal_extension.yaml"
 AUDIT = ROOT / "docs/handoffs/2026-08-14_phase6_m2_formal_extension_design_audit.json"
 PARENT = ROOT / "docs/handoffs/2026-08-14_phase6_m2c2_confirmation_grid_audit.json"
-CONFIG_SHA256 = "2b1a7f2c261303726415e6ba071ef3ea9603b275eb6163a404e69b9324ada58d"
+CONFIG_SHA256 = "b95f741239a0c9269025f293005406827f4cb325115900a03f5ac454961bf5a1"
 PARENT_SHA256 = "92f326e30b5f36b10025261382dc37335c7a00b00ee0b409aecac6573b5a24e2"
 PILOT = tuple(range(2026081601, 2026081604))
+PILOT_TEST = (2026081701,)
 TRAIN = tuple(range(2026081401, 2026081411))
 TEST = tuple(range(2026081501, 2026081511))
 
@@ -68,12 +69,16 @@ def test_all_new_seed_sets_are_exact_disjoint_and_unused() -> None:
     config = _config()
     seeds = config["seed_protocol"]
     assert tuple(seeds["pilot_seeds"]) == PILOT
+    assert tuple(seeds["pilot_test_seeds"]) == PILOT_TEST
     assert tuple(seeds["formal_training_seeds"]) == TRAIN
     assert tuple(seeds["formal_test_seeds"]) == TEST
     assert set(PILOT).isdisjoint(TRAIN)
     assert set(PILOT).isdisjoint(TEST)
+    assert set(PILOT_TEST).isdisjoint(PILOT)
+    assert set(PILOT_TEST).isdisjoint(TRAIN)
+    assert set(PILOT_TEST).isdisjoint(TEST)
     assert set(TRAIN).isdisjoint(TEST)
-    selected = {str(value) for value in PILOT + TRAIN + TEST}
+    selected = {str(value) for value in PILOT + PILOT_TEST + TRAIN + TEST}
     observed: set[str] = set()
     for folder in (ROOT / "configs", ROOT / "docs", ROOT / "src", ROOT / "tests"):
         for path in folder.rglob("*"):
@@ -84,6 +89,7 @@ def test_all_new_seed_sets_are_exact_disjoint_and_unused() -> None:
             observed.update(re.findall(r"\b20\d{8}\b", path.read_text(encoding="utf-8", errors="ignore")))
     assert selected.isdisjoint(observed)
     assert seeds["formal_training_test_pairing"] == "same_list_position_one_to_one"
+    assert seeds["all_four_sets_pairwise_disjoint"] is True
     assert list(zip(TRAIN, TEST, strict=True)) == [
         (2026081401 + index, 2026081501 + index) for index in range(10)
     ]
@@ -135,7 +141,10 @@ def test_pilot_cannot_select_or_authorize_formal_design() -> None:
     assert pilot["runner_must_be_approved_in_separate_PR"] is True
     assert pilot["mechanism_run_count"] == len(PILOT) * 5 == 15
     assert pilot["out_of_sample_throughput_probe"] == {
-        "pilot_seed_count": 1,
+        "pilot_training_seed": 2026081601,
+        "pilot_test_seed": 2026081701,
+        "training_and_test_seeds_must_differ": True,
+        "pilot_test_seed_must_be_disjoint_from_all_pilot_training_and_formal_seeds": True,
         "beta": 1.1,
         "profile": "T03",
         "strategy_count": 5,
@@ -170,6 +179,24 @@ def test_out_of_sample_design_closes_100000_paired_evaluations() -> None:
         "deterministic_tie_break": "smallest_rho",
         "test_scenarios_or_test_metrics_for_selection_forbidden": True,
     }
+    assert oos["first_stage_plan_identity"] == {
+        "endogenous_reserve": {
+            "source": "complete_extensive_model_R_min_opt_endpoint",
+            "arbitrary_initial_R_star_plan_forbidden": True,
+        },
+        "zero_autonomous_reserve": {"reserve_formula": "R_min_feas"},
+        "fixed_autonomous_reserve": {
+            "reserve_formula": "R_min_feas_plus_rho_times_budget_minus_R_min_feas",
+            "rho": [0.1, 0.3, 0.5],
+        },
+        "every_strategy_fixed_reserve_then_reoptimizes_regular_procurement": True,
+        "required_plan_identity_fields": [
+            "reserve_amount", "regular_purchase_sha256", "exact_training_objective",
+            "training_joint_scenario_set_sha256", "finalized_plan_artifact_sha256",
+        ],
+        "OOS_worker_reads_finalized_plan_artifact_only": True,
+        "OOS_worker_reoptimization_or_plan_substitution_forbidden": True,
+    }
 
 
 def test_statistical_unit_bootstrap_and_wilcoxon_are_fully_frozen() -> None:
@@ -183,6 +210,10 @@ def test_statistical_unit_bootstrap_and_wilcoxon_are_fully_frozen() -> None:
         "random_seed": 2026081499,
         "resamples": 10000,
         "confidence_level": 0.95,
+        "point_estimator": "arithmetic_mean_of_ten_seed_level_paired_differences",
+        "paired_difference_direction": "strategy_or_treatment_A_minus_comparator_B",
+        "resampling_algorithm": "sample_ten_training_seed_pairs_with_replacement_then_recompute_arithmetic_mean",
+        "median_effect_role": "descriptive_supplement_only",
     }
     assert stats["wilcoxon"] == {
         "test": "paired_two_sided_signed_rank",
@@ -249,10 +280,28 @@ def test_machine_audit_matches_the_frozen_design() -> None:
     assert audit["status"] == "candidate_design_pending_review"
     assert audit["base_main_merge_commit"] == "9b3dce465edf38179ccb5d3544835f702a32fb4c"
     assert audit["seed_design"]["pilot"] == list(PILOT)
+    assert audit["seed_design"]["pilot_test"] == list(PILOT_TEST)
     assert audit["seed_design"]["formal_training"] == list(TRAIN)
     assert audit["seed_design"]["formal_test"] == list(TEST)
     assert audit["scientific_design"]["total_formal_mechanism_runs"] == 50
     assert audit["out_of_sample_design"]["exact_recourse_evaluations"] == 100000
+    assert audit["pilot_design"]["OOS_probe_training_seed"] == 2026081601
+    assert audit["pilot_design"]["OOS_probe_test_seed"] == 2026081701
+    assert audit["first_stage_plan_identity"] == {
+        "endogenous_source": "complete_extensive_model_R_min_opt_endpoint",
+        "zero_autonomous_reserve_formula": "R_min_feas",
+        "fixed_reserve_formula": "R_min_feas_plus_rho_times_budget_minus_R_min_feas",
+        "fixed_rhos": [0.1, 0.3, 0.5],
+        "every_strategy_reoptimizes_regular_procurement": True,
+        "OOS_worker_reads_finalized_plan_artifact_only": True,
+        "OOS_worker_reoptimization_or_substitution_forbidden": True,
+    }
+    assert audit["statistics"]["bootstrap"]["point_estimator"] == (
+        "arithmetic_mean_of_ten_seed_level_paired_differences"
+    )
+    assert audit["statistics"]["bootstrap"]["resampling_algorithm"] == (
+        "sample_ten_training_seed_pairs_with_replacement_then_recompute_arithmetic_mean"
+    )
     assert audit["execution_counts"] == {
         "pilot_runs": 0,
         "formal_mechanism_runs": 0,

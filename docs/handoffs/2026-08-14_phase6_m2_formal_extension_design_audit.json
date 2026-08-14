@@ -13,7 +13,7 @@
   },
   "design_config": {
     "path": "configs/phase6_m2_formal_extension.yaml",
-    "sha256": "2b1a7f2c261303726415e6ba071ef3ea9603b275eb6163a404e69b9324ada58d"
+    "sha256": "b95f741239a0c9269025f293005406827f4cb325115900a03f5ac454961bf5a1"
   },
   "scientific_design": {
     "tier_id": "M2F2",
@@ -35,15 +35,17 @@
   },
   "seed_design": {
     "pilot": [2026081601, 2026081602, 2026081603],
+    "pilot_test": [2026081701],
     "formal_training": [2026081401, 2026081402, 2026081403, 2026081404, 2026081405, 2026081406, 2026081407, 2026081408, 2026081409, 2026081410],
     "formal_test": [2026081501, 2026081502, 2026081503, 2026081504, 2026081505, 2026081506, 2026081507, 2026081508, 2026081509, 2026081510],
     "pairing": "same_list_position_one_to_one",
-    "all_sets_pairwise_disjoint": true,
+    "all_four_sets_pairwise_disjoint": true,
     "disjoint_from_prior_project_seeds": true
   },
   "pilot_design": {
     "mechanism_runs": 15,
-    "full_OOS_probe_training_seed_count": 1,
+    "OOS_probe_training_seed": 2026081601,
+    "OOS_probe_test_seed": 2026081701,
     "OOS_probe_strategies": 5,
     "OOS_probe_scenarios_per_strategy": 2000,
     "activation_is_not_a_pilot_gate": true,
@@ -59,9 +61,25 @@
     "common_test_scenarios_within_pair": true,
     "test_scenario_reoptimization_forbidden": true
   },
+  "first_stage_plan_identity": {
+    "endogenous_source": "complete_extensive_model_R_min_opt_endpoint",
+    "zero_autonomous_reserve_formula": "R_min_feas",
+    "fixed_reserve_formula": "R_min_feas_plus_rho_times_budget_minus_R_min_feas",
+    "fixed_rhos": [0.1, 0.3, 0.5],
+    "every_strategy_reoptimizes_regular_procurement": true,
+    "OOS_worker_reads_finalized_plan_artifact_only": true,
+    "OOS_worker_reoptimization_or_substitution_forbidden": true
+  },
   "statistics": {
     "independent_unit": "formal_training_seed",
-    "bootstrap": {"method": "paired_cluster_percentile", "random_seed": 2026081499, "resamples": 10000, "confidence_level": 0.95},
+    "bootstrap": {
+      "method": "paired_cluster_percentile",
+      "random_seed": 2026081499,
+      "resamples": 10000,
+      "confidence_level": 0.95,
+      "point_estimator": "arithmetic_mean_of_ten_seed_level_paired_differences",
+      "resampling_algorithm": "sample_ten_training_seed_pairs_with_replacement_then_recompute_arithmetic_mean"
+    },
     "wilcoxon": {"test": "paired_two_sided_signed_rank", "zero_method": "pratt", "method": "approx", "correction": false},
     "effect_sizes_and_confidence_intervals_required": true,
     "p_values_role": "supportive_not_sole_evidence",
