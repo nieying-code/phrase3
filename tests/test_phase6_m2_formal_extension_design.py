@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs/phase6_m2_formal_extension.yaml"
 AUDIT = ROOT / "docs/handoffs/2026-08-14_phase6_m2_formal_extension_design_audit.json"
 PARENT = ROOT / "docs/handoffs/2026-08-14_phase6_m2c2_confirmation_grid_audit.json"
-CONFIG_SHA256 = "b95f741239a0c9269025f293005406827f4cb325115900a03f5ac454961bf5a1"
+CONFIG_SHA256 = "c2c46333896f2c9fada020bddc90ca9eb56a30e28bff5e9f8b2bcdc3d32a7b70"
 PARENT_SHA256 = "92f326e30b5f36b10025261382dc37335c7a00b00ee0b409aecac6573b5a24e2"
 PILOT = tuple(range(2026081601, 2026081604))
 PILOT_TEST = (2026081701,)
@@ -44,7 +44,7 @@ def test_parent_confirmation_bytes_and_decision_are_locked() -> None:
     assert parent["formal_extension_authorized"] is False
 
 
-def test_design_bytes_and_non_executable_state_are_locked() -> None:
+def test_design_bytes_and_pilot_only_state_are_locked() -> None:
     config = _config()
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
     assert hashlib.sha256(CONFIG.read_bytes()).hexdigest() == CONFIG_SHA256
@@ -53,16 +53,17 @@ def test_design_bytes_and_non_executable_state_are_locked() -> None:
         "sha256": CONFIG_SHA256,
     }
     assert config["protocol_id"] == "phase6_m2_formal_extension_design_v1_0"
-    assert config["status"] == "candidate_for_formal_extension_review"
+    assert config["status"] == "frozen_for_pilot_execution"
     assert config["runner_namespace"] == "phase6_m2_formal_extension_v1_0"
     assert config["output_root"] == "outputs/phase6_m2_formal_extension_v1_0"
     boundaries = config["execution_boundaries"]
-    assert boundaries["runner_implemented"] is False
+    assert boundaries["runner_implemented"] is True
     assert all(value == 0 for key, value in boundaries.items() if key not in {"runner_implemented", "formal_extension_authorized"})
     assert boundaries["formal_extension_authorized"] is False
     assert audit["formal_extension_authorized"] is False
-    assert not (ROOT / "src/phase6_m2_formal_extension.py").exists()
-    assert not (ROOT / "src/run_phase6_m2_formal_extension.py").exists()
+    assert (ROOT / "src/phase6_m2_formal_extension.py").is_file()
+    assert (ROOT / "src/run_phase6_m2_formal_extension.py").is_file()
+    assert (ROOT / "src/phase6_m2_formal_extension_status.py").is_file()
 
 
 def test_all_new_seed_sets_are_exact_disjoint_and_unused() -> None:
@@ -236,7 +237,7 @@ def test_statistical_unit_bootstrap_and_wilcoxon_are_fully_frozen() -> None:
 
 def test_compute_gate_is_numeric_and_initially_closed() -> None:
     gate = _config()["compute_gate"]
-    assert gate == {
+    expected = {
         "projection_uses_completed_pilot_wall_time_and_sampled_peak_RSS": True,
         "mechanism_formal_projected_wall_hours_maximum": 72.0,
         "out_of_sample_formal_projected_wall_hours_maximum": 72.0,
@@ -247,6 +248,14 @@ def test_compute_gate_is_numeric_and_initially_closed() -> None:
         "failed_timeout_invalid_or_missing_pilot_units_allowed": 0,
         "compute_gate_passed_initial": False,
         "formal_extension_authorized_initial": False,
+    }
+    assert {key: gate[key] for key in expected} == expected
+    assert gate["projection_method"] == {
+        "mechanism_seconds_per_formal_run": "maximum_completed_mechanism_pilot_run_wall_seconds",
+        "OOS_seconds_per_formal_plan": "maximum_completed_probe_strategy_wall_seconds",
+        "mechanism_projected_hours": "formal_50_runs_times_mechanism_seconds_per_run_divided_by_3600",
+        "OOS_projected_hours": "formal_50_plans_times_OOS_seconds_per_plan_divided_by_3600",
+        "combined_projected_hours": "mechanism_plus_OOS",
     }
 
 
@@ -277,7 +286,7 @@ def test_machine_audit_matches_the_frozen_design() -> None:
     config = _config()
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
     assert audit["audit_id"] == "phase6_m2_formal_extension_design_v1_0"
-    assert audit["status"] == "candidate_design_pending_review"
+    assert audit["status"] == "frozen_for_pilot_execution"
     assert audit["base_main_merge_commit"] == "9b3dce465edf38179ccb5d3544835f702a32fb4c"
     assert audit["seed_design"]["pilot"] == list(PILOT)
     assert audit["seed_design"]["pilot_test"] == list(PILOT_TEST)
@@ -313,3 +322,10 @@ def test_machine_audit_matches_the_frozen_design() -> None:
         "gurobi_call_count": 0,
     }
     assert audit["formal_extension_authorized"] is False
+    assert audit["pilot_runner"] == {
+        "implemented": True,
+        "approval_status": "frozen_for_pilot_execution",
+        "mechanism_primary_runs": 15,
+        "OOS_probe_runs": 1,
+        "formal_execution_authorized": False,
+    }

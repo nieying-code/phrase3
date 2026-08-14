@@ -1,0 +1,21 @@
+runner_id: phase6_m2_formal_extension_pilot_v1_0
+namespace: phase6_m2_formal_extension_v1_0
+output_root: outputs/phase6_m2_formal_extension_v1_0
+scientific_config: configs/phase6_m2_formal_extension.yaml
+base_matrix: configs/phase6_experiment_matrix.yaml
+solver:
+  preference: [gurobi]
+  interface: gurobi_direct
+  optimizer_version: 13.0.2
+  gurobipy_version: 13.0.2
+  threads: 1
+execution:
+  strictly_serial: true
+  pilot_execution_requires_explicit_authorization: true
+  immutable_run_ids: true
+  full_primary_pilot_required: true
+  prior_track_authorization_forbidden: true
+  formal_extension_authorized: false
+  mechanism_primary_run_count: 15
+  OOS_probe_run_count: 1
+  diagnostic_retry_requires_case_id_and_parent_run_id: true

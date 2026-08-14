@@ -1,6 +1,6 @@
 protocol_id: phase6_m2_formal_extension_design_v1_0
-version: 1.0.0-design-candidate
-status: candidate_for_formal_extension_review
+version: 1.1.0-pilot-runner
+status: frozen_for_pilot_execution
 runner_namespace: phase6_m2_formal_extension_v1_0
 output_root: outputs/phase6_m2_formal_extension_v1_0
 initial_draft_on: 2026-08-14
@@ -235,6 +235,12 @@ compute_gate:
   failed_timeout_invalid_or_missing_pilot_units_allowed: 0
   compute_gate_passed_initial: false
   formal_extension_authorized_initial: false
+  projection_method:
+    mechanism_seconds_per_formal_run: maximum_completed_mechanism_pilot_run_wall_seconds
+    OOS_seconds_per_formal_plan: maximum_completed_probe_strategy_wall_seconds
+    mechanism_projected_hours: formal_50_runs_times_mechanism_seconds_per_run_divided_by_3600
+    OOS_projected_hours: formal_50_plans_times_OOS_seconds_per_plan_divided_by_3600
+    combined_projected_hours: mechanism_plus_OOS
 
 metric_definitions:
   total_cost: regular_procurement_cost_plus_exact_scenario_recourse_cost
@@ -283,7 +289,7 @@ reproducibility_and_safety:
   large_results_are_not_parsed_by_PowerShell_status_tools: true
 
 execution_boundaries:
-  runner_implemented: false
+  runner_implemented: true
   pilot_runs: 0
   formal_mechanism_runs: 0
   formal_OOS_plans: 0

@@ -86,12 +86,14 @@ Pilot工时投影还必须满足：机制正式批次不超过72小时、样本�
 当前状态：
 
 ```text
-runner_implemented=false
+runner_implemented=true
 pilot_runs=0
 formal_mechanism_runs=0
 formal_OOS_recourse_evaluations=0
 algorithm_performance_runs=0
 formal_extension_authorized=false
 ```
+
+2026-08-14 runner 更新：独立技术 pilot runner、批准文件和有界状态工具已经实现，但尚未执行。上述零运行计数保持不变；正式扩展授权仍为关闭状态。详细执行安全协议见 `2026-08-14_phase6_m2_formal_extension_runner.md`。
 
 机器审计位于 `docs/handoffs/2026-08-14_phase6_m2_formal_extension_design_audit.json`。最终 PR head 与 CI 记录在 PR 正文，避免审计文件自引用。
