@@ -48,7 +48,7 @@ def test_refreeze_locks_controlled_files_and_fingerprints() -> None:
     assert audit["CI_environment_does_not_authorize_experiment_execution"] is True
 
 
-def test_refreeze_namespace_is_new_empty_and_old_evidence_is_rejected() -> None:
+def test_refreeze_namespace_is_isolated_and_old_evidence_is_rejected() -> None:
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
     config = load_formal_extension_config(CONFIG)
     approval = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))
@@ -60,7 +60,14 @@ def test_refreeze_namespace_is_new_empty_and_old_evidence_is_rejected() -> None:
     assert approval["accept_prior_track_authorization"] is False
     assert audit["namespace_isolation"]["old_results_accepted"] is False
     assert audit["namespace_isolation"]["registry_or_projection_migration_allowed"] is False
-    assert not (ROOT / config["output_root"]).exists()
+    # Before pilot authorization this root was absent.  A later results PR may
+    # legitimately populate only its isolated pilot namespace; the refreeze
+    # invariant is that no old evidence is migrated and no formal namespace is
+    # created by that pilot batch.
+    output_root = ROOT / config["output_root"]
+    if output_root.exists():
+        assert {path.name for path in output_root.iterdir()} <= {"pilot"}
+        assert not (output_root / "formal").exists()
 
 
 def test_refreeze_preserves_complete_pilot_and_stop_boundary() -> None:
