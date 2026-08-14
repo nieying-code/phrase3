@@ -234,19 +234,29 @@ def _validate_formal_baseline_before_generation(
         for actual, expected in zip(approved["storage_capacity"], expected_capacity, strict=True)
     ):
         raise ValueError("M2F2 storage capacity fails independent pre-generation recomputation")
-    budget = float(beta) * reference
     tracks = (
         formal["mechanism_experiment"]["primary_track"],
         formal["mechanism_experiment"]["secondary_track"],
     )
+    track_betas = tuple(float(row["beta"]) for row in tracks)
+    if track_betas != (1.1, 1.3):
+        raise ValueError("M2F2 frozen budget tracks must be beta 1.1 and 1.3")
+    for track in tracks:
+        track_beta = float(track["beta"])
+        track_budget = track_beta * reference
+        if not math.isclose(
+            float(track["budget"]), track_budget, rel_tol=0.0, abs_tol=1.0e-9,
+        ) or not math.isclose(
+            float(independently_recomputed["budgets"][str(track_beta)]), track_budget,
+            rel_tol=0.0, abs_tol=1.0e-9,
+        ):
+            raise ValueError(
+                f"M2F2 beta={track_beta} budget fails simultaneous pre-generation recomputation"
+            )
+    budget = float(beta) * reference
     matching = [row for row in tracks if math.isclose(float(row["beta"]), float(beta), abs_tol=1e-12)]
-    if len(matching) != 1 or not math.isclose(
-        float(matching[0]["budget"]), budget, rel_tol=0.0, abs_tol=1.0e-9,
-    ) or not math.isclose(
-        float(independently_recomputed["budgets"][str(float(beta))]), budget,
-        rel_tol=0.0, abs_tol=1.0e-9,
-    ):
-        raise ValueError("M2F2 actual budget fails beta times reference-budget recomputation")
+    if len(matching) != 1:
+        raise ValueError("M2F2 requested beta is outside the frozen budget tracks")
     formal_matrix = _formal_matrix(
         matrix, formal, confirmation, scenario_count=scenario_count,
     )

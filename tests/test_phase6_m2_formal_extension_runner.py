@@ -182,7 +182,9 @@ def test_missing_authorization_fails_before_fingerprints_or_scenarios(monkeypatc
         )
 
 
-@pytest.mark.parametrize("field", ["reference_budget", "storage_capacity", "budget"])
+@pytest.mark.parametrize(
+    "field", ["reference_budget", "storage_capacity", "budget", "secondary_budget"],
+)
 def test_deterministic_inputs_are_recomputed_before_scenario_generation(
     field: str, monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -191,15 +193,19 @@ def test_deterministic_inputs_are_recomputed_before_scenario_generation(
         config["scientific_model"]["reference_budget"] += 1.0
     elif field == "storage_capacity":
         config["scientific_model"]["storage_capacity"][0] += 1.0
-    else:
+    elif field == "budget":
         config["mechanism_experiment"]["primary_track"]["budget"] += 1.0
+    else:
+        # The first case is beta=1.1; corrupt beta=1.3 to prove both tracks are
+        # closed before the first scenario set is generated.
+        config["mechanism_experiment"]["secondary_track"]["budget"] += 1.0
     matrix = runner.load_phase6_matrix(ROOT / "configs/phase6_experiment_matrix.yaml")
     case = runner.build_pilot_cases(config)[0]
     monkeypatch.setattr(
         runner, "generate_phase6_data",
         lambda *args, **kwargs: pytest.fail("scenario generation reached"),
     )
-    with pytest.raises(ValueError, match="pre-generation|actual budget"):
+    with pytest.raises(ValueError, match="pre-generation"):
         runner.execute_mechanism_science(
             project_root=ROOT, matrix=matrix,
             matrix_path=ROOT / "configs/phase6_experiment_matrix.yaml",

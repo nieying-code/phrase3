@@ -11,8 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 AUDIT = ROOT / "docs/handoffs/2026-08-14_phase6_m2_formal_extension_runner_audit.json"
 EXPECTED_FINGERPRINTS = {
     "scientific_config_sha256": "fec4e4dde521692767f9ba48ec6809528f87856c59d2be0a082bcfa360980565",
-    "e3_component_sha256": "8e507f44957196fd0d6fdeb3e957b1b371f9b51be8db49594b4239cb8991c58b",
-    "family_component_sha256": "c5585407ac608fe3bb973130be65472d0fa852e2dcaec5f1080558732f12c54a",
+    "e3_component_sha256": "b80147591b26099f15794adf095549101d733a51780e076e0e8599ec591bed46",
+    "family_component_sha256": "bf6dae9fc3d79a4906995d259b0aa5d50697eb00211072600369da839901be3c",
     "runner_config_sha256": "76f54b5394406715b1974db1be6db49805f7c9458f8f886efc1010c7421fd3f0",
     "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
 }
