@@ -1,0 +1,22 @@
+approval_id: phase6_m2_formal_extension_pilot_v1_0
+status: frozen_for_pilot_execution
+scientific_protocol: phase6_m2_formal_extension_design_v1_0
+runner_namespace: phase6_m2_formal_extension_v1_0
+mechanism_case_count: 15
+OOS_probe_case_count: 1
+explicit_cli_authorization_required: true
+formal_extension_authorized: false
+accept_prior_track_authorization: false
+approved_fingerprints:
+  scientific_config_sha256: fec4e4dde521692767f9ba48ec6809528f87856c59d2be0a082bcfa360980565
+  e3_component_sha256: b80147591b26099f15794adf095549101d733a51780e076e0e8599ec591bed46
+  family_component_sha256: bf6dae9fc3d79a4906995d259b0aa5d50697eb00211072600369da839901be3c
+  runner_config_sha256: 76f54b5394406715b1974db1be6db49805f7c9458f8f886efc1010c7421fd3f0
+  environment_sha256: b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af
+execution_counts_in_this_revision:
+  pilot_mechanism_runs: 0
+  pilot_OOS_probe_runs: 0
+  formal_mechanism_runs: 0
+  formal_OOS_runs: 0
+  algorithm_performance_runs: 0
+  M0_E3_runs: 0

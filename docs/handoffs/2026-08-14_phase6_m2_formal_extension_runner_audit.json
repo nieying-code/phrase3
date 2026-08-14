@@ -1,0 +1,58 @@
+{
+  "audit_id": "phase6_m2_formal_extension_pilot_runner_v1_0",
+  "status": "implemented_not_executed_pending_review",
+  "base_main_merge_commit": "20af98b522d498c6ffa8a384f819f307f686ddfe",
+  "protocol_id": "phase6_m2_formal_extension_design_v1_0",
+  "runner_namespace": "phase6_m2_formal_extension_v1_0",
+  "output_root": "outputs/phase6_m2_formal_extension_v1_0",
+  "controlled_files": {
+    "scientific_config": {"path": "configs/phase6_m2_formal_extension.yaml", "sha256": "c2c46333896f2c9fada020bddc90ca9eb56a30e28bff5e9f8b2bcdc3d32a7b70"},
+    "runner_config": {"path": "configs/phase6_m2_formal_extension_runner.yaml", "sha256": "76f54b5394406715b1974db1be6db49805f7c9458f8f886efc1010c7421fd3f0"},
+    "pilot_approval": {"path": "configs/phase6_m2_formal_extension_pilot_approval.yaml", "sha256": "ee30aaf3b2fe85bfbb7f21d1dd7aa27c22de83df9d41373a7ae1339cb2999304"},
+    "runner_source": {"path": "src/phase6_m2_formal_extension.py", "sha256": "bbc9abaa7f51513812504547ad639a9acb324e77a0670772da5d761682d4b2e7"},
+    "cli_source": {"path": "src/run_phase6_m2_formal_extension.py", "sha256": "63d4bd769d7508e713d8b5024cf97b2240e53812b166371b33beddb5e9983025"},
+    "status_source": {"path": "src/phase6_m2_formal_extension_status.py", "sha256": "dd3faba986c34f71f4afc9c8572be40f812bcf9f51e8adf0cff29e2f6fadfb47"}
+  },
+  "approved_fingerprints": {
+    "scientific_config_sha256": "fec4e4dde521692767f9ba48ec6809528f87856c59d2be0a082bcfa360980565",
+    "e3_component_sha256": "b80147591b26099f15794adf095549101d733a51780e076e0e8599ec591bed46",
+    "family_component_sha256": "bf6dae9fc3d79a4906995d259b0aa5d50697eb00211072600369da839901be3c",
+    "runner_config_sha256": "76f54b5394406715b1974db1be6db49805f7c9458f8f886efc1010c7421fd3f0",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "pilot_matrix": {
+    "mechanism_primary_runs": 15,
+    "OOS_probe_runs": 1,
+    "mechanism_training_seeds": [2026081601, 2026081602, 2026081603],
+    "OOS_probe_training_seed": 2026081601,
+    "OOS_probe_test_seed": 2026081701,
+    "OOS_probe_strategy_count": 5,
+    "OOS_probe_scenarios_per_strategy": 2000
+  },
+  "safety_invariants": {
+    "explicit_cli_authorization_required": true,
+    "full_primary_pilot_required": true,
+    "strictly_serial": true,
+    "immutable_run_ids": true,
+    "diagnostic_retry_requires_new_run_id_and_parent_run_id": true,
+    "controlled_artifact_paths_and_hashes_verified": true,
+    "deterministic_budget_and_capacity_recomputed_before_scenario_generation": true,
+    "common_random_numbers_are_a_hard_gate": true,
+    "OOS_reads_finalized_plan_artifacts_only": true,
+    "OOS_results_bound_to_source_mechanism_and_strategy_plans": true,
+    "OOS_frozen_metrics_must_be_complete_finite_and_in_range": true,
+    "formal_extension_authorized": false
+  },
+  "execution_counts": {
+    "mechanism_pilot_runs": 0,
+    "OOS_probe_runs": 0,
+    "formal_mechanism_runs": 0,
+    "formal_OOS_runs": 0,
+    "algorithm_performance_runs": 0,
+    "M0_E3_runs": 0,
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0
+  },
+  "formal_extension_authorized": false,
+  "traceability_note": "The final PR head, CI and final test counts are recorded in the PR body to avoid self-reference."
+}

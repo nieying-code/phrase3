@@ -1,6 +1,6 @@
 {
   "audit_id": "phase6_m2_formal_extension_design_v1_0",
-  "status": "candidate_design_pending_review",
+  "status": "frozen_for_pilot_execution",
   "base_main_merge_commit": "9b3dce465edf38179ccb5d3544835f702a32fb4c",
   "parent_evidence": {
     "results_pr": 51,
@@ -13,7 +13,7 @@
   },
   "design_config": {
     "path": "configs/phase6_m2_formal_extension.yaml",
-    "sha256": "b95f741239a0c9269025f293005406827f4cb325115900a03f5ac454961bf5a1"
+    "sha256": "c2c46333896f2c9fada020bddc90ca9eb56a30e28bff5e9f8b2bcdc3d32a7b70"
   },
   "scientific_design": {
     "tier_id": "M2F2",
@@ -113,6 +113,13 @@
     "M0_E3_runs": 0,
     "scenario_generation_count": 0,
     "gurobi_call_count": 0
+  },
+  "pilot_runner": {
+    "implemented": true,
+    "approval_status": "frozen_for_pilot_execution",
+    "mechanism_primary_runs": 15,
+    "OOS_probe_runs": 1,
+    "formal_execution_authorized": false
   },
   "formal_extension_authorized": false,
   "traceability_note": "The final PR head and CI are recorded in the PR body to avoid self-reference; this audit locks the reviewed scientific design bytes and parent evidence."
