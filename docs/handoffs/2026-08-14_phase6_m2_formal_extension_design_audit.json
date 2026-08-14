@@ -1,0 +1,101 @@
+{
+  "audit_id": "phase6_m2_formal_extension_design_v1_0",
+  "status": "candidate_design_pending_review",
+  "base_main_merge_commit": "9b3dce465edf38179ccb5d3544835f702a32fb4c",
+  "parent_evidence": {
+    "results_pr": 51,
+    "audit_path": "docs/handoffs/2026-08-14_phase6_m2c2_confirmation_grid_audit.json",
+    "audit_sha256": "92f326e30b5f36b10025261382dc37335c7a00b00ee0b409aecac6573b5a24e2",
+    "overall_decision": "permit_separate_formal_extension_design_PR_only",
+    "passing_betas": [1.1],
+    "claim_scope": "single_beta_only_budget_effect_claims_forbidden",
+    "formal_extension_authorized": false
+  },
+  "design_config": {
+    "path": "configs/phase6_m2_formal_extension.yaml",
+    "sha256": "2b1a7f2c261303726415e6ba071ef3ea9603b275eb6163a404e69b9324ada58d"
+  },
+  "scientific_design": {
+    "tier_id": "M2F2",
+    "items": 2,
+    "periods": 6,
+    "training_scenarios": 100,
+    "reference_budget": 2337.610924158743,
+    "primary_track": {"beta": 1.1, "profiles": ["C0", "C1", "T03"], "runs": 30},
+    "secondary_track": {"beta": 1.3, "profiles": ["C0", "T03"], "runs": 20},
+    "total_formal_mechanism_runs": 50,
+    "budget_effect_claims_forbidden": true
+  },
+  "scope_review": {
+    "parent_directly_supports_beta": 1.1,
+    "secondary_beta_requested_in_this_design": 1.3,
+    "secondary_beta_inherited_authorization": false,
+    "secondary_estimand": "within_beta_T03_minus_C0_only",
+    "cross_beta_budget_effect_forbidden": true
+  },
+  "seed_design": {
+    "pilot": [2026081601, 2026081602, 2026081603],
+    "formal_training": [2026081401, 2026081402, 2026081403, 2026081404, 2026081405, 2026081406, 2026081407, 2026081408, 2026081409, 2026081410],
+    "formal_test": [2026081501, 2026081502, 2026081503, 2026081504, 2026081505, 2026081506, 2026081507, 2026081508, 2026081509, 2026081510],
+    "pairing": "same_list_position_one_to_one",
+    "all_sets_pairwise_disjoint": true,
+    "disjoint_from_prior_project_seeds": true
+  },
+  "pilot_design": {
+    "mechanism_runs": 15,
+    "full_OOS_probe_training_seed_count": 1,
+    "OOS_probe_strategies": 5,
+    "OOS_probe_scenarios_per_strategy": 2000,
+    "activation_is_not_a_pilot_gate": true,
+    "formal_execution_authorized": false
+  },
+  "out_of_sample_design": {
+    "configuration": {"beta": 1.1, "profile": "T03"},
+    "training_test_pairs": 10,
+    "strategies": 5,
+    "scenarios_per_strategy": 2000,
+    "plans": 50,
+    "exact_recourse_evaluations": 100000,
+    "common_test_scenarios_within_pair": true,
+    "test_scenario_reoptimization_forbidden": true
+  },
+  "statistics": {
+    "independent_unit": "formal_training_seed",
+    "bootstrap": {"method": "paired_cluster_percentile", "random_seed": 2026081499, "resamples": 10000, "confidence_level": 0.95},
+    "wilcoxon": {"test": "paired_two_sided_signed_rank", "zero_method": "pratt", "method": "approx", "correction": false},
+    "effect_sizes_and_confidence_intervals_required": true,
+    "p_values_role": "supportive_not_sole_evidence",
+    "multiple_testing": {"mechanism_primary": "holm_two_tests", "out_of_sample_primary": "holm_five_tests", "familywise_alpha": 0.05}
+  },
+  "compute_gate": {
+    "mechanism_hours_maximum": 72.0,
+    "out_of_sample_hours_maximum": 72.0,
+    "combined_hours_maximum": 168.0,
+    "per_solver_call_seconds": 120,
+    "failed_timeout_invalid_or_missing_pilot_units_allowed": 0,
+    "compute_gate_passed": false
+  },
+  "execution_sequence": [
+    "formal_runner_implementation_PR",
+    "technical_pilot_15_mechanism_runs_and_one_OOS_probe",
+    "pilot_results_PR_and_compute_gate_review",
+    "formal_mechanism_50_runs",
+    "mechanism_results_PR_review",
+    "formal_OOS_100000_exact_recourse_evaluations",
+    "OOS_results_PR_review",
+    "separate_algorithm_performance_design_and_execution",
+    "final_paper_synthesis"
+  ],
+  "execution_counts": {
+    "pilot_runs": 0,
+    "formal_mechanism_runs": 0,
+    "formal_OOS_plans": 0,
+    "formal_OOS_recourse_evaluations": 0,
+    "algorithm_performance_runs": 0,
+    "M0_E3_runs": 0,
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0
+  },
+  "formal_extension_authorized": false,
+  "traceability_note": "The final PR head and CI are recorded in the PR body to avoid self-reference; this audit locks the reviewed scientific design bytes and parent evidence."
+}
