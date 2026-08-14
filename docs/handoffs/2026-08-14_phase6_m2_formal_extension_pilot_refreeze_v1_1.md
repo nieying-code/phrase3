@@ -36,6 +36,13 @@ The configuration fingerprint changes because protocol, namespace, output-root
 identity, and the reviewed PR #54 evidence are protected inputs.  This is an
 execution-baseline revision, not a change to the mathematical experiment.
 
+CI independently recomputes and verifies the scientific, E3, family, and
+runner configuration fingerprints.  Its hosted-machine environment fingerprint
+is expected to differ from the approved local experiment environment and does
+not authorize execution.  The approval continues to pin the local environment
+fingerprint, which the runtime preflight must match before any scenario is
+generated.
+
 ## PR #54 evidence
 
 The configuration locks the PR #54 merge commit and the byte hash of its

@@ -31,9 +31,21 @@ def test_refreeze_locks_controlled_files_and_fingerprints() -> None:
     assert audit["base_tree"] == "e9f53836c947b361a02cf26f2418fe3a739b4b65"
     for identity in audit["controlled_files"].values():
         assert _sha(ROOT / identity["path"]) == identity["sha256"]
-    assert formal_extension_fingerprints(ROOT, CONFIG, RUNNER) == audit["approved_fingerprints"]
+    actual = formal_extension_fingerprints(ROOT, CONFIG, RUNNER)
+    for field in (
+        "scientific_config_sha256",
+        "e3_component_sha256",
+        "family_component_sha256",
+        "runner_config_sha256",
+    ):
+        assert actual[field] == audit["approved_fingerprints"][field]
+    assert len(actual["environment_sha256"]) == 64
     approval = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))
     assert approval["approved_fingerprints"] == audit["approved_fingerprints"]
+    assert audit["approved_fingerprints"]["environment_sha256"] == (
+        "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+    )
+    assert audit["CI_environment_does_not_authorize_experiment_execution"] is True
 
 
 def test_refreeze_namespace_is_new_empty_and_old_evidence_is_rejected() -> None:

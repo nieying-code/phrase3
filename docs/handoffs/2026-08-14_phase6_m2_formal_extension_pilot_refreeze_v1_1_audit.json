@@ -62,6 +62,7 @@
     "registry_or_projection_migration_allowed": false,
     "new_output_root_required_empty_before_execution": true
   },
+  "CI_environment_does_not_authorize_experiment_execution": true,
   "execution_counts": {
     "scenario_generation_count": 0,
     "gurobi_call_count": 0,
