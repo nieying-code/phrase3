@@ -46,6 +46,7 @@ from .phase6_m2c2_confirmation import (
     _cross_item_metrics,
     _evaluate_c0_equivalence,
     _m2c2_matrix,
+    recompute_m2c2_deterministic_baseline,
     _science_config,
     _validate_m2c2_baseline,
     apply_m2c2_supply_disruption,
@@ -201,6 +202,62 @@ def _science_config_for_formal(root: Path, formal: Mapping[str, Any]) -> dict[st
     return combined
 
 
+def _validate_formal_baseline_before_generation(
+    matrix: Mapping[str, Any], formal: Mapping[str, Any],
+    confirmation: Mapping[str, Any], *, beta: float, scenario_count: int,
+) -> tuple[dict[str, Any], float, float, tuple[float, ...]]:
+    """Recompute and close every deterministic M2F2 input before RNG is touched."""
+    baseline_matrix = _m2c2_matrix(matrix, confirmation)
+    approved = _validate_m2c2_baseline(baseline_matrix, confirmation)
+    independently_recomputed = recompute_m2c2_deterministic_baseline(
+        baseline_matrix, confirmation,
+    )
+    reference = float(formal["scientific_model"]["reference_budget"])
+    expected_capacity = tuple(
+        float(value) for value in formal["scientific_model"]["storage_capacity"]
+    )
+    if not math.isclose(
+        float(independently_recomputed["reference_budget"]), reference,
+        rel_tol=0.0, abs_tol=1.0e-9,
+    ) or not math.isclose(
+        float(approved["reference_budget"]), reference,
+        rel_tol=0.0, abs_tol=1.0e-9,
+    ):
+        raise ValueError("M2F2 reference budget fails independent pre-generation recomputation")
+    if len(expected_capacity) != 6 or len(approved["storage_capacity"]) != 6 or any(
+        not math.isclose(float(actual), expected, rel_tol=0.0, abs_tol=1.0e-9)
+        for actual, expected in zip(
+            independently_recomputed["storage_capacity"], expected_capacity, strict=True,
+        )
+    ) or any(
+        not math.isclose(float(actual), expected, rel_tol=0.0, abs_tol=1.0e-9)
+        for actual, expected in zip(approved["storage_capacity"], expected_capacity, strict=True)
+    ):
+        raise ValueError("M2F2 storage capacity fails independent pre-generation recomputation")
+    budget = float(beta) * reference
+    tracks = (
+        formal["mechanism_experiment"]["primary_track"],
+        formal["mechanism_experiment"]["secondary_track"],
+    )
+    matching = [row for row in tracks if math.isclose(float(row["beta"]), float(beta), abs_tol=1e-12)]
+    if len(matching) != 1 or not math.isclose(
+        float(matching[0]["budget"]), budget, rel_tol=0.0, abs_tol=1.0e-9,
+    ) or not math.isclose(
+        float(independently_recomputed["budgets"][str(float(beta))]), budget,
+        rel_tol=0.0, abs_tol=1.0e-9,
+    ):
+        raise ValueError("M2F2 actual budget fails beta times reference-budget recomputation")
+    formal_matrix = _formal_matrix(
+        matrix, formal, confirmation, scenario_count=scenario_count,
+    )
+    if not math.isclose(
+        float(formal_matrix["budget_plan"]["reference_budget_by_tier"]["M2F2"]),
+        reference, rel_tol=0.0, abs_tol=1.0e-9,
+    ):
+        raise ValueError("M2F2 generated matrix reference budget mismatch")
+    return formal_matrix, reference, budget, expected_capacity
+
+
 def _plan_payload(
     *, strategy_id: str, reserve: float, regular_purchase: Mapping[str, Sequence[float]],
     objective: float, joint_scenario_set_sha256: str,
@@ -223,16 +280,13 @@ def execute_mechanism_science(**kwargs: Any) -> dict[str, Any]:
     case: PilotCase = kwargs["case"]
     progress = kwargs["progress"]
     confirmation = _confirmation_config(root)
-    baseline_matrix = _m2c2_matrix(kwargs["matrix"], confirmation)
-    baseline = _validate_m2c2_baseline(baseline_matrix, confirmation)
-    matrix = _formal_matrix(kwargs["matrix"], config, confirmation, scenario_count=100)
-    reference = float(config["scientific_model"]["reference_budget"])
-    budget = float(case.beta) * reference
+    matrix, reference, budget, expected_capacity = _validate_formal_baseline_before_generation(
+        kwargs["matrix"], config, confirmation, beta=case.beta, scenario_count=100,
+    )
     progress("scenario_generation", {"budget": budget, "reference_budget": reference})
     base_generated = generate_phase6_data(
         matrix, matrix_path=kwargs["matrix_path"], tier_id="M2F2", seed=case.seed, budget=budget,
     )
-    expected_capacity = tuple(float(value) for value in config["scientific_model"]["storage_capacity"])
     if any(not math.isclose(a, b, abs_tol=1.0e-9) for a, b in zip(
         base_generated.data.storage_capacity, expected_capacity, strict=True,
     )):
@@ -551,14 +605,18 @@ def execute_oos_probe_science(**kwargs: Any) -> dict[str, Any]:
         for strategy in required_strategies
     }
     confirmation = _confirmation_config(root)
-    matrix = _formal_matrix(kwargs["matrix"], config, confirmation, scenario_count=2000)
-    reference = float(config["scientific_model"]["reference_budget"])
-    budget = case.beta * reference
+    matrix, reference, budget, expected_capacity = _validate_formal_baseline_before_generation(
+        kwargs["matrix"], config, confirmation, beta=case.beta, scenario_count=2000,
+    )
     progress("OOS_scenario_generation", {"test_seed": case.test_seed, "scenario_count": 2000})
     base_generated = generate_oos_data(
         matrix, matrix_path=kwargs["matrix_path"], tier_id="M2F2",
         test_seed=int(case.test_seed), budget=budget,
     )
+    if any(not math.isclose(a, b, abs_tol=1.0e-9) for a, b in zip(
+        base_generated.data.storage_capacity, expected_capacity, strict=True,
+    )):
+        raise ValueError("generated OOS M2F2 storage capacity mismatch")
     latent = reconstruct_frozen_demand_latent(matrix, base_generated)
     generated = apply_m2c2_supply_disruption(
         base_generated,
@@ -587,6 +645,8 @@ def execute_oos_probe_science(**kwargs: Any) -> dict[str, Any]:
         results[strategy] = {
             "strategy_id": strategy,
             "source_plan_artifact_sha256": plan["finalized_plan_artifact_sha256"],
+            "source_plan_training_joint_scenario_set_sha256": plan["training_joint_scenario_set_sha256"],
+            "source_plan_exact_training_objective": plan["exact_training_objective"],
             "reserve_amount": plan["reserve_amount"],
             "regular_purchase_sha256": plan["regular_purchase_sha256"],
             "test_joint_scenario_set_sha256": generated.joint_scenario_set_sha256,
@@ -835,7 +895,10 @@ def _derive_mechanism(science: Mapping[str, Any], case: Mapping[str, Any]) -> di
     }
 
 
-def _derive_probe(science: Mapping[str, Any], case: Mapping[str, Any]) -> dict[str, Any]:
+def _derive_probe(
+    science: Mapping[str, Any], case: Mapping[str, Any],
+    source_mechanism: Mapping[str, Any],
+) -> dict[str, Any]:
     if (
         science.get("tier_id") != "M2F2"
         or int(science.get("seed", -1)) != int(case["seed"])
@@ -856,8 +919,29 @@ def _derive_probe(science: Mapping[str, Any], case: Mapping[str, Any]) -> dict[s
         "fixed_autonomous_reserve_0_50",
     ):
         raise ValueError("OOS probe strategy set is incomplete")
-    for result in strategies.values():
+    source_case = source_mechanism.get("case") or {}
+    source_science = source_mechanism.get("science") or {}
+    if (
+        source_mechanism.get("status") != "optimal"
+        or source_case.get("run_kind") != "mechanism"
+        or int(source_case.get("seed", -1)) != int(case["seed"])
+        or not math.isclose(float(source_case.get("beta", -1.0)), float(case["beta"]), abs_tol=1e-12)
+        or source_case.get("profile_id") != case["profile_id"]
+        or science.get("source_mechanism_run_id") != source_mechanism.get("run_id")
+        or science.get("source_training_joint_scenario_set_sha256")
+        != source_science.get("joint_scenario_set_sha256")
+    ):
+        raise ValueError("OOS probe is not bound to its approved source mechanism run")
+    source_plans = source_science.get("first_stage_plan_artifacts") or {}
+    if tuple(source_plans) != tuple(strategies):
+        raise ValueError("OOS source mechanism strategy mapping is incomplete")
+    finite_metrics = (
+        "mean_total_cost", "total_cost_p95", "total_cost_cvar95",
+        "service_level", "shortage_probability", "mean_emergency_spend",
+    )
+    for strategy, result in strategies.items():
         metrics = result["metrics"]
+        identity = source_plans[strategy]
         if (
             metrics["plan_oos_status"] != "complete_feasible"
             or int(metrics["optimal_scenario_count"]) != 2000
@@ -867,8 +951,49 @@ def _derive_probe(science: Mapping[str, Any], case: Mapping[str, Any]) -> dict[s
             != science.get("test_joint_scenario_set_sha256")
         ):
             raise ValueError("OOS probe evaluation is incomplete")
-        if not re_full_sha256(result["source_plan_artifact_sha256"]):
-            raise ValueError("OOS source plan hash is invalid")
+        if (
+            result.get("strategy_id") != strategy
+            or result.get("source_plan_artifact_sha256")
+            != identity.get("finalized_plan_artifact_sha256")
+            or result.get("source_plan_training_joint_scenario_set_sha256")
+            != identity.get("training_joint_scenario_set_sha256")
+            or not math.isclose(
+                float(result.get("source_plan_exact_training_objective", math.nan)),
+                float(identity.get("exact_training_objective", math.nan)), abs_tol=1e-8,
+            )
+            or not math.isclose(
+                float(result.get("reserve_amount", math.nan)),
+                float(identity.get("reserve_amount", math.nan)), abs_tol=1e-9,
+            )
+            or result.get("regular_purchase_sha256")
+            != identity.get("regular_purchase_sha256")
+        ):
+            raise ValueError("OOS strategy result is not bound to its finalized source plan")
+        if any(
+            not math.isfinite(float(metrics.get(name, math.nan)))
+            for name in finite_metrics
+        ):
+            raise ValueError("OOS frozen metric is missing or non-finite")
+        if (
+            float(metrics["mean_total_cost"]) < 0.0
+            or float(metrics["total_cost_p95"]) < 0.0
+            or float(metrics["total_cost_cvar95"]) < 0.0
+            or float(metrics["mean_emergency_spend"]) < 0.0
+            or not 0.0 <= float(metrics["service_level"]) <= 1.0
+            or not 0.0 <= float(metrics["shortage_probability"]) <= 1.0
+            or not math.isfinite(float(result.get("wall_seconds", math.nan)))
+            or float(result["wall_seconds"]) <= 0.0
+        ):
+            raise ValueError("OOS frozen metric or strategy runtime is outside its valid range")
+        cross = result.get("cross_item_allocation") or {}
+        if (
+            not re_full_sha256(cross.get("scenario_item_emergency_spend_sha256"))
+            or not 0 <= int(cross.get("positive_total_emergency_spend_scenario_count", -1)) <= 2000
+            or not isinstance(cross.get("both_items_each_positive_in_at_least_one_scenario"), bool)
+            or not math.isfinite(float(cross.get("item1_emergency_spend_share_range", math.nan)))
+            or not 0.0 <= float(cross["item1_emergency_spend_share_range"]) <= 1.0
+        ):
+            raise ValueError("OOS cross-item fund-allocation metric is incomplete")
     components = science.get("test_scenario_component_set_sha256") or {}
     required_components = (
         "latent_draw_sha256", "demand_sha256", "emergency_price_sha256",
@@ -897,14 +1022,14 @@ def update_projection(
             row for row in _read_registry(base / "pilot_run_registry.csv")
             if all(row.get(key) == value for key, value in fingerprints.items())
         ]
-        verified: dict[str, tuple[dict[str, Any], dict[str, Any]]] = {}
+        verified_results: dict[str, dict[str, Any]] = {}
         invalid, diagnostics, duplicates, failed = [], [], [], []
         for row in rows:
             try:
                 result = _validate_artifact(output_root, row)
                 if row.get("parent_run_id", "").strip():
                     diagnostics.append(row["run_id"]); continue
-                if result["case_id"] in verified:
+                if result["case_id"] in verified_results:
                     duplicates.append(result["case_id"]); continue
                 if result["status"] != "optimal":
                     failed.append(result["run_id"]); continue
@@ -915,19 +1040,40 @@ def update_projection(
                             source_run_id=result["run_id"],
                             identity=identity,
                         )
-                derived = (
-                    _derive_mechanism(result["science"], result["case"])
-                    if result["case"]["run_kind"] == "mechanism"
-                    else _derive_probe(result["science"], result["case"])
-                )
-                verified[result["case_id"]] = (result, derived)
+                verified_results[result["case_id"]] = result
             except Exception:
                 invalid.append(row.get("run_id", ""))
         cases = build_pilot_cases(config)
         mechanism_cases = [case for case in cases if case.run_kind == "mechanism"]
-        mechanism = [verified.get(case.case_id) for case in mechanism_cases]
+        mechanism: list[tuple[dict[str, Any], dict[str, Any]] | None] = []
+        for case in mechanism_cases:
+            result = verified_results.get(case.case_id)
+            try:
+                mechanism.append(
+                    (result, _derive_mechanism(result["science"], result["case"]))
+                    if result is not None else None
+                )
+            except Exception:
+                invalid.append(result.get("run_id", "") if result else "")
+                mechanism.append(None)
         probe_case = next(case for case in cases if case.run_kind == "OOS_probe")
-        probe = verified.get(probe_case.case_id)
+        probe_result = verified_results.get(probe_case.case_id)
+        source_case = next(
+            case for case in mechanism_cases
+            if case.seed == probe_case.seed
+            and math.isclose(case.beta, probe_case.beta, abs_tol=1e-12)
+            and case.profile_id == probe_case.profile_id
+        )
+        source_result = verified_results.get(source_case.case_id)
+        probe = None
+        if probe_result is not None and source_result is not None:
+            try:
+                probe = (
+                    probe_result,
+                    _derive_probe(probe_result["science"], probe_result["case"], source_result),
+                )
+            except Exception:
+                invalid.append(probe_result.get("run_id", ""))
         crn_checks = []
         for seed in config["seed_protocol"]["pilot_seeds"]:
             group = [entry for case, entry in zip(mechanism_cases, mechanism, strict=True) if case.seed == seed]
@@ -945,7 +1091,7 @@ def update_projection(
             crn_checks.append({"seed": seed, "verified": match})
         finalization_failures = _finalization_failure_ids(base)
         complete = bool(
-            len(verified) == 16 and all(mechanism) and probe
+            len(verified_results) == 16 and all(mechanism) and probe
             and not invalid and not diagnostics and not duplicates and not failed
             and not finalization_failures and all(item["verified"] for item in crn_checks)
         )

@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -33,6 +34,7 @@ def _fingerprints() -> dict[str, str]:
 
 
 def _mechanism_science(case: runner.PilotCase) -> dict:
+    training_hash = "8" * 64
     components = {
         "latent_draw_sha256": "1" * 64,
         "demand_sha256": "2" * 64,
@@ -63,8 +65,12 @@ def _mechanism_science(case: runner.PilotCase) -> dict:
             strategy: {
                 "strategy_id": strategy, "path": f"plans/{strategy}.json",
                 "finalized_plan_artifact_sha256": SHA,
+                "reserve_amount": float(index),
+                "regular_purchase_sha256": hashlib.sha256(strategy.encode()).hexdigest(),
+                "exact_training_objective": 1000.0 + index,
+                "training_joint_scenario_set_sha256": training_hash,
             }
-            for strategy in STRATEGIES
+            for index, strategy in enumerate(STRATEGIES)
         },
         "fixed_reserve_policies": [
             {
@@ -74,6 +80,7 @@ def _mechanism_science(case: runner.PilotCase) -> dict:
             for rho in (0.0, 0.1, 0.3, 0.5)
         ],
         "scenario_component_set_sha256": components,
+        "joint_scenario_set_sha256": training_hash,
         "c0_equivalence": (
             {"required": True, "status": "passed"}
             if case.profile_id == "C0"
@@ -86,10 +93,14 @@ def _mechanism_science(case: runner.PilotCase) -> dict:
 
 def _probe_science(case: runner.PilotCase) -> dict:
     test_hash = "6" * 64
+    training_hash = "8" * 64
+    source_case_id = "M2F2_seed2026081601_beta1p10_profileT03"
     return {
         "tier_id": "M2F2", "seed": case.seed, "test_seed": case.test_seed,
         "beta": case.beta, "profile_id": case.profile_id,
         "test_scenario_identity_count": 2000,
+        "source_mechanism_run_id": f"pilot_{source_case_id}",
+        "source_training_joint_scenario_set_sha256": training_hash,
         "test_joint_scenario_set_sha256": test_hash,
         "test_scenario_component_set_sha256": {
             "latent_draw_sha256": "1" * 64,
@@ -101,7 +112,12 @@ def _probe_science(case: runner.PilotCase) -> dict:
         },
         "strategy_results": {
             strategy: {
+                "strategy_id": strategy,
                 "source_plan_artifact_sha256": SHA,
+                "source_plan_training_joint_scenario_set_sha256": training_hash,
+                "source_plan_exact_training_objective": 1000.0 + index,
+                "reserve_amount": float(index),
+                "regular_purchase_sha256": hashlib.sha256(strategy.encode()).hexdigest(),
                 "test_joint_scenario_set_sha256": test_hash,
                 "wall_seconds": 10.0 + index,
                 "metrics": {
@@ -109,6 +125,18 @@ def _probe_science(case: runner.PilotCase) -> dict:
                     "optimal_scenario_count": 2000,
                     "infeasible_scenario_count": 0,
                     "solver_failure_count": 0,
+                    "mean_total_cost": 100.0,
+                    "total_cost_p95": 120.0,
+                    "total_cost_cvar95": 140.0,
+                    "service_level": 0.9,
+                    "shortage_probability": 0.1,
+                    "mean_emergency_spend": 10.0,
+                },
+                "cross_item_allocation": {
+                    "scenario_item_emergency_spend_sha256": "9" * 64,
+                    "positive_total_emergency_spend_scenario_count": 100,
+                    "both_items_each_positive_in_at_least_one_scenario": True,
+                    "item1_emergency_spend_share_range": 0.2,
                 },
             }
             for index, strategy in enumerate(STRATEGIES)
@@ -152,6 +180,60 @@ def test_missing_authorization_fails_before_fingerprints_or_scenarios(monkeypatc
             root=ROOT, config_path=CONFIG, runner_path=RUNNER,
             approval_path=APPROVAL, authorize=False,
         )
+
+
+@pytest.mark.parametrize("field", ["reference_budget", "storage_capacity", "budget"])
+def test_deterministic_inputs_are_recomputed_before_scenario_generation(
+    field: str, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = deepcopy(_config())
+    if field == "reference_budget":
+        config["scientific_model"]["reference_budget"] += 1.0
+    elif field == "storage_capacity":
+        config["scientific_model"]["storage_capacity"][0] += 1.0
+    else:
+        config["mechanism_experiment"]["primary_track"]["budget"] += 1.0
+    matrix = runner.load_phase6_matrix(ROOT / "configs/phase6_experiment_matrix.yaml")
+    case = runner.build_pilot_cases(config)[0]
+    monkeypatch.setattr(
+        runner, "generate_phase6_data",
+        lambda *args, **kwargs: pytest.fail("scenario generation reached"),
+    )
+    with pytest.raises(ValueError, match="pre-generation|actual budget"):
+        runner.execute_mechanism_science(
+            project_root=ROOT, matrix=matrix,
+            matrix_path=ROOT / "configs/phase6_experiment_matrix.yaml",
+            config=config, case=case, progress=lambda *args: None,
+        )
+
+
+def test_real_formal_generated_wrapper_reaches_first_solver_boundary(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Exercise the real 100-scenario M2F2 wrapper, then stop before Gurobi."""
+    config = _config()
+    matrix_path = ROOT / "configs/phase6_experiment_matrix.yaml"
+    matrix = runner.load_phase6_matrix(matrix_path)
+    case = runner.build_pilot_cases(config)[0]
+    reached: dict[str, float | int] = {}
+
+    def stop_at_first_solver(data, **kwargs):
+        reached["scenario_count"] = len(data.scenarios)
+        reached["item_count"] = len(data.items)
+        reached["periods"] = data.periods
+        reached["time_limit_seconds"] = kwargs["time_limit_seconds"]
+        raise RuntimeError("formal-first-solver-boundary-reached")
+
+    monkeypatch.setattr(runner, "solve_minimum_feasible_reserve", stop_at_first_solver)
+    with pytest.raises(RuntimeError, match="formal-first-solver-boundary-reached"):
+        runner.execute_mechanism_science(
+            project_root=ROOT, matrix=matrix, matrix_path=matrix_path,
+            config=config, case=case, progress=lambda *args: None,
+        )
+    assert reached == {
+        "scenario_count": 100, "item_count": 2, "periods": 6,
+        "time_limit_seconds": 120.0,
+    }
 
 
 def test_primary_partial_execution_and_unbound_diagnostic_are_forbidden(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -299,6 +381,53 @@ def test_incomplete_oos_probe_blocks_projection(monkeypatch: pytest.MonkeyPatch,
     projection = _projection(monkeypatch, tmp_path, mutate)
     assert projection["status"] == "incomplete"
     assert projection["invalid_primary_run_ids"]
+    assert projection["formal_extension_authorized"] is False
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "wrong_source_run",
+        "wrong_source_plan_hash",
+        "wrong_source_training_hash",
+        "wrong_reserve",
+        "wrong_purchase_hash",
+        "missing_metric",
+        "nan_metric",
+        "zero_runtime",
+        "missing_cross_item_hash",
+    ],
+)
+def test_oos_source_binding_and_frozen_metrics_are_hard_projection_gates(
+    mutation: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    def mutate(results: dict) -> None:
+        probe = next(value for value in results.values() if value["case"]["run_kind"] == "OOS_probe")
+        row = probe["science"]["strategy_results"][STRATEGIES[0]]
+        if mutation == "wrong_source_run":
+            probe["science"]["source_mechanism_run_id"] = "wrong_run"
+        elif mutation == "wrong_source_plan_hash":
+            row["source_plan_artifact_sha256"] = "b" * 64
+        elif mutation == "wrong_source_training_hash":
+            row["source_plan_training_joint_scenario_set_sha256"] = "b" * 64
+        elif mutation == "wrong_reserve":
+            row["reserve_amount"] += 1.0
+        elif mutation == "wrong_purchase_hash":
+            row["regular_purchase_sha256"] = "b" * 64
+        elif mutation == "missing_metric":
+            row["metrics"].pop("total_cost_p95")
+        elif mutation == "nan_metric":
+            row["metrics"]["total_cost_cvar95"] = float("nan")
+        elif mutation == "zero_runtime":
+            row["wall_seconds"] = 0.0
+        else:
+            row["cross_item_allocation"].pop("scenario_item_emergency_spend_sha256")
+
+    projection = _projection(monkeypatch, tmp_path, mutate)
+    assert projection["status"] == "incomplete"
+    assert projection["verified_OOS_probe_run_count"] == 0
+    assert projection["invalid_primary_run_ids"]
+    assert projection["pilot_compute_gate_passed"] is False
     assert projection["formal_extension_authorized"] is False
 
 

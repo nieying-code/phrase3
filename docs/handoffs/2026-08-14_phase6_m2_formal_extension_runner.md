@@ -17,6 +17,8 @@
 
 机制 projection 从数值独立复算自主储备比例，并核验 100 个训练场景、双物资参考预算、Gurobi 13.0.2、`gurobi_direct`、`Threads=1`、完整扩展式储备区间、端点精确补救、四种重新优化的固定自主储备策略、C0 等价和共同随机数。OOS projection要求 5 个哈希锁定方案各完成 2000 个精确补救评价且零不可行、零求解失败。
 
+复审修复后，参考预算、两档实际预算和6期仓储容量会在任何场景生成前独立复算并逐项核对。OOS projection还会把源机制run、训练场景哈希、五个策略、方案制品哈希、储备金额和采购决策哈希逐项绑定，并要求全部冻结成本/风险/服务指标与跨物资分配指标存在、有限且落在合法范围。真实100场景M2F2包装对象测试会走到首个求解器边界后立即截断，不调用Gurobi。
+
 即使 pilot 与工时门槛全部通过，runner 也只能输出：
 
 ```text
@@ -28,8 +30,8 @@ formal_extension_authorized=false
 
 ```text
 scientific_config_sha256=fec4e4dde521692767f9ba48ec6809528f87856c59d2be0a082bcfa360980565
-e3_component_sha256=8c7230752ad73fc6360746061fb887d0ff3f0ad29b86f03bb007feb596c9a62b
-family_component_sha256=54ed1bac9c169e576fc694782c48c6e2d7641870b412fbe48743fb81b4977d2e
+e3_component_sha256=8e507f44957196fd0d6fdeb3e957b1b371f9b51be8db49594b4239cb8991c58b
+family_component_sha256=c5585407ac608fe3bb973130be65472d0fa852e2dcaec5f1080558732f12c54a
 runner_config_sha256=76f54b5394406715b1974db1be6db49805f7c9458f8f886efc1010c7421fd3f0
 environment_sha256=b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af
 ```
