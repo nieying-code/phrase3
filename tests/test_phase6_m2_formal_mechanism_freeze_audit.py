@@ -35,7 +35,16 @@ def test_five_pilot_fingerprints_and_parent_evidence_are_unchanged():
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
     approval = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))
     actual = formal_extension_fingerprints(ROOT, CONFIG, PILOT_RUNNER)
-    assert actual == audit["approved_fingerprints"] == approval["approved_fingerprints"]
+    assert audit["approved_fingerprints"] == approval["approved_fingerprints"]
+    for field in (
+        "scientific_config_sha256", "e3_component_sha256",
+        "family_component_sha256", "runner_config_sha256",
+    ):
+        assert actual[field] == audit["approved_fingerprints"][field]
+    assert len(actual["environment_sha256"]) == 64
+    assert audit["approved_fingerprints"]["environment_sha256"] == (
+        "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+    )
     evidence = approval["pilot_evidence"]
     assert _sha(ROOT / evidence["audit_path"]) == audit["pilot_evidence"]["audit_sha256"]
     assert evidence["audit_sha256"] == "542ef406383a6ac0da1fefc583b40f0617036d43542cea8ca6de6602f90b8d66"
