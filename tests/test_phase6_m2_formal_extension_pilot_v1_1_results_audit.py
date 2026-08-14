@@ -19,6 +19,7 @@ EXPECTED_GLOBAL_ARTIFACTS = {
 }
 EXPECTED_ARTIFACT_MAPPING_SHA256 = "0c8a42c38768c1591fdb70e8ef3a8e1c36bcd512ffea1f7274819893d416d544"
 EXPECTED_SCIENCE_MAPPING_SHA256 = "1f65a299cc4e11df2fac4ce6ff206a4350b21fad39aa17fdaebcc998578bf051"
+EXPECTED_OOS_SOURCE_PLAN_MAPPING_SHA256 = "a2288e2861fade5fa6f13ab13197a77b43d4cd9be2d302b41e51db910d058d20"
 SEEDS = (2026081601, 2026081602, 2026081603)
 
 
@@ -118,6 +119,10 @@ def test_oos_probe_is_complete_and_source_bound():
     probe = audit["oos_probe"]
     expected_source = "m2formal_pilot_v1_1_20260814_M2F2_seed2026081601_beta1p10_profileT03"
     assert probe["source_mechanism_run_id"] == expected_source
+    assert probe["source_mechanism_case_id"] == "M2F2_seed2026081601_beta1p10_profileT03"
+    assert probe["source_mechanism_result_sha256"] == (
+        "d93da98b12eb452be3a583666ba6ff2d11284c2f100607160a1406c08cdf596a"
+    )
     assert probe["test_scenario_identity_count"] == 2000
     assert probe["test_joint_scenario_set_sha256"] == "3ba7c557e3dc330356bb8ce5169782a504d1ccc888851223b4ba32914018643d"
     assert set(probe["strategies"]) == {
@@ -127,7 +132,27 @@ def test_oos_probe_is_complete_and_source_bound():
         "fixed_autonomous_reserve_0_30",
         "fixed_autonomous_reserve_0_50",
     }
-    for strategy in probe["strategies"].values():
+    source_plans = probe["source_first_stage_plan_artifacts"]
+    assert set(source_plans) == set(probe["strategies"])
+    assert _canonical_sha256(source_plans) == EXPECTED_OOS_SOURCE_PLAN_MAPPING_SHA256
+    assert audit["oos_source_plan_identity_mapping_sha256"] == EXPECTED_OOS_SOURCE_PLAN_MAPPING_SHA256
+    for strategy_id, strategy in probe["strategies"].items():
+        source = source_plans[strategy_id]
+        assert source["strategy_id"] == strategy_id
+        assert strategy["source_plan_artifact_sha256"] == source["finalized_plan_artifact_sha256"]
+        assert strategy["regular_purchase_sha256"] == source["regular_purchase_sha256"]
+        assert math.isclose(strategy["reserve"], source["reserve_amount"], abs_tol=1e-12)
+        assert math.isclose(
+            strategy["source_plan_exact_training_objective"],
+            source["exact_training_objective"],
+            abs_tol=1e-12,
+        )
+        assert strategy["source_plan_training_joint_scenario_set_sha256"] == (
+            source["training_joint_scenario_set_sha256"]
+        )
+        assert strategy["source_plan_training_joint_scenario_set_sha256"] == (
+            probe["source_training_joint_scenario_set_sha256"]
+        )
         assert strategy["status"] == "complete_feasible"
         assert strategy["scenario_count"] == strategy["optimal_scenario_count"] == 2000
         assert strategy["infeasible_scenario_count"] == strategy["solver_failure_count"] == 0

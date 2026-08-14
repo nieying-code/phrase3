@@ -845,7 +845,9 @@
         "cvar95_total_cost": 40182.702364977864,
         "demand_weighted_service_level": 0.7691138252034668,
         "shortage_probability": 0.985,
-        "mean_emergency_spend": 416.10047193119385
+        "mean_emergency_spend": 416.10047193119385,
+        "source_plan_training_joint_scenario_set_sha256": "1870717f25ab259b3bc36e4c4722fd075f5a45c60b587db5e53d0838dfc5d8ec",
+        "source_plan_exact_training_objective": 33293.61189309526
       },
       "fixed_autonomous_reserve_0_10": {
         "status": "complete_feasible",
@@ -863,7 +865,9 @@
         "cvar95_total_cost": 40238.41789915278,
         "demand_weighted_service_level": 0.7386613083894145,
         "shortage_probability": 0.998,
-        "mean_emergency_spend": 257.03828092927154
+        "mean_emergency_spend": 257.03828092927154,
+        "source_plan_training_joint_scenario_set_sha256": "1870717f25ab259b3bc36e4c4722fd075f5a45c60b587db5e53d0838dfc5d8ec",
+        "source_plan_exact_training_objective": 33304.656251181914
       },
       "fixed_autonomous_reserve_0_30": {
         "status": "complete_feasible",
@@ -881,7 +885,9 @@
         "cvar95_total_cost": 40328.47850718567,
         "demand_weighted_service_level": 0.8355673024378029,
         "shortage_probability": 0.796,
-        "mean_emergency_spend": 739.427836222959
+        "mean_emergency_spend": 739.427836222959,
+        "source_plan_training_joint_scenario_set_sha256": "1870717f25ab259b3bc36e4c4722fd075f5a45c60b587db5e53d0838dfc5d8ec",
+        "source_plan_exact_training_objective": 33367.7140550414
       },
       "fixed_autonomous_reserve_0_50": {
         "status": "complete_feasible",
@@ -899,7 +905,9 @@
         "cvar95_total_cost": 41264.75141852465,
         "demand_weighted_service_level": 0.8473629641355233,
         "shortage_probability": 0.636,
-        "mean_emergency_spend": 1143.8940289173001
+        "mean_emergency_spend": 1143.8940289173001,
+        "source_plan_training_joint_scenario_set_sha256": "1870717f25ab259b3bc36e4c4722fd075f5a45c60b587db5e53d0838dfc5d8ec",
+        "source_plan_exact_training_objective": 34432.065162223415
       },
       "zero_autonomous_reserve": {
         "status": "complete_feasible",
@@ -917,7 +925,53 @@
         "cvar95_total_cost": 41221.72106607487,
         "demand_weighted_service_level": 0.730542385128049,
         "shortage_probability": 1.0,
-        "mean_emergency_spend": 0.0
+        "mean_emergency_spend": 0.0,
+        "source_plan_training_joint_scenario_set_sha256": "1870717f25ab259b3bc36e4c4722fd075f5a45c60b587db5e53d0838dfc5d8ec",
+        "source_plan_exact_training_objective": 33535.29931582589
+      }
+    },
+    "source_mechanism_case_id": "M2F2_seed2026081601_beta1p10_profileT03",
+    "source_mechanism_result_sha256": "d93da98b12eb452be3a583666ba6ff2d11284c2f100607160a1406c08cdf596a",
+    "source_first_stage_plan_artifacts": {
+      "endogenous_reserve": {
+        "strategy_id": "endogenous_reserve",
+        "finalized_plan_artifact_sha256": "6c6c6a8819fb5154b5f7dac372e931df8be95fd1cabdbff12bd91b61a82970a8",
+        "regular_purchase_sha256": "39d5208f784083650118a15d1baddfc77d2eeede35b7fc96c0dc7d35f2a08da8",
+        "reserve_amount": 417.0593560484306,
+        "exact_training_objective": 33293.61189309526,
+        "training_joint_scenario_set_sha256": "1870717f25ab259b3bc36e4c4722fd075f5a45c60b587db5e53d0838dfc5d8ec"
+      },
+      "fixed_autonomous_reserve_0_10": {
+        "strategy_id": "fixed_autonomous_reserve_0_10",
+        "finalized_plan_artifact_sha256": "a8f440a8196fc2cfdece2b8cf63dd076e79ba28ff434e9796b4f6d157a605992",
+        "regular_purchase_sha256": "4632501343d639900e51d004d5d7096b0ccff0e56a0d74ffba07e5e70f6a985f",
+        "reserve_amount": 257.13720165746173,
+        "exact_training_objective": 33304.656251181914,
+        "training_joint_scenario_set_sha256": "1870717f25ab259b3bc36e4c4722fd075f5a45c60b587db5e53d0838dfc5d8ec"
+      },
+      "fixed_autonomous_reserve_0_30": {
+        "strategy_id": "fixed_autonomous_reserve_0_30",
+        "finalized_plan_artifact_sha256": "e9930bc82790106a2c87c46b4caeb82e8465870fb0f24d1f9638886b3fd92976",
+        "regular_purchase_sha256": "0cc22f2d9c9e83e1b66a50ec54653c740677e3893686d4cf2ed8667531f59b92",
+        "reserve_amount": 771.4116049723851,
+        "exact_training_objective": 33367.7140550414,
+        "training_joint_scenario_set_sha256": "1870717f25ab259b3bc36e4c4722fd075f5a45c60b587db5e53d0838dfc5d8ec"
+      },
+      "fixed_autonomous_reserve_0_50": {
+        "strategy_id": "fixed_autonomous_reserve_0_50",
+        "finalized_plan_artifact_sha256": "f9e473deb41d4a9e7361fc7be0200ff388cfc042d46bfe9229fc60404baa7bb3",
+        "regular_purchase_sha256": "54ba7c049f66ae444f9cfb1a331c6dd21a4596010efa6c5046cb739e86366ef1",
+        "reserve_amount": 1285.6860082873086,
+        "exact_training_objective": 34432.065162223415,
+        "training_joint_scenario_set_sha256": "1870717f25ab259b3bc36e4c4722fd075f5a45c60b587db5e53d0838dfc5d8ec"
+      },
+      "zero_autonomous_reserve": {
+        "strategy_id": "zero_autonomous_reserve",
+        "finalized_plan_artifact_sha256": "7a1ffbc8da776d29d9c0d73ad59df7e555e0c1eee59f5895e3934175b846f397",
+        "regular_purchase_sha256": "a51170406cdb366f70833e74b5f8be94f5b9310c7f271113ce4f7992dfd91ad9",
+        "reserve_amount": 0.0,
+        "exact_training_objective": 33535.29931582589,
+        "training_joint_scenario_set_sha256": "1870717f25ab259b3bc36e4c4722fd075f5a45c60b587db5e53d0838dfc5d8ec"
       }
     }
   },
@@ -997,5 +1051,6 @@
     "formal_mechanism_runs_started": 0,
     "formal_oos_evaluations_started": 0,
     "m0_e3_runs_started": 0
-  }
+  },
+  "oos_source_plan_identity_mapping_sha256": "a2288e2861fade5fa6f13ab13197a77b43d4cd9be2d302b41e51db910d058d20"
 }
