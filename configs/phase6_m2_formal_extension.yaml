@@ -1,10 +1,19 @@
-protocol_id: phase6_m2_formal_extension_design_v1_0
-version: 1.1.0-pilot-runner
+protocol_id: phase6_m2_formal_extension_design_v1_1
+version: 1.1.1-endpoint-tolerance-refreeze
 status: frozen_for_pilot_execution
-runner_namespace: phase6_m2_formal_extension_v1_0
-output_root: outputs/phase6_m2_formal_extension_v1_0
+runner_namespace: phase6_m2_formal_extension_v1_1
+output_root: outputs/phase6_m2_formal_extension_v1_1
 initial_draft_on: 2026-08-14
 revised_on: 2026-08-14
+
+runner_fix_evidence:
+  endpoint_tolerance_fix_pr: 54
+  merge_commit: 5c955f738aff8f379c0ff8bb59ac97c91a43399e
+  audit: docs/handoffs/2026-08-14_phase6_m2_formal_extension_endpoint_tolerance_fix_audit.json
+  audit_sha256: f32da97e0ad93876d94f05fb94da27e4528f0f67c947c7f9c6c3c38f945e117c
+  finite_nonnegative_endpoint_evidence_required: true
+  endpoint_comparison_slack: 1.0e-8
+  old_namespace_results_accepted: false
 
 parent_evidence:
   confirmation_results_pr: 51

@@ -52,7 +52,7 @@ def build_status(output_root: Path, *, run_id: str | None = None) -> dict:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Read bounded M2 formal-extension pilot status")
-    parser.add_argument("--output-root", default="outputs/phase6_m2_formal_extension_v1_0")
+    parser.add_argument("--output-root", default="outputs/phase6_m2_formal_extension_v1_1")
     parser.add_argument("--run-id")
     args = parser.parse_args(argv)
     pilot_root = Path(args.output_root).resolve() / "pilot"
