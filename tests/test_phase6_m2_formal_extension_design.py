@@ -84,7 +84,13 @@ def test_all_new_seed_sets_are_exact_disjoint_and_unused() -> None:
     observed: set[str] = set()
     for folder in (ROOT / "configs", ROOT / "docs", ROOT / "src", ROOT / "tests"):
         for path in folder.rglob("*"):
-            if not path.is_file() or "phase6_m2_formal_extension" in path.name:
+            if not path.is_file() or any(
+                marker in path.name
+                for marker in (
+                    "phase6_m2_formal_extension",
+                    "phase6_m2_formal_mechanism",
+                )
+            ):
                 continue
             if path.suffix.lower() not in {".yaml", ".yml", ".json", ".md", ".py"}:
                 continue

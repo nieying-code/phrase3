@@ -1,0 +1,19 @@
+namespace: phase6_m2_formal_mechanism_v1_1
+protocol: phase6_m2_formal_extension_design_v1_1
+output_root: outputs/phase6_m2_formal_extension_v1_1
+formal_subdirectory: formal/mechanism
+execution:
+  strictly_serial: true
+  formal_mechanism_execution_requires_explicit_authorization: true
+  immutable_run_ids: true
+  full_primary_batch_required: true
+  diagnostic_retry_requires_case_id_and_parent_run_id: true
+  failed_primary_permanently_blocks_batch_gate: true
+  pilot_projection_is_read_only: true
+  formal_OOS_authorized: false
+  mechanism_primary_run_count: 50
+limits:
+  solver_call_seconds: 120
+  mechanism_case_wall_seconds: 900
+  threads: 1
+
