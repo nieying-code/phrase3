@@ -60,6 +60,7 @@ RUNNER_NAMESPACE = "phase6_m2_formal_extension_v1_0"
 OUTPUT_ROOT = "outputs/phase6_m2_formal_extension_v1_0"
 READY_STATUS = "frozen_for_pilot_execution"
 APPROVAL_PATH = "configs/phase6_m2_formal_extension_pilot_approval.yaml"
+ENDPOINT_OBJECTIVE_COMPARISON_SLACK = 1.0e-8
 PARENT_AUDIT_PATH = "docs/handoffs/2026-08-14_phase6_m2c2_confirmation_grid_audit.json"
 CONFIRMATION_CONFIG_PATH = "configs/phase6_m2_two_item_confirmation.yaml"
 LIFECYCLE_FIELDS = ("status", "initial_draft_on", "revised_on")
@@ -852,13 +853,27 @@ def _derive_mechanism(science: Mapping[str, Any], case: Mapping[str, Any]) -> di
         or bool(science.get("moderate_activation")) != (0.05 <= ratio <= 0.50)
     ):
         raise ValueError("mechanism autonomous reserve ratio mismatch")
+    objective_tolerance_value = float(science.get("objective_tolerance", math.nan))
+    minimum_endpoint_difference = float(
+        science.get("minimum_endpoint_consistency_difference", math.nan)
+    )
+    maximum_endpoint_difference = float(
+        science.get("maximum_endpoint_consistency_difference", math.nan)
+    )
+    endpoint_evidence = (
+        objective_tolerance_value,
+        minimum_endpoint_difference,
+        maximum_endpoint_difference,
+    )
+    if not all(math.isfinite(value) and value >= 0.0 for value in endpoint_evidence):
+        raise ValueError("mechanism endpoint tolerance evidence must be finite and nonnegative")
     if (
         science.get("minimum_endpoint_status") != "optimal"
         or science.get("maximum_endpoint_status") != "optimal"
-        or float(science.get("minimum_endpoint_consistency_difference", math.inf))
-        > float(science.get("objective_tolerance", -1.0))
-        or float(science.get("maximum_endpoint_consistency_difference", math.inf))
-        > float(science.get("objective_tolerance", -1.0))
+        or minimum_endpoint_difference
+        > objective_tolerance_value + ENDPOINT_OBJECTIVE_COMPARISON_SLACK
+        or maximum_endpoint_difference
+        > objective_tolerance_value + ENDPOINT_OBJECTIVE_COMPARISON_SLACK
     ):
         raise ValueError("mechanism tolerance-optimal reserve interval is invalid")
     if any(

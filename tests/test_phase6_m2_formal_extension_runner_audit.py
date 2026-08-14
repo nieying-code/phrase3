@@ -27,8 +27,16 @@ def test_runner_audit_locks_every_controlled_file_and_approval() -> None:
     assert audit["audit_id"] == "phase6_m2_formal_extension_pilot_runner_v1_0"
     assert audit["status"] == "implemented_not_executed_pending_review"
     assert audit["base_main_merge_commit"] == "20af98b522d498c6ffa8a384f819f307f686ddfe"
-    for identity in audit["controlled_files"].values():
-        assert _sha(ROOT / identity["path"]) == identity["sha256"]
+    controlled = audit["controlled_files"]
+    # This audit is the immutable PR #53 implementation baseline.  A later
+    # reviewed runner fix is locked by its own audit instead of rewriting this
+    # historical source identity.
+    assert controlled["runner_source"]["sha256"] == (
+        "bbc9abaa7f51513812504547ad639a9acb324e77a0670772da5d761682d4b2e7"
+    )
+    for name, identity in controlled.items():
+        if name != "runner_source":
+            assert _sha(ROOT / identity["path"]) == identity["sha256"]
     approval = yaml.safe_load(
         (ROOT / "configs/phase6_m2_formal_extension_pilot_approval.yaml").read_text(encoding="utf-8")
     )

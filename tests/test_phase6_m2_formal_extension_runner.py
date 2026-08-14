@@ -367,6 +367,45 @@ def test_projection_independently_closes_pilot_and_never_authorizes_formal(
     assert projection["formal_extension_authorized"] is False
 
 
+def test_endpoint_consistency_accepts_only_the_existing_numerical_slack() -> None:
+    case = runner.build_pilot_cases(_config())[0]
+    science = _mechanism_science(case)
+    tolerance = float(science["objective_tolerance"])
+    science["minimum_endpoint_consistency_difference"] = (
+        tolerance + runner.ENDPOINT_OBJECTIVE_COMPARISON_SLACK
+    )
+    science["maximum_endpoint_consistency_difference"] = (
+        tolerance + runner.ENDPOINT_OBJECTIVE_COMPARISON_SLACK
+    )
+    runner._derive_mechanism(science, case.as_dict())
+
+    science["maximum_endpoint_consistency_difference"] += 1.0e-9
+    with pytest.raises(ValueError, match="tolerance-optimal reserve interval"):
+        runner._derive_mechanism(science, case.as_dict())
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        (field, value)
+        for field in (
+            "objective_tolerance",
+            "minimum_endpoint_consistency_difference",
+            "maximum_endpoint_consistency_difference",
+        )
+        for value in (math.nan, math.inf, -math.inf, -1.0e-12)
+    ],
+)
+def test_endpoint_tolerance_evidence_must_be_finite_and_nonnegative(
+    field: str, value: float,
+) -> None:
+    case = runner.build_pilot_cases(_config())[0]
+    science = _mechanism_science(case)
+    science[field] = value
+    with pytest.raises(ValueError, match="finite and nonnegative"):
+        runner._derive_mechanism(science, case.as_dict())
+
+
 def test_crn_mismatch_blocks_projection(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     def mutate(results: dict) -> None:
         target = next(value for value in results.values() if value["case"]["profile_id"] == "C1")
