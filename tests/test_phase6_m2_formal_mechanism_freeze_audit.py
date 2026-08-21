@@ -50,6 +50,21 @@ def test_five_pilot_fingerprints_and_parent_evidence_are_unchanged():
     assert evidence["audit_sha256"] == "542ef406383a6ac0da1fefc583b40f0617036d43542cea8ca6de6602f90b8d66"
     assert evidence["projection_sha256"] == audit["pilot_evidence"]["projection_sha256"]
     assert evidence["registry_sha256"] == audit["pilot_evidence"]["registry_sha256"]
+    parent = json.loads((ROOT / evidence["audit_path"]).read_text(encoding="utf-8"))
+    assert evidence["projection_sha256"] == parent["global_artifacts"]["pilot_projection_sha256"]
+    assert evidence["registry_sha256"] == parent["global_artifacts"]["pilot_run_registry_sha256"]
+    assert parent["fingerprints"] == approval["approved_fingerprints"]
+    assert parent["aggregate"]["mechanism_run_count"] == 15
+    assert parent["aggregate"]["oos_probe_run_count"] == 1
+    reviewed_projection = parent["projection"]
+    assert reviewed_projection["verified_mechanism_run_count"] == 15
+    assert reviewed_projection["verified_OOS_probe_run_count"] == 1
+    for field in (
+        "invalid_primary_run_ids", "diagnostic_run_ids", "duplicate_case_ids",
+        "failed_primary_run_ids", "finalization_failure_run_ids",
+    ):
+        assert reviewed_projection[field] == []
+    assert reviewed_projection["pilot_compute_gate_passed"] is True
 
 
 def test_formal_matrix_and_stop_boundary_are_exact():

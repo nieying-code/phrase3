@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -91,6 +92,45 @@ def test_preflight_requires_explicit_formal_authorization_before_evidence_access
             approval_path=APPROVAL, authorize=False,
         )
     assert touched is False
+
+
+def test_preflight_rejects_locally_replaced_evidence_even_when_approval_hashes_match(
+    monkeypatch, tmp_path,
+):
+    approval = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))
+    reviewed_audit = ROOT / approval["pilot_evidence"]["audit_path"]
+    audit_copy = tmp_path / approval["pilot_evidence"]["audit_path"]
+    projection_copy = tmp_path / approval["pilot_evidence"]["projection_path"]
+    registry_copy = tmp_path / approval["pilot_evidence"]["registry_path"]
+    audit_copy.parent.mkdir(parents=True)
+    projection_copy.parent.mkdir(parents=True)
+    registry_copy.parent.mkdir(parents=True, exist_ok=True)
+    audit_copy.write_bytes(reviewed_audit.read_bytes())
+    projection_copy.write_text('{"locally_replaced": true}\n', encoding="utf-8")
+    registry_copy.write_text("run_id,status\nreplacement,optimal\n", encoding="utf-8")
+    approval["pilot_evidence"]["projection_sha256"] = hashlib.sha256(
+        projection_copy.read_bytes()
+    ).hexdigest()
+    approval["pilot_evidence"]["registry_sha256"] = hashlib.sha256(
+        registry_copy.read_bytes()
+    ).hexdigest()
+    approval_copy = tmp_path / "approval.yaml"
+    approval_copy.write_text(yaml.safe_dump(approval, sort_keys=False), encoding="utf-8")
+
+    monkeypatch.setattr(formal, "formal_extension_fingerprints", lambda *args, **kwargs: EXPECTED_FINGERPRINTS)
+    monkeypatch.setattr(
+        formal,
+        "formal_orchestrator_sha256",
+        lambda root: approval["formal_orchestrator_sha256"],
+    )
+    with pytest.raises(RuntimeError, match="not bound to the reviewed PR #56 audit"):
+        formal.validate_formal_preflight(
+            root=tmp_path,
+            config_path=CONFIG,
+            runner_path=FORMAL_RUNNER,
+            approval_path=approval_copy,
+            authorize=True,
+        )
 
 
 def test_primary_execution_cannot_select_cases(monkeypatch, tmp_path):

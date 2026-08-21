@@ -114,6 +114,63 @@ def _load_json(path: Path) -> dict[str, Any]:
     return payload
 
 
+def _validate_reviewed_pilot_evidence(
+    *, evidence: Mapping[str, Any], audit: Mapping[str, Any],
+    projection: Mapping[str, Any], actual_fingerprints: Mapping[str, str],
+) -> None:
+    """Bind local pilot artifacts to the compact evidence reviewed in PR #56."""
+    global_artifacts = audit.get("global_artifacts") or {}
+    if (
+        evidence.get("projection_sha256")
+        != global_artifacts.get("pilot_projection_sha256")
+        or evidence.get("registry_sha256")
+        != global_artifacts.get("pilot_run_registry_sha256")
+    ):
+        raise RuntimeError("pilot evidence is not bound to the reviewed PR #56 audit")
+
+    reviewed_projection = audit.get("projection") or {}
+    aggregate = audit.get("aggregate") or {}
+    if audit.get("fingerprints") != dict(actual_fingerprints):
+        raise RuntimeError("pilot audit fingerprint mismatch")
+    if (
+        reviewed_projection.get("fingerprints") != dict(actual_fingerprints)
+        or projection.get("fingerprints") != dict(actual_fingerprints)
+    ):
+        raise RuntimeError("pilot projection fingerprint mismatch")
+
+    exact_counts = {
+        "required_mechanism_run_count": 15,
+        "verified_mechanism_run_count": 15,
+        "required_OOS_probe_run_count": 1,
+        "verified_OOS_probe_run_count": 1,
+    }
+    for field, expected in exact_counts.items():
+        if reviewed_projection.get(field) != expected or projection.get(field) != expected:
+            raise RuntimeError(f"reviewed pilot coverage mismatch: {field}")
+    if aggregate.get("mechanism_run_count") != 15 or aggregate.get("oos_probe_run_count") != 1:
+        raise RuntimeError("reviewed pilot aggregate count mismatch")
+
+    empty_failure_fields = (
+        "invalid_primary_run_ids",
+        "diagnostic_run_ids",
+        "duplicate_case_ids",
+        "failed_primary_run_ids",
+        "finalization_failure_run_ids",
+    )
+    for field in empty_failure_fields:
+        if reviewed_projection.get(field) != [] or projection.get(field) != []:
+            raise RuntimeError(f"reviewed pilot exception set is not empty: {field}")
+    if (
+        reviewed_projection.get("pilot_compute_gate_passed") is not True
+        or projection.get("pilot_compute_gate_passed") is not True
+        or reviewed_projection.get("formal_extension_authorized") is not False
+        or projection.get("formal_extension_authorized") is not False
+        or reviewed_projection.get("next_decision") != evidence.get("required_decision")
+        or projection.get("next_decision") != evidence.get("required_decision")
+    ):
+        raise RuntimeError("reviewed pilot gate identity mismatch")
+
+
 def _read_registry(path: Path) -> list[dict[str, str]]:
     if not path.is_file():
         return []
@@ -291,6 +348,12 @@ def validate_formal_preflight(
         if not path.is_file() or sha256_file(path) != evidence.get(key):
             raise RuntimeError(f"pilot evidence hash mismatch: {key}")
     audit = _load_json(audit_path); projection = _load_json(projection_path)
+    _validate_reviewed_pilot_evidence(
+        evidence=evidence,
+        audit=audit,
+        projection=projection,
+        actual_fingerprints=actual,
+    )
     if (
         audit.get("stop_boundary", {}).get("pilot_compute_gate_passed") is not True
         or audit.get("stop_boundary", {}).get("formal_extension_authorized") is not False

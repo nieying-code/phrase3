@@ -10,13 +10,15 @@ PR #56 的15条机制 pilot和1条OOS探针使用的科学内核已经通过复�
 
 正式执行前同时要求：
 
-1. PR #56紧凑审计、D盘pilot projection和registry字节哈希完全一致；
+1. PR #56紧凑审计、审批YAML、D盘pilot projection和registry形成三方哈希绑定；
 2. `pilot_compute_gate_passed=true`；
 3. pilot仍记录`formal_extension_authorized=false`和`permit_separate_formal_freeze_PR_only`；
 4. 五类科学、组件、runner和环境指纹保持批准值；
 5. 正式编排指纹匹配；
 6. 显式提供`--authorize-formal-mechanism-execution`；
 7. 源码、配置和依赖输入干净且均为Git已跟踪文件。
+
+预检还会从PR #56审计独立核验五类指纹、15/15机制pilot、1/1 OOS探针及空的失败、无效、重复、诊断和最终化异常集合。即使本地projection/registry与审批YAML被同步替换，只要不再等于PR #56审计锁定的原始制品，正式入口也会在场景生成前拒绝。
 
 ## 冻结正式矩阵
 
@@ -51,4 +53,3 @@ formal_OOS_authorized=false
 测试覆盖50项笛卡尔积、显式授权、五类指纹不变、正式编排指纹、pilot证据哈希、禁止部分primary、空命名空间、失败后停止、失败primary不可被成功重复掩盖、共同随机数门槛、不可变制品、最终化异常及16KiB有界状态。
 
 本 PR 中：场景生成0次、Gurobi调用0次、正式机制运行0条、正式OOS运行0条。最终PR head和CI记录在PR正文，避免文档自引用。
-
