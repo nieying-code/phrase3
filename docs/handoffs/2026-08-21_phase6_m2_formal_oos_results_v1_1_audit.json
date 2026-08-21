@@ -1,0 +1,3499 @@
+{
+  "schema_version": "phase6_m2_formal_oos_results_audit_v1_1",
+  "created_on": "2026-08-21",
+  "status": "complete",
+  "scope": {
+    "track": "M2",
+    "tier_id": "M2F2",
+    "beta": 1.1,
+    "profile_id": "T03",
+    "formal_primary_runs": 10,
+    "plans_per_run": 5,
+    "completed_plan_count": 50,
+    "test_scenarios_per_plan": 2000,
+    "completed_exact_recourse_evaluation_count": 100000,
+    "algorithm_performance_runs": 0,
+    "M0_E3_runs": 0
+  },
+  "execution_source": {
+    "git_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+    "git_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+    "merged_main_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+    "merged_main_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+    "working_tree_dirty_at_start": false,
+    "untracked_execution_input_count_at_start": 0
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+    "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+    "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+    "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113",
+  "source_reviewed_mechanism_evidence": {
+    "audit_path": "docs/handoffs/2026-08-21_phase6_m2_formal_mechanism_results_v1_1_audit.json",
+    "audit_sha256": "bce5b075d352a4679b4371a073f5cc0a931a6b309b401318e9f4c38a8a7489a5",
+    "registry_sha256": "d418a1a10e9a995365f38f0110c682fb70e709a7deb8127ec039d5d9f0958eb3",
+    "progress_sha256": "5b02066db0a1bbe205042a9ab7abd454b678c81643e38c50459681e2ce5cab6e"
+  },
+  "global_artifacts": {
+    "formal_OOS_run_registry_sha256": "d07cd9fc5e0db04cd19b8785fd5b5583c07f787fc17565fa6c0d64a3306b1500",
+    "formal_OOS_progress_sha256": "f04245e2ded8bee6027392d0496ec8fded92a4350f0b57557e10026ec056034a"
+  },
+  "run_artifact_mapping_sha256": "5601c81267268ab70014d2de84065410c0ab8c396fd9ec9f6add7625315a145d",
+  "science_evidence_mapping_sha256": "110ebd9ea0593edff9653367cf1b22fa5925488460355d29eabc450eab7903d7",
+  "runs": [
+    {
+      "run_id": "formal_oos_v1_1_20260821_M2F2_formal_OOS_train2026081401_test2026081501_beta1p10_profileT03",
+      "case_id": "M2F2_formal_OOS_train2026081401_test2026081501_beta1p10_profileT03",
+      "tier_id": "M2F2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "training_seed": 2026081401,
+      "test_seed": 2026081501,
+      "beta": 1.1,
+      "profile_id": "T03",
+      "budget": 2571.372016574617,
+      "reference_budget": 2337.610924158743,
+      "source_mechanism_run_id": "formal_m2_v1_1_20260821_M2F2_formal_seed2026081401_beta1p10_profileT03",
+      "source_mechanism_result_sha256": "df1f46be4b99ba63453c8ac5da1e9be1c190e265445c77b0f67343993f014701",
+      "source_training_joint_scenario_set_sha256": "6e305ed5c03a37ed1758de73da2f6178d7d2a6889f12880bf3f0ab45618c6cee",
+      "test_joint_scenario_set_sha256": "71c6cc0b7a5c45e78fc86437f5852aa68ab0b71f770747b16048c9368e6f1284",
+      "test_scenario_component_set_sha256": {
+        "latent_draw_sha256": "b8f0b7824726e1a65076de1b8d2fa460d75f340c484a986fa690138cce3698fa",
+        "demand_sha256": "d656f915142ecbb73b732044d5e4db83cae6c554f62c386905efa1f1acf86736",
+        "fulfillment_sha256": "175618d00379322cb61cb6b6da3875e1d96bd0e3db72f76d80170b9ec5ce122a",
+        "emergency_price_sha256": "24829d705fff7983e4c94c0a790dd3d3369bb36a46a22a3713c0a34dfc163965",
+        "emergency_supply_sha256": "94bdb386c396457616e0885a858ac3522e9e6e3241777a78bcc695d2557a70c7",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0"
+      },
+      "test_scenario_identity_count": 2000,
+      "strategy_results": {
+        "endogenous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "01af9a1d9291671a2a5a94b5877cd1cf34b456e8191efcbbbecf8d3ba0c6aebd",
+            "regular_purchase_sha256": "853c924a6e4ece52178ca5542ebf2cd91fa1c8e3393f43d3b64645fa4f8037b6",
+            "reserve_amount": 423.5556020839935,
+            "exact_training_objective": 43568.05657023852,
+            "training_joint_scenario_set_sha256": "6e305ed5c03a37ed1758de73da2f6178d7d2a6889f12880bf3f0ab45618c6cee"
+          },
+          "wall_seconds": 50.78293039998971,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 20429.222631717184,
+            "median_total_cost": 18957.700869936445,
+            "total_cost_p90": 31519.337496999004,
+            "total_cost_p95": 35618.8875206805,
+            "total_cost_p99": 44850.23068589025,
+            "total_cost_cvar95": 41824.06153507191,
+            "maximum_total_cost": 67861.12549215228,
+            "mean_shortage": 331.41079469658325,
+            "shortage_probability": 1.0,
+            "service_level": 0.6833244222709767,
+            "mean_waste": 256.9835903944895,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 256.9835903944895,
+            "mean_total_disposal": 256.9835903944895,
+            "mean_emergency_spend": 423.5556020839935,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "21e41a26146c837ebb4e5dc6bab53938c83602dad2f6c076607fcf3a1363266b",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "074afccc5bf73ab2cee51c77ac1d8ec9f44cc47d0a4781996fd8fb309aab6d92",
+            "regular_purchase_sha256": "509cdc91c46589ad19b988f6735c226675aaa8837bd8bf5ffc08642d7c59df8c",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 43804.62418314628,
+            "training_joint_scenario_set_sha256": "6e305ed5c03a37ed1758de73da2f6178d7d2a6889f12880bf3f0ab45618c6cee"
+          },
+          "wall_seconds": 52.19085170002654,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 27082.387622291862,
+            "median_total_cost": 26107.2161176064,
+            "total_cost_p90": 35207.31777912537,
+            "total_cost_p95": 38826.80361055535,
+            "total_cost_p99": 45856.98100442009,
+            "total_cost_cvar95": 43599.671350538454,
+            "maximum_total_cost": 67359.18159909885,
+            "mean_shortage": 450.59287897168866,
+            "shortage_probability": 1.0,
+            "service_level": 0.5694414226923956,
+            "mean_waste": 400.6466639639176,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 400.6466639639176,
+            "mean_total_disposal": 400.6466639639176,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "c2f67591b5e650d2c697abb303dc49e18c47c7b313d36891555b0cb90f60c751",
+            "regular_purchase_sha256": "8fd63ac8fa5fd2385f4c99a18f0361aa8ca48ecfe5d75064115fe4210f8d52dd",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 43628.047063552265,
+            "training_joint_scenario_set_sha256": "6e305ed5c03a37ed1758de73da2f6178d7d2a6889f12880bf3f0ab45618c6cee"
+          },
+          "wall_seconds": 53.32865819998551,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 22703.63560742245,
+            "median_total_cost": 21489.13300116899,
+            "total_cost_p90": 32115.76957755008,
+            "total_cost_p95": 36338.457798318996,
+            "total_cost_p99": 44645.65756657686,
+            "total_cost_cvar95": 41981.67103674346,
+            "maximum_total_cost": 67667.91775455762,
+            "mean_shortage": 371.65107625915897,
+            "shortage_probability": 1.0,
+            "service_level": 0.6448733077758257,
+            "mean_waste": 307.0857066259437,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 307.0857066259437,
+            "mean_total_disposal": 307.0857066259437,
+            "mean_emergency_spend": 257.13720165746173,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "53035a35c74080eaf45285ee38a4390be23aa1551505fa874f8c84d92372348f",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "c2004913d87b558edfb36640007253904c9c8a05be4a1250f579c8221a8c9223",
+            "regular_purchase_sha256": "6749234020eb5f495a18d2cf99aa49c8365acc3625097f2aa1b066b5da039dd4",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 43592.04490169132,
+            "training_joint_scenario_set_sha256": "6e305ed5c03a37ed1758de73da2f6178d7d2a6889f12880bf3f0ab45618c6cee"
+          },
+          "wall_seconds": 53.86266590002924,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 16368.937956970893,
+            "median_total_cost": 14651.522761532204,
+            "total_cost_p90": 29429.77599692389,
+            "total_cost_p95": 34174.42694843121,
+            "total_cost_p99": 44173.609708779746,
+            "total_cost_cvar95": 40981.542228736595,
+            "maximum_total_cost": 68619.13025453943,
+            "mean_shortage": 259.02961239261964,
+            "shortage_probability": 0.9665,
+            "service_level": 0.7524873858485593,
+            "mean_waste": 192.18093477394936,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 192.18093477394936,
+            "mean_total_disposal": 192.18093477394936,
+            "mean_emergency_spend": 768.8655160753669,
+            "reserve_utilization": 0.9966994418017483
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "8e7fec4e233347ae4a33b9c98a913de30598744d3b7811cf84853fa67cdcebb1",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8746558037258935
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "0e8b4d3c8f03ac7bfa45ca6e8265ea2c8b6f63d40b70707ed6ed0b5ae6a31a6c",
+            "regular_purchase_sha256": "4653d79a2a0edc9d181dfeb359e7eeb100ada32e88c7c64cf8f59eced32106bc",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 44488.83185043816,
+            "training_joint_scenario_set_sha256": "6e305ed5c03a37ed1758de73da2f6178d7d2a6889f12880bf3f0ab45618c6cee"
+          },
+          "wall_seconds": 54.809004300041124,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 14439.313534664325,
+            "median_total_cost": 12375.194052150408,
+            "total_cost_p90": 29310.93004840476,
+            "total_cost_p95": 34499.53928127313,
+            "total_cost_p99": 44880.67548987184,
+            "total_cost_cvar95": 41512.800879432194,
+            "maximum_total_cost": 70290.77435379666,
+            "mean_shortage": 228.28296871218214,
+            "shortage_probability": 0.8455,
+            "service_level": 0.781866969454595,
+            "mean_waste": 170.0143332557779,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 170.0143332557779,
+            "mean_total_disposal": 170.0143332557779,
+            "mean_emergency_spend": 1245.8380219668384,
+            "reserve_utilization": 0.969006440092202
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "76173d7ac626f22eb853b6ae7131d6b518e000efa1f7488223e8f2441ba915e3",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8767431338415979
+          }
+        }
+      },
+      "solver": "gurobi_direct",
+      "versions": {
+        "gurobi_optimizer": "13.0.2",
+        "gurobipy": "13.0.2"
+      },
+      "threads": 1,
+      "execution_limits": {
+        "solver_call_seconds": 120.0,
+        "OOS_plan_wall_seconds": 7200.0,
+        "threads": 1
+      },
+      "wall_seconds": 265.3233900000341,
+      "peak_memory_mb": 137.51953125,
+      "fingerprints": {
+        "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+        "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+        "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+        "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113",
+      "git_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+      "git_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+      "artifacts": {
+        "result_sha256": "fddb16c1ef154ce5d6cbe047e0a914165c27e93b505f0d5cbaefe7426b2996da",
+        "manifest_sha256": "f463747e086c844a81dc819aabb969f793203e4280739263d4124bc6c585fe13",
+        "checkpoint_sha256": "305da905a91fbd73d985b4e9c90417ecf94632aa1a3403de778ebfcdedb56a7a",
+        "status_summary_sha256": "c397e7451b67c653a42de6bb3014487223c34260b100a6e3afc960378e651319",
+        "heartbeat_sha256": "c397e7451b67c653a42de6bb3014487223c34260b100a6e3afc960378e651319"
+      }
+    },
+    {
+      "run_id": "formal_oos_v1_1_20260821_M2F2_formal_OOS_train2026081402_test2026081502_beta1p10_profileT03",
+      "case_id": "M2F2_formal_OOS_train2026081402_test2026081502_beta1p10_profileT03",
+      "tier_id": "M2F2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "training_seed": 2026081402,
+      "test_seed": 2026081502,
+      "beta": 1.1,
+      "profile_id": "T03",
+      "budget": 2571.372016574617,
+      "reference_budget": 2337.610924158743,
+      "source_mechanism_run_id": "formal_m2_v1_1_20260821_M2F2_formal_seed2026081402_beta1p10_profileT03",
+      "source_mechanism_result_sha256": "96683b78932dfba9ec6379d45d3ef2af0e4361e0fb1171e95cd9656cc79713bd",
+      "source_training_joint_scenario_set_sha256": "0426f323153cb099fd40daa5075ebc063bf1c08e5882c1f12ac51439e9f87590",
+      "test_joint_scenario_set_sha256": "1e3af89b84581d5dd5ebb7d79b38efd3adb9b1df30b0581c96a716022bea1852",
+      "test_scenario_component_set_sha256": {
+        "latent_draw_sha256": "ada0c68554edc234dbd526e42601634b0fce1b55bb272502fe092659c9c37316",
+        "demand_sha256": "3d2c2cbbfa4d2b6b7d12a8b85a02f88923fc51cba4d214768abab27a84650c34",
+        "fulfillment_sha256": "84458675a38cc1028ea089a85eda0b1f37c21b5e5b92e8266760282d855172c4",
+        "emergency_price_sha256": "85808256f01ae1699923c17b92ade67c472c81f0a185035f95a59f4ff34749d1",
+        "emergency_supply_sha256": "60477b446c8e779abbf34665fed59c146f6f786c0e57aada44a81e5498da6dd7",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0"
+      },
+      "test_scenario_identity_count": 2000,
+      "strategy_results": {
+        "endogenous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "ef717f3fe548de9e535f98a9f1ac767fb0e69569aab7bad7baee395eb1881069",
+            "regular_purchase_sha256": "ea87978cd287b932bb5b5ab6f43c95b1616c9726964c7560906de2b5e4e740aa",
+            "reserve_amount": 224.14462629017635,
+            "exact_training_objective": 47590.90697835175,
+            "training_joint_scenario_set_sha256": "0426f323153cb099fd40daa5075ebc063bf1c08e5882c1f12ac51439e9f87590"
+          },
+          "wall_seconds": 58.032243599998765,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 23278.55682050131,
+            "median_total_cost": 22519.195950193767,
+            "total_cost_p90": 31805.933445356488,
+            "total_cost_p95": 34620.86851040428,
+            "total_cost_p99": 43964.51442099394,
+            "total_cost_cvar95": 40537.53751038529,
+            "maximum_total_cost": 68190.394050855,
+            "mean_shortage": 381.0734453556631,
+            "shortage_probability": 1.0,
+            "service_level": 0.6401830260525407,
+            "mean_waste": 295.80960275563007,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 295.80960275563007,
+            "mean_total_disposal": 295.80960275563007,
+            "mean_emergency_spend": 224.14462629017635,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "b500581fe11afbafd2bb5bcc770f98026c378017395341268df6bc710c98b2ba",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "5db23b76062ad5af36a57334d9d784ee6930a57ff66127aba37a51c9b2946b5a",
+            "regular_purchase_sha256": "f70d0ad09d5f4d183ffa6bd2d6a2c8c7aebbc5b777bf6c5560e605b31d795433",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 47820.7531147087,
+            "training_joint_scenario_set_sha256": "0426f323153cb099fd40daa5075ebc063bf1c08e5882c1f12ac51439e9f87590"
+          },
+          "wall_seconds": 59.33523760002572,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 23293.459540657153,
+            "median_total_cost": 22535.147426576164,
+            "total_cost_p90": 32114.46978996817,
+            "total_cost_p95": 35058.850696070636,
+            "total_cost_p99": 44242.126830390196,
+            "total_cost_cvar95": 40828.67486219736,
+            "maximum_total_cost": 68554.36984983708,
+            "mean_shortage": 381.47290987939,
+            "shortage_probability": 1.0,
+            "service_level": 0.6398058438639662,
+            "mean_waste": 293.4763307745567,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 293.4763307745567,
+            "mean_total_disposal": 293.4763307745567,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "a31f64f219fbc0d4b979b165813899a8960495d1f0397753929cfc0440ab0f02",
+            "regular_purchase_sha256": "259e6010f8369ac05d4014993ede17d0ec90a7e3b8809b097930393df53845ea",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 47603.66814942827,
+            "training_joint_scenario_set_sha256": "0426f323153cb099fd40daa5075ebc063bf1c08e5882c1f12ac51439e9f87590"
+          },
+          "wall_seconds": 60.75838990008924,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 22830.721618899504,
+            "median_total_cost": 22056.77714947815,
+            "total_cost_p90": 31394.134073419424,
+            "total_cost_p95": 34240.51402338029,
+            "total_cost_p99": 43575.15615178722,
+            "total_cost_cvar95": 40270.30622397878,
+            "maximum_total_cost": 68196.17403825556,
+            "mean_shortage": 372.91400561793,
+            "shortage_probability": 1.0,
+            "service_level": 0.6478873280744195,
+            "mean_waste": 286.0181432036977,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 286.0181432036977,
+            "mean_total_disposal": 286.0181432036977,
+            "mean_emergency_spend": 257.13720165746173,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "f782c21a6cf24010f064633736e4f837f7eafac837ebbdb872e0ac22d068df0d",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "6817d0c328c08c45d55518b8238742ba1ab6ab65c4dd928f347d2a5a7017ca3c",
+            "regular_purchase_sha256": "c99c42038fc8a1f2d98fbbda6cbc9bf18fc75ad1a688236bb4532c90106b529e",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 48024.538218442576,
+            "training_joint_scenario_set_sha256": "0426f323153cb099fd40daa5075ebc063bf1c08e5882c1f12ac51439e9f87590"
+          },
+          "wall_seconds": 59.12623410008382,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 15185.558053896024,
+            "median_total_cost": 13640.234258104867,
+            "total_cost_p90": 26592.98843304909,
+            "total_cost_p95": 32071.236386353245,
+            "total_cost_p99": 42444.260657433544,
+            "total_cost_cvar95": 38699.46334290655,
+            "maximum_total_cost": 69162.58150599602,
+            "mean_shortage": 234.7983283837932,
+            "shortage_probability": 0.9685,
+            "service_level": 0.7782988422923898,
+            "mean_waste": 110.3024569285833,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 110.3024569285833,
+            "mean_total_disposal": 110.3024569285833,
+            "mean_emergency_spend": 768.8959622732831,
+            "reserve_utilization": 0.9967389099633883
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "65b85bdb0540a5b6b71a15a883815a3f777b6a64a5b2fd6b7cd4d0dcff22aa5a",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "d9d5863e28ab4bf947fcf743faffbe5111ee77966c486d5d3ca0aa14ff39feb5",
+            "regular_purchase_sha256": "f450e4d08df197566763cc0a15f0bd5dd90e10c3bf342f8256416f57c27dae58",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 49014.02280601058,
+            "training_joint_scenario_set_sha256": "0426f323153cb099fd40daa5075ebc063bf1c08e5882c1f12ac51439e9f87590"
+          },
+          "wall_seconds": 61.16358090005815,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 11139.675419898162,
+            "median_total_cost": 7683.184759872466,
+            "total_cost_p90": 26020.26788911516,
+            "total_cost_p95": 32100.31412493071,
+            "total_cost_p99": 43001.56881461003,
+            "total_cost_cvar95": 39162.639295513945,
+            "maximum_total_cost": 70642.19246151672,
+            "mean_shortage": 164.37870301294086,
+            "shortage_probability": 0.7385,
+            "service_level": 0.8447904249945251,
+            "mean_waste": 14.567579333750915,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 14.567579333750915,
+            "mean_total_disposal": 14.567579333750915,
+            "mean_emergency_spend": 1207.1083117108942,
+            "reserve_utilization": 0.9388826695865738
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "a61230af87e7a4a09c9f7c74162d19cca1afe4747052af0131bb307d2922d3b3",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9858357355229498
+          }
+        }
+      },
+      "solver": "gurobi_direct",
+      "versions": {
+        "gurobi_optimizer": "13.0.2",
+        "gurobipy": "13.0.2"
+      },
+      "threads": 1,
+      "execution_limits": {
+        "solver_call_seconds": 120.0,
+        "OOS_plan_wall_seconds": 7200.0,
+        "threads": 1
+      },
+      "wall_seconds": 298.8348221000051,
+      "peak_memory_mb": 138.140625,
+      "fingerprints": {
+        "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+        "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+        "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+        "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113",
+      "git_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+      "git_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+      "artifacts": {
+        "result_sha256": "352234170432c8c7209d0451a98c711dec455c87e8db69b281ff1efad9eca6c7",
+        "manifest_sha256": "99fe66ba9f0445779f21b5c429d0d23f9aa7dd9a2643e4d6783fe189472e65fd",
+        "checkpoint_sha256": "4bdf9c7867865c72e6acf644e60f613697e5b39d7a9790f303038922432eca96",
+        "status_summary_sha256": "c1a2df8ab0e686d0c77ca8ed6500a693fc3eb9af7e4bac4bc52b37c544a61faa",
+        "heartbeat_sha256": "c1a2df8ab0e686d0c77ca8ed6500a693fc3eb9af7e4bac4bc52b37c544a61faa"
+      }
+    },
+    {
+      "run_id": "formal_oos_v1_1_20260821_M2F2_formal_OOS_train2026081403_test2026081503_beta1p10_profileT03",
+      "case_id": "M2F2_formal_OOS_train2026081403_test2026081503_beta1p10_profileT03",
+      "tier_id": "M2F2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "training_seed": 2026081403,
+      "test_seed": 2026081503,
+      "beta": 1.1,
+      "profile_id": "T03",
+      "budget": 2571.372016574617,
+      "reference_budget": 2337.610924158743,
+      "source_mechanism_run_id": "formal_m2_v1_1_20260821_M2F2_formal_seed2026081403_beta1p10_profileT03",
+      "source_mechanism_result_sha256": "e4d37d66bb63359737b5d7c91ce56b88c6dcfa966c02c57921727ac03712e6ae",
+      "source_training_joint_scenario_set_sha256": "1d635cae2c0ce649285e4b76d78af3f0c48e7d7a4c08c251e3ba710e8ce8420e",
+      "test_joint_scenario_set_sha256": "18a136e136612c3cbb9e931667d20358dcf37450205f4ccfb474a471e2f4571d",
+      "test_scenario_component_set_sha256": {
+        "latent_draw_sha256": "4f7fbe76da61f5490e4fb35683ee6c2294119af4989d535c64c08e79126052c6",
+        "demand_sha256": "f9b2c5c47c09131a0244b9d8bde5f6990a8d392352201e87fe55ffd7017997cf",
+        "fulfillment_sha256": "d978475e53de58697428e7cd561a6b73d03a9f776ed76842c76929982ba853f6",
+        "emergency_price_sha256": "482b8bf6252309362ea8d93e57fb493737b66aafee4f8839b1eaa74bc9282c0e",
+        "emergency_supply_sha256": "f204e818a565a1641fbe02ca4589753b826165cf44b789b7ffff16ad9851e27e",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0"
+      },
+      "test_scenario_identity_count": 2000,
+      "strategy_results": {
+        "endogenous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "97e7f70e788dd54858a2ae60aa6386efbaee251e0e7d19ba6de00a149d8fe253",
+            "regular_purchase_sha256": "f85c5aa83c9cbc369419f5a424e7bb2252a6340c5290c2868461cf029ca400ae",
+            "reserve_amount": 366.43576455571156,
+            "exact_training_objective": 36090.73542960586,
+            "training_joint_scenario_set_sha256": "1d635cae2c0ce649285e4b76d78af3f0c48e7d7a4c08c251e3ba710e8ce8420e"
+          },
+          "wall_seconds": 59.61744059994817,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 20804.58347372651,
+            "median_total_cost": 19915.23537917299,
+            "total_cost_p90": 30000.564782363337,
+            "total_cost_p95": 34565.90728900501,
+            "total_cost_p99": 43779.90273792302,
+            "total_cost_cvar95": 40594.389449521615,
+            "maximum_total_cost": 64864.05162158641,
+            "mean_shortage": 336.1878394462699,
+            "shortage_probability": 1.0,
+            "service_level": 0.6806808168602799,
+            "mean_waste": 266.35737944095,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 266.35737944095,
+            "mean_total_disposal": 266.35737944095,
+            "mean_emergency_spend": 366.43576455571156,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "98dc5fcddc5a9fd29c0947ed267a9ef5f17ac81ede45fedd926efddf294880a7",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "3a25093dc2ba770cecf5c019b8cd83fe7ac1b0137322c2fe76df72eb40da52c1",
+            "regular_purchase_sha256": "b410cdc7adc64c45b4739c4c188d0d534cee63a395654fcaa9494160ec758cca",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 36410.2576003853,
+            "training_joint_scenario_set_sha256": "1d635cae2c0ce649285e4b76d78af3f0c48e7d7a4c08c251e3ba710e8ce8420e"
+          },
+          "wall_seconds": 61.39837059995625,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 22818.27282720766,
+            "median_total_cost": 21775.03495507771,
+            "total_cost_p90": 31074.40700794475,
+            "total_cost_p95": 35530.93029987783,
+            "total_cost_p99": 44400.43065558257,
+            "total_cost_cvar95": 41286.13040942606,
+            "maximum_total_cost": 65395.071209550595,
+            "mean_shortage": 373.77347258908605,
+            "shortage_probability": 1.0,
+            "service_level": 0.6449810910976785,
+            "mean_waste": 269.2943559335232,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 269.2943559335232,
+            "mean_total_disposal": 269.2943559335232,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "9966a6a41137cf594aab83b418a3aa2f1214c9fd73d92ca2b4f940fb8824ec5d",
+            "regular_purchase_sha256": "0311c93a5efbbbaa85da98ad56a21313a820bf21f024777304610f4314085ee3",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 36138.11190643619,
+            "training_joint_scenario_set_sha256": "1d635cae2c0ce649285e4b76d78af3f0c48e7d7a4c08c251e3ba710e8ce8420e"
+          },
+          "wall_seconds": 62.69062890007626,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 20899.831362816334,
+            "median_total_cost": 19991.551782388888,
+            "total_cost_p90": 30154.18367834425,
+            "total_cost_p95": 34696.18781893731,
+            "total_cost_p99": 43957.974404869354,
+            "total_cost_cvar95": 40750.09201071584,
+            "maximum_total_cost": 65026.40211195679,
+            "mean_shortage": 338.0651676374499,
+            "shortage_probability": 1.0,
+            "service_level": 0.678897686020449,
+            "mean_waste": 265.33651614015326,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 265.33651614015326,
+            "mean_total_disposal": 265.33651614015326,
+            "mean_emergency_spend": 257.13720165746173,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "80ce0f98660879d2bbc06bf98b3148ef838f004fbc875e218071d9a1778ad0c6",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "58d4c9467b68683248e9bece5e16f30e0c9b2e5c104849b87c9a359df3778261",
+            "regular_purchase_sha256": "746c54d31d2c873ed6848e6aee0c1126af14c646aa2f19fb386fa01b77f9ea30",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 36564.17544335543,
+            "training_joint_scenario_set_sha256": "1d635cae2c0ce649285e4b76d78af3f0c48e7d7a4c08c251e3ba710e8ce8420e"
+          },
+          "wall_seconds": 62.685665199998766,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 15476.865197888917,
+            "median_total_cost": 13789.036458986535,
+            "total_cost_p90": 27779.3691367489,
+            "total_cost_p95": 33510.37776602859,
+            "total_cost_p99": 43878.483248940756,
+            "total_cost_cvar95": 39924.39176588553,
+            "maximum_total_cost": 65534.64683269588,
+            "mean_shortage": 240.40700409657387,
+            "shortage_probability": 0.9625,
+            "service_level": 0.7716557258715053,
+            "mean_waste": 191.134227780059,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 191.134227780059,
+            "mean_total_disposal": 191.134227780059,
+            "mean_emergency_spend": 768.3953586476166,
+            "reserve_utilization": 0.9960899650649194
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "69c1ba71c657a0c34cb5740c4dfa347a5ae6d3789285d7082ddf16cbedfcaf82",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9246367062257088
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "967565fb38331124e9ba3c1b4008eed4496c0dca174fe5c69c0c94b710c3b3f1",
+            "regular_purchase_sha256": "dff8fb68fc9bc837830318223c18d2b09bffc2df1670bf75a01d4ea3c2868caf",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 37537.49017190022,
+            "training_joint_scenario_set_sha256": "1d635cae2c0ce649285e4b76d78af3f0c48e7d7a4c08c251e3ba710e8ce8420e"
+          },
+          "wall_seconds": 63.000853099976666,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 11958.793007138042,
+            "median_total_cost": 8924.719051148542,
+            "total_cost_p90": 26544.23852293547,
+            "total_cost_p95": 32306.48710900608,
+            "total_cost_p99": 44613.02585733303,
+            "total_cost_cvar95": 39844.06941116356,
+            "maximum_total_cost": 66692.20206233172,
+            "mean_shortage": 180.05645620260896,
+            "shortage_probability": 0.7735,
+            "service_level": 0.8289781075712024,
+            "mean_waste": 81.2326516197132,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 81.2326516197132,
+            "mean_total_disposal": 81.2326516197132,
+            "mean_emergency_spend": 1215.8102064579193,
+            "reserve_utilization": 0.9456509588041077
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "489ec24188a77b87f679c8b1841666ae305ab038278f608b06a9df63c397f4ea",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8748564765260683
+          }
+        }
+      },
+      "solver": "gurobi_direct",
+      "versions": {
+        "gurobi_optimizer": "13.0.2",
+        "gurobipy": "13.0.2"
+      },
+      "threads": 1,
+      "execution_limits": {
+        "solver_call_seconds": 120.0,
+        "OOS_plan_wall_seconds": 7200.0,
+        "threads": 1
+      },
+      "wall_seconds": 309.7580558999907,
+      "peak_memory_mb": 138.86328125,
+      "fingerprints": {
+        "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+        "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+        "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+        "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113",
+      "git_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+      "git_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+      "artifacts": {
+        "result_sha256": "c8cd4b64ba1cb1954bbc7f5e98ce9c39c2f8b9b477e769e46ec0793aa17ca54f",
+        "manifest_sha256": "8d362ed7e2e40bef8ba333f2b7653f39281c9c2c9ebd89024b2b4c6a2a69a42f",
+        "checkpoint_sha256": "1fd1087401fd1b164be7d92621915bba5c800abf2929a346e7f96a8fea31bbc6",
+        "status_summary_sha256": "7f7c24fb9b60ed0f84ef68e1137ebe7c7a35efbe3250da81dae1f5a2105fd404",
+        "heartbeat_sha256": "7f7c24fb9b60ed0f84ef68e1137ebe7c7a35efbe3250da81dae1f5a2105fd404"
+      }
+    },
+    {
+      "run_id": "formal_oos_v1_1_20260821_M2F2_formal_OOS_train2026081404_test2026081504_beta1p10_profileT03",
+      "case_id": "M2F2_formal_OOS_train2026081404_test2026081504_beta1p10_profileT03",
+      "tier_id": "M2F2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "training_seed": 2026081404,
+      "test_seed": 2026081504,
+      "beta": 1.1,
+      "profile_id": "T03",
+      "budget": 2571.372016574617,
+      "reference_budget": 2337.610924158743,
+      "source_mechanism_run_id": "formal_m2_v1_1_20260821_M2F2_formal_seed2026081404_beta1p10_profileT03",
+      "source_mechanism_result_sha256": "48d554ebfa8e0af5b7ecc94cea387730d40d687142da74878be2e0c51f23a9e7",
+      "source_training_joint_scenario_set_sha256": "feac1bef5c0aa4e35633627484857055e5a10f565a154c59760fa67342b4046a",
+      "test_joint_scenario_set_sha256": "8a0255ba81debd7d18bd39f1328786fae4cda72331be3f55bf1c247655f69a45",
+      "test_scenario_component_set_sha256": {
+        "latent_draw_sha256": "6097d5a54e510ec010eeca84c18431c2e2dc01b0074da695988458a1fc124e9c",
+        "demand_sha256": "d7377e52181cbd99fbe551a8f1139f48008cf06a824dc900ca598d734e348c9f",
+        "fulfillment_sha256": "dc7f7c4ea77ad028f447fe2ccd8eaff6f850b8215c91172f7a595fe463768829",
+        "emergency_price_sha256": "9c34ca780ba7610ff81602ab78c8688dd21557b444d50799095458874107bb6e",
+        "emergency_supply_sha256": "132773c8d03d8e1443f7316a3787d804ea44b7316c84f9432b7a0a880e13f431",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0"
+      },
+      "test_scenario_identity_count": 2000,
+      "strategy_results": {
+        "endogenous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "ce58bf6de81edb69de3cb0788a6a9ab86a4c3bc86842c1df1cb3dc07a7a557c3",
+            "regular_purchase_sha256": "64cc12812ae90eb0f1126f3c86f9d4b3022554fe3d06faead1bd30d7e82dfc74",
+            "reserve_amount": 321.86633094803796,
+            "exact_training_objective": 41220.47465502375,
+            "training_joint_scenario_set_sha256": "feac1bef5c0aa4e35633627484857055e5a10f565a154c59760fa67342b4046a"
+          },
+          "wall_seconds": 59.17190420010593,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 19957.689135388187,
+            "median_total_cost": 18489.560737005788,
+            "total_cost_p90": 31186.919319716497,
+            "total_cost_p95": 35861.66207020369,
+            "total_cost_p99": 46655.23498870544,
+            "total_cost_cvar95": 42355.60737560075,
+            "maximum_total_cost": 54836.28436885645,
+            "mean_shortage": 324.21509243426954,
+            "shortage_probability": 0.9995,
+            "service_level": 0.6910026700656702,
+            "mean_waste": 236.26965691741725,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 236.26965691741725,
+            "mean_total_disposal": 236.26965691741725,
+            "mean_emergency_spend": 321.8633463096172,
+            "reserve_utilization": 0.9999907270871982
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "51152e41b21a1afbeb4bde33af6d9c5e3d32db3285f0fb30871d19b31c34e1cb",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "000bfe9edbec39246efd5a5d699e20e695b1d68021ede2371e8bae0f6f893729",
+            "regular_purchase_sha256": "2c50534a0d4588564e5e50222f16f268cadca9aa65a1ee5454f8bd369f94245e",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 41373.076388021764,
+            "training_joint_scenario_set_sha256": "feac1bef5c0aa4e35633627484857055e5a10f565a154c59760fa67342b4046a"
+          },
+          "wall_seconds": 61.156694900011644,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 21572.72891839446,
+            "median_total_cost": 20399.14583540747,
+            "total_cost_p90": 31790.874799119265,
+            "total_cost_p95": 36233.36257114205,
+            "total_cost_p99": 46795.975536446174,
+            "total_cost_cvar95": 42684.15455613193,
+            "maximum_total_cost": 55298.7994928744,
+            "mean_shortage": 352.4380393662143,
+            "shortage_probability": 1.0,
+            "service_level": 0.6641044304452637,
+            "mean_waste": 267.06709046869594,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 267.06709046869594,
+            "mean_total_disposal": 267.06709046869594,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "b4e8f213bf1bb04740df87ee8393936e372cd70ad2a046e4a7304a5d74bbaaaf",
+            "regular_purchase_sha256": "3989d837db91241603b7f61acb49e893abda3d045c786b3cc2631e520f0c5656",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 41250.786763355965,
+            "training_joint_scenario_set_sha256": "feac1bef5c0aa4e35633627484857055e5a10f565a154c59760fa67342b4046a"
+          },
+          "wall_seconds": 61.79842240002472,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 20201.713524000184,
+            "median_total_cost": 18768.212778503064,
+            "total_cost_p90": 31275.370527641513,
+            "total_cost_p95": 35829.973691035186,
+            "total_cost_p99": 46686.62399297527,
+            "total_cost_cvar95": 42409.440344677365,
+            "maximum_total_cost": 54926.95774891828,
+            "mean_shortage": 328.43407427695513,
+            "shortage_probability": 1.0,
+            "service_level": 0.6869817155979333,
+            "mean_waste": 241.70114154475405,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 241.70114154475405,
+            "mean_total_disposal": 241.70114154475405,
+            "mean_emergency_spend": 257.13720165746173,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "68f39fe02c1686ba490a4dbc1ed8fd0c347fd6b7c11e6ab8b8e53bf6f0a46fb7",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "c795850c98d7585713bf62b42bca0036b36cff1a7b4c55f574f080f605c89137",
+            "regular_purchase_sha256": "ff66a60d3e1f9da9a2fb7866a0c75998144f2d63537a24cf969ba6cd572034c3",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 41317.51113547577,
+            "training_joint_scenario_set_sha256": "feac1bef5c0aa4e35633627484857055e5a10f565a154c59760fa67342b4046a"
+          },
+          "wall_seconds": 62.72084220009856,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 16310.77108732848,
+            "median_total_cost": 14891.838860934484,
+            "total_cost_p90": 28668.417049551943,
+            "total_cost_p95": 33742.50287968192,
+            "total_cost_p99": 45766.17702782169,
+            "total_cost_cvar95": 40755.33257832434,
+            "maximum_total_cost": 54893.82558486257,
+            "mean_shortage": 257.65058203318745,
+            "shortage_probability": 0.972,
+            "service_level": 0.7544428258828771,
+            "mean_waste": 176.91231464437303,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 176.91231464437303,
+            "mean_total_disposal": 176.91231464437303,
+            "mean_emergency_spend": 769.2236318422447,
+            "reserve_utilization": 0.9971636761541605
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "21c3282d4425820304b78120c287cc7519cd8e4bdadcb3600a6bc02cb2232901",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8249826591057288
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "05e84bb5ba91413e2b5270ddedbc6a99796cdde25b0491f6d1afc9a8a4b2de0e",
+            "regular_purchase_sha256": "b364d42a7ab7bff5a0cbdb5e736c7d06a8a6795816464202c03a638dd7bf63f6",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 41797.08129743191,
+            "training_joint_scenario_set_sha256": "feac1bef5c0aa4e35633627484857055e5a10f565a154c59760fa67342b4046a"
+          },
+          "wall_seconds": 62.759412400075234,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 14010.584736790108,
+            "median_total_cost": 12064.42149564451,
+            "total_cost_p90": 28215.572370236645,
+            "total_cost_p95": 33562.24081498347,
+            "total_cost_p99": 46526.74217980746,
+            "total_cost_cvar95": 41318.70841174775,
+            "maximum_total_cost": 56244.367462344155,
+            "mean_shortage": 219.38821326852053,
+            "shortage_probability": 0.832,
+            "service_level": 0.790909264556277,
+            "mean_waste": 153.49017462476814,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 153.49017462476814,
+            "mean_total_disposal": 153.49017462476814,
+            "mean_emergency_spend": 1241.5197442787285,
+            "reserve_utilization": 0.9656477057976115
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "3c9760f0f886ce8041ad0f2c6f1c60697cebd48f53ed2591445ccb19cc6b97e9",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.872514118795819
+          }
+        }
+      },
+      "solver": "gurobi_direct",
+      "versions": {
+        "gurobi_optimizer": "13.0.2",
+        "gurobipy": "13.0.2"
+      },
+      "threads": 1,
+      "execution_limits": {
+        "solver_call_seconds": 120.0,
+        "OOS_plan_wall_seconds": 7200.0,
+        "threads": 1
+      },
+      "wall_seconds": 308.0028818999417,
+      "peak_memory_mb": 139.31640625,
+      "fingerprints": {
+        "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+        "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+        "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+        "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113",
+      "git_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+      "git_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+      "artifacts": {
+        "result_sha256": "2f13c1afccbd7c7f3baaab332845a14195c06dfdf4d403edd6ca69ec905b31f0",
+        "manifest_sha256": "3ce111d46e903c51a1a69eb315e4c5bb86f7536906f58f592a1cbfc6dfe22167",
+        "checkpoint_sha256": "25a25cd3f842fb8efc08bdbc1380dcecb28f03ac35da988ee80f0ec798630fbe",
+        "status_summary_sha256": "8243f01bf4fc5d1ff1bc5750e2c87003fc4bc80693a8f02fb83bd499e13ae420",
+        "heartbeat_sha256": "8243f01bf4fc5d1ff1bc5750e2c87003fc4bc80693a8f02fb83bd499e13ae420"
+      }
+    },
+    {
+      "run_id": "formal_oos_v1_1_20260821_M2F2_formal_OOS_train2026081405_test2026081505_beta1p10_profileT03",
+      "case_id": "M2F2_formal_OOS_train2026081405_test2026081505_beta1p10_profileT03",
+      "tier_id": "M2F2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "training_seed": 2026081405,
+      "test_seed": 2026081505,
+      "beta": 1.1,
+      "profile_id": "T03",
+      "budget": 2571.372016574617,
+      "reference_budget": 2337.610924158743,
+      "source_mechanism_run_id": "formal_m2_v1_1_20260821_M2F2_formal_seed2026081405_beta1p10_profileT03",
+      "source_mechanism_result_sha256": "205d04ecc09339dc67fd1f70604d4332d945006bfba8e3358c63b83627692059",
+      "source_training_joint_scenario_set_sha256": "1415a2dce44bdb901c44f9190a9861d824bb3e8e1f566341aa0f8c331d7b043a",
+      "test_joint_scenario_set_sha256": "fc5499544f404536b13d31c5e07970f94c6f8c485fed80ac4fc924dbade351cd",
+      "test_scenario_component_set_sha256": {
+        "latent_draw_sha256": "fcbfe6a3ddf119efcde9db38ce7efcea65da8da5ba96b4bc5a414dbde1940723",
+        "demand_sha256": "8e7696eb4e04564ee29be904a0428309f751788784ab1c9ebf853c9e186520ce",
+        "fulfillment_sha256": "7e1f7380dd4b7f3d32f737a03efd474982f53a9c0afc8aa7835c87bd6d581f25",
+        "emergency_price_sha256": "c2c63f63eb48c2c3fb2247dd0ff8dea5652aadf302b41921d7c56036f275ca43",
+        "emergency_supply_sha256": "36fb8555cf6b67522127e0a18172a6ecfcf2b9c1db2c326456037fe03dbf9b26",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0"
+      },
+      "test_scenario_identity_count": 2000,
+      "strategy_results": {
+        "endogenous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "6b62d7df8de981bc27311e0f3a4766754ef3af0bb4be47f66ae8767d519810cf",
+            "regular_purchase_sha256": "613922ca92c6ce5c2ac9f5e000663e7839776c932219fe73b5eee77fd619c71a",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 55683.5163278776,
+            "training_joint_scenario_set_sha256": "1415a2dce44bdb901c44f9190a9861d824bb3e8e1f566341aa0f8c331d7b043a"
+          },
+          "wall_seconds": 59.00186760001816,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 26997.285724275993,
+            "median_total_cost": 26205.07386285311,
+            "total_cost_p90": 34766.18615693237,
+            "total_cost_p95": 37457.681122608905,
+            "total_cost_p99": 44546.4097682079,
+            "total_cost_cvar95": 42190.468276508895,
+            "maximum_total_cost": 73294.30955233362,
+            "mean_shortage": 448.8180825055149,
+            "shortage_probability": 1.0,
+            "service_level": 0.5693948442575223,
+            "mean_waste": 397.94220129607936,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 397.94220129607936,
+            "mean_total_disposal": 397.94220129607936,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "464d9eb7899f02ffc2739dae067d2794dd83ceda554c19602ee3772002a7a26b",
+            "regular_purchase_sha256": "33b6822312a225a84973e1a9692b717d7b850378f5e3cfb3889c4f1b8b6b4176",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 55683.51074952652,
+            "training_joint_scenario_set_sha256": "1415a2dce44bdb901c44f9190a9861d824bb3e8e1f566341aa0f8c331d7b043a"
+          },
+          "wall_seconds": 61.73065499996301,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 26997.29511744713,
+            "median_total_cost": 26205.08380484169,
+            "total_cost_p90": 34766.1960999746,
+            "total_cost_p95": 37457.689912573835,
+            "total_cost_p99": 44546.404192654205,
+            "total_cost_cvar95": 42190.473691097315,
+            "maximum_total_cost": 73294.30263419112,
+            "mean_shortage": 448.8180792683046,
+            "shortage_probability": 1.0,
+            "service_level": 0.5693948473633674,
+            "mean_waste": 397.96051615720927,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 397.96051615720927,
+            "mean_total_disposal": 397.96051615720927,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "904c15302eea743ca1b00b32c0f8c5e5cfb76ee6b1a18e7be373d110d268398e",
+            "regular_purchase_sha256": "a731e809282eea470f266d6cff68f45f2687f1b1f29a5d0cf4a0b9c6dbdddbd7",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 55995.613685564196,
+            "training_joint_scenario_set_sha256": "1415a2dce44bdb901c44f9190a9861d824bb3e8e1f566341aa0f8c331d7b043a"
+          },
+          "wall_seconds": 62.909258499974385,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 22393.366098902363,
+            "median_total_cost": 21473.01614393879,
+            "total_cost_p90": 30674.99717448535,
+            "total_cost_p95": 34278.48715869239,
+            "total_cost_p99": 43992.551192462015,
+            "total_cost_cvar95": 39868.032344346626,
+            "maximum_total_cost": 73738.13486899069,
+            "mean_shortage": 365.0943098819928,
+            "shortage_probability": 1.0,
+            "service_level": 0.6497211268989006,
+            "mean_waste": 297.2097919665588,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 297.2097919665588,
+            "mean_total_disposal": 297.2097919665588,
+            "mean_emergency_spend": 257.13720165746173,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "2d790a8ac1c60a8a6d5cc62bda34d29699d6c54c164a08fffb920bd8543a89e9",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "9c74c6075db3ccbf169aa0b2da390a508086b783b522c91fdf239c69a7f1233e",
+            "regular_purchase_sha256": "84ba4e49b53dd15b93d1943b26823ebbb27913a7665cb038f2325a571429272b",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 56924.09596845869,
+            "training_joint_scenario_set_sha256": "1415a2dce44bdb901c44f9190a9861d824bb3e8e1f566341aa0f8c331d7b043a"
+          },
+          "wall_seconds": 62.903832699987106,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 14349.647105864811,
+            "median_total_cost": 12861.516801755792,
+            "total_cost_p90": 24781.077896138562,
+            "total_cost_p95": 29673.74513493494,
+            "total_cost_p99": 42985.68431669939,
+            "total_cost_cvar95": 36975.189048484346,
+            "maximum_total_cost": 74807.52795959178,
+            "mean_shortage": 218.92154008517,
+            "shortage_probability": 0.975,
+            "service_level": 0.7899622418564222,
+            "mean_waste": 129.19439605495322,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 129.19439605495322,
+            "mean_total_disposal": 129.19439605495322,
+            "mean_emergency_spend": 769.2537113656897,
+            "reserve_utilization": 0.9972026689865876
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "db7939aef62a848d4b776f432e7c153cd0607e5dc777639e137f05a39f96a55b",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.961254654813862
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "213abdbb3674abd15b1eb883027f49a78115997c36db8566493ca6a034504b3a",
+            "regular_purchase_sha256": "54866160f6b1ce8e04101d9ba5cd7441b1f9b171b42ae8e4a08d2a2496e0ec42",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 58391.71467741606,
+            "training_joint_scenario_set_sha256": "1415a2dce44bdb901c44f9190a9861d824bb3e8e1f566341aa0f8c331d7b043a"
+          },
+          "wall_seconds": 62.72346260002814,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 10620.630485866342,
+            "median_total_cost": 7635.344943943377,
+            "total_cost_p90": 23897.861897014656,
+            "total_cost_p95": 29527.360931261635,
+            "total_cost_p99": 44254.94803682872,
+            "total_cost_cvar95": 37624.01357027327,
+            "maximum_total_cost": 76212.73987640228,
+            "mean_shortage": 155.0375445220292,
+            "shortage_probability": 0.738,
+            "service_level": 0.8512538406827235,
+            "mean_waste": 26.320315988969824,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 26.320315988969824,
+            "mean_total_disposal": 26.320315988969824,
+            "mean_emergency_spend": 1209.8831408728997,
+            "reserve_utilization": 0.9410409175134544
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "308740607f0a8f6527afaea901a038b5bf3e7740c8acaf57199dfe8c3bc4558d",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.7999827632709653
+          }
+        }
+      },
+      "solver": "gurobi_direct",
+      "versions": {
+        "gurobi_optimizer": "13.0.2",
+        "gurobipy": "13.0.2"
+      },
+      "threads": 1,
+      "execution_limits": {
+        "solver_call_seconds": 120.0,
+        "OOS_plan_wall_seconds": 7200.0,
+        "threads": 1
+      },
+      "wall_seconds": 309.6279720000457,
+      "peak_memory_mb": 140.16796875,
+      "fingerprints": {
+        "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+        "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+        "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+        "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113",
+      "git_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+      "git_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+      "artifacts": {
+        "result_sha256": "b1ec4bb5320ef1defca73d90c9e20b5e9f35213d555ac2ea612afb8bda77e3ae",
+        "manifest_sha256": "0bac64f1d48bf70fdf63080ab40bc9044da212240e6166606fac71a21bf33d90",
+        "checkpoint_sha256": "6c343e7d6467472f19487815a22c1be53eb8a1760d114620099dd2a7ba94bb0f",
+        "status_summary_sha256": "bda4eba63975459207ac1e62bbed8b2508c8ac91e4f4c5938817b6f960000d30",
+        "heartbeat_sha256": "bda4eba63975459207ac1e62bbed8b2508c8ac91e4f4c5938817b6f960000d30"
+      }
+    },
+    {
+      "run_id": "formal_oos_v1_1_20260821_M2F2_formal_OOS_train2026081406_test2026081506_beta1p10_profileT03",
+      "case_id": "M2F2_formal_OOS_train2026081406_test2026081506_beta1p10_profileT03",
+      "tier_id": "M2F2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "training_seed": 2026081406,
+      "test_seed": 2026081506,
+      "beta": 1.1,
+      "profile_id": "T03",
+      "budget": 2571.372016574617,
+      "reference_budget": 2337.610924158743,
+      "source_mechanism_run_id": "formal_m2_v1_1_20260821_M2F2_formal_seed2026081406_beta1p10_profileT03",
+      "source_mechanism_result_sha256": "19f43721273ebe5e91b7179d2f6152efcb22fa6e029990e28bde965b6a9c2aa2",
+      "source_training_joint_scenario_set_sha256": "82640a6b60600921d34c213a1cb71e4dad2f842bf7c4a493c53c04c693c36cbc",
+      "test_joint_scenario_set_sha256": "2f8aa4d293c5ab44b5bde2ac93510c6622af44379e10885dec475d5cd0ae9502",
+      "test_scenario_component_set_sha256": {
+        "latent_draw_sha256": "7010436ef5f1e6d1d71bf18d4746c7488e3b9b16befe9963f4aeeaba0549a9f4",
+        "demand_sha256": "860912b2bd45940159dc31687a5a6bc6fee14b88b83c09cf0c8916850a5a1ffc",
+        "fulfillment_sha256": "38f5bdf85fbbd55781c3866369dea0bd0462a3dde48f2d269093d4978b8cb90d",
+        "emergency_price_sha256": "3ddf9f65a7f1c1da3d367a387afe500a9811bd620a6a5de2893ce21b1033fcd3",
+        "emergency_supply_sha256": "6b7e7ee4e621510e6ace69a3769710176de325531a16d3f31e1709361c33911f",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0"
+      },
+      "test_scenario_identity_count": 2000,
+      "strategy_results": {
+        "endogenous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "132b70e19fbb33ab518875480812ac72457cbe925c6021928cf07e888baa1836",
+            "regular_purchase_sha256": "e2cc1fc5660923b7ad5e686062f71440caceccb7de3fb358e20630bec1c4cde2",
+            "reserve_amount": 176.73886456869008,
+            "exact_training_objective": 44705.90078398931,
+            "training_joint_scenario_set_sha256": "82640a6b60600921d34c213a1cb71e4dad2f842bf7c4a493c53c04c693c36cbc"
+          },
+          "wall_seconds": 59.961695099947974,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 21647.530093655645,
+            "median_total_cost": 20531.27012032447,
+            "total_cost_p90": 30260.124794661333,
+            "total_cost_p95": 33948.18420041473,
+            "total_cost_p99": 43443.97382851135,
+            "total_cost_cvar95": 40764.40035793118,
+            "maximum_total_cost": 68927.26827353236,
+            "mean_shortage": 352.6697396267852,
+            "shortage_probability": 1.0,
+            "service_level": 0.6630823461184546,
+            "mean_waste": 214.4325323932307,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 214.4325323932307,
+            "mean_total_disposal": 214.4325323932307,
+            "mean_emergency_spend": 176.73886456869008,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "89a9bf73d639d48d50412df712aaef324f5a12140c531c43fbf3162c75ff036c",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "db0326551d9b909fffa6290a8e654a0cdf49ab57082794dc50ef8274c58374e0",
+            "regular_purchase_sha256": "88ec2e6b4be2d1f978af6e276ed20f56c257eae9ed9a614a15534d98dc64ae34",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 44866.78060552182,
+            "training_joint_scenario_set_sha256": "82640a6b60600921d34c213a1cb71e4dad2f842bf7c4a493c53c04c693c36cbc"
+          },
+          "wall_seconds": 62.062253699987195,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 24765.61939317714,
+            "median_total_cost": 23769.56056375787,
+            "total_cost_p90": 32956.82663419733,
+            "total_cost_p95": 36221.34897290081,
+            "total_cost_p99": 45655.9435686551,
+            "total_cost_cvar95": 42465.53421233555,
+            "maximum_total_cost": 68717.17686988281,
+            "mean_shortage": 409.4665844042651,
+            "shortage_probability": 1.0,
+            "service_level": 0.6088223472011851,
+            "mean_waste": 274.50259814383816,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 274.50259814383816,
+            "mean_total_disposal": 274.50259814383816,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "4ac6f8712e520ba3e4b2855cc42a744a8b5cbca5b74a161415e5bfd8ec090b27",
+            "regular_purchase_sha256": "90c3d11e80b6b2ee9ddde68ae5027ab514fe9fb22d2ba50c77a01ae0bf4408e3",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 44802.359179447856,
+            "training_joint_scenario_set_sha256": "82640a6b60600921d34c213a1cb71e4dad2f842bf7c4a493c53c04c693c36cbc"
+          },
+          "wall_seconds": 62.643871199921705,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 20324.43654767382,
+            "median_total_cost": 19126.52261594109,
+            "total_cost_p90": 29133.913104413547,
+            "total_cost_p95": 33127.30686114429,
+            "total_cost_p99": 43448.00001341138,
+            "total_cost_cvar95": 40314.08897159025,
+            "maximum_total_cost": 69080.11725357604,
+            "mean_shortage": 328.78090029006927,
+            "shortage_probability": 1.0,
+            "service_level": 0.6859041842262463,
+            "mean_waste": 183.73783713414596,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 183.73783713414596,
+            "mean_total_disposal": 183.73783713414596,
+            "mean_emergency_spend": 257.13720165746173,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "2b2a3c4a659c3753e458766e6adce514a2814e817f22df3cd87edfd6b972e81f",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "db9cf99a65db09484f3bd977fb951d41b2bb1f36164466ef41259fbebcc4ca2c",
+            "regular_purchase_sha256": "556e09af4b9670e1ad54df31969003a3953b32e9524141c8ec6fe98a34b265cf",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 45622.28195656257,
+            "training_joint_scenario_set_sha256": "82640a6b60600921d34c213a1cb71e4dad2f842bf7c4a493c53c04c693c36cbc"
+          },
+          "wall_seconds": 63.205707799992524,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 13584.270515529393,
+            "median_total_cost": 11556.41941858359,
+            "total_cost_p90": 25980.61990675547,
+            "total_cost_p95": 30976.905741691742,
+            "total_cost_p99": 43286.525002850496,
+            "total_cost_cvar95": 39598.79118077296,
+            "maximum_total_cost": 70240.99101572054,
+            "mean_shortage": 207.9581332508825,
+            "shortage_probability": 0.9275,
+            "service_level": 0.8013303709169386,
+            "mean_waste": 50.306365659759955,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 50.306365659759955,
+            "mean_total_disposal": 50.306365659759955,
+            "mean_emergency_spend": 763.8017651235265,
+            "reserve_utilization": 0.9901351758259702
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "a203538a2a9a9a325408083297a27815fecebf6185691d8e5c495c75b99b97fb",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "05f17e9b3c6075cee6e766dde0308ca4f143e4df188b1ce0028f440aeeb4aa56",
+            "regular_purchase_sha256": "c5e06cf13de4e2fe9b43991bcf65377329125dba52f6f2d2f46bcc618b59da9f",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 46968.155071957684,
+            "training_joint_scenario_set_sha256": "82640a6b60600921d34c213a1cb71e4dad2f842bf7c4a493c53c04c693c36cbc"
+          },
+          "wall_seconds": 63.28830440004822,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 11206.840341785535,
+            "median_total_cost": 7846.305825209527,
+            "total_cost_p90": 25648.681172397002,
+            "total_cost_p95": 31410.171993221862,
+            "total_cost_p99": 44466.877312772915,
+            "total_cost_cvar95": 40142.42859149147,
+            "maximum_total_cost": 71926.07845557701,
+            "mean_shortage": 168.45788376756937,
+            "shortage_probability": 0.7445,
+            "service_level": 0.8390663314723787,
+            "mean_waste": 21.610202848875954,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 21.610202848875954,
+            "mean_total_disposal": 21.610202848875954,
+            "mean_emergency_spend": 1194.5947452259643,
+            "reserve_utilization": 0.9291496815908505
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "8264f30926c6dad62553a0dc28eaf5de82126d949a302d169e0b38882e30bad4",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8721112082631384
+          }
+        }
+      },
+      "solver": "gurobi_direct",
+      "versions": {
+        "gurobi_optimizer": "13.0.2",
+        "gurobipy": "13.0.2"
+      },
+      "threads": 1,
+      "execution_limits": {
+        "solver_call_seconds": 120.0,
+        "OOS_plan_wall_seconds": 7200.0,
+        "threads": 1
+      },
+      "wall_seconds": 311.54736670001876,
+      "peak_memory_mb": 138.98046875,
+      "fingerprints": {
+        "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+        "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+        "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+        "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113",
+      "git_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+      "git_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+      "artifacts": {
+        "result_sha256": "a667db6ea2ee861e79ca83b6dbe72ac0ab0b84c42814efe6ccf142019b9db0e8",
+        "manifest_sha256": "65cdc2895ff8e526701fbcb474ceedf40f6671ae7fbe6a6b5da042370bafd223",
+        "checkpoint_sha256": "33c7e6ebdf792f990e3a9ed59273e6e7d69d160ff58a119e7913e8f5a25134a6",
+        "status_summary_sha256": "b6db3d338ff957c3d99ec00774d829f2a54a60e1894014882c9dd4135ad6241d",
+        "heartbeat_sha256": "b6db3d338ff957c3d99ec00774d829f2a54a60e1894014882c9dd4135ad6241d"
+      }
+    },
+    {
+      "run_id": "formal_oos_v1_1_20260821_M2F2_formal_OOS_train2026081407_test2026081507_beta1p10_profileT03",
+      "case_id": "M2F2_formal_OOS_train2026081407_test2026081507_beta1p10_profileT03",
+      "tier_id": "M2F2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "training_seed": 2026081407,
+      "test_seed": 2026081507,
+      "beta": 1.1,
+      "profile_id": "T03",
+      "budget": 2571.372016574617,
+      "reference_budget": 2337.610924158743,
+      "source_mechanism_run_id": "formal_m2_v1_1_20260821_M2F2_formal_seed2026081407_beta1p10_profileT03",
+      "source_mechanism_result_sha256": "45d598e63d6010f5e233bd85b7812619128d699325c82637ff820bd8de0500fd",
+      "source_training_joint_scenario_set_sha256": "fddc9150882ce8475f43e38f2ccfba32fa2dc655dd9933ede626627c135acae1",
+      "test_joint_scenario_set_sha256": "8d676a53a8958c393b6957741ed2a08e27cc9b3fdae8c2ac87901e452f7fe853",
+      "test_scenario_component_set_sha256": {
+        "latent_draw_sha256": "38ebeed6a0868c3587a0605d574adc25b09c641801a66c46a2ca096b0f4ea9a5",
+        "demand_sha256": "20b276e7b4d8b66843eb7f943f550edbc733a73b3fb7cb6b6b6526cbeb731516",
+        "fulfillment_sha256": "bffd64a07b58e973b545b2f46ed200bb6bf4b736cba8aeb967d8e602bcac1bd8",
+        "emergency_price_sha256": "5eb72cdd75d1b6dc88120dff2921238e856bc31b8ef6b529bc91ce71d429a190",
+        "emergency_supply_sha256": "364fa4814ab47d5db5ce324145d15d4b50d3e0d461bdeb7e30e192a5c6c9c819",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0"
+      },
+      "test_scenario_identity_count": 2000,
+      "strategy_results": {
+        "endogenous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "5930f1e207e410dfface8b6876dcd419290dde034e56a9b47ccb396206130dfa",
+            "regular_purchase_sha256": "965188685279176d113b13b4e4226064a5849ac6f59e6feacb08b178b597aaae",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 42408.88252535635,
+            "training_joint_scenario_set_sha256": "fddc9150882ce8475f43e38f2ccfba32fa2dc655dd9933ede626627c135acae1"
+          },
+          "wall_seconds": 59.759272500057705,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 27177.897561662136,
+            "median_total_cost": 26109.583958562034,
+            "total_cost_p90": 35682.4039650068,
+            "total_cost_p95": 39055.84236193901,
+            "total_cost_p99": 46679.905803814494,
+            "total_cost_cvar95": 44520.96817338889,
+            "maximum_total_cost": 94152.69360160513,
+            "mean_shortage": 452.30628884481325,
+            "shortage_probability": 1.0,
+            "service_level": 0.5687233808156293,
+            "mean_waste": 399.1032746796783,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 399.1032746796783,
+            "mean_total_disposal": 399.1032746796783,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "3a9238cee20249c98de41bd780fdda90cc8ea5bdbd300caa7acfa9de97cf246c",
+            "regular_purchase_sha256": "781ed7fc46f2335e093fb3e810230ceb5218f041d1d06ca03c7d142470be4e59",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 42408.87827446852,
+            "training_joint_scenario_set_sha256": "fddc9150882ce8475f43e38f2ccfba32fa2dc655dd9933ede626627c135acae1"
+          },
+          "wall_seconds": 61.854884100030176,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 27177.969189159237,
+            "median_total_cost": 26109.576314889022,
+            "total_cost_p90": 35682.41052668534,
+            "total_cost_p95": 39055.82721810769,
+            "total_cost_p99": 46679.90580715995,
+            "total_cost_cvar95": 44521.43113797485,
+            "maximum_total_cost": 94152.59665751859,
+            "mean_shortage": 452.3078754872404,
+            "shortage_probability": 1.0,
+            "service_level": 0.56872186794305,
+            "mean_waste": 399.10371568499335,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 399.10371568499335,
+            "mean_total_disposal": 399.10371568499335,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "850e51138af23cf7f57615983ee79de38cd82feefbcf86af524ee0b8b4f2d7cf",
+            "regular_purchase_sha256": "fa976b9491fe314a36055abd377983e2457ff03b0cfe29861cd760995cb3f6cf",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 42477.25667635153,
+            "training_joint_scenario_set_sha256": "fddc9150882ce8475f43e38f2ccfba32fa2dc655dd9933ede626627c135acae1"
+          },
+          "wall_seconds": 62.71889000001829,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 22765.74942716106,
+            "median_total_cost": 21397.039485467416,
+            "total_cost_p90": 32391.92479260581,
+            "total_cost_p95": 36550.88429941106,
+            "total_cost_p99": 45538.66803460555,
+            "total_cost_cvar95": 42873.8640454923,
+            "maximum_total_cost": 94246.50085043444,
+            "mean_shortage": 372.58108822448844,
+            "shortage_probability": 1.0,
+            "service_level": 0.6447418130933331,
+            "mean_waste": 306.19813783263294,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 306.19813783263294,
+            "mean_total_disposal": 306.19813783263294,
+            "mean_emergency_spend": 257.13720165746173,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "15da6263bf89ff52b6f2e9500910bc5b76db76d585aa00b8783192d15a1fdbb8",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "b7b8774f208fca7fb6d03fc56d669e806fe34e5c33e60f777b9eb0347a61e44b",
+            "regular_purchase_sha256": "509b73da8d66b6d595fff19df0c67824b1e0e45a64400b0337499a0f3b15325e",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 42906.63921895209,
+            "training_joint_scenario_set_sha256": "fddc9150882ce8475f43e38f2ccfba32fa2dc655dd9933ede626627c135acae1"
+          },
+          "wall_seconds": 63.755223700078204,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 16477.83101600739,
+            "median_total_cost": 14749.139320471437,
+            "total_cost_p90": 30022.38514637674,
+            "total_cost_p95": 35437.7298683736,
+            "total_cost_p99": 45815.97986815826,
+            "total_cost_cvar95": 42287.35813589247,
+            "maximum_total_cost": 95176.84680733446,
+            "mean_shortage": 260.9899295125006,
+            "shortage_probability": 0.9705,
+            "service_level": 0.7511446176687196,
+            "mean_waste": 189.56173688920867,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 189.56173688920867,
+            "mean_total_disposal": 189.56173688920867,
+            "mean_emergency_spend": 768.6604442999786,
+            "reserve_utilization": 0.9964336021720791
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "17c6f9c1537176ed4966748d097b5dcd28d9a091e12513fbba6f96fee97e02d5",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "a333f42ee46b83e6c3c35b42bfbb60055493c6cd1dfcf854531439ad35923330",
+            "regular_purchase_sha256": "99ab40926c94102664e80291a845268a9f0a6b48e75a74bfba26deaedc8b5ca3",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 43859.07778222356,
+            "training_joint_scenario_set_sha256": "fddc9150882ce8475f43e38f2ccfba32fa2dc655dd9933ede626627c135acae1"
+          },
+          "wall_seconds": 63.9158934999723,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 14407.63486807943,
+            "median_total_cost": 12229.361292818878,
+            "total_cost_p90": 29887.33057771794,
+            "total_cost_p95": 35721.781940074325,
+            "total_cost_p99": 45460.36278810769,
+            "total_cost_cvar95": 42839.7918854121,
+            "maximum_total_cost": 96298.32931145672,
+            "mean_shortage": 227.3537032075108,
+            "shortage_probability": 0.8505,
+            "service_level": 0.7832169507772996,
+            "mean_waste": 165.5368552269943,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 165.5368552269943,
+            "mean_total_disposal": 165.5368552269943,
+            "mean_emergency_spend": 1245.9928634370635,
+            "reserve_utilization": 0.9691268749956132
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "855df5bc8be3a73a8797e69872454d5e8759cac4e4ac0b442bdf8bf33fb1bb0f",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.96752476066492
+          }
+        }
+      },
+      "solver": "gurobi_direct",
+      "versions": {
+        "gurobi_optimizer": "13.0.2",
+        "gurobipy": "13.0.2"
+      },
+      "threads": 1,
+      "execution_limits": {
+        "solver_call_seconds": 120.0,
+        "OOS_plan_wall_seconds": 7200.0,
+        "threads": 1
+      },
+      "wall_seconds": 312.3894902000902,
+      "peak_memory_mb": 139.83984375,
+      "fingerprints": {
+        "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+        "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+        "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+        "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113",
+      "git_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+      "git_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+      "artifacts": {
+        "result_sha256": "ef0c18236d38ce4d8ac2895d0492673e2447c2a97dda6de05e0c980c94e2a210",
+        "manifest_sha256": "98a7c85140b0d14836673ad783da2d177274dc211a2784c9835c3f7ab01714c9",
+        "checkpoint_sha256": "c260793dda9870e3445370e39e3ab06c17073e06cf42d811142c1ac5325f84e3",
+        "status_summary_sha256": "27b1d83d3471c2a7e7a4d9c2a73242870139142c789adf2bf1a6fecc6e344898",
+        "heartbeat_sha256": "27b1d83d3471c2a7e7a4d9c2a73242870139142c789adf2bf1a6fecc6e344898"
+      }
+    },
+    {
+      "run_id": "formal_oos_v1_1_20260821_M2F2_formal_OOS_train2026081408_test2026081508_beta1p10_profileT03",
+      "case_id": "M2F2_formal_OOS_train2026081408_test2026081508_beta1p10_profileT03",
+      "tier_id": "M2F2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "training_seed": 2026081408,
+      "test_seed": 2026081508,
+      "beta": 1.1,
+      "profile_id": "T03",
+      "budget": 2571.372016574617,
+      "reference_budget": 2337.610924158743,
+      "source_mechanism_run_id": "formal_m2_v1_1_20260821_M2F2_formal_seed2026081408_beta1p10_profileT03",
+      "source_mechanism_result_sha256": "ecd32acfbdbe51fcff2ba7149e58ff31fdfa631c5eec19b6300fb9b929c1582d",
+      "source_training_joint_scenario_set_sha256": "894ecb00a07f47fbd8e4685cab5eb8db4b5b83e224fcaa8a207c9ec0448dc037",
+      "test_joint_scenario_set_sha256": "b554bcebaabd0c085da6067e25ea84187bc24e9af53af19a0ee56aacd536c51b",
+      "test_scenario_component_set_sha256": {
+        "latent_draw_sha256": "9ff4ea6d7ebaa177726c6eb78ae1f18e247100153983ecfa2f9816dd75847ab5",
+        "demand_sha256": "348c42119fa1ebf9898bb9f5a93e645b9a144dbdc99f05bb19356c19d87f5943",
+        "fulfillment_sha256": "d4f841e9205113d1cbfca137c7b74a53f69006b833e5afa144122c00b5bece85",
+        "emergency_price_sha256": "d6c0d65a8a04605ffe4a84a8608ed3c084385d10ca15c10ee217921a02e629cf",
+        "emergency_supply_sha256": "7345493ceba50b45debef069b28e7f453a969a9d91ec9c3e74fabbe89e6d782b",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0"
+      },
+      "test_scenario_identity_count": 2000,
+      "strategy_results": {
+        "endogenous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "6a3ef0e8d40752817f799507727ab59ee8734c93a43449568537718ade7ad69d",
+            "regular_purchase_sha256": "cd9baa89321010f24fe5b133b688e19b6bbf5ac7f5503dde6a3f65c4a23e72e1",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 49982.294726345215,
+            "training_joint_scenario_set_sha256": "894ecb00a07f47fbd8e4685cab5eb8db4b5b83e224fcaa8a207c9ec0448dc037"
+          },
+          "wall_seconds": 60.19418130000122,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 27108.850481789053,
+            "median_total_cost": 26265.46968900916,
+            "total_cost_p90": 35086.7385084155,
+            "total_cost_p95": 38438.96178761154,
+            "total_cost_p99": 46675.120456459445,
+            "total_cost_cvar95": 43438.90485415276,
+            "maximum_total_cost": 63219.444960176035,
+            "mean_shortage": 451.11793366098493,
+            "shortage_probability": 1.0,
+            "service_level": 0.5665700475238088,
+            "mean_waste": 406.8129107033343,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 406.8129107033343,
+            "mean_total_disposal": 406.8129107033343,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "78313ebf7eefca1ad0e05c3b28d5de053c1fb04c69727f641ecd2ed5a589e0e2",
+            "regular_purchase_sha256": "6754b86a83412ca31994a9733173a5623b60008e30ef390b5c343a082476bdfa",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 49982.28971811623,
+            "training_joint_scenario_set_sha256": "894ecb00a07f47fbd8e4685cab5eb8db4b5b83e224fcaa8a207c9ec0448dc037"
+          },
+          "wall_seconds": 62.46431129996199,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 27108.877994410188,
+            "median_total_cost": 26265.47000731337,
+            "total_cost_p90": 35086.73832219905,
+            "total_cost_p95": 38438.962125711245,
+            "total_cost_p99": 46675.578988293506,
+            "total_cost_cvar95": 43439.120568043276,
+            "maximum_total_cost": 63219.43851345938,
+            "mean_shortage": 451.1185412561394,
+            "shortage_probability": 1.0,
+            "service_level": 0.566569463751985,
+            "mean_waste": 406.8132395275552,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 406.8132395275552,
+            "mean_total_disposal": 406.8132395275552,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "a98981d730f53f1bd04e39534609f0bb528da2c78dce657ae489533c55e84c24",
+            "regular_purchase_sha256": "03a9acd51dc2cf8bcd11c9cffe46956d292f50ae27b79eafc946bf296bf44328",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 50283.99385333579,
+            "training_joint_scenario_set_sha256": "894ecb00a07f47fbd8e4685cab5eb8db4b5b83e224fcaa8a207c9ec0448dc037"
+          },
+          "wall_seconds": 63.25432519998867,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 22824.647098385343,
+            "median_total_cost": 21627.45526203281,
+            "total_cost_p90": 32230.986913070697,
+            "total_cost_p95": 36034.41503368499,
+            "total_cost_p99": 46404.488647024074,
+            "total_cost_cvar95": 42222.22183882544,
+            "maximum_total_cost": 63738.6410331262,
+            "mean_shortage": 374.04487085477206,
+            "shortage_probability": 1.0,
+            "service_level": 0.640621135846082,
+            "mean_waste": 312.02408493662244,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 312.02408493662244,
+            "mean_total_disposal": 312.02408493662244,
+            "mean_emergency_spend": 257.13720165746173,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "a2f53313d1b73db0f831a7f1a08d3a0fb5276a7f2daa0f64ffeab6b15ae1c7e0",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "5a49d5fa5c4e05ef24402c07a4f8750e85c922329838d5303296a789a71fa66e",
+            "regular_purchase_sha256": "129983a22af1491d2bdb8b3c133d1089bbf1f6fb2190303f165b3528f3c3cb4c",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 51212.74441004267,
+            "training_joint_scenario_set_sha256": "894ecb00a07f47fbd8e4685cab5eb8db4b5b83e224fcaa8a207c9ec0448dc037"
+          },
+          "wall_seconds": 63.07365649996791,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 16095.682950511275,
+            "median_total_cost": 14474.52865054107,
+            "total_cost_p90": 28288.071953494327,
+            "total_cost_p95": 32817.17609840175,
+            "total_cost_p99": 44546.56524968609,
+            "total_cost_cvar95": 40063.53274436868,
+            "maximum_total_cost": 64753.43348613911,
+            "mean_shortage": 253.14950962384881,
+            "shortage_probability": 0.977,
+            "service_level": 0.7567762845622257,
+            "mean_waste": 184.34736698564896,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 184.34736698564896,
+            "mean_total_disposal": 184.34736698564896,
+            "mean_emergency_spend": 769.1523096028621,
+            "reserve_utilization": 0.997071219365952
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "f0287546226ea571763113ff3c9464ea08df26afb378c271ca40be43e13a028a",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9916362294540887
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "3dd97ec851a6aef7fa3b8afd02d3ae817a361acd81fdae5a3894df8ea46de773",
+            "regular_purchase_sha256": "4653d79a2a0edc9d181dfeb359e7eeb100ada32e88c7c64cf8f59eced32106bc",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 52344.85655689744,
+            "training_joint_scenario_set_sha256": "894ecb00a07f47fbd8e4685cab5eb8db4b5b83e224fcaa8a207c9ec0448dc037"
+          },
+          "wall_seconds": 63.74910719995387,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 14116.881818735636,
+            "median_total_cost": 12254.820869192092,
+            "total_cost_p90": 28465.67835657013,
+            "total_cost_p95": 33609.481208201236,
+            "total_cost_p99": 45767.84300576029,
+            "total_cost_cvar95": 40867.21831124686,
+            "maximum_total_cost": 66328.21843495822,
+            "mean_shortage": 220.98859389959335,
+            "shortage_probability": 0.8545,
+            "service_level": 0.7876761959464418,
+            "mean_waste": 170.1704173105591,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 170.1704173105591,
+            "mean_total_disposal": 170.1704173105591,
+            "mean_emergency_spend": 1249.1924084336906,
+            "reserve_utilization": 0.9716154647259234
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "81538f88029159600fd3f8f7f17a249527f6f65e7ab5f67470a2cad9edaba1d0",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8488260951020504
+          }
+        }
+      },
+      "solver": "gurobi_direct",
+      "versions": {
+        "gurobi_optimizer": "13.0.2",
+        "gurobipy": "13.0.2"
+      },
+      "threads": 1,
+      "execution_limits": {
+        "solver_call_seconds": 120.0,
+        "OOS_plan_wall_seconds": 7200.0,
+        "threads": 1
+      },
+      "wall_seconds": 313.1153370999964,
+      "peak_memory_mb": 139.15625,
+      "fingerprints": {
+        "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+        "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+        "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+        "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113",
+      "git_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+      "git_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+      "artifacts": {
+        "result_sha256": "91d59fb15c4ad4e53873db1d7b5bfa762c48a9f0962886ed77f8186708ef5409",
+        "manifest_sha256": "5206153af67488171a38fc3cc5aef900821c66c2e5bdca3accac23d0f841323d",
+        "checkpoint_sha256": "6cc7f9a8b2c6f532982d4c9c05c985d15e0215e94ff3c9f664669f27ec41b5e1",
+        "status_summary_sha256": "5595c91443f2c7bd69b9abdd983c1b35323469972e7a518ff17a97e6ab1e497d",
+        "heartbeat_sha256": "5595c91443f2c7bd69b9abdd983c1b35323469972e7a518ff17a97e6ab1e497d"
+      }
+    },
+    {
+      "run_id": "formal_oos_v1_1_20260821_M2F2_formal_OOS_train2026081409_test2026081509_beta1p10_profileT03",
+      "case_id": "M2F2_formal_OOS_train2026081409_test2026081509_beta1p10_profileT03",
+      "tier_id": "M2F2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "training_seed": 2026081409,
+      "test_seed": 2026081509,
+      "beta": 1.1,
+      "profile_id": "T03",
+      "budget": 2571.372016574617,
+      "reference_budget": 2337.610924158743,
+      "source_mechanism_run_id": "formal_m2_v1_1_20260821_M2F2_formal_seed2026081409_beta1p10_profileT03",
+      "source_mechanism_result_sha256": "7cb586a858661a851ca90ec9e3251f6f8c8ccdc8d3be0bdd6dac00d3b8f04b13",
+      "source_training_joint_scenario_set_sha256": "5f670e9806a551aacda28395f0f83ebccf20a305c74e8d640deef3b6f89d58b3",
+      "test_joint_scenario_set_sha256": "7051820d84833c784bdfdd767e270e999f279e08aac3aa6769c5d8b16582aa5b",
+      "test_scenario_component_set_sha256": {
+        "latent_draw_sha256": "88793e35f8aaf75209e765817e3a9f33044eeb5cdcce1556a817b12e7075fb9b",
+        "demand_sha256": "789c60032e2695fb779efa13a40ce1b8b0bf6a5a9fe4a4d2d5fba5ebd2efc069",
+        "fulfillment_sha256": "901101fadaeb787ad1c5248a6436647e2d4bc6a5c3ab4f27274b403fc8d8d26f",
+        "emergency_price_sha256": "d116877ded42ad30f4d00284ccef63229c0119bcb02ef0206a5f0b38564a4494",
+        "emergency_supply_sha256": "68c752c0753d0894ad45597cf38a0a65b27eee73bcc020656e4bbb67292e97fe",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0"
+      },
+      "test_scenario_identity_count": 2000,
+      "strategy_results": {
+        "endogenous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "7360fa9b19f619d794c5761b84866ec9c92b64c32f7bc88de7ae7ee145966087",
+            "regular_purchase_sha256": "d473d0aeea9ccb576326754c25f9d8e072a36f493a2b7a48b40efd227047b9a3",
+            "reserve_amount": 95.37774810032371,
+            "exact_training_objective": 36675.85439167754,
+            "training_joint_scenario_set_sha256": "5f670e9806a551aacda28395f0f83ebccf20a305c74e8d640deef3b6f89d58b3"
+          },
+          "wall_seconds": 60.47122400009539,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 17843.508784087353,
+            "median_total_cost": 15948.238445108913,
+            "total_cost_p90": 27663.905443370742,
+            "total_cost_p95": 32225.807752444744,
+            "total_cost_p99": 43513.53041961779,
+            "total_cost_cvar95": 39324.64405179041,
+            "maximum_total_cost": 68000.70824713833,
+            "mean_shortage": 283.0621284073101,
+            "shortage_probability": 1.0,
+            "service_level": 0.7290749770118939,
+            "mean_waste": 242.09636023056473,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 242.09636023056473,
+            "mean_total_disposal": 242.09636023056473,
+            "mean_emergency_spend": 95.37774810032371,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "592561865dbb4577b99a4dfdb07f53a4c3da7709927f713188730bbe3cb7ba7a",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "44a4372b419162bb760b9b8225588ee6a50acae6294de10a2ce224385a0295ff",
+            "regular_purchase_sha256": "32f7e573e8c3b8a0c10ccefdf9b9e86516fb35af7d3c372919e192439608e43c",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 36814.56117832123,
+            "training_joint_scenario_set_sha256": "5f670e9806a551aacda28395f0f83ebccf20a305c74e8d640deef3b6f89d58b3"
+          },
+          "wall_seconds": 61.25851539999712,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 19574.971841829396,
+            "median_total_cost": 17702.873776882974,
+            "total_cost_p90": 29190.96201462156,
+            "total_cost_p95": 33572.363493503646,
+            "total_cost_p99": 44710.716888621486,
+            "total_cost_cvar95": 40595.348481754394,
+            "maximum_total_cost": 69644.82074915039,
+            "mean_shortage": 314.9116681784429,
+            "shortage_probability": 1.0,
+            "service_level": 0.6985910781476894,
+            "mean_waste": 282.0841552121435,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 282.0841552121435,
+            "mean_total_disposal": 282.0841552121435,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "1d6dc2c207fbb8a2783947fdfe5094a1d23b11991316cd918ab86d30b358a669",
+            "regular_purchase_sha256": "ba960a715721ad151124564a35d915fbd83508c9886f7edfc8e6311b02dcd7a7",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 36819.54473103401,
+            "training_joint_scenario_set_sha256": "5f670e9806a551aacda28395f0f83ebccf20a305c74e8d640deef3b6f89d58b3"
+          },
+          "wall_seconds": 62.47544599999674,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 15190.190281511792,
+            "median_total_cost": 13211.109861108722,
+            "total_cost_p90": 25636.276263354186,
+            "total_cost_p95": 30694.127732692014,
+            "total_cost_p99": 43248.73815803424,
+            "total_cost_cvar95": 38322.60487908327,
+            "maximum_total_cost": 66948.10967257322,
+            "mean_shortage": 234.95431599859947,
+            "shortage_probability": 0.9995,
+            "service_level": 0.7751200281675281,
+            "mean_waste": 179.47039741287182,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 179.47039741287182,
+            "mean_total_disposal": 179.47039741287182,
+            "mean_emergency_spend": 257.11484474363994,
+            "reserve_utilization": 0.9999130545340088
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "2cf67fe4edd53a01ddcd7f011bc5a5e58fe052aeedbe8b6c5568f3097fcf9d0e",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "efb4fa61d75459bdb0f4cf9fd1f055352d543416583fac443eaac9dbbb6c67f7",
+            "regular_purchase_sha256": "72d60e164060b6d61aac098208799b87a0e4f243f7e1837b65a0d95903b0757f",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 37584.7904115989,
+            "training_joint_scenario_set_sha256": "5f670e9806a551aacda28395f0f83ebccf20a305c74e8d640deef3b6f89d58b3"
+          },
+          "wall_seconds": 62.93797289999202,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 11766.803572301358,
+            "median_total_cost": 8969.506980068305,
+            "total_cost_p90": 25003.133122190207,
+            "total_cost_p95": 30487.423146426732,
+            "total_cost_p99": 43744.362609475,
+            "total_cost_cvar95": 38415.727719043265,
+            "maximum_total_cost": 67410.51049326063,
+            "mean_shortage": 174.94244464134005,
+            "shortage_probability": 0.8295,
+            "service_level": 0.8325587173998421,
+            "mean_waste": 62.4909627970639,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 62.4909627970639,
+            "mean_total_disposal": 62.4909627970639,
+            "mean_emergency_spend": 741.1053415543704,
+            "reserve_utilization": 0.9607132389211339
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "7865eacf6d997d65816cfc3a781e56813ece99fd8834f5b188600ecdcfa1a5b4",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "f1f656f9790a294efcc3a561beb7ebc84aece48922f7b160a82e6a21fccd53b7",
+            "regular_purchase_sha256": "e21ad813d80f5400f95e611dd0cdd0dcbef03c1bf1aff077932b1ca5de726a17",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 38828.236768150615,
+            "training_joint_scenario_set_sha256": "5f670e9806a551aacda28395f0f83ebccf20a305c74e8d640deef3b6f89d58b3"
+          },
+          "wall_seconds": 63.54068059998099,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 12173.765007940512,
+            "median_total_cost": 9464.03214325818,
+            "total_cost_p90": 26206.943120174397,
+            "total_cost_p95": 31738.00708909521,
+            "total_cost_p99": 44673.66743497411,
+            "total_cost_cvar95": 39763.571492435534,
+            "maximum_total_cost": 69050.61178112918,
+            "mean_shortage": 190.81715185531849,
+            "shortage_probability": 0.797,
+            "service_level": 0.8173646840578475,
+            "mean_waste": 29.47497359878371,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 29.47497359878371,
+            "mean_total_disposal": 29.47497359878371,
+            "mean_emergency_spend": 1224.6189847870767,
+            "reserve_utilization": 0.9525023815250346
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "4d9fe473558f4fba05e3c5ebf29b9122cc653d451af6a3fb2680c95fe4131192",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9386253877411594
+          }
+        }
+      },
+      "solver": "gurobi_direct",
+      "versions": {
+        "gurobi_optimizer": "13.0.2",
+        "gurobipy": "13.0.2"
+      },
+      "threads": 1,
+      "execution_limits": {
+        "solver_call_seconds": 120.0,
+        "OOS_plan_wall_seconds": 7200.0,
+        "threads": 1
+      },
+      "wall_seconds": 311.05975220003165,
+      "peak_memory_mb": 139.65625,
+      "fingerprints": {
+        "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+        "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+        "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+        "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113",
+      "git_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+      "git_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+      "artifacts": {
+        "result_sha256": "75e06d0200a0f43b25029dbcdf130ec622415952e2b34762cf66cecd92def1cb",
+        "manifest_sha256": "98b80f48557992d2291c01df52ee3a5588d5b714b133118cd6653607055dadcd",
+        "checkpoint_sha256": "170ce728321f9fdedc724ec35728782b59d5e00dd040d0181841e5371ce7a57c",
+        "status_summary_sha256": "af64d613794aa9a841e46dba67af5610308b40f4405e082716bc7900104838e5",
+        "heartbeat_sha256": "af64d613794aa9a841e46dba67af5610308b40f4405e082716bc7900104838e5"
+      }
+    },
+    {
+      "run_id": "formal_oos_v1_1_20260821_M2F2_formal_OOS_train2026081410_test2026081510_beta1p10_profileT03",
+      "case_id": "M2F2_formal_OOS_train2026081410_test2026081510_beta1p10_profileT03",
+      "tier_id": "M2F2",
+      "status": "optimal",
+      "parent_run_id": null,
+      "training_seed": 2026081410,
+      "test_seed": 2026081510,
+      "beta": 1.1,
+      "profile_id": "T03",
+      "budget": 2571.372016574617,
+      "reference_budget": 2337.610924158743,
+      "source_mechanism_run_id": "formal_m2_v1_1_20260821_M2F2_formal_seed2026081410_beta1p10_profileT03",
+      "source_mechanism_result_sha256": "92040f2cc5f1952f2439966a7cdfb0ad85c613e9be134897608b0e9c8434d2a7",
+      "source_training_joint_scenario_set_sha256": "aa4df40cd3eb96c508c19d76f1128e692937600632c582f5761f1c8492fcf359",
+      "test_joint_scenario_set_sha256": "5585510ce691c7076a602c1ff3b37d1e9f8cf34e1dc27fe78d331a7a341b2bb8",
+      "test_scenario_component_set_sha256": {
+        "latent_draw_sha256": "cec29356fe11ca7cfa016f0f71d17b26e5f264ad6d1089e7843a7385909f9647",
+        "demand_sha256": "4b6fbb3f704b4fb93dfa556ae46d9130b54c9fe48c8300cbf5785eafffcb57a2",
+        "fulfillment_sha256": "55896ec2a488124eace2cdb9acafcd0e0685a98c8e4c4847482561f426166e37",
+        "emergency_price_sha256": "0b4b6073e31346dd432ff0d3e6f53b48dc7a0aea3f549d095128c867420bea04",
+        "emergency_supply_sha256": "e63aba4b16aff3c28dc2dbf601e78181354b1e732a69486cf444d268bd20fbc0",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0"
+      },
+      "test_scenario_identity_count": 2000,
+      "strategy_results": {
+        "endogenous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "60e2e59cfd629f8fff019a5269469b3db350185bb9e475fe391f6f6deb1004ff",
+            "regular_purchase_sha256": "25032a28400e1c50019335d1b6dbf364d76860e2b258f80f12bb7ee8d976e78c",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 46229.294860658556,
+            "training_joint_scenario_set_sha256": "aa4df40cd3eb96c508c19d76f1128e692937600632c582f5761f1c8492fcf359"
+          },
+          "wall_seconds": 59.31122699996922,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 27629.57137424353,
+            "median_total_cost": 26686.896799190974,
+            "total_cost_p90": 36101.9444948616,
+            "total_cost_p95": 39508.52377562263,
+            "total_cost_p99": 47933.248473369626,
+            "total_cost_cvar95": 44845.79457130297,
+            "maximum_total_cost": 70534.64619922741,
+            "mean_shortage": 461.49001183374975,
+            "shortage_probability": 1.0,
+            "service_level": 0.5627829913097372,
+            "mean_waste": 401.8632392248411,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 401.8632392248411,
+            "mean_total_disposal": 401.8632392248411,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "dbef8eacd3b19704057c38e24fb6be5daa0c0d528b94cd4ac5d2ecf49a714e43",
+            "regular_purchase_sha256": "6840d62ee17abe533067154bd8ecb97f1d8a3c8ea9ed5c48706fee583efdc817",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 46229.29022772952,
+            "training_joint_scenario_set_sha256": "aa4df40cd3eb96c508c19d76f1128e692937600632c582f5761f1c8492fcf359"
+          },
+          "wall_seconds": 61.05418320000172,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": true,
+            "mean_total_cost": 27629.657172569336,
+            "median_total_cost": 26686.89734928024,
+            "total_cost_p90": 36103.214747705875,
+            "total_cost_p95": 39508.5237706811,
+            "total_cost_p99": 47933.265864711706,
+            "total_cost_cvar95": 44846.2913284237,
+            "maximum_total_cost": 70534.6246697468,
+            "mean_shortage": 461.49191042825663,
+            "shortage_probability": 1.0,
+            "service_level": 0.5627811925756588,
+            "mean_waste": 401.86393598032464,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 401.86393598032464,
+            "mean_total_disposal": 401.86393598032464,
+            "mean_emergency_spend": 0.0,
+            "reserve_utilization": null
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "78435465216792bfcb58ddb4f484642c304fc043ebe70c068b400a693b09813d",
+            "regular_purchase_sha256": "e9bd2d29d46cfa366d0b6c46b7d5abc551a339d8008f5b759940ec53c20a1f77",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 46288.33147164331,
+            "training_joint_scenario_set_sha256": "aa4df40cd3eb96c508c19d76f1128e692937600632c582f5761f1c8492fcf359"
+          },
+          "wall_seconds": 62.252027600072324,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 23658.544415745608,
+            "median_total_cost": 22313.401008585977,
+            "total_cost_p90": 34121.10987377618,
+            "total_cost_p95": 38119.46135805821,
+            "total_cost_p99": 47161.53521363377,
+            "total_cost_cvar95": 43917.551546459224,
+            "maximum_total_cost": 71125.88863163759,
+            "mean_shortage": 390.81269108136485,
+            "shortage_probability": 1.0,
+            "service_level": 0.6297428950329242,
+            "mean_waste": 318.3424390106113,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 318.3424390106113,
+            "mean_total_disposal": 318.3424390106113,
+            "mean_emergency_spend": 257.13720165746173,
+            "reserve_utilization": 1.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "e90548dadfad73339372f925f20af35a1ea1ad70e1bff9bd112caeb7b0cc2187",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "e1d7520e6cce2974326ff2ff70633c30fb3aa6b3ffba24536d5a91ceff58bdd9",
+            "regular_purchase_sha256": "34397b4afdbba3a74b1f1cda3eafddd7c6365e713987f4b1e6e705c80aa70cd0",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 46954.38201586845,
+            "training_joint_scenario_set_sha256": "aa4df40cd3eb96c508c19d76f1128e692937600632c582f5761f1c8492fcf359"
+          },
+          "wall_seconds": 62.746327799977735,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 17412.377239722668,
+            "median_total_cost": 15524.627153509256,
+            "total_cost_p90": 31116.063393668657,
+            "total_cost_p95": 36027.481927855006,
+            "total_cost_p99": 47122.542808572194,
+            "total_cost_cvar95": 42789.848613499504,
+            "maximum_total_cost": 72456.89598007359,
+            "mean_shortage": 279.0340387185637,
+            "shortage_probability": 0.9765,
+            "service_level": 0.7356423224707995,
+            "mean_waste": 239.61556343676457,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 239.61556343676457,
+            "mean_total_disposal": 239.61556343676457,
+            "mean_emergency_spend": 769.9150025544338,
+            "reserve_utilization": 0.9980599171592645
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "39d14a8b1e5a6b41f590d460eb1f3c43c9e349154cc13ed0133c7480911401f5",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_plan_identity": {
+            "finalized_plan_artifact_sha256": "5e68b3b1eecd5c345c75c65e17925909a85adb87c1cb1f253e7938eb1d554136",
+            "regular_purchase_sha256": "4653d79a2a0edc9d181dfeb359e7eeb100ada32e88c7c64cf8f59eced32106bc",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 48259.84137316461,
+            "training_joint_scenario_set_sha256": "aa4df40cd3eb96c508c19d76f1128e692937600632c582f5761f1c8492fcf359"
+          },
+          "wall_seconds": 63.07483399997,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "optimal_evaluation_rate": 1.0,
+            "recourse_feasibility_rate": 1.0,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "zero_reserve_flag": false,
+            "mean_total_cost": 14736.474187771802,
+            "median_total_cost": 12840.901612797566,
+            "total_cost_p90": 29299.199881125984,
+            "total_cost_p95": 34310.20977210431,
+            "total_cost_p99": 45697.34173095137,
+            "total_cost_cvar95": 41314.83983038116,
+            "maximum_total_cost": 71304.05035862462,
+            "mean_shortage": 233.66582685617516,
+            "shortage_probability": 0.86,
+            "service_level": 0.7786243012167348,
+            "mean_waste": 165.94802924743496,
+            "mean_expired_waste": 0.0,
+            "mean_early_disposal": 165.94802924743496,
+            "mean_total_disposal": 165.94802924743496,
+            "mean_emergency_spend": 1250.4162801412747,
+            "reserve_utilization": 0.9725673858790628
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "0bc68a726b5536c1d4d52e5e0de92ee4c643b4f68d06dbac6690e7e86014aec8",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9178666104034583
+          }
+        }
+      },
+      "solver": "gurobi_direct",
+      "versions": {
+        "gurobi_optimizer": "13.0.2",
+        "gurobipy": "13.0.2"
+      },
+      "threads": 1,
+      "execution_limits": {
+        "solver_call_seconds": 120.0,
+        "OOS_plan_wall_seconds": 7200.0,
+        "threads": 1
+      },
+      "wall_seconds": 308.8282981000375,
+      "peak_memory_mb": 138.83984375,
+      "fingerprints": {
+        "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+        "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+        "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+        "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      },
+      "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113",
+      "git_sha": "9f651265e1db3f67dfe221b1ff3409ddc8804480",
+      "git_tree_sha": "27614de762cadc47acf65883e2c892dae9b53141",
+      "artifacts": {
+        "result_sha256": "5c45cfdd109abed22bc851ac11cc4c9e9db0ff4b21e1f5adae2bb7e85ff844bb",
+        "manifest_sha256": "52db99c6adfacd9ca0519fe132c90310680247802e3a7dc86d77602a7330610b",
+        "checkpoint_sha256": "54e867caabdeb658e26d9d4d01052ecc883c8903ba4b28d7e41a80e4498cb9d9",
+        "status_summary_sha256": "6e3e1e19c2fe0f700edf05a455a40564437cc987e0ad929b6e0dfac98085b67a",
+        "heartbeat_sha256": "6e3e1e19c2fe0f700edf05a455a40564437cc987e0ad929b6e0dfac98085b67a"
+      }
+    }
+  ],
+  "aggregate": {
+    "required_primary_run_count": 10,
+    "completed_primary_run_count": 10,
+    "completed_plan_count": 50,
+    "completed_exact_recourse_evaluation_count": 100000,
+    "infeasible_scenario_count": 0,
+    "solver_failure_count": 0,
+    "total_wall_seconds": 3048.487366200192,
+    "maximum_run_wall_seconds": 313.1153370999964,
+    "maximum_peak_memory_mb": 140.16796875,
+    "missing_case_ids": [],
+    "invalid_primary_run_ids": [],
+    "failed_primary_run_ids": [],
+    "duplicate_case_ids": [],
+    "diagnostic_run_ids": [],
+    "finalization_failure_run_ids": []
+  },
+  "policy_descriptive_summaries": {
+    "endogenous_reserve": {
+      "mean_total_cost_mean_across_seed_pairs": 23287.46960810469,
+      "total_cost_p95_mean_across_seed_pairs": 36130.232639093505,
+      "total_cost_cvar95_mean_across_seed_pairs": 42039.677615565466,
+      "service_level_mean_across_seed_pairs": 0.6354819522286513,
+      "shortage_probability_mean_across_seed_pairs": 0.99995,
+      "mean_emergency_spend_mean_across_seed_pairs": 160.81159519085125
+    },
+    "zero_autonomous_reserve": {
+      "mean_total_cost_mean_across_seed_pairs": 24802.12396171436,
+      "total_cost_p95_mean_across_seed_pairs": 36990.46626711242,
+      "total_cost_cvar95_mean_across_seed_pairs": 42645.68305979229,
+      "service_level_mean_across_seed_pairs": 0.609321358508224,
+      "shortage_probability_mean_across_seed_pairs": 1.0,
+      "mean_emergency_spend_mean_across_seed_pairs": 0.0
+    },
+    "fixed_autonomous_reserve_0_10": {
+      "mean_total_cost_mean_across_seed_pairs": 21379.283598251845,
+      "total_cost_p95_mean_across_seed_pairs": 34990.98157753547,
+      "total_cost_cvar95_mean_across_seed_pairs": 41292.98732419126,
+      "service_level_mean_across_seed_pairs": 0.6684491220733642,
+      "shortage_probability_mean_across_seed_pairs": 0.99995,
+      "mean_emergency_spend_mean_across_seed_pairs": 257.13496596607956
+    },
+    "fixed_autonomous_reserve_0_30": {
+      "mean_total_cost_mean_across_seed_pairs": 15302.87446960212,
+      "total_cost_p95_mean_across_seed_pairs": 32891.90058981787,
+      "total_cost_cvar95_mean_across_seed_pairs": 40049.11773579143,
+      "service_level_mean_across_seed_pairs": 0.7724299334770279,
+      "shortage_probability_mean_across_seed_pairs": 0.95255,
+      "mean_emergency_spend_mean_across_seed_pairs": 765.7269043339372
+    },
+    "fixed_autonomous_reserve_0_50": {
+      "mean_total_cost_mean_across_seed_pairs": 12881.05934086699,
+      "total_cost_p95_mean_across_seed_pairs": 32878.559426415195,
+      "total_cost_cvar95_mean_across_seed_pairs": 40439.008167909786,
+      "service_level_mean_across_seed_pairs": 0.8103747070730025,
+      "shortage_probability_mean_across_seed_pairs": 0.8034,
+      "mean_emergency_spend_mean_across_seed_pairs": 1228.497470731235
+    }
+  },
+  "formal_OOS_statistical_analysis": {
+    "status": "complete",
+    "independent_unit": "paired_training_test_seed_pair",
+    "pair_count": 10,
+    "best_fixed_strategy_selection": {
+      "source": "exact_training_objective_only",
+      "candidates": [
+        "fixed_autonomous_reserve_0_10",
+        "fixed_autonomous_reserve_0_30",
+        "fixed_autonomous_reserve_0_50"
+      ],
+      "tie_break": "smallest_rho",
+      "selected_by_training_seed": {
+        "2026081401": "fixed_autonomous_reserve_0_30",
+        "2026081402": "fixed_autonomous_reserve_0_10",
+        "2026081403": "fixed_autonomous_reserve_0_10",
+        "2026081404": "fixed_autonomous_reserve_0_10",
+        "2026081405": "fixed_autonomous_reserve_0_10",
+        "2026081406": "fixed_autonomous_reserve_0_10",
+        "2026081407": "fixed_autonomous_reserve_0_10",
+        "2026081408": "fixed_autonomous_reserve_0_10",
+        "2026081409": "fixed_autonomous_reserve_0_10",
+        "2026081410": "fixed_autonomous_reserve_0_10"
+      }
+    },
+    "bootstrap": {
+      "method": "paired_cluster_percentile",
+      "cluster_unit": "paired_training_test_seed_pair",
+      "random_seed": 2026081499,
+      "resamples": 10000,
+      "confidence_level": 0.95,
+      "point_estimator": "arithmetic_mean_of_ten_seed_level_paired_differences",
+      "implementation": "numpy.random.Generator(numpy.random.PCG64(seed))",
+      "numpy_version": "2.5.1",
+      "index_sampling": "Generator.integers(0,10,size=(10000,10),endpoint=False)",
+      "percentile_implementation": "numpy.percentile(method=linear)",
+      "percentile_bounds": [
+        2.5,
+        97.5
+      ]
+    },
+    "wilcoxon_protocol": {
+      "test": "paired_two_sided_signed_rank",
+      "zero_method": "pratt",
+      "method": "approx",
+      "continuity_correction": false,
+      "all_zero_differences_rule": "statistic_zero_p_value_one",
+      "implementation": "project_audit_pratt_normal_approximation_v1",
+      "normal_tail_implementation": "math.erfc(abs(z)/sqrt(2))"
+    },
+    "multiple_testing": {
+      "method": "holm",
+      "family_size": 5,
+      "familywise_alpha": 0.05,
+      "tie_order": "contrast_declaration_order",
+      "adjusted_p_value_rule": "cumulative_max_of_(family_size-rank+1)*raw_p_capped_at_one"
+    },
+    "primary_contrasts": [
+      {
+        "contrast_id": "endogenous_minus_zero_mean_total_cost",
+        "metric": "mean_total_cost",
+        "direction": "endogenous_reserve_minus_comparator",
+        "paired_seed_count": 10,
+        "paired_seed_differences": [
+          {
+            "training_seed": 2026081401,
+            "test_seed": 2026081501,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "mean_total_cost",
+            "treatment_value": 20429.222631717184,
+            "comparator_value": 27082.387622291862,
+            "paired_difference": -6653.164990574678
+          },
+          {
+            "training_seed": 2026081402,
+            "test_seed": 2026081502,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "mean_total_cost",
+            "treatment_value": 23278.55682050131,
+            "comparator_value": 23293.459540657153,
+            "paired_difference": -14.902720155841962
+          },
+          {
+            "training_seed": 2026081403,
+            "test_seed": 2026081503,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "mean_total_cost",
+            "treatment_value": 20804.58347372651,
+            "comparator_value": 22818.27282720766,
+            "paired_difference": -2013.6893534811497
+          },
+          {
+            "training_seed": 2026081404,
+            "test_seed": 2026081504,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "mean_total_cost",
+            "treatment_value": 19957.689135388187,
+            "comparator_value": 21572.72891839446,
+            "paired_difference": -1615.039783006272
+          },
+          {
+            "training_seed": 2026081405,
+            "test_seed": 2026081505,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "mean_total_cost",
+            "treatment_value": 26997.285724275993,
+            "comparator_value": 26997.29511744713,
+            "paired_difference": -0.00939317113807192
+          },
+          {
+            "training_seed": 2026081406,
+            "test_seed": 2026081506,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "mean_total_cost",
+            "treatment_value": 21647.530093655645,
+            "comparator_value": 24765.61939317714,
+            "paired_difference": -3118.0892995214963
+          },
+          {
+            "training_seed": 2026081407,
+            "test_seed": 2026081507,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "mean_total_cost",
+            "treatment_value": 27177.897561662136,
+            "comparator_value": 27177.969189159237,
+            "paired_difference": -0.071627497101872
+          },
+          {
+            "training_seed": 2026081408,
+            "test_seed": 2026081508,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "mean_total_cost",
+            "treatment_value": 27108.850481789053,
+            "comparator_value": 27108.877994410188,
+            "paired_difference": -0.027512621134519577
+          },
+          {
+            "training_seed": 2026081409,
+            "test_seed": 2026081509,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "mean_total_cost",
+            "treatment_value": 17843.508784087353,
+            "comparator_value": 19574.971841829396,
+            "paired_difference": -1731.463057742043
+          },
+          {
+            "training_seed": 2026081410,
+            "test_seed": 2026081510,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "mean_total_cost",
+            "treatment_value": 27629.57137424353,
+            "comparator_value": 27629.657172569336,
+            "paired_difference": -0.08579832580653601
+          }
+        ],
+        "arithmetic_mean_effect": -1514.6543536096663,
+        "descriptive_median_effect": -814.971251581057,
+        "bootstrap_percentile_95_ci": [
+          -2911.8980900918496,
+          -405.754972127006
+        ],
+        "wilcoxon": {
+          "statistic": 0,
+          "z_statistic": -2.8030595529069404,
+          "raw_two_sided_p_value": 0.00506203212626787,
+          "positive_rank_sum": 0,
+          "negative_rank_sum": 55.0,
+          "null_mean": 27.5,
+          "standard_error": 9.810708435174291,
+          "holm_rank": 1,
+          "holm_adjusted_p_value": 0.025310160631339347,
+          "holm_reject_at_familywise_alpha_0_05": true
+        }
+      },
+      {
+        "contrast_id": "endogenous_minus_zero_total_cost_cvar95",
+        "metric": "total_cost_cvar95",
+        "direction": "endogenous_reserve_minus_comparator",
+        "paired_seed_count": 10,
+        "paired_seed_differences": [
+          {
+            "training_seed": 2026081401,
+            "test_seed": 2026081501,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 41824.06153507191,
+            "comparator_value": 43599.671350538454,
+            "paired_difference": -1775.6098154665451
+          },
+          {
+            "training_seed": 2026081402,
+            "test_seed": 2026081502,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 40537.53751038529,
+            "comparator_value": 40828.67486219736,
+            "paired_difference": -291.1373518120672
+          },
+          {
+            "training_seed": 2026081403,
+            "test_seed": 2026081503,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 40594.389449521615,
+            "comparator_value": 41286.13040942606,
+            "paired_difference": -691.7409599044477
+          },
+          {
+            "training_seed": 2026081404,
+            "test_seed": 2026081504,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 42355.60737560075,
+            "comparator_value": 42684.15455613193,
+            "paired_difference": -328.5471805311754
+          },
+          {
+            "training_seed": 2026081405,
+            "test_seed": 2026081505,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 42190.468276508895,
+            "comparator_value": 42190.473691097315,
+            "paired_difference": -0.005414588420535438
+          },
+          {
+            "training_seed": 2026081406,
+            "test_seed": 2026081506,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 40764.40035793118,
+            "comparator_value": 42465.53421233555,
+            "paired_difference": -1701.1338544043683
+          },
+          {
+            "training_seed": 2026081407,
+            "test_seed": 2026081507,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 44520.96817338889,
+            "comparator_value": 44521.43113797485,
+            "paired_difference": -0.4629645859604352
+          },
+          {
+            "training_seed": 2026081408,
+            "test_seed": 2026081508,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 43438.90485415276,
+            "comparator_value": 43439.120568043276,
+            "paired_difference": -0.21571389051678125
+          },
+          {
+            "training_seed": 2026081409,
+            "test_seed": 2026081509,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 39324.64405179041,
+            "comparator_value": 40595.348481754394,
+            "paired_difference": -1270.704429963982
+          },
+          {
+            "training_seed": 2026081410,
+            "test_seed": 2026081510,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 44845.79457130297,
+            "comparator_value": 44846.2913284237,
+            "paired_difference": -0.49675712073076284
+          }
+        ],
+        "arithmetic_mean_effect": -606.0054442268214,
+        "descriptive_median_effect": -309.8422661716213,
+        "bootstrap_percentile_95_ci": [
+          -1051.6318043631227,
+          -204.23984491427677
+        ],
+        "wilcoxon": {
+          "statistic": 0,
+          "z_statistic": -2.8030595529069404,
+          "raw_two_sided_p_value": 0.00506203212626787,
+          "positive_rank_sum": 0,
+          "negative_rank_sum": 55.0,
+          "null_mean": 27.5,
+          "standard_error": 9.810708435174291,
+          "holm_rank": 2,
+          "holm_adjusted_p_value": 0.025310160631339347,
+          "holm_reject_at_familywise_alpha_0_05": true
+        }
+      },
+      {
+        "contrast_id": "endogenous_minus_zero_service_level",
+        "metric": "service_level",
+        "direction": "endogenous_reserve_minus_comparator",
+        "paired_seed_count": 10,
+        "paired_seed_differences": [
+          {
+            "training_seed": 2026081401,
+            "test_seed": 2026081501,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "service_level",
+            "treatment_value": 0.6833244222709767,
+            "comparator_value": 0.5694414226923956,
+            "paired_difference": 0.11388299957858106
+          },
+          {
+            "training_seed": 2026081402,
+            "test_seed": 2026081502,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "service_level",
+            "treatment_value": 0.6401830260525407,
+            "comparator_value": 0.6398058438639662,
+            "paired_difference": 0.0003771821885745208
+          },
+          {
+            "training_seed": 2026081403,
+            "test_seed": 2026081503,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "service_level",
+            "treatment_value": 0.6806808168602799,
+            "comparator_value": 0.6449810910976785,
+            "paired_difference": 0.035699725762601386
+          },
+          {
+            "training_seed": 2026081404,
+            "test_seed": 2026081504,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "service_level",
+            "treatment_value": 0.6910026700656702,
+            "comparator_value": 0.6641044304452637,
+            "paired_difference": 0.026898239620406494
+          },
+          {
+            "training_seed": 2026081405,
+            "test_seed": 2026081505,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "service_level",
+            "treatment_value": 0.5693948442575223,
+            "comparator_value": 0.5693948473633674,
+            "paired_difference": -3.1058451366305917e-09
+          },
+          {
+            "training_seed": 2026081406,
+            "test_seed": 2026081506,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "service_level",
+            "treatment_value": 0.6630823461184546,
+            "comparator_value": 0.6088223472011851,
+            "paired_difference": 0.054259998917269514
+          },
+          {
+            "training_seed": 2026081407,
+            "test_seed": 2026081507,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "service_level",
+            "treatment_value": 0.5687233808156293,
+            "comparator_value": 0.56872186794305,
+            "paired_difference": 1.512872579323421e-06
+          },
+          {
+            "training_seed": 2026081408,
+            "test_seed": 2026081508,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "service_level",
+            "treatment_value": 0.5665700475238088,
+            "comparator_value": 0.566569463751985,
+            "paired_difference": 5.837718237700074e-07
+          },
+          {
+            "training_seed": 2026081409,
+            "test_seed": 2026081509,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "service_level",
+            "treatment_value": 0.7290749770118939,
+            "comparator_value": 0.6985910781476894,
+            "paired_difference": 0.03048389886420455
+          },
+          {
+            "training_seed": 2026081410,
+            "test_seed": 2026081510,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "zero_autonomous_reserve",
+            "metric": "service_level",
+            "treatment_value": 0.5627829913097372,
+            "comparator_value": 0.5627811925756588,
+            "paired_difference": 1.7987340783509609e-06
+          }
+        ],
+        "arithmetic_mean_effect": 0.026160593720427384,
+        "descriptive_median_effect": 0.013637710904490508,
+        "bootstrap_percentile_95_ci": [
+          0.007216129849660735,
+          0.05030114834416294
+        ],
+        "wilcoxon": {
+          "statistic": 1.0,
+          "z_statistic": 2.7011301146194153,
+          "raw_two_sided_p_value": 0.0069104298078148056,
+          "positive_rank_sum": 54.0,
+          "negative_rank_sum": 1.0,
+          "null_mean": 27.5,
+          "standard_error": 9.810708435174291,
+          "holm_rank": 3,
+          "holm_adjusted_p_value": 0.025310160631339347,
+          "holm_reject_at_familywise_alpha_0_05": true
+        }
+      },
+      {
+        "contrast_id": "endogenous_minus_best_fixed_mean_total_cost",
+        "metric": "mean_total_cost",
+        "direction": "endogenous_reserve_minus_comparator",
+        "paired_seed_count": 10,
+        "paired_seed_differences": [
+          {
+            "training_seed": 2026081401,
+            "test_seed": 2026081501,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_30",
+            "metric": "mean_total_cost",
+            "treatment_value": 20429.222631717184,
+            "comparator_value": 16368.937956970893,
+            "paired_difference": 4060.284674746292
+          },
+          {
+            "training_seed": 2026081402,
+            "test_seed": 2026081502,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "mean_total_cost",
+            "treatment_value": 23278.55682050131,
+            "comparator_value": 22830.721618899504,
+            "paired_difference": 447.83520160180706
+          },
+          {
+            "training_seed": 2026081403,
+            "test_seed": 2026081503,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "mean_total_cost",
+            "treatment_value": 20804.58347372651,
+            "comparator_value": 20899.831362816334,
+            "paired_difference": -95.24788908982373
+          },
+          {
+            "training_seed": 2026081404,
+            "test_seed": 2026081504,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "mean_total_cost",
+            "treatment_value": 19957.689135388187,
+            "comparator_value": 20201.713524000184,
+            "paired_difference": -244.02438861199698
+          },
+          {
+            "training_seed": 2026081405,
+            "test_seed": 2026081505,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "mean_total_cost",
+            "treatment_value": 26997.285724275993,
+            "comparator_value": 22393.366098902363,
+            "paired_difference": 4603.91962537363
+          },
+          {
+            "training_seed": 2026081406,
+            "test_seed": 2026081506,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "mean_total_cost",
+            "treatment_value": 21647.530093655645,
+            "comparator_value": 20324.43654767382,
+            "paired_difference": 1323.0935459818247
+          },
+          {
+            "training_seed": 2026081407,
+            "test_seed": 2026081507,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "mean_total_cost",
+            "treatment_value": 27177.897561662136,
+            "comparator_value": 22765.74942716106,
+            "paired_difference": 4412.148134501076
+          },
+          {
+            "training_seed": 2026081408,
+            "test_seed": 2026081508,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "mean_total_cost",
+            "treatment_value": 27108.850481789053,
+            "comparator_value": 22824.647098385343,
+            "paired_difference": 4284.20338340371
+          },
+          {
+            "training_seed": 2026081409,
+            "test_seed": 2026081509,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "mean_total_cost",
+            "treatment_value": 17843.508784087353,
+            "comparator_value": 15190.190281511792,
+            "paired_difference": 2653.318502575561
+          },
+          {
+            "training_seed": 2026081410,
+            "test_seed": 2026081510,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "mean_total_cost",
+            "treatment_value": 27629.57137424353,
+            "comparator_value": 23658.544415745608,
+            "paired_difference": 3971.0269584979214
+          }
+        ],
+        "arithmetic_mean_effect": 2541.6557748980003,
+        "descriptive_median_effect": 3312.1727305367413,
+        "bootstrap_percentile_95_ci": [
+          1335.9396483408693,
+          3701.145979187768
+        ],
+        "wilcoxon": {
+          "statistic": 3.0,
+          "z_statistic": 2.497271238044365,
+          "raw_two_sided_p_value": 0.012515318690073982,
+          "positive_rank_sum": 52.0,
+          "negative_rank_sum": 3.0,
+          "null_mean": 27.5,
+          "standard_error": 9.810708435174291,
+          "holm_rank": 4,
+          "holm_adjusted_p_value": 0.025310160631339347,
+          "holm_reject_at_familywise_alpha_0_05": true
+        }
+      },
+      {
+        "contrast_id": "endogenous_minus_best_fixed_total_cost_cvar95",
+        "metric": "total_cost_cvar95",
+        "direction": "endogenous_reserve_minus_comparator",
+        "paired_seed_count": 10,
+        "paired_seed_differences": [
+          {
+            "training_seed": 2026081401,
+            "test_seed": 2026081501,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_30",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 41824.06153507191,
+            "comparator_value": 40981.542228736595,
+            "paired_difference": 842.5193063353145
+          },
+          {
+            "training_seed": 2026081402,
+            "test_seed": 2026081502,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 40537.53751038529,
+            "comparator_value": 40270.30622397878,
+            "paired_difference": 267.23128640650975
+          },
+          {
+            "training_seed": 2026081403,
+            "test_seed": 2026081503,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 40594.389449521615,
+            "comparator_value": 40750.09201071584,
+            "paired_difference": -155.70256119422265
+          },
+          {
+            "training_seed": 2026081404,
+            "test_seed": 2026081504,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 42355.60737560075,
+            "comparator_value": 42409.440344677365,
+            "paired_difference": -53.832969076611334
+          },
+          {
+            "training_seed": 2026081405,
+            "test_seed": 2026081505,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 42190.468276508895,
+            "comparator_value": 39868.032344346626,
+            "paired_difference": 2322.4359321622687
+          },
+          {
+            "training_seed": 2026081406,
+            "test_seed": 2026081506,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 40764.40035793118,
+            "comparator_value": 40314.08897159025,
+            "paired_difference": 450.31138634093077
+          },
+          {
+            "training_seed": 2026081407,
+            "test_seed": 2026081507,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 44520.96817338889,
+            "comparator_value": 42873.8640454923,
+            "paired_difference": 1647.1041278965859
+          },
+          {
+            "training_seed": 2026081408,
+            "test_seed": 2026081508,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 43438.90485415276,
+            "comparator_value": 42222.22183882544,
+            "paired_difference": 1216.6830153273186
+          },
+          {
+            "training_seed": 2026081409,
+            "test_seed": 2026081509,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 39324.64405179041,
+            "comparator_value": 38322.60487908327,
+            "paired_difference": 1002.0391727071401
+          },
+          {
+            "training_seed": 2026081410,
+            "test_seed": 2026081510,
+            "treatment_strategy": "endogenous_reserve",
+            "comparator_strategy": "fixed_autonomous_reserve_0_10",
+            "metric": "total_cost_cvar95",
+            "treatment_value": 44845.79457130297,
+            "comparator_value": 43917.551546459224,
+            "paired_difference": 928.2430248437449
+          }
+        ],
+        "arithmetic_mean_effect": 846.7031721748979,
+        "descriptive_median_effect": 885.3811655895297,
+        "bootstrap_percentile_95_ci": [
+          410.291232225921,
+          1315.0063202932274
+        ],
+        "wilcoxon": {
+          "statistic": 3.0,
+          "z_statistic": 2.497271238044365,
+          "raw_two_sided_p_value": 0.012515318690073982,
+          "positive_rank_sum": 52.0,
+          "negative_rank_sum": 3.0,
+          "null_mean": 27.5,
+          "standard_error": 9.810708435174291,
+          "holm_rank": 5,
+          "holm_adjusted_p_value": 0.025310160631339347,
+          "holm_reject_at_familywise_alpha_0_05": true
+        }
+      }
+    ],
+    "secondary_metrics_status": "descriptive_only_not_in_primary_holm_family"
+  },
+  "machine_gate": {
+    "formal_OOS_gate_passed": true,
+    "next_decision": "permit_OOS_results_review_only",
+    "algorithm_performance_authorized": false,
+    "formal_extension_complete": false
+  },
+  "controlled_read_write_root": {
+    "root": "outputs/phase6_m2_formal_oos_v1_1",
+    "read_inputs": [
+      "reviewed PR #58 mechanism registry/progress and finalized first-stage plan artifacts"
+    ],
+    "write_outputs": [
+      "formal/OOS immutable run artifacts, registry, and progress"
+    ],
+    "external_historical_output_directories_used_as_input": false
+  },
+  "evidence_limits": {
+    "large_raw_outputs_committed": false,
+    "scenario_files_committed": false,
+    "compact_audit_preserves_artifact_hashes_and_statistics": true
+  }
+}
