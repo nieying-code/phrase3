@@ -77,9 +77,25 @@ def test_reviewed_audits_counts_fingerprints_and_orchestrator_are_locked() -> No
         "working_tree_clean_before_branch": True,
     }
     assert audit["fingerprints"] == diagnostics.FINGERPRINTS
-    assert formal_extension_fingerprints(
-        ROOT, FORMAL_CONFIG, FORMAL_RUNNER
-    ) == diagnostics.FINGERPRINTS
+    actual = formal_extension_fingerprints(ROOT, FORMAL_CONFIG, FORMAL_RUNNER)
+    for field in (
+        "scientific_config_sha256",
+        "e3_component_sha256",
+        "family_component_sha256",
+        "runner_config_sha256",
+    ):
+        assert actual[field] == diagnostics.FINGERPRINTS[field]
+
+    # The reviewed audit locks the environment used for the experiments.  A CI
+    # host is not an experimental execution input and therefore need not have
+    # the same hardware/environment fingerprint.
+    approved_environment = (
+        "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+    )
+    assert diagnostics.FINGERPRINTS["environment_sha256"] == approved_environment
+    assert audit["fingerprints"]["environment_sha256"] == approved_environment
+    assert len(actual["environment_sha256"]) == 64
+    int(actual["environment_sha256"], 16)
     assert audit["formal_OOS_orchestrator_sha256"] == (
         diagnostics.OOS_ORCHESTRATOR_SHA
     )
