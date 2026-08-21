@@ -19,7 +19,7 @@ from typing import Any, Callable, Mapping, Sequence
 
 import yaml
 
-from .evaluation import evaluate_first_stage
+from .evaluation import EvaluationResult, evaluate_first_stage, regular_cost
 from .phase6_environment import validate_locked_environment
 from .phase6_families import aggregate_oos_evaluation, generate_oos_data
 from .phase6_io import atomic_write_csv, atomic_write_json, read_lf_bytes
@@ -374,6 +374,13 @@ def validate_formal_oos_preflight(
     }
     if any(execution.get(key) != value for key, value in expected_execution.items()):
         raise RuntimeError("formal OOS safety metadata mismatch")
+    expected_limits = {
+        "solver_call_seconds": 120,
+        "OOS_plan_wall_seconds": 7200,
+        "threads": 1,
+    }
+    if runner.get("limits") != expected_limits:
+        raise RuntimeError("formal OOS frozen execution limits mismatch")
     approval = yaml.safe_load(approval_path.read_text(encoding="utf-8"))
     expected_approval = {
         "approval_id": "phase6_m2_formal_oos_execution_v1_1",
@@ -417,6 +424,86 @@ def validate_formal_oos_preflight(
         "locked_environment": validate_locked_environment(root),
         "source": source,
     }
+
+
+def _evaluate_plan_with_wall_limit(
+    data: Any,
+    regular_purchase: Mapping[str, Sequence[float]],
+    reserve: float,
+    *,
+    solver_call_seconds: float,
+    plan_wall_seconds: float,
+    evaluator: Callable[..., EvaluationResult] | None = None,
+    clock: Callable[[], float] = perf_counter,
+) -> EvaluationResult:
+    """Evaluate one plan exactly while enforcing its wall-clock deadline.
+
+    The deadline is checked at every scenario boundary, and the remaining plan
+    time also caps the next Gurobi call.  Consequently a timed-out plan cannot
+    start another scenario or allow the runner to advance to another strategy.
+    """
+
+    if not math.isfinite(solver_call_seconds) or solver_call_seconds <= 0:
+        raise ValueError("solver_call_seconds must be finite and positive")
+    if not math.isfinite(plan_wall_seconds) or plan_wall_seconds <= 0:
+        raise ValueError("OOS_plan_wall_seconds must be finite and positive")
+    evaluator = evaluator or evaluate_first_stage
+    started = clock()
+    scenario_results: dict[str, Any] = {}
+    infeasible: list[str] = []
+    failed: list[str] = []
+    for scenario in tuple(data.scenarios):
+        remaining = plan_wall_seconds - (clock() - started)
+        if remaining <= 0:
+            raise TimeoutError("OOS_plan_wall_seconds exceeded before next scenario")
+        partial = evaluator(
+            data,
+            regular_purchase,
+            reserve,
+            scenario_names=(scenario,),
+            time_limit_seconds=min(solver_call_seconds, remaining),
+            solver_threads=1,
+        )
+        scenario_results.update(partial.scenario_results)
+        infeasible.extend(partial.infeasible_scenarios)
+        failed.extend(partial.failed_scenarios)
+        if clock() - started > plan_wall_seconds:
+            raise TimeoutError("OOS_plan_wall_seconds exceeded during scenario evaluation")
+
+    first_stage_cost = regular_cost(data, regular_purchase)
+    elapsed = clock() - started
+    if elapsed > plan_wall_seconds:
+        raise TimeoutError("OOS_plan_wall_seconds exceeded during result aggregation")
+    if failed:
+        return EvaluationResult(
+            status="oracle_failure", regular_cost=first_stage_cost,
+            robust_objective=None, worst_scenario=None, worst_recourse_cost=None,
+            scenario_results=scenario_results,
+            infeasible_scenarios=tuple(infeasible), failed_scenarios=tuple(failed),
+            runtime_seconds=elapsed,
+        )
+    if infeasible:
+        return EvaluationResult(
+            status="infeasible_recourse", regular_cost=first_stage_cost,
+            robust_objective=None, worst_scenario=None, worst_recourse_cost=None,
+            scenario_results=scenario_results,
+            infeasible_scenarios=tuple(infeasible), failed_scenarios=(),
+            runtime_seconds=elapsed,
+        )
+    costs = {
+        name: float(result.objective)
+        for name, result in scenario_results.items()
+        if result.objective is not None
+    }
+    worst = max(tuple(data.scenarios), key=lambda name: costs[name])
+    worst_cost = costs[worst]
+    return EvaluationResult(
+        status="optimal", regular_cost=first_stage_cost,
+        robust_objective=first_stage_cost + worst_cost,
+        worst_scenario=worst, worst_recourse_cost=worst_cost,
+        scenario_results=scenario_results,
+        infeasible_scenarios=(), failed_scenarios=(), runtime_seconds=elapsed,
+    )
 
 
 def execute_formal_oos_science(**kwargs: Any) -> dict[str, Any]:
@@ -471,19 +558,25 @@ def execute_formal_oos_science(**kwargs: Any) -> dict[str, Any]:
         demand_latent=latent,
         item_vulnerability_multiplier={"relief_food_1": 0.8, "relief_food_2": 1.2},
     )
-    seconds = float(config["compute_gate"]["per_solver_call_seconds"])
+    runner_limits = kwargs.get("runner_limits") or {
+        "solver_call_seconds": 120,
+        "OOS_plan_wall_seconds": 7200,
+        "threads": 1,
+    }
+    seconds = float(runner_limits["solver_call_seconds"])
+    plan_wall_seconds = float(runner_limits["OOS_plan_wall_seconds"])
     results: dict[str, Any] = {}
     for strategy in REQUIRED_STRATEGIES:
         plan = plans[strategy]
         progress(f"OOS_evaluate_{strategy}", {"strategy_id": strategy})
         started = perf_counter()
         with m2_model_context():
-            evaluation = evaluate_first_stage(
+            evaluation = _evaluate_plan_with_wall_limit(
                 generated.data,
                 plan["regular_purchase"],
                 float(plan["reserve_amount"]),
-                time_limit_seconds=seconds,
-                solver_threads=1,
+                solver_call_seconds=seconds,
+                plan_wall_seconds=plan_wall_seconds,
             )
         metrics = aggregate_oos_evaluation(
             generated.data, evaluation, reserve=float(plan["reserve_amount"]),
@@ -524,6 +617,11 @@ def execute_formal_oos_science(**kwargs: Any) -> dict[str, Any]:
         "gurobi_optimizer_version": "13.0.2",
         "gurobipy_version": "13.0.2",
         "threads": 1,
+        "execution_limits": {
+            "solver_call_seconds": seconds,
+            "OOS_plan_wall_seconds": plan_wall_seconds,
+            "threads": 1,
+        },
     }
     _derive_probe(science, case.as_dict(), source)
     return science
@@ -663,6 +761,7 @@ def run_formal_oos_case(
     locked_environment: Mapping[str, str], source: Mapping[str, Any],
     source_mechanism_results: Mapping[int, Mapping[str, Any]],
     case: FormalOOSCase, run_id: str, parent_run_id: str | None = None,
+    runner_limits: Mapping[str, Any] | None = None,
     science_executor: Callable[..., dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     directory = _run_directory(output_root, run_id); directory.mkdir(parents=True, exist_ok=True)
@@ -700,6 +799,11 @@ def run_formal_oos_case(
                 case=case,
                 source_mechanism_result=source_mechanism_results[case.seed],
                 progress=progress,
+                runner_limits=runner_limits or {
+                    "solver_call_seconds": 120,
+                    "OOS_plan_wall_seconds": 7200,
+                    "threads": 1,
+                },
             )
             status = "optimal"
         except KeyboardInterrupt:
@@ -839,6 +943,7 @@ def run_formal_oos(
                 locked_environment=preflight["locked_environment"], source=preflight["source"],
                 source_mechanism_results=preflight["source_mechanism_results"],
                 case=case, run_id=f"{run_id_prefix}_{case.case_id}",
+                runner_limits=preflight["runner"]["limits"],
                 parent_run_id=parent_run_id, science_executor=science_executor,
             )
             results.append(result)

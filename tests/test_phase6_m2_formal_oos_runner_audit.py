@@ -94,6 +94,14 @@ def test_fingerprints_and_safety_contract_are_exact():
         "failed_primary_permanently_blocks_gate": True,
         "reviewed_mechanism_evidence_is_read_only": True,
         "source_plan_identity_cross_checked_against_pr58": True,
+        "frozen_limits_preflight_verified": {
+            "solver_call_seconds": 120,
+            "OOS_plan_wall_seconds": 7200,
+            "threads": 1,
+        },
+        "per_plan_wall_deadline_enforced_at_scenario_boundaries": True,
+        "timeout_is_immutable_and_stops_later_strategies_and_runs": True,
+        "CLI_success_requires_formal_OOS_gate_passed": True,
         "bounded_status_bytes": 16384,
         "algorithm_performance_authorized": False,
     }

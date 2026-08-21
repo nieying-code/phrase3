@@ -10,6 +10,8 @@ import pytest
 import yaml
 
 from src import phase6_m2_formal_oos as oos
+from src import run_phase6_m2_formal_oos as oos_cli
+from src.evaluation import EvaluationResult
 from src.phase6_m2_formal_extension import formal_extension_fingerprints, load_formal_extension_config
 from src.phase6_m2_formal_oos_status import _bounded
 
@@ -31,6 +33,7 @@ EXPECTED_FINGERPRINTS = {
 def _preflight_payload(root: Path) -> dict:
     return {
         "config": load_formal_extension_config(CONFIG),
+        "runner": yaml.safe_load(RUNNER.read_text(encoding="utf-8")),
         "fingerprints": EXPECTED_FINGERPRINTS,
         "formal_OOS_orchestrator_sha256": "a" * 64,
         "source_mechanism_results": {
@@ -81,6 +84,77 @@ def test_oos_layer_preserves_science_fingerprints_and_starts_with_zero_runs():
     assert runner["output_root"] == oos.OOS_OUTPUT_ROOT
     assert runner["source_output_root"] == oos.SOURCE_OUTPUT_ROOT
     assert runner["execution"]["reviewed_mechanism_evidence_is_read_only"] is True
+    assert runner["limits"] == {
+        "solver_call_seconds": 120,
+        "OOS_plan_wall_seconds": 7200,
+        "threads": 1,
+    }
+
+
+def test_preflight_rejects_any_frozen_limit_change_before_evidence_access(
+    monkeypatch, tmp_path,
+):
+    runner = yaml.safe_load(RUNNER.read_text(encoding="utf-8"))
+    runner["limits"]["OOS_plan_wall_seconds"] = 7201
+    changed = tmp_path / "runner.yaml"
+    changed.write_text(yaml.safe_dump(runner), encoding="utf-8")
+    touched = False
+
+    def forbidden(*args, **kwargs):
+        nonlocal touched
+        touched = True
+        raise AssertionError("fingerprints/evidence must not be read")
+
+    monkeypatch.setattr(oos, "formal_extension_fingerprints", forbidden)
+    with pytest.raises(RuntimeError, match="frozen execution limits mismatch"):
+        oos.validate_formal_oos_preflight(
+            root=ROOT, config_path=CONFIG, runner_path=changed,
+            approval_path=APPROVAL, authorize=True,
+        )
+    assert touched is False
+
+
+def test_plan_wall_limit_stops_before_next_scenario_or_strategy():
+    ticks = iter((0.0, 0.0, 7199.0, 7200.01))
+    calls = []
+    data = SimpleNamespace(
+        scenarios=("s1", "s2"), items=("item",), periods=1,
+        regular_price={"item": (1.0,)},
+    )
+
+    def evaluator(data, purchase, reserve, **kwargs):
+        calls.append(kwargs)
+        return EvaluationResult(
+            status="optimal", regular_cost=1.0, robust_objective=2.0,
+            worst_scenario="s1", worst_recourse_cost=1.0,
+            scenario_results={"s1": SimpleNamespace(status="optimal", objective=1.0)},
+            infeasible_scenarios=(), failed_scenarios=(), runtime_seconds=1.0,
+        )
+
+    with pytest.raises(TimeoutError, match="OOS_plan_wall_seconds"):
+        oos._evaluate_plan_with_wall_limit(
+            data, {"item": (1.0,)}, 0.0,
+            solver_call_seconds=120.0, plan_wall_seconds=7200.0,
+            evaluator=evaluator, clock=lambda: next(ticks),
+        )
+    assert len(calls) == 1
+    assert calls[0]["scenario_names"] == ("s1",)
+    assert calls[0]["time_limit_seconds"] == 120.0
+
+
+def test_cli_returns_nonzero_when_all_runs_are_optimal_but_gate_fails(monkeypatch, capsys):
+    monkeypatch.setattr(oos_cli, "run_formal_oos", lambda **kwargs: [
+        {"status": "optimal", "formal_OOS_progress": {"formal_OOS_gate_passed": False}}
+        for _ in range(10)
+    ])
+    code = oos_cli.main([
+        "--run-id-prefix", "formal_oos",
+        "--authorize-formal-oos-execution",
+    ])
+    payload = json.loads(capsys.readouterr().out)
+    assert code == 2
+    assert payload["status"] == "incomplete"
+    assert payload["formal_OOS_gate_passed"] is False
 
 
 def test_preflight_rejects_missing_cli_authorization_before_evidence_access(monkeypatch):
@@ -154,6 +228,41 @@ def test_primary_batch_is_serial_and_stops_on_first_failure(monkeypatch, tmp_pat
     assert rows[0]["status"] == "stage_failure"
 
 
+def test_plan_wall_timeout_is_finalized_and_batch_cannot_advance(monkeypatch, tmp_path):
+    config = load_formal_extension_config(CONFIG)
+    case = oos.build_formal_oos_cases(config)[0]
+    monkeypatch.setattr(oos, "load_phase6_matrix", lambda path: {})
+    monkeypatch.setattr(oos, "capture_runtime_context", lambda **kwargs: {})
+    monkeypatch.setattr(oos, "_write_registry", lambda *args, **kwargs: None)
+    monkeypatch.setattr(oos, "update_formal_oos_progress", lambda **kwargs: {
+        "formal_OOS_gate_passed": False,
+    })
+
+    def timed_out(**kwargs):
+        kwargs["progress"]("OOS_evaluate_endogenous_reserve", {
+            "strategy_id": "endogenous_reserve",
+        })
+        raise TimeoutError("OOS_plan_wall_seconds exceeded")
+
+    result = oos.run_formal_oos_case(
+        root=ROOT, output_root=tmp_path,
+        matrix_path=ROOT / "configs/phase6_experiment_matrix.yaml",
+        config=config, fingerprints=EXPECTED_FINGERPRINTS,
+        orchestrator_sha256="d" * 64, locked_environment={},
+        source={"commit_sha": "b" * 40, "tree_sha": "c" * 40},
+        source_mechanism_results={case.seed: {"run_id": "source"}},
+        case=case, run_id="oos_timeout", science_executor=timed_out,
+    )
+    assert result["status"] == "timeout"
+    assert result["failure"]["stage"] == "OOS_evaluate_endogenous_reserve"
+    assert result["formal_OOS_progress"]["formal_OOS_gate_passed"] is False
+    finalized = json.loads((
+        tmp_path / oos.OOS_SUBDIRECTORY / "runs/oos_timeout/result.json"
+    ).read_text(encoding="utf-8"))
+    assert finalized["status"] == "timeout"
+    assert finalized["finalized"] is True
+
+
 def test_existing_oos_namespace_blocks_primary_batch(monkeypatch, tmp_path):
     monkeypatch.setattr(oos, "validate_formal_oos_preflight", lambda **kwargs: _preflight_payload(tmp_path))
     base = tmp_path / oos.OOS_OUTPUT_ROOT / oos.OOS_SUBDIRECTORY
@@ -200,7 +309,11 @@ def test_science_executor_uses_all_five_finalized_source_plans_without_reoptimiz
             "regular_purchase": {"relief_food_1": [1.0], "relief_food_2": [2.0]},
         }
 
-    fake_data = SimpleNamespace(storage_capacity=(1.0,) * 6)
+    fake_data = SimpleNamespace(
+        storage_capacity=(1.0,) * 6,
+        scenarios=("s0001",), items=("relief_food_1", "relief_food_2"), periods=1,
+        regular_price={"relief_food_1": (1.0,), "relief_food_2": (1.0,)},
+    )
     generated = SimpleNamespace(
         data=fake_data,
         joint_scenario_set_sha256="2" * 64,
@@ -210,7 +323,14 @@ def test_science_executor_uses_all_five_finalized_source_plans_without_reoptimiz
 
     def evaluate(data, purchase, reserve, **kwargs):
         calls.append((data, purchase, reserve, kwargs))
-        return object()
+        return EvaluationResult(
+            status="optimal", regular_cost=3.0, robust_objective=4.0,
+            worst_scenario="s0001", worst_recourse_cost=1.0,
+            scenario_results={
+                "s0001": SimpleNamespace(status="optimal", objective=1.0),
+            },
+            infeasible_scenarios=(), failed_scenarios=(), runtime_seconds=0.01,
+        )
 
     monkeypatch.setattr(oos, "_validate_formal_plan_artifact", validate_plan)
     monkeypatch.setattr(oos, "_confirmation_config", lambda root: {})
@@ -262,7 +382,9 @@ def test_science_executor_uses_all_five_finalized_source_plans_without_reoptimiz
     assert len(calls) == 5
     assert [call[2] for call in calls] == [0.0, 1.0, 2.0, 3.0, 4.0]
     assert all(call[0] is fake_data for call in calls)
-    assert all(call[3] == {"time_limit_seconds": 120.0, "solver_threads": 1} for call in calls)
+    assert all(call[3]["scenario_names"] == ("s0001",) for call in calls)
+    assert all(call[3]["time_limit_seconds"] == 120.0 for call in calls)
+    assert all(call[3]["solver_threads"] == 1 for call in calls)
     assert tuple(science["strategy_results"]) == oos.REQUIRED_STRATEGIES
     assert science["source_mechanism_run_id"] == "reviewed_source"
     assert derived and derived[0][2] is source

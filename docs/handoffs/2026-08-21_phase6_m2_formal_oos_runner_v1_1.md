@@ -63,6 +63,9 @@ outputs/phase6_m2_formal_extension_v1_1/formal/mechanism
 - run ID不可覆盖；失败、超时、中断和成功均为不可变终态；
 - 诊断重试必须使用一个case ID、新run ID和失败primary的`parent_run_id`；
 - 任一非最优、超时或异常立即停止后续run；
+- 预检精确锁定单次Gurobi调用120秒、每个策略7200秒墙钟上限和`Threads=1`；
+- 每个策略逐场景检查7200秒截止时间，并用剩余墙钟时间收紧下一次Gurobi调用；超限形成不可变`timeout`终态，不能进入下一策略或下一run；
+- CLI只有在10条run均最优且最终`formal_OOS_gate_passed=true`时才返回成功；
 - result、manifest、registry和progress均使用原子写入和跨进程锁；
 - 状态工具只读取不超过16 KiB的小型摘要，不解析大型结果或checkpoint；
 - 即使100000次评价全部通过，runner也只输出`permit_OOS_results_review_only`，算法性能实验仍未授权。

@@ -29,11 +29,16 @@ def main(argv=None) -> int:
         parent_run_id=args.parent_run_id,
     )
     progress = results[-1].get("formal_OOS_progress", {}) if results else {}
-    complete = len(results) == 10 and all(row["status"] == "optimal" for row in results)
+    gate_passed = progress.get("formal_OOS_gate_passed") is True
+    complete = (
+        len(results) == 10
+        and all(row["status"] == "optimal" for row in results)
+        and gate_passed
+    )
     print(json.dumps({
         "status": "optimal" if complete else "incomplete",
         "completed_run_count": len(results),
-        "formal_OOS_gate_passed": progress.get("formal_OOS_gate_passed", False),
+        "formal_OOS_gate_passed": gate_passed,
         "algorithm_performance_authorized": False,
     }))
     return 0 if complete else 2
