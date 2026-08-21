@@ -1,0 +1,162 @@
+protocol_id: phase6_m2_1_endpoint_selection_design_v1_0
+version: 1.0.0
+status: frozen_design_execution_not_authorized
+runner_namespace: phase6_m2_1_endpoint_selection_v1_0
+output_root: outputs/phase6_m2_1_endpoint_selection_v1_0
+initial_draft_on: 2026-08-21
+revised_on: 2026-08-21
+
+parent_evidence:
+  pr58_mechanism_audit: docs/handoffs/2026-08-21_phase6_m2_formal_mechanism_results_v1_1_audit.json
+  pr58_mechanism_audit_sha256: bce5b075d352a4679b4371a073f5cc0a931a6b309b401318e9f4c38a8a7489a5
+  pr60_oos_audit: docs/handoffs/2026-08-21_phase6_m2_formal_oos_results_v1_1_audit.json
+  pr60_oos_audit_sha256: ee1a767df0962b0e625ef0dbe4acbe99b719c14f576b8464a9d338dffe976cd4
+  pr61_diagnostic_audit: docs/handoffs/2026-08-21_phase6_m2_oos_lightweight_diagnostics_v1_1_audit.json
+  pr61_diagnostic_audit_sha256: 920db65ad09e2c0d46b662b84a80f19ae0ed495dbe75896754683d2a3336bce9
+  required_pr61_status: M2_1_candidate_requires_new_freeze_validation_and_test_sets
+  existing_M2_results_are_read_only: true
+
+scientific_scope:
+  model: unchanged_M2_supply_disruption
+  model_constraints_and_objective_unchanged: true
+  tier_id: M2F2
+  item_count: 2
+  periods: 6
+  beta: 1.1
+  budget: 2571.372016574617
+  profile_id: T03
+  training_scenario_count: 100
+  validation_scenario_count: 2000
+  test_scenario_count: 2000
+  activation_definition_unchanged: max_zero_R_min_opt_minus_R_min_feas
+  mechanism_interpretation_endpoint: R_min_opt
+  deployment_selection_is_separate_from_activation_identification: true
+
+candidate_protocol:
+  candidate_ids: [minimum_endpoint, interval_midpoint, maximum_endpoint]
+  reserves:
+    minimum_endpoint: R_min_opt
+    interval_midpoint: half_R_min_opt_plus_R_max_opt
+    maximum_endpoint: R_max_opt
+  every_candidate_fixes_reserve_and_reoptimizes_regular_procurement: true
+  reuse_other_candidate_purchase_forbidden: true
+  complete_extensive_model_required: true
+  restricted_CCG_master_for_interval_forbidden: true
+  every_candidate_training_objective_must_be_within_tolerance_optimal_face: true
+  original_activation_thresholds:
+    numerical_ratio_strictly_greater_than: 1.0e-4
+    substantive_ratio_greater_than_or_equal_to: 0.01
+    moderate_ratio_interval_inclusive: [0.05, 0.50]
+
+validation_selection:
+  validation_data_only: true
+  test_data_use_for_selection_forbidden: true
+  criterion_order: [minimum_cvar95, minimum_mean_total_cost, minimum_reserve]
+  cost_tie_tolerance:
+    absolute: 1.0e-5
+    relative: 1.0e-7
+    formula: absolute_plus_relative_times_max_one_abs_best
+  final_exact_tie_break_candidate_order: [minimum_endpoint, interval_midpoint, maximum_endpoint]
+  service_level_role: secondary_report_only
+  no_candidate_or_parameter_changes_after_validation: true
+
+seed_protocol:
+  pilot_training_seeds: [2026090401, 2026090402, 2026090403]
+  pilot_validation_seeds: [2026090501, 2026090502, 2026090503]
+  pilot_test_seeds: [2026090701, 2026090702, 2026090703]
+  formal_training_seeds: [2026090101, 2026090102, 2026090103, 2026090104, 2026090105, 2026090106, 2026090107, 2026090108, 2026090109, 2026090110]
+  formal_validation_seeds: [2026090201, 2026090202, 2026090203, 2026090204, 2026090205, 2026090206, 2026090207, 2026090208, 2026090209, 2026090210]
+  formal_test_seeds: [2026090301, 2026090302, 2026090303, 2026090304, 2026090305, 2026090306, 2026090307, 2026090308, 2026090309, 2026090310]
+  pairing: same_list_position_training_validation_test
+  all_six_sets_pairwise_disjoint: true
+  disjoint_from_all_existing_M0_M1_M2_seeds: true
+  viewed_PR60_test_seeds_forbidden: true
+
+pilot_protocol:
+  training_validation_triplet_count: 3
+  candidate_count_per_triplet: 3
+  validation_exact_recourse_evaluation_count: 18000
+  one_time_test_probe_triplet_position: 1
+  test_probe_strategy_count: 6
+  test_probe_exact_recourse_evaluation_count: 12000
+  activation_or_validation_selection_outcome_may_not_change_formal_design: true
+  pilot_completion_does_not_authorize_formal_execution: true
+
+formal_comparison:
+  strategies:
+    - M2_minimum_endpoint
+    - M2_1_validation_selected_endpoint
+    - zero_autonomous_reserve
+    - fixed_autonomous_reserve_0_10
+    - fixed_autonomous_reserve_0_30
+    - fixed_autonomous_reserve_0_50
+  M2_control: complete_extensive_model_R_min_opt_endpoint
+  M2_1_treatment: validation_selected_candidate
+  fixed_strategies_reoptimize_regular_procurement: true
+  same_new_test_scenarios_within_seed_triplet: true
+  test_scenario_reoptimization_forbidden: true
+  primary_estimand: M2_1_minus_M2_oos_cvar95
+  secondary_metrics: [mean_total_cost, service_level, shortage_probability, emergency_procurement_spend, cross_item_allocation]
+
+statistical_protocol:
+  independent_unit: formal_training_validation_test_seed_triplet
+  independent_unit_count: 10
+  primary_confirmatory_test_count: 1
+  bootstrap:
+    method: paired_cluster_percentile
+    cluster_unit: seed_triplet
+    random_seed: 2026090999
+    resamples: 10000
+    confidence_level: 0.95
+    point_estimator: arithmetic_mean_of_ten_seed_triplet_paired_differences
+    difference_direction: M2_1_minus_M2
+  wilcoxon:
+    test: paired_two_sided_signed_rank
+    zero_method: pratt
+    method: approx
+    correction: false
+    role: supportive
+  multiple_testing_adjustment: not_applicable_one_primary_test
+  no_new_confirmatory_hypothesis_after_test_access: true
+  primary_support_rule: paired_mean_difference_below_zero_and_two_sided_95_percent_bootstrap_interval_upper_bound_below_zero
+  wilcoxon_does_not_override_primary_support_rule: true
+  secondary_metrics_do_not_select_or_gate_acceptance: true
+  reject_if_validation_only_improvement_or_no_test_risk_improvement: true
+
+execution_sequence:
+  - separate_runner_review
+  - separately_authorized_small_pilot
+  - pilot_results_review
+  - formal_training_and_validation_selection
+  - freeze_selected_plan_identities
+  - one_time_formal_test_evaluation
+  - results_review
+  - algorithm_performance_design_if_still_needed
+
+reproducibility_and_safety:
+  python: 3.12.10
+  gurobipy: 13.0.2
+  gurobi_optimizer: 13.0.2
+  pyomo_interface: gurobi_direct
+  threads: 1
+  independent_five_fingerprints_required: true
+  independent_output_registry_projection_and_namespace_required: true
+  M2_authorization_does_not_authorize_M2_1: true
+  run_ids_immutable: true
+  diagnostic_retry_requires_new_run_id_and_parent_run_id: true
+  strictly_serial: true
+  failure_timeout_invalid_duplicate_or_finalization_error_stops_batch: true
+
+execution_boundaries:
+  design_frozen: true
+  scientific_runner_enabled: false
+  pilot_authorized: false
+  formal_training_authorized: false
+  formal_validation_authorized: false
+  selected_plan_freeze_authorized: false
+  formal_test_authorized: false
+  M2_1_runs: 0
+  scenario_generation_count: 0
+  gurobi_call_count: 0
+  algorithm_performance_runs: 0
+  M0_E3_runs: 0
