@@ -241,11 +241,34 @@ def test_plan_wall_timeout_is_finalized_as_immutable_terminal(monkeypatch, tmp_p
         "formal_OOS_gate_passed": False,
     })
 
+    scenario_calls = []
+
+    def native_time_limit(data, purchase, reserve, **kwargs):
+        scenario_calls.append(kwargs["scenario_names"])
+        scenario = kwargs["scenario_names"][0]
+        return EvaluationResult(
+            status="oracle_failure", regular_cost=1.0, robust_objective=None,
+            worst_scenario=None, worst_recourse_cost=None,
+            scenario_results={
+                scenario: SimpleNamespace(status="time_limit", objective=None),
+            },
+            infeasible_scenarios=(), failed_scenarios=(scenario,),
+            runtime_seconds=120.0,
+        )
+
     def timed_out(**kwargs):
         kwargs["progress"]("OOS_evaluate_endogenous_reserve", {
             "strategy_id": "endogenous_reserve",
         })
-        raise TimeoutError("OOS_plan_wall_seconds exceeded")
+        data = SimpleNamespace(
+            scenarios=("s1", "s2"), items=("item",), periods=1,
+            regular_price={"item": (1.0,)},
+        )
+        return oos._evaluate_plan_with_wall_limit(
+            data, {"item": (1.0,)}, 0.0,
+            solver_call_seconds=120.0, plan_wall_seconds=7200.0,
+            evaluator=native_time_limit,
+        )
 
     result = oos.run_formal_oos_case(
         root=ROOT, output_root=tmp_path,
@@ -258,12 +281,43 @@ def test_plan_wall_timeout_is_finalized_as_immutable_terminal(monkeypatch, tmp_p
     )
     assert result["status"] == "timeout"
     assert result["failure"]["stage"] == "OOS_evaluate_endogenous_reserve"
+    assert "time_limit" in result["failure"]["message"]
+    assert scenario_calls == [("s1",)]
     assert result["formal_OOS_progress"]["formal_OOS_gate_passed"] is False
     finalized = json.loads((
         tmp_path / oos.OOS_SUBDIRECTORY / "runs/oos_timeout/result.json"
     ).read_text(encoding="utf-8"))
     assert finalized["status"] == "timeout"
     assert finalized["finalized"] is True
+
+
+def test_non_timeout_oracle_failure_stops_immediately_as_scientific_failure():
+    calls = []
+    data = SimpleNamespace(
+        scenarios=("s1", "s2"), items=("item",), periods=1,
+        regular_price={"item": (1.0,)},
+    )
+
+    def evaluator(data, purchase, reserve, **kwargs):
+        calls.append(kwargs["scenario_names"])
+        scenario = kwargs["scenario_names"][0]
+        return EvaluationResult(
+            status="oracle_failure", regular_cost=1.0, robust_objective=None,
+            worst_scenario=None, worst_recourse_cost=None,
+            scenario_results={
+                scenario: SimpleNamespace(status="solver_error", objective=None),
+            },
+            infeasible_scenarios=(), failed_scenarios=(scenario,),
+            runtime_seconds=1.0,
+        )
+
+    with pytest.raises(RuntimeError, match="recourse oracle failure.*solver_error"):
+        oos._evaluate_plan_with_wall_limit(
+            data, {"item": (1.0,)}, 0.0,
+            solver_call_seconds=120.0, plan_wall_seconds=7200.0,
+            evaluator=evaluator,
+        )
+    assert calls == [("s1",)]
 
 
 def test_existing_oos_namespace_blocks_primary_batch(monkeypatch, tmp_path):

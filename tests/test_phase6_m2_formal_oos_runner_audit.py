@@ -101,6 +101,8 @@ def test_fingerprints_and_safety_contract_are_exact():
         },
         "per_plan_wall_deadline_enforced_at_scenario_boundaries": True,
         "timeout_is_immutable_and_stops_later_strategies_and_runs": True,
+        "native_solver_time_limit_immediately_propagates_as_timeout": True,
+        "non_timeout_oracle_failure_immediately_stops_evaluation": True,
         "CLI_success_requires_formal_OOS_gate_passed": True,
         "bounded_status_bytes": 16384,
         "algorithm_performance_authorized": False,

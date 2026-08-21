@@ -41,7 +41,7 @@
     "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
     "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
     "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
-    "formal_OOS_orchestrator_sha256": "cecba41f973503e42e61dfab8f1c9839828ddaf7202a18db8351f8c43e1bfd92"
+    "formal_OOS_orchestrator_sha256": "9628804bcc5fa12ef9e0a8f7652ccce274eb975772fbacd974978fe24c310113"
   },
   "safety": {
     "full_primary_batch_required": true,
@@ -59,6 +59,8 @@
     },
     "per_plan_wall_deadline_enforced_at_scenario_boundaries": true,
     "timeout_is_immutable_and_stops_later_strategies_and_runs": true,
+    "native_solver_time_limit_immediately_propagates_as_timeout": true,
+    "non_timeout_oracle_failure_immediately_stops_evaluation": true,
     "CLI_success_requires_formal_OOS_gate_passed": true,
     "bounded_status_bytes": 16384,
     "algorithm_performance_authorized": false

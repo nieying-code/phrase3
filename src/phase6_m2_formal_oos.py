@@ -467,6 +467,16 @@ def _evaluate_plan_with_wall_limit(
         scenario_results.update(partial.scenario_results)
         infeasible.extend(partial.infeasible_scenarios)
         failed.extend(partial.failed_scenarios)
+        if partial.failed_scenarios or partial.status == "oracle_failure":
+            scenario_result = partial.scenario_results.get(scenario)
+            solver_status = str(getattr(scenario_result, "status", "unknown"))
+            if solver_status in {"time_limit", "master_time_limit"}:
+                raise TimeoutError(
+                    f"Gurobi recourse solve reached {solver_status} for scenario {scenario}"
+                )
+            raise RuntimeError(
+                f"recourse oracle failure for scenario {scenario}: {solver_status}"
+            )
         if clock() - started > plan_wall_seconds:
             raise TimeoutError("OOS_plan_wall_seconds exceeded during scenario evaluation")
 

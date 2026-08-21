@@ -65,6 +65,7 @@ outputs/phase6_m2_formal_extension_v1_1/formal/mechanism
 - 任一非最优、超时或异常立即停止后续run；
 - 预检精确锁定单次Gurobi调用120秒、每个策略7200秒墙钟上限和`Threads=1`；
 - 每个策略逐场景检查7200秒截止时间，并用剩余墙钟时间收紧下一次Gurobi调用；超限形成不可变`timeout`终态，不能进入下一策略或下一run；
+- 单场景Gurobi原生返回`time_limit`或`master_time_limit`时立即转换为`TimeoutError`；其他oracle failure立即形成科学失败，二者均不会继续下一场景；
 - CLI只有在10条run均最优且最终`formal_OOS_gate_passed=true`时才返回成功；
 - result、manifest、registry和progress均使用原子写入和跨进程锁；
 - 状态工具只读取不超过16 KiB的小型摘要，不解析大型结果或checkpoint；
