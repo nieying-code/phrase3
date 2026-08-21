@@ -211,13 +211,16 @@ def test_primary_execution_cannot_select_cases(monkeypatch, tmp_path):
         )
 
 
-def test_primary_batch_is_serial_and_stops_on_first_failure(monkeypatch, tmp_path):
+@pytest.mark.parametrize("terminal_status", ["stage_failure", "timeout"])
+def test_primary_batch_is_serial_and_stops_on_first_failure(
+    monkeypatch, tmp_path, terminal_status,
+):
     monkeypatch.setattr(oos, "validate_formal_oos_preflight", lambda **kwargs: _preflight_payload(tmp_path))
     calls = []
 
     def fake_case(**kwargs):
         calls.append(kwargs["case"].case_id)
-        return {"status": "stage_failure", "formal_OOS_progress": {}}
+        return {"status": terminal_status, "formal_OOS_progress": {}}
 
     monkeypatch.setattr(oos, "run_formal_oos_case", fake_case)
     rows = oos.run_formal_oos(
@@ -225,10 +228,10 @@ def test_primary_batch_is_serial_and_stops_on_first_failure(monkeypatch, tmp_pat
         approval_path=APPROVAL, authorize=True, run_id_prefix="formal_oos",
     )
     assert len(rows) == len(calls) == 1
-    assert rows[0]["status"] == "stage_failure"
+    assert rows[0]["status"] == terminal_status
 
 
-def test_plan_wall_timeout_is_finalized_and_batch_cannot_advance(monkeypatch, tmp_path):
+def test_plan_wall_timeout_is_finalized_as_immutable_terminal(monkeypatch, tmp_path):
     config = load_formal_extension_config(CONFIG)
     case = oos.build_formal_oos_cases(config)[0]
     monkeypatch.setattr(oos, "load_phase6_matrix", lambda path: {})
