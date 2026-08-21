@@ -171,6 +171,14 @@ def test_config_tampering_is_rejected(tmp_path: Path) -> None:
 
 def test_design_cli_cannot_generate_scenarios_or_call_gurobi(monkeypatch, capsys) -> None:
     monkeypatch.setattr(m21, "validate_execution_source", lambda *args, **kwargs: {})
+    # CI hosts are not the approved experiment machine.  Preserve the real
+    # preflight's strict environment check while injecting the reviewed
+    # experiment identity for this cross-platform authorization test.
+    monkeypatch.setattr(
+        m21,
+        "m2_1_fingerprints",
+        lambda *args, **kwargs: dict(EXPECTED_FINGERPRINTS),
+    )
     with pytest.raises(m21.M21ExecutionNotAuthorized):
         m21.validate_design_only_preflight(
             root=ROOT, config_path=CONFIG, runner_path=RUNNER, approval_path=APPROVAL,
