@@ -7,6 +7,8 @@ from pathlib import Path
 import re
 import statistics
 
+import numpy as np
+
 
 ROOT = Path(__file__).resolve().parents[1]
 AUDIT = ROOT / "docs/handoffs/2026-08-21_phase6_m2_formal_mechanism_results_v1_1_audit.json"
@@ -26,6 +28,11 @@ EXPECTED_GROUP_COUNTS = {
     (1.3, "T03"): (10, 10, 7),
 }
 
+PRIMARY_CONTRASTS = (
+    ("beta_1_1_T03_minus_C0_robust_autonomous_reserve_ratio", "C0"),
+    ("beta_1_1_T03_minus_C1_robust_autonomous_reserve_ratio", "C1"),
+)
+
 
 def canonical_sha256(value: object) -> str:
     payload = json.dumps(
@@ -36,6 +43,50 @@ def canonical_sha256(value: object) -> str:
 
 def load_audit() -> dict:
     return json.loads(AUDIT.read_text(encoding="utf-8"))
+
+
+def _average_ranks(values: list[float]) -> list[float]:
+    order = sorted(range(len(values)), key=lambda index: values[index])
+    ranks = [0.0] * len(values)
+    start = 0
+    while start < len(order):
+        end = start + 1
+        while end < len(order) and values[order[end]] == values[order[start]]:
+            end += 1
+        average = (start + 1 + end) / 2.0
+        for position in range(start, end):
+            ranks[order[position]] = average
+        start = end
+    return ranks
+
+
+def _wilcoxon_pratt_approx(differences: list[float]) -> dict[str, float]:
+    absolute = [abs(value) for value in differences]
+    ranks = _average_ranks(absolute)
+    positive = sum(rank for rank, value in zip(ranks, differences) if value > 0)
+    negative = sum(rank for rank, value in zip(ranks, differences) if value < 0)
+    count = len(differences)
+    zero_count = sum(value == 0 for value in differences)
+    null_mean = count * (count + 1) / 4.0 - zero_count * (zero_count + 1) / 4.0
+    variance_numerator = (
+        count * (count + 1) * (2 * count + 1)
+        - zero_count * (zero_count + 1) * (2 * zero_count + 1)
+    )
+    nonzero_tie_counts = {
+        value: absolute.count(value) for value in set(absolute) if value != 0
+    }
+    tie_correction = sum(size**3 - size for size in nonzero_tie_counts.values())
+    standard_error = math.sqrt((variance_numerator - tie_correction / 2.0) / 24.0)
+    z_statistic = (positive - null_mean) / standard_error
+    return {
+        "statistic": min(positive, negative),
+        "z_statistic": z_statistic,
+        "raw_two_sided_p_value": math.erfc(abs(z_statistic) / math.sqrt(2.0)),
+        "positive_rank_sum": positive,
+        "negative_rank_sum": negative,
+        "null_mean": null_mean,
+        "standard_error": standard_error,
+    }
 
 
 def test_formal_mechanism_run_identity_and_artifact_mapping_are_exact():
@@ -159,6 +210,158 @@ def test_c0_crn_plan_identity_and_cross_item_evidence_are_bounded():
             assert all(SHA256.fullmatch(item["finalized_plan_artifact_sha256"]) for item in plans.values())
         else:
             assert science["first_stage_plan_identities"] is None
+
+
+def test_frozen_primary_mechanism_statistics_recompute_from_ten_seed_pairs():
+    audit = load_audit()
+    analysis = audit["mechanism_statistical_analysis"]
+    runs = {
+        (row["seed"], row["beta"], row["profile_id"]): row
+        for row in audit["runs"]
+    }
+    seeds = list(range(2026081401, 2026081411))
+    assert analysis["status"] == "complete"
+    assert analysis["independent_unit"] == "formal_training_seed"
+    assert analysis["primary_outcome"] == "R_disc_robust_ratio"
+    assert analysis["paired_difference_direction"] == "T03_minus_comparator"
+    assert analysis["primary_beta"] == 1.1
+    assert analysis["bootstrap"] == {
+        "method": "paired_cluster_percentile",
+        "cluster_unit": "formal_training_seed",
+        "random_seed": 2026081499,
+        "resamples": 10000,
+        "confidence_level": 0.95,
+        "point_estimator": "arithmetic_mean_of_ten_seed_level_paired_differences",
+        "implementation": "numpy.random.Generator(numpy.random.PCG64(seed))",
+        "numpy_version": "2.5.1",
+        "index_sampling": "Generator.integers(0,10,size=(10000,10),endpoint=False)",
+        "percentile_implementation": "numpy.percentile(method=linear)",
+        "percentile_bounds": [2.5, 97.5],
+    }
+    assert analysis["wilcoxon_protocol"] == {
+        "test": "paired_two_sided_signed_rank",
+        "zero_method": "pratt",
+        "method": "approx",
+        "continuity_correction": False,
+        "all_zero_differences_rule": "statistic_zero_p_value_one",
+        "implementation": "project_audit_pratt_normal_approximation_v1",
+        "normal_tail_implementation": "math.erfc(abs(z)/sqrt(2))",
+    }
+    assert analysis["multiple_testing"] == {
+        "method": "holm",
+        "family_size": 2,
+        "familywise_alpha": 0.05,
+        "tie_order": "contrast_declaration_order",
+        "adjusted_p_value_rule": (
+            "cumulative_max_of_(family_size-rank+1)*raw_p_capped_at_one"
+        ),
+    }
+
+    raw_p_values = []
+    for observed, (contrast_id, comparator) in zip(
+        analysis["primary_contrasts"], PRIMARY_CONTRASTS, strict=True
+    ):
+        expected_pairs = []
+        differences = []
+        for seed in seeds:
+            treatment = runs[(seed, 1.1, "T03")]["science"]["R_disc_robust_ratio"]
+            baseline = runs[(seed, 1.1, comparator)]["science"]["R_disc_robust_ratio"]
+            difference = treatment - baseline
+            differences.append(difference)
+            expected_pairs.append({
+                "seed": seed,
+                "treatment_profile": "T03",
+                "comparator_profile": comparator,
+                "treatment_R_disc_robust_ratio": treatment,
+                "comparator_R_disc_robust_ratio": baseline,
+                "paired_difference": difference,
+            })
+        assert observed["contrast_id"] == contrast_id
+        assert observed["paired_seed_count"] == 10
+        assert observed["paired_seed_differences"] == expected_pairs
+        assert math.isclose(
+            observed["arithmetic_mean_effect"], statistics.mean(differences), abs_tol=1e-15
+        )
+        assert math.isclose(
+            observed["descriptive_median_effect"], statistics.median(differences), abs_tol=1e-15
+        )
+        generator = np.random.Generator(np.random.PCG64(2026081499))
+        values = np.asarray(differences, dtype=float)
+        bootstrap_means = values[
+            generator.integers(0, 10, size=(10000, 10), endpoint=False)
+        ].mean(axis=1)
+        expected_ci = np.percentile(
+            bootstrap_means, [2.5, 97.5], method="linear"
+        ).tolist()
+        assert np.allclose(observed["bootstrap_percentile_95_ci"], expected_ci, atol=1e-15)
+        expected_wilcoxon = _wilcoxon_pratt_approx(differences)
+        for field, value in expected_wilcoxon.items():
+            assert math.isclose(observed["wilcoxon"][field], value, abs_tol=1e-15)
+        raw_p_values.append(expected_wilcoxon["raw_two_sided_p_value"])
+
+    order = sorted(range(2), key=lambda index: (raw_p_values[index], index))
+    adjusted = [None, None]
+    running_maximum = 0.0
+    for rank, index in enumerate(order, start=1):
+        running_maximum = max(
+            running_maximum, min(1.0, (3 - rank) * raw_p_values[index])
+        )
+        adjusted[index] = running_maximum
+        observed = analysis["primary_contrasts"][index]["wilcoxon"]
+        assert observed["holm_rank"] == rank
+        assert math.isclose(observed["holm_adjusted_p_value"], adjusted[index], abs_tol=1e-15)
+        assert observed["holm_reject_at_familywise_alpha_0_05"] is (
+            adjusted[index] <= 0.05
+        )
+
+
+def test_secondary_mechanism_results_are_descriptive_and_not_cross_budget_effects():
+    audit = load_audit()
+    analysis = audit["mechanism_statistical_analysis"]
+    secondary = analysis["secondary_descriptive_unadjusted"]
+    runs = {
+        (row["seed"], row["beta"], row["profile_id"]): row
+        for row in audit["runs"]
+    }
+    seeds = list(range(2026081401, 2026081411))
+    assert secondary["inferential_status"] == (
+        "descriptive_unadjusted_no_cross_beta_effect_estimation"
+    )
+    assert secondary["cross_budget_effect_claim_permitted"] is False
+    beta_1_3 = secondary[
+        "beta_1_3_T03_minus_C0_robust_autonomous_reserve_ratio"
+    ]
+    expected_differences = [
+        {
+            "seed": seed,
+            "paired_difference": (
+                runs[(seed, 1.3, "T03")]["science"]["R_disc_robust_ratio"]
+                - runs[(seed, 1.3, "C0")]["science"]["R_disc_robust_ratio"]
+            ),
+        }
+        for seed in seeds
+    ]
+    assert beta_1_3["paired_seed_differences"] == expected_differences
+    values = [row["paired_difference"] for row in expected_differences]
+    assert math.isclose(beta_1_3["arithmetic_mean_effect"], statistics.mean(values), abs_tol=1e-15)
+    assert math.isclose(beta_1_3["descriptive_median_effect"], statistics.median(values), abs_tol=1e-15)
+    assert beta_1_3["substantive_activation_count_T03"] == 10
+
+    cross = secondary["beta_1_1_T03_cross_item_allocation_share_range"]
+    expected_cross = [
+        {
+            "seed": seed,
+            "item1_emergency_spend_share_range": runs[(seed, 1.1, "T03")][
+                "science"
+            ]["cross_item_allocation"]["item1_emergency_spend_share_range"],
+            "gate_passed": runs[(seed, 1.1, "T03")]["science"][
+                "cross_item_allocation"
+            ]["gate_passed"],
+        }
+        for seed in seeds
+    ]
+    assert cross["seed_level_values"] == expected_cross
+    assert cross["gate_passed_count"] == sum(row["gate_passed"] for row in expected_cross)
 
 
 def test_group_summaries_progress_and_stop_boundary_recompute():
