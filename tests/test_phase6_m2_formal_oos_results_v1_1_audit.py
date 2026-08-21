@@ -173,6 +173,71 @@ def test_execution_identity_artifacts_and_source_binding_are_exact() -> None:
     }
 
 
+def test_each_oos_plan_is_bound_to_the_reviewed_pr58_source_plan() -> None:
+    audit = _load()
+    source_audit = json.loads(SOURCE_AUDIT_PATH.read_text(encoding="utf-8"))
+    source_runs = {
+        row["run_id"]: row
+        for row in source_audit["runs"]
+        if row["beta"] == 1.1 and row["profile_id"] == "T03"
+    }
+    assert len(source_runs) == 10
+    assert {row["seed"] for row in source_runs.values()} == set(
+        range(2026081401, 2026081411)
+    )
+
+    test_scenario_hashes = set()
+    for row in audit["runs"]:
+        source = source_runs[row["source_mechanism_run_id"]]
+        assert source["run_id"] == row["source_mechanism_run_id"]
+        assert source["seed"] == row["training_seed"]
+        assert source["beta"] == row["beta"] == 1.1
+        assert source["profile_id"] == row["profile_id"] == "T03"
+        assert source["tier_id"] == row["tier_id"] == "M2F2"
+        assert source["artifacts"]["result_sha256"] == row[
+            "source_mechanism_result_sha256"
+        ]
+        assert source["science"]["joint_scenario_set_sha256"] == row[
+            "source_training_joint_scenario_set_sha256"
+        ]
+
+        source_plans = source["science"]["first_stage_plan_identities"]
+        assert set(source_plans) == set(STRATEGIES)
+        for strategy_id in STRATEGIES:
+            source_plan = source_plans[strategy_id]
+            observed = row["strategy_results"][strategy_id][
+                "source_plan_identity"
+            ]
+            assert source_plan["strategy_id"] == strategy_id
+            assert observed == {
+                "finalized_plan_artifact_sha256": source_plan[
+                    "finalized_plan_artifact_sha256"
+                ],
+                "regular_purchase_sha256": source_plan[
+                    "regular_purchase_sha256"
+                ],
+                "reserve_amount": source_plan["reserve_amount"],
+                "exact_training_objective": source_plan[
+                    "exact_training_objective"
+                ],
+                "training_joint_scenario_set_sha256": source_plan[
+                    "training_joint_scenario_set_sha256"
+                ],
+            }
+            assert source_plan["training_joint_scenario_set_sha256"] == row[
+                "source_training_joint_scenario_set_sha256"
+            ]
+
+        assert row["git_sha"] == audit["execution_source"]["git_sha"]
+        assert row["git_tree_sha"] == audit["execution_source"]["git_tree_sha"]
+        assert row["formal_OOS_orchestrator_sha256"] == audit[
+            "formal_OOS_orchestrator_sha256"
+        ]
+        test_scenario_hashes.add(row["test_joint_scenario_set_sha256"])
+
+    assert len(test_scenario_hashes) == 10
+
+
 def test_ten_runs_fifty_plans_and_source_plan_identities_recompute() -> None:
     audit = _load()
     runs = audit["runs"]
