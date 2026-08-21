@@ -60,14 +60,18 @@ def test_refreeze_namespace_is_isolated_and_old_evidence_is_rejected() -> None:
     assert approval["accept_prior_track_authorization"] is False
     assert audit["namespace_isolation"]["old_results_accepted"] is False
     assert audit["namespace_isolation"]["registry_or_projection_migration_allowed"] is False
-    # Before pilot authorization this root was absent.  A later results PR may
-    # legitimately populate only its isolated pilot namespace; the refreeze
-    # invariant is that no old evidence is migrated and no formal namespace is
-    # created by that pilot batch.
+    # Later reviewed batches may populate their isolated namespaces.  The
+    # refreeze invariant is that no old evidence is migrated and formal OOS is
+    # still absent after the mechanism-only batch.
     output_root = ROOT / config["output_root"]
     if output_root.exists():
-        assert {path.name for path in output_root.iterdir()} <= {"pilot"}
-        assert not (output_root / "formal").exists()
+        assert {path.name for path in output_root.iterdir()} <= {
+            "pilot", "formal", "formal_mechanism_logs",
+        }
+        formal_root = output_root / "formal"
+        if formal_root.exists():
+            assert {path.name for path in formal_root.iterdir()} <= {"mechanism"}
+            assert not (formal_root / "OOS").exists()
 
 
 def test_refreeze_preserves_complete_pilot_and_stop_boundary() -> None:
