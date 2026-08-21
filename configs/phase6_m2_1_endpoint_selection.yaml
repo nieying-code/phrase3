@@ -47,6 +47,18 @@ candidate_protocol:
     numerical_ratio_strictly_greater_than: 1.0e-4
     substantive_ratio_greater_than_or_equal_to: 0.01
     moderate_ratio_interval_inclusive: [0.05, 0.50]
+  minimum_endpoint_identity_binding:
+    also_serves_as_M2_control: true
+    generated_and_finalized_once: true
+    second_reoptimization_for_M2_control_forbidden: true
+    required_equal_fields:
+      - finalized_plan_artifact_sha256
+      - regular_purchase_sha256
+      - reserve_amount
+      - exact_training_objective
+      - training_joint_scenario_set_sha256
+    if_selected_M2_1_and_M2_reference_same_artifact: true
+    if_selected_test_difference_must_be_zero_within_frozen_tolerance: true
 
 validation_selection:
   validation_data_only: true
@@ -59,6 +71,19 @@ validation_selection:
   final_exact_tie_break_candidate_order: [minimum_endpoint, interval_midpoint, maximum_endpoint]
   service_level_role: secondary_report_only
   no_candidate_or_parameter_changes_after_validation: true
+  common_random_numbers:
+    generate_validation_scenario_set_once_per_seed_triplet: true
+    all_three_candidates_reference_same_finalized_scenario_artifact: true
+    required_equal_identity_fields:
+      - scenario_set_sha256
+      - scenario_order_sha256
+      - latent_draw_sha256
+      - demand_sha256
+      - emergency_price_sha256
+      - emergency_supply_sha256
+      - fulfillment_sha256
+    candidate_specific_random_draws_allowed: 0
+    mismatch_status: validation_common_random_number_mismatch
 
 seed_protocol:
   pilot_training_seeds: [2026090401, 2026090402, 2026090403]
@@ -94,6 +119,19 @@ formal_comparison:
   M2_1_treatment: validation_selected_candidate
   fixed_strategies_reoptimize_regular_procurement: true
   same_new_test_scenarios_within_seed_triplet: true
+  common_random_numbers:
+    generate_test_scenario_set_once_per_seed_triplet: true
+    all_six_strategies_reference_same_finalized_scenario_artifact: true
+    required_equal_identity_fields:
+      - scenario_set_sha256
+      - scenario_order_sha256
+      - latent_draw_sha256
+      - demand_sha256
+      - emergency_price_sha256
+      - emergency_supply_sha256
+      - fulfillment_sha256
+    strategy_specific_random_draws_allowed: 0
+    mismatch_status: test_common_random_number_mismatch
   test_scenario_reoptimization_forbidden: true
   primary_estimand: M2_1_minus_M2_oos_cvar95
   secondary_metrics: [mean_total_cost, service_level, shortage_probability, emergency_procurement_spend, cross_item_allocation]

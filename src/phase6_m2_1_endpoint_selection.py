@@ -46,6 +46,22 @@ TEST_STRATEGIES = (
     "fixed_autonomous_reserve_0_30",
     "fixed_autonomous_reserve_0_50",
 )
+SCENARIO_IDENTITY_FIELDS = (
+    "scenario_set_sha256",
+    "scenario_order_sha256",
+    "latent_draw_sha256",
+    "demand_sha256",
+    "emergency_price_sha256",
+    "emergency_supply_sha256",
+    "fulfillment_sha256",
+)
+PLAN_IDENTITY_FIELDS = (
+    "finalized_plan_artifact_sha256",
+    "regular_purchase_sha256",
+    "reserve_amount",
+    "exact_training_objective",
+    "training_joint_scenario_set_sha256",
+)
 PARENT_AUDITS = {
     "pr58_mechanism": (
         "docs/handoffs/2026-08-21_phase6_m2_formal_mechanism_results_v1_1_audit.json",
@@ -139,6 +155,16 @@ def load_m2_1_config(path: Path) -> dict[str, Any]:
         raise M21ProtocolError("M2.1 candidate set must contain exactly three frozen points")
     if candidate.get("every_candidate_fixes_reserve_and_reoptimizes_regular_procurement") is not True:
         raise M21ProtocolError("every M2.1 candidate must reoptimize regular procurement")
+    binding = candidate.get("minimum_endpoint_identity_binding") or {}
+    if (
+        binding.get("also_serves_as_M2_control") is not True
+        or binding.get("generated_and_finalized_once") is not True
+        or binding.get("second_reoptimization_for_M2_control_forbidden") is not True
+        or tuple(binding.get("required_equal_fields", ())) != PLAN_IDENTITY_FIELDS
+        or binding.get("if_selected_M2_1_and_M2_reference_same_artifact") is not True
+        or binding.get("if_selected_test_difference_must_be_zero_within_frozen_tolerance") is not True
+    ):
+        raise M21ProtocolError("minimum endpoint is not bound to the unique M2 control plan")
     selection = payload.get("validation_selection") or {}
     if tuple(selection.get("criterion_order", ())) != (
         "minimum_cvar95", "minimum_mean_total_cost", "minimum_reserve",
@@ -146,10 +172,28 @@ def load_m2_1_config(path: Path) -> dict[str, Any]:
         raise M21ProtocolError("M2.1 validation selection order changed")
     if selection.get("test_data_use_for_selection_forbidden") is not True:
         raise M21ProtocolError("M2.1 test data must not select a plan")
+    validation_crn = selection.get("common_random_numbers") or {}
+    if (
+        validation_crn.get("generate_validation_scenario_set_once_per_seed_triplet") is not True
+        or validation_crn.get("all_three_candidates_reference_same_finalized_scenario_artifact") is not True
+        or tuple(validation_crn.get("required_equal_identity_fields", ())) != SCENARIO_IDENTITY_FIELDS
+        or validation_crn.get("candidate_specific_random_draws_allowed") != 0
+        or validation_crn.get("mismatch_status") != "validation_common_random_number_mismatch"
+    ):
+        raise M21ProtocolError("M2.1 validation common-random-number identity changed")
     if tuple((payload.get("formal_comparison") or {}).get("strategies", ())) != TEST_STRATEGIES:
         raise M21ProtocolError("M2.1 formal comparator set changed")
     if (payload.get("formal_comparison") or {}).get("primary_estimand") != "M2_1_minus_M2_oos_cvar95":
         raise M21ProtocolError("M2.1 must have exactly the frozen CVaR95 primary estimand")
+    test_crn = (payload.get("formal_comparison") or {}).get("common_random_numbers") or {}
+    if (
+        test_crn.get("generate_test_scenario_set_once_per_seed_triplet") is not True
+        or test_crn.get("all_six_strategies_reference_same_finalized_scenario_artifact") is not True
+        or tuple(test_crn.get("required_equal_identity_fields", ())) != SCENARIO_IDENTITY_FIELDS
+        or test_crn.get("strategy_specific_random_draws_allowed") != 0
+        or test_crn.get("mismatch_status") != "test_common_random_number_mismatch"
+    ):
+        raise M21ProtocolError("M2.1 test common-random-number identity changed")
     _validate_seed_protocol(payload)
     boundaries = payload.get("execution_boundaries") or {}
     for field in (
@@ -264,6 +308,69 @@ def select_validation_candidate(
         "finalist_candidate_ids": finalists,
         "test_metrics_used": False,
     }
+
+
+def validate_shared_scenario_identity(
+    records: Mapping[str, Mapping[str, Any]], *, expected_ids: Sequence[str], phase: str,
+) -> dict[str, str]:
+    """Require all paired alternatives to reference one finalized scenario identity."""
+
+    if tuple(records) != tuple(expected_ids):
+        raise M21ProtocolError(f"{phase} alternative identity set mismatch")
+    baseline = {field: str(records[expected_ids[0]].get(field, "")) for field in SCENARIO_IDENTITY_FIELDS}
+    if any(len(value) != 64 for value in baseline.values()):
+        raise M21ProtocolError(f"{phase} scenario identity is incomplete")
+    for value in baseline.values():
+        try:
+            int(value, 16)
+        except ValueError as exc:
+            raise M21ProtocolError(f"{phase} scenario identity is not SHA-256") from exc
+    for identity in expected_ids[1:]:
+        observed = {field: str(records[identity].get(field, "")) for field in SCENARIO_IDENTITY_FIELDS}
+        if observed != baseline:
+            raise M21ProtocolError(f"{phase}_common_random_number_mismatch")
+    return baseline
+
+
+def validate_minimum_endpoint_control_binding(
+    minimum_candidate: Mapping[str, Any], m2_control: Mapping[str, Any],
+    *, selected_candidate_id: str | None = None,
+    selected_plan: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Bind M2 and the minimum endpoint to one immutable first-stage artifact."""
+
+    candidate = {field: minimum_candidate.get(field) for field in PLAN_IDENTITY_FIELDS}
+    control = {field: m2_control.get(field) for field in PLAN_IDENTITY_FIELDS}
+    if candidate != control:
+        raise M21ProtocolError("minimum endpoint and M2 control plan identity mismatch")
+    for field in ("finalized_plan_artifact_sha256", "regular_purchase_sha256", "training_joint_scenario_set_sha256"):
+        value = str(candidate.get(field, ""))
+        if len(value) != 64:
+            raise M21ProtocolError(f"minimum endpoint identity is incomplete: {field}")
+        try:
+            int(value, 16)
+        except ValueError as exc:
+            raise M21ProtocolError(f"minimum endpoint identity is not SHA-256: {field}") from exc
+    for field in ("reserve_amount", "exact_training_objective"):
+        value = float(candidate.get(field, math.nan))
+        if not math.isfinite(value) or value < 0.0:
+            raise M21ProtocolError(f"minimum endpoint identity has invalid {field}")
+    if selected_candidate_id == "minimum_endpoint":
+        if selected_plan is None or {
+            field: selected_plan.get(field) for field in PLAN_IDENTITY_FIELDS
+        } != candidate:
+            raise M21ProtocolError("selected minimum endpoint must reuse the M2 control artifact")
+    return candidate
+
+
+def validate_selected_minimum_test_difference(
+    *, selected_candidate_id: str, paired_difference: float, tolerance: float,
+) -> None:
+    values = (float(paired_difference), float(tolerance))
+    if not all(math.isfinite(value) for value in values) or values[1] < 0.0:
+        raise M21ProtocolError("selected-plan test difference evidence is invalid")
+    if selected_candidate_id == "minimum_endpoint" and abs(values[0]) > values[1]:
+        raise M21ProtocolError("selected minimum endpoint differs from its M2 control")
 
 
 def validate_parent_evidence(root: Path) -> dict[str, str]:

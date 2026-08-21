@@ -20,9 +20,9 @@ RUNNER = ROOT / m21.RUNNER_PATH
 APPROVAL = ROOT / m21.APPROVAL_PATH
 AUDIT = ROOT / "docs/handoffs/2026-08-21_phase6_m2_1_endpoint_selection_design_v1_0_audit.json"
 EXPECTED_FINGERPRINTS = {
-    "scientific_config_sha256": "c7579a56e04304c23e468eeea8e6322ec858ec44dc36ccc10190eae7e6e656f2",
-    "e3_component_sha256": "683e37138463c42a9e16caabf1b44ce25ea3345dfe06813b571cfb178b51e6e6",
-    "family_component_sha256": "2f0149fec5d4b7f551763019e3df60518285c21a799c4da05aaaa73daba43f9e",
+    "scientific_config_sha256": "6ae0e6623647f9d70bf7a6cdba6114585a1a4b72727cdd222025508b68829941",
+    "e3_component_sha256": "9697e08863336c3c4917eaabd5a9e7f32145d4cbfba57a78f04b51143883d279",
+    "family_component_sha256": "b9046cb7447612cc2c33d43f8e788d54130ef2bdc75f90005c4123979c32ed8f",
     "runner_config_sha256": "aeb4281753a938e61d03c4c537a126fb7d752e7df63620f1788f01f6b304fc62",
     "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
 }
@@ -44,10 +44,10 @@ def test_parent_evidence_and_design_artifacts_are_byte_locked() -> None:
         "branch": "agent/phase6-m2-1-endpoint-selection-design",
     }
     expected_artifacts = {
-        "config": (CONFIG, "101a634f8ae55b264828274582d8f223c1db89029001534eaaaa3c86419b0bb8"),
+        "config": (CONFIG, "75668fa7a4759d02f4325113aa5abd9ffaa0e1031ea435ef43fc130297700e5c"),
         "runner_config": (RUNNER, "aeb4281753a938e61d03c4c537a126fb7d752e7df63620f1788f01f6b304fc62"),
-        "approval": (APPROVAL, "60d5ef9d4b47c6594d7aba7a31946cb3fc9e2424663798794847e2c6eff7bff5"),
-        "protocol_module": (ROOT / "src/phase6_m2_1_endpoint_selection.py", "16f3d37999733f898b61c43dcb059c22d48adf4e1af61422cad2bcf67e52c103"),
+        "approval": (APPROVAL, "8ec9f6b935e092256636d20f28689889355817f7f0c3650975614cc3a104b824"),
+        "protocol_module": (ROOT / "src/phase6_m2_1_endpoint_selection.py", "b9f1ce9e450ac5e420a5eb8ef775ed57a016ff44285f349ae63afaf71e0d52cf"),
         "cli_guard": (ROOT / "src/run_phase6_m2_1_endpoint_selection.py", "f5389de11078bc21ea8f3484958a7f8df8b7d02c813b9fef8cddb04c5cff88bd"),
     }
     assert audit["artifact_sha256"] == {
@@ -150,14 +150,82 @@ def test_three_candidate_reserves_and_validation_only_lexicographic_selection() 
             m21.select_validation_candidate(tampered)
 
 
+def _scenario_identity(fill: str) -> dict[str, str]:
+    return {field: fill * 64 for field in m21.SCENARIO_IDENTITY_FIELDS}
+
+
+def _plan_identity(fill: str = "a") -> dict[str, object]:
+    return {
+        "finalized_plan_artifact_sha256": fill * 64,
+        "regular_purchase_sha256": "b" * 64,
+        "reserve_amount": 100.0,
+        "exact_training_objective": 1000.0,
+        "training_joint_scenario_set_sha256": "c" * 64,
+    }
+
+
+def test_validation_and_test_alternatives_share_one_scenario_identity() -> None:
+    identity = _scenario_identity("a")
+    validation = {candidate: dict(identity) for candidate in m21.CANDIDATE_IDS}
+    test = {strategy: dict(identity) for strategy in m21.TEST_STRATEGIES}
+    assert m21.validate_shared_scenario_identity(
+        validation, expected_ids=m21.CANDIDATE_IDS, phase="validation"
+    ) == identity
+    assert m21.validate_shared_scenario_identity(
+        test, expected_ids=m21.TEST_STRATEGIES, phase="test"
+    ) == identity
+    for field in m21.SCENARIO_IDENTITY_FIELDS:
+        tampered = {name: dict(row) for name, row in validation.items()}
+        tampered["interval_midpoint"][field] = "d" * 64
+        with pytest.raises(m21.M21ProtocolError, match="common_random_number_mismatch"):
+            m21.validate_shared_scenario_identity(
+                tampered, expected_ids=m21.CANDIDATE_IDS, phase="validation"
+            )
+        tampered_test = {name: dict(row) for name, row in test.items()}
+        tampered_test["fixed_autonomous_reserve_0_50"][field] = "e" * 64
+        with pytest.raises(m21.M21ProtocolError, match="common_random_number_mismatch"):
+            m21.validate_shared_scenario_identity(
+                tampered_test, expected_ids=m21.TEST_STRATEGIES, phase="test"
+            )
+
+
+def test_minimum_endpoint_is_the_unique_M2_control_plan() -> None:
+    identity = _plan_identity()
+    assert m21.validate_minimum_endpoint_control_binding(
+        identity, dict(identity), selected_candidate_id="minimum_endpoint",
+        selected_plan=dict(identity),
+    ) == identity
+    m21.validate_selected_minimum_test_difference(
+        selected_candidate_id="minimum_endpoint", paired_difference=0.0, tolerance=1.0e-8,
+    )
+    for field in m21.PLAN_IDENTITY_FIELDS:
+        tampered = dict(identity)
+        tampered[field] = 101.0 if field in {"reserve_amount", "exact_training_objective"} else "d" * 64
+        with pytest.raises(m21.M21ProtocolError, match="identity mismatch"):
+            m21.validate_minimum_endpoint_control_binding(identity, tampered)
+    with pytest.raises(m21.M21ProtocolError, match="must reuse"):
+        m21.validate_minimum_endpoint_control_binding(
+            identity, dict(identity), selected_candidate_id="minimum_endpoint",
+            selected_plan=_plan_identity("d"),
+        )
+    with pytest.raises(m21.M21ProtocolError, match="differs"):
+        m21.validate_selected_minimum_test_difference(
+            selected_candidate_id="minimum_endpoint", paired_difference=1.0e-5,
+            tolerance=1.0e-8,
+        )
+
+
 def test_config_tampering_is_rejected(tmp_path: Path) -> None:
     payload = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
     mutations = (
         lambda row: row["scientific_scope"].__setitem__("beta", 1.3),
         lambda row: row["candidate_protocol"].__setitem__("candidate_ids", ["minimum_endpoint"]),
+        lambda row: row["candidate_protocol"]["minimum_endpoint_identity_binding"].__setitem__("generated_and_finalized_once", False),
         lambda row: row["validation_selection"].__setitem__("criterion_order", ["minimum_mean_total_cost"]),
         lambda row: row["validation_selection"].__setitem__("test_data_use_for_selection_forbidden", False),
+        lambda row: row["validation_selection"]["common_random_numbers"].__setitem__("candidate_specific_random_draws_allowed", 1),
         lambda row: row["formal_comparison"].__setitem__("primary_estimand", "posthoc_metric"),
+        lambda row: row["formal_comparison"]["common_random_numbers"].__setitem__("all_six_strategies_reference_same_finalized_scenario_artifact", False),
         lambda row: row["execution_boundaries"].__setitem__("pilot_authorized", True),
     )
     for index, mutate in enumerate(mutations):
@@ -211,6 +279,13 @@ def test_audit_records_zero_execution_and_no_authorization() -> None:
     assert audit["status"] == "candidate_design_ready_for_review"
     assert audit["design"]["test_data_used_for_selection"] is False
     assert audit["design"]["primary_confirmatory_test_count"] == 1
+    assert audit["design"]["validation_candidates_share_one_scenario_identity_per_triplet"] is True
+    assert audit["design"]["test_strategies_share_one_scenario_identity_per_triplet"] is True
+    assert audit["design"]["scenario_identity_field_count"] == 7
+    assert audit["design"]["minimum_endpoint_is_unique_M2_control_artifact"] is True
+    assert audit["design"]["minimum_endpoint_plan_identity_field_count"] == 5
+    assert audit["design"]["selected_minimum_endpoint_reuses_M2_control_artifact"] is True
+    assert audit["CI"] == "recorded_in_pr_body"
     assert audit["execution_boundaries"] == {
         "scientific_runner_enabled": False,
         "pilot_authorized": False,
