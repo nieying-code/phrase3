@@ -1,0 +1,72 @@
+{
+  "audit_id": "phase6_m2_formal_oos_runner_v1_1",
+  "base": {
+    "pr58_merge_commit": "8b5bbb9d44c8f069f3b93627b50021c4bee6a676",
+    "pr58_audit_path": "docs/handoffs/2026-08-21_phase6_m2_formal_mechanism_results_v1_1_audit.json",
+    "pr58_audit_sha256": "bce5b075d352a4679b4371a073f5cc0a931a6b309b401318e9f4c38a8a7489a5",
+    "formal_mechanism_registry_sha256": "d418a1a10e9a995365f38f0110c682fb70e709a7deb8127ec039d5d9f0958eb3",
+    "formal_mechanism_progress_sha256": "5b02066db0a1bbe205042a9ab7abd454b678c81643e38c50459681e2ce5cab6e",
+    "formal_mechanism_orchestrator_sha256": "a09fd3a71bc04ac748fb85c6acbcec2a387a3e589ba9cdd23c7753090c2322f1",
+    "formal_mechanism_gate_passed": true,
+    "formal_OOS_authorized_by_pr58": false
+  },
+  "identity": {
+    "protocol": "phase6_m2_formal_extension_design_v1_1",
+    "namespace": "phase6_m2_formal_oos_v1_1",
+    "output_root": "outputs/phase6_m2_formal_oos_v1_1",
+    "formal_subdirectory": "formal/OOS",
+    "source_output_root": "outputs/phase6_m2_formal_extension_v1_1",
+    "source_subdirectory": "formal/mechanism",
+    "approval_status": "frozen_for_formal_oos_execution",
+    "explicit_cli_authorization_required": true
+  },
+  "design": {
+    "tier_id": "M2F2",
+    "beta": 1.1,
+    "profile_id": "T03",
+    "training_seeds": [2026081401, 2026081402, 2026081403, 2026081404, 2026081405, 2026081406, 2026081407, 2026081408, 2026081409, 2026081410],
+    "test_seeds": [2026081501, 2026081502, 2026081503, 2026081504, 2026081505, 2026081506, 2026081507, 2026081508, 2026081509, 2026081510],
+    "pairing": "same_list_position_one_to_one",
+    "strategies": ["endogenous_reserve", "zero_autonomous_reserve", "fixed_autonomous_reserve_0_10", "fixed_autonomous_reserve_0_30", "fixed_autonomous_reserve_0_50"],
+    "primary_run_count": 10,
+    "plan_count": 50,
+    "test_scenarios_per_plan": 2000,
+    "exact_recourse_evaluation_count": 100000,
+    "test_set_reoptimization_forbidden": true,
+    "common_test_scenarios_within_pair": true
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+    "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+    "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+    "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
+    "formal_OOS_orchestrator_sha256": "14e3c43cb986ad0f8a41ab9f833796805bac87c91a7fa3011ddfbcb1af50d475"
+  },
+  "safety": {
+    "full_primary_batch_required": true,
+    "strictly_serial": true,
+    "empty_output_namespace_required": true,
+    "immutable_run_ids": true,
+    "diagnostic_retry_requires_new_run_id_and_parent": true,
+    "failed_primary_permanently_blocks_gate": true,
+    "reviewed_mechanism_evidence_is_read_only": true,
+    "source_plan_identity_cross_checked_against_pr58": true,
+    "bounded_status_bytes": 16384,
+    "algorithm_performance_authorized": false
+  },
+  "execution_counts": {
+    "formal_OOS_primary_runs": 0,
+    "formal_OOS_plans": 0,
+    "formal_OOS_recourse_evaluations": 0,
+    "algorithm_performance_runs": 0,
+    "M0_E3_runs": 0
+  },
+  "local_validation": {
+    "syntax": "passed",
+    "focused_tests": "recorded_in_pr_body",
+    "full_regression": "recorded_in_pr_body",
+    "git_diff_check": "recorded_in_pr_body"
+  },
+  "CI": "recorded_in_pr_body"
+}
