@@ -90,6 +90,7 @@ def test_all_new_seed_sets_are_exact_disjoint_and_unused() -> None:
                         "phase6_m2_formal_extension",
                         "phase6_m2_formal_mechanism",
                         "phase6_m2_formal_oos",
+                        "phase6_m2_oos_lightweight_diagnostics",
                     )
             ):
                 continue
