@@ -3,7 +3,11 @@ import json
 import math
 from pathlib import Path
 
-from src.phase6_m2_1_endpoint_selection import CANDIDATE_IDS, select_validation_candidate
+from src.phase6_m2_1_endpoint_selection import (
+    CANDIDATE_IDS,
+    PLAN_IDENTITY_FIELDS,
+    select_validation_candidate,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -148,6 +152,19 @@ def test_artifact_science_mappings_aggregates_and_gate_close():
     assert projection["required_primary_run_count"] == projection["verified_primary_run_count"] == 10
     assert projection["validation_candidate_plan_count"] == 30
     assert projection["validation_exact_recourse_evaluation_count"] == 60000
+    selected_mapping = {
+        row["case_id"]: {
+            field: row["candidates"][row["selected_candidate_id"]]["plan_identity"][field]
+            for field in PLAN_IDENTITY_FIELDS
+        }
+        for row in audit["runs"]
+    }
+    assert projection["selected_candidate_ids"] == [
+        row["selected_candidate_id"] for row in audit["runs"]
+    ]
+    assert _canonical_sha(selected_mapping) == projection["selected_plan_identity_mapping_sha256"] == (
+        "df515f14931e903902f15e2089b21a23ca27bcfca2c4162e9d74e0b3c631b831"
+    )
     assert projection["formal_training_validation_gate_passed"] is True
     assert projection["selected_plan_freeze_authorized"] is False
     assert projection["formal_test_authorized"] is False
