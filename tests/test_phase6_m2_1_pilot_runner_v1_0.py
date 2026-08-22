@@ -66,7 +66,16 @@ def test_runner_artifacts_parent_evidence_and_fingerprints_are_locked() -> None:
         "formal_extension_config_sha256": _sha256(ROOT / pilot.FORMAL_BASE_CONFIG_PATH),
         "confirmation_config_sha256": _sha256(ROOT / "configs/phase6_m2_two_item_confirmation.yaml"),
     }
-    assert pilot.pilot_fingerprints(ROOT, CONFIG, RUNNER) == EXPECTED_FINGERPRINTS
+    actual = pilot.pilot_fingerprints(ROOT, CONFIG, RUNNER)
+    for field in (
+        "scientific_config_sha256", "e3_component_sha256",
+        "family_component_sha256", "runner_config_sha256",
+    ):
+        assert actual[field] == EXPECTED_FINGERPRINTS[field]
+    # CI hardware is intentionally different from the approved experiment
+    # machine.  Actual pilot preflight still compares all five fields against
+    # approval and therefore cannot run on CI or a different workstation.
+    assert len(actual["environment_sha256"]) == 64
     assert yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))["approved_fingerprints"] == EXPECTED_FINGERPRINTS
     assert audit["fingerprints"] == EXPECTED_FINGERPRINTS
 
