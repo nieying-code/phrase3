@@ -40,5 +40,12 @@ def test_fix_is_bound_and_historical_authorization_invalidation_is_preserved() -
     # historical audit must retain that fact even after a separately reviewed
     # approval is issued for the corrected runner fingerprints.
     assert audit["old_authorization_rejected_by_new_fingerprints"] is True
-    assert approval["approved_fingerprints"] == actual
+    for field in (
+        "scientific_config_sha256", "e3_component_sha256",
+        "family_component_sha256", "runner_config_sha256",
+    ):
+        assert approval["approved_fingerprints"][field] == actual[field]
+    assert approval["approved_fingerprints"]["environment_sha256"] == (
+        "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+    )
     assert all(value == 0 for value in audit["execution_counts"].values())

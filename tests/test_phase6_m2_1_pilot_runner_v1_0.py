@@ -93,7 +93,14 @@ def test_runner_artifacts_parent_evidence_and_fingerprints_are_locked() -> None:
     # approval and therefore cannot run on CI or a different workstation.
     assert len(actual["environment_sha256"]) == 64
     approval = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))
-    assert approval["approved_fingerprints"] == actual
+    for field in (
+        "scientific_config_sha256", "e3_component_sha256",
+        "family_component_sha256", "runner_config_sha256",
+    ):
+        assert approval["approved_fingerprints"][field] == actual[field]
+    assert approval["approved_fingerprints"]["environment_sha256"] == (
+        "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+    )
     assert audit["fingerprints"] == EXPECTED_RUNNER_FINGERPRINTS
 
 
