@@ -80,7 +80,7 @@ compute_gate:
 
 execution_boundaries:
   runner_implemented: true
-  pilot_authorized: false
+  pilot_authorized: true
   formal_training_authorized: false
   formal_validation_authorized: false
   selected_plan_freeze_authorized: false

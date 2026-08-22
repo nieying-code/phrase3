@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 
 import pytest
 import yaml
@@ -21,10 +22,18 @@ APPROVAL = ROOT / pilot.APPROVAL_PATH
 DESIGN = ROOT / pilot.DESIGN_CONFIG_PATH
 AUDIT = ROOT / "docs/handoffs/2026-08-22_phase6_m2_1_pilot_runner_v1_0_audit.json"
 SHA = "a" * 64
-EXPECTED_FINGERPRINTS = {
+PR63_MERGE_COMMIT = "662f8b65aa7b42ab997badee37f1ed25ccc014d4"
+EXPECTED_RUNNER_FINGERPRINTS = {
     "scientific_config_sha256": "91e20926b71287e61ea0adcd95c4f6c2f67c452c678c2a7bd380c02c27515c71",
     "e3_component_sha256": "398415ae6fd87228247eb44f65729ea191db35840e094e13dad44912e40c2d04",
     "family_component_sha256": "9dd020fe5b48eb02937b1a086cb3ad75ceb7127766b0c998aacf17bcbb31cf05",
+    "runner_config_sha256": "b0f975506ac5de4262987f40bbee50af60b9343730fff9a37139dc7068ed8bc2",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
+}
+EXPECTED_AUTHORIZED_FINGERPRINTS = {
+    "scientific_config_sha256": "1cb170cda4ea880482208419be5fe61218b4bc113eb38a756164ac9ca0a62a60",
+    "e3_component_sha256": "987755f9df12339008f057fa5323406dfa41a0331bdc14b790df9a6d2220b1a1",
+    "family_component_sha256": "c32e61061da0fea90ea195546a9b7550d919a4ba96c1d3b528cbf2040905e531",
     "runner_config_sha256": "b0f975506ac5de4262987f40bbee50af60b9343730fff9a37139dc7068ed8bc2",
     "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
 }
@@ -40,6 +49,14 @@ def _fingerprints() -> dict[str, str]:
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _historical_sha256(relative: str) -> str:
+    completed = subprocess.run(
+        ["git", "show", f"{PR63_MERGE_COMMIT}:{relative}"],
+        cwd=ROOT, check=True, capture_output=True,
+    )
+    return hashlib.sha256(completed.stdout).hexdigest()
 
 
 def test_runner_artifacts_parent_evidence_and_fingerprints_are_locked() -> None:
@@ -58,8 +75,9 @@ def test_runner_artifacts_parent_evidence_and_fingerprints_are_locked() -> None:
         "status_module": (ROOT / "src/phase6_m2_1_pilot_status.py", "e913f26a12890ea192bfd6ce292f948b990c53464d6005a4c87da35a167b20a3"),
     }
     assert audit["artifact_sha256"] == {name: expected for name, (_, expected) in artifacts.items()}
-    for path, expected in artifacts.values():
-        assert _sha256(path) == expected
+    for name, (path, expected) in artifacts.items():
+        relative = path.relative_to(ROOT).as_posix()
+        assert _historical_sha256(relative) == expected, name
     assert audit["parent_evidence"] == {
         "design_config_sha256": _sha256(DESIGN),
         "pr62_audit_sha256": _sha256(ROOT / "docs/handoffs/2026-08-21_phase6_m2_1_endpoint_selection_design_v1_0_audit.json"),
@@ -71,13 +89,13 @@ def test_runner_artifacts_parent_evidence_and_fingerprints_are_locked() -> None:
         "scientific_config_sha256", "e3_component_sha256",
         "family_component_sha256", "runner_config_sha256",
     ):
-        assert actual[field] == EXPECTED_FINGERPRINTS[field]
+        assert actual[field] == EXPECTED_AUTHORIZED_FINGERPRINTS[field]
     # CI hardware is intentionally different from the approved experiment
     # machine.  Actual pilot preflight still compares all five fields against
     # approval and therefore cannot run on CI or a different workstation.
     assert len(actual["environment_sha256"]) == 64
-    assert yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))["approved_fingerprints"] == EXPECTED_FINGERPRINTS
-    assert audit["fingerprints"] == EXPECTED_FINGERPRINTS
+    assert yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))["approved_fingerprints"] == EXPECTED_AUTHORIZED_FINGERPRINTS
+    assert audit["fingerprints"] == EXPECTED_RUNNER_FINGERPRINTS
 
 
 def _scenario_identity(fill: str = "a") -> dict[str, str]:
@@ -204,13 +222,27 @@ def test_frozen_pilot_is_exactly_three_indivisible_triplets() -> None:
     assert runner["limits"]["threads"] == 1
 
 
-def test_current_revision_cannot_execute_or_reach_fingerprints(monkeypatch) -> None:
-    monkeypatch.setattr(pilot, "pilot_fingerprints", lambda *args, **kwargs: pytest.fail("fingerprints reached"))
-    with pytest.raises(PermissionError, match="authorization is false"):
+def test_authorized_revision_still_requires_cli_and_strict_preflight(monkeypatch) -> None:
+    with pytest.raises(PermissionError, match="authorize-pilot"):
         pilot.validate_preflight(
             root=ROOT, pilot_path=CONFIG, runner_path=RUNNER,
-            approval_path=APPROVAL, authorize=True,
+            approval_path=APPROVAL, authorize=False,
         )
+    monkeypatch.setattr(
+        pilot, "pilot_fingerprints", lambda *args, **kwargs: EXPECTED_AUTHORIZED_FINGERPRINTS,
+    )
+    monkeypatch.setattr(pilot, "validate_execution_source", lambda *args, **kwargs: {
+        "commit_sha": "a" * 40, "tree_sha": "b" * 40,
+    })
+    monkeypatch.setattr(pilot, "capture_runtime_context", lambda **kwargs: {
+        "solver": {"selected": "gurobi_direct", "version": "13.0.2", "threads": 1},
+    })
+    monkeypatch.setattr(pilot, "validate_locked_environment", lambda root: {})
+    preflight = pilot.validate_preflight(
+        root=ROOT, pilot_path=CONFIG, runner_path=RUNNER,
+        approval_path=APPROVAL, authorize=True,
+    )
+    assert preflight["fingerprints"] == EXPECTED_AUTHORIZED_FINGERPRINTS
 
 
 @pytest.mark.parametrize("target", ["parent", "base", "seed", "count", "identity", "gate", "formal"])
@@ -571,7 +603,7 @@ def test_revision_records_zero_science_execution() -> None:
     config = pilot.load_pilot_config(CONFIG)
     approval = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))
     assert config["execution_boundaries"] == {
-        "runner_implemented": True, "pilot_authorized": False,
+        "runner_implemented": True, "pilot_authorized": True,
         "formal_training_authorized": False, "formal_validation_authorized": False,
         "selected_plan_freeze_authorized": False, "formal_test_authorized": False,
         "formal_extension_authorized": False, "scenario_generation_count": 0,
@@ -579,6 +611,13 @@ def test_revision_records_zero_science_execution() -> None:
         "algorithm_performance_runs": 0, "M0_E3_runs": 0,
     }
     assert all(value == 0 for value in approval["execution_counts_in_this_revision"].values())
+    assert approval["status"] == "approved_for_pilot_execution"
+    assert approval["pilot_authorized"] is True
+    assert all(approval[field] is False for field in (
+        "formal_training_authorized", "formal_validation_authorized",
+        "selected_plan_freeze_authorized", "formal_test_authorized",
+        "formal_extension_authorized", "accept_M2_authorization",
+    ))
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
     assert all(value == 0 for value in audit["execution_counts"].values())
     assert audit["frozen_pilot"]["primary_run_count"] == 3
