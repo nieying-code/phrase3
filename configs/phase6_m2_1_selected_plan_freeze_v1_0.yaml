@@ -1,0 +1,193 @@
+protocol_id: phase6_m2_1_selected_plan_freeze_v1_0
+version: 1.0.0
+status: frozen_selected_plans_pending_formal_test_runner_review
+runner_namespace: phase6_m2_1_formal_test_v1_0
+output_root: outputs/phase6_m2_1_formal_test_v1_0
+frozen_on: '2026-08-22'
+reviewed_training_validation_evidence:
+  pr69_audit_path: docs/handoffs/2026-08-22_phase6_m2_1_formal_training_validation_results_v1_0_audit.json
+  pr69_audit_sha256: 0bbda4798caef1b7115de4f04ca46b0a716fd6f2a0a69d2d6d99498a878247b9
+  training_validation_registry_sha256: 75c49b0f58d03a40fc87aa0ae638a9ae6faf50e55c078876d21fc4742b033cac
+  training_validation_projection_sha256: dca3cd29946bd53aae91b387760c51044b32b9d910d64d27030c31bb05d74295
+  selected_plan_identity_mapping_sha256: df515f14931e903902f15e2089b21a23ca27bcfca2c4162e9d74e0b3c631b831
+  required_gate: formal_training_validation_gate_passed
+  required_gate_value: true
+scientific_scope:
+  tier_id: M2F2
+  beta: 1.1
+  profile_id: T03
+  formal_test_scenario_count_per_triplet: 2000
+  formal_test_triplet_count: 10
+  strategy_ids:
+  - M2_minimum_endpoint
+  - M2_1_validation_selected_endpoint
+  - zero_autonomous_reserve
+  - fixed_autonomous_reserve_0_10
+  - fixed_autonomous_reserve_0_30
+  - fixed_autonomous_reserve_0_50
+  formal_test_plan_count: 60
+  formal_test_exact_recourse_evaluation_count: 120000
+  test_data_use_for_selection_forbidden: true
+  selected_plans_are_immutable: true
+  M2_control_uses_minimum_endpoint_from_same_source_run: true
+  fixed_strategy_plans_use_same_finalized_training_run_artifacts: true
+  all_six_strategies_share_one_formal_test_scenario_set_per_triplet: true
+selected_plans:
+- triplet_position: 1
+  case_id: M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301
+  source_run_id: m21formal_tv_v10_20260822_M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301
+  training_seed: 2026090101
+  validation_seed: 2026090201
+  formal_test_seed: 2026090301
+  selected_candidate_id: maximum_endpoint
+  plan_identity:
+    finalized_plan_artifact_sha256: e44dd6ba03e124abda48c13adf4dbbf5cae0a411c7e58e7184f38fe655b5611a
+    regular_purchase_sha256: bcb2483050cf05f203d18af6939176a7850cf00d6ebf245aa4bf1e20f787999b
+    reserve_amount: 190.90496136514952
+    exact_training_objective: 44320.462023745444
+    training_joint_scenario_set_sha256: de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805
+- triplet_position: 2
+  case_id: M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302
+  source_run_id: m21formal_tv_v10_20260822_M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302
+  training_seed: 2026090102
+  validation_seed: 2026090202
+  formal_test_seed: 2026090302
+  selected_candidate_id: maximum_endpoint
+  plan_identity:
+    finalized_plan_artifact_sha256: d8d23271139ec96432f32473170686fd5ef6e9b8e75c7d59235c6cf0572ca241
+    regular_purchase_sha256: 795ee31dd3c688d7be90189f7874bdf24ba0e2e1c2b802f88fa00fa13b1305a8
+    reserve_amount: 575.8642970032402
+    exact_training_objective: 42206.10918594464
+    training_joint_scenario_set_sha256: 89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2
+- triplet_position: 3
+  case_id: M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303
+  source_run_id: m21formal_tv_v10_20260822_M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303
+  training_seed: 2026090103
+  validation_seed: 2026090203
+  formal_test_seed: 2026090303
+  selected_candidate_id: maximum_endpoint
+  plan_identity:
+    finalized_plan_artifact_sha256: a3bb0aaa15db0221c73f97de1444e5c5154ad8c89c76a678e7c1d25197a233f9
+    regular_purchase_sha256: 63a7780bb11a64c4b52d03a013fb33792b0ee57c2211ef58a78d6e368d8ee75b
+    reserve_amount: 75.97609385065192
+    exact_training_objective: 52726.10005790475
+    training_joint_scenario_set_sha256: 214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1
+- triplet_position: 4
+  case_id: M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304
+  source_run_id: m21formal_tv_v10_20260822_M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304
+  training_seed: 2026090104
+  validation_seed: 2026090204
+  formal_test_seed: 2026090304
+  selected_candidate_id: maximum_endpoint
+  plan_identity:
+    finalized_plan_artifact_sha256: 895ccaefa2b3d3503191fe8a012e9b3b4749a8e77a7e7dba33d06e8b09c3e5f1
+    regular_purchase_sha256: 420643947e459881de7e20033f37ef62e987929084cca2fdf57816289f59830c
+    reserve_amount: 472.8390387721867
+    exact_training_objective: 34595.241515216316
+    training_joint_scenario_set_sha256: aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d
+- triplet_position: 5
+  case_id: M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305
+  source_run_id: m21formal_tv_v10_20260822_M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305
+  training_seed: 2026090105
+  validation_seed: 2026090205
+  formal_test_seed: 2026090305
+  selected_candidate_id: maximum_endpoint
+  plan_identity:
+    finalized_plan_artifact_sha256: 557f7ed9616f8c7d0ded27d520d9608159b6961914934cd667ef59e06a9fb56b
+    regular_purchase_sha256: 4809a98f76cf9870f4cf7870e18025a463d2ea29127422b2b442024b1c1ee3d0
+    reserve_amount: 130.66323101355226
+    exact_training_objective: 50503.099767540305
+    training_joint_scenario_set_sha256: 04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f
+- triplet_position: 6
+  case_id: M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306
+  source_run_id: m21formal_tv_v10_20260822_M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306
+  training_seed: 2026090106
+  validation_seed: 2026090206
+  formal_test_seed: 2026090306
+  selected_candidate_id: minimum_endpoint
+  plan_identity:
+    finalized_plan_artifact_sha256: d2bce8f0488b5dde935ef53092b1681ef75fd7206365750f7408ca612cd707a3
+    regular_purchase_sha256: a105a7416cdffb2c6f0df5dec05beea101c9ee7a0bce32d157bd6ce39adf0410
+    reserve_amount: 176.6452464525188
+    exact_training_objective: 38452.531483792634
+    training_joint_scenario_set_sha256: 5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e
+- triplet_position: 7
+  case_id: M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307
+  source_run_id: m21formal_tv_v10_20260822_M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307
+  training_seed: 2026090107
+  validation_seed: 2026090207
+  formal_test_seed: 2026090307
+  selected_candidate_id: maximum_endpoint
+  plan_identity:
+    finalized_plan_artifact_sha256: f2b58e91e81cc6b955f7bacd0355148ebe5d6feaaa68d7862b9ee93b074c7e60
+    regular_purchase_sha256: f9cc65d7d698102043468732ba07f2e5dba62e97021e7f3a2564289e30d5fcc3
+    reserve_amount: 349.5152696754967
+    exact_training_objective: 41578.899067760576
+    training_joint_scenario_set_sha256: eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2
+- triplet_position: 8
+  case_id: M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308
+  source_run_id: m21formal_tv_v10_20260822_M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308
+  training_seed: 2026090108
+  validation_seed: 2026090208
+  formal_test_seed: 2026090308
+  selected_candidate_id: maximum_endpoint
+  plan_identity:
+    finalized_plan_artifact_sha256: 83187dc5ad19f76ab479c1de9860ea2c4e916ba717406fe3e3bf897ec3a5344c
+    regular_purchase_sha256: d7770e16d76e157acd2532b14f18f768908109c9a3b9c049e6c688ed9d1e0d46
+    reserve_amount: 0.004336668196115346
+    exact_training_objective: 51945.940783293
+    training_joint_scenario_set_sha256: cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76
+- triplet_position: 9
+  case_id: M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309
+  source_run_id: m21formal_tv_v10_20260822_M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309
+  training_seed: 2026090109
+  validation_seed: 2026090209
+  formal_test_seed: 2026090309
+  selected_candidate_id: minimum_endpoint
+  plan_identity:
+    finalized_plan_artifact_sha256: f7f60a36f648cc7404390a5f4e9ee76ebe61f4f2c03d427795727a2a90ca04a1
+    regular_purchase_sha256: f15e0e7d1f517f43a7f547dcdee9a1ba4968a68a8427e5fc552d0d49a4acb84f
+    reserve_amount: 0.0
+    exact_training_objective: 46578.03480957108
+    training_joint_scenario_set_sha256: 855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad
+- triplet_position: 10
+  case_id: M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310
+  source_run_id: m21formal_tv_v10_20260822_M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310
+  training_seed: 2026090110
+  validation_seed: 2026090210
+  formal_test_seed: 2026090310
+  selected_candidate_id: maximum_endpoint
+  plan_identity:
+    finalized_plan_artifact_sha256: 1b9b7719f75946d8970127695ccdf0899adbb52baacc92627278f8390d91b398
+    regular_purchase_sha256: ba2068b36f8e0441f9f43e7dcbef4bcdf5ff2cf090bd7b760a0c6a2f7f90540a
+    reserve_amount: 0.03625505587531532
+    exact_training_objective: 41217.07946465773
+    training_joint_scenario_set_sha256: da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2
+statistical_protocol:
+  primary_estimand: M2_1_minus_M2_oos_cvar95
+  independent_unit: formal_training_validation_test_seed_triplet
+  independent_unit_count: 10
+  bootstrap_method: paired_cluster_percentile
+  bootstrap_random_seed: 2026090999
+  bootstrap_resamples: 10000
+  confidence_level: 0.95
+  point_estimator: arithmetic_mean_of_ten_seed_triplet_paired_differences
+  primary_support_rule: paired_mean_below_zero_and_two_sided_95pct_bootstrap_upper_below_zero
+  wilcoxon:
+    test: paired_two_sided_signed_rank
+    zero_method: pratt
+    method: approx
+    correction: false
+    role: supportive
+  secondary_metrics_do_not_select_or_gate_acceptance: true
+execution_boundaries:
+  selected_plan_freeze_authorized: true
+  formal_test_runner_implemented: false
+  formal_test_authorized: false
+  formal_extension_authorized: false
+  formal_test_scenario_generations: 0
+  formal_test_runs: 0
+  algorithm_performance_runs: 0
+  M0_E3_runs: 0
+  next_decision: permit_separate_formal_test_runner_review_PR_only
+
