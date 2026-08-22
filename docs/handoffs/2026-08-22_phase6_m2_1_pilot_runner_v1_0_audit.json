@@ -1,0 +1,74 @@
+{
+  "schema_version": "phase6_m2_1_pilot_runner_v1_0",
+  "created_on": "2026-08-22",
+  "status": "runner_ready_pending_review_execution_unauthorized",
+  "base": {
+    "pr62_merge_commit": "770c863d69ba37ba858b00931310f94a9fb84e77",
+    "pr62_merge_tree": "043de6a433376928e9544c6e2d7784811a37a7d2",
+    "branch": "agent/phase6-m2-1-pilot-runner"
+  },
+  "parent_evidence": {
+    "design_config_sha256": "75668fa7a4759d02f4325113aa5abd9ffaa0e1031ea435ef43fc130297700e5c",
+    "pr62_audit_sha256": "724f6aad499fb4d39a27a17b9b5f300410c809a4c3aa3dc03494468ac2d31a9d",
+    "formal_extension_config_sha256": "e3eb0ae4c79e9e0859ecc33e4707aecc7ce1a7a1aed3166453f8af2ed2db6792",
+    "confirmation_config_sha256": "d6e28d2171aceacd750a74bcc58a01c3c7383ffdab7ce7fca53e7451fe5f39a5"
+  },
+  "artifact_sha256": {
+    "pilot_config": "f593c2469ee88ba49098e96c2e42354af74ae7f0d8cea59d15a3d1f8b4aa8fbf",
+    "runner_config": "b0f975506ac5de4262987f40bbee50af60b9343730fff9a37139dc7068ed8bc2",
+    "approval": "e96f62f58cdca24e372b0bbf6bcefd3b2c9ae9250250bc2c98cd117add3855d8",
+    "runner_module": "1cc65ea38f4c51e145501eca1b80ae3a42346db1dc83310a0623d07400941c67",
+    "cli": "415759c084400c256440a9634ac10b54b98d829ec01a0ba32140831cce7609c7",
+    "status_module": "e913f26a12890ea192bfd6ce292f948b990c53464d6005a4c87da35a167b20a3"
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "91e20926b71287e61ea0adcd95c4f6c2f67c452c678c2a7bd380c02c27515c71",
+    "e3_component_sha256": "398415ae6fd87228247eb44f65729ea191db35840e094e13dad44912e40c2d04",
+    "family_component_sha256": "9dd020fe5b48eb02937b1a086cb3ad75ceb7127766b0c998aacf17bcbb31cf05",
+    "runner_config_sha256": "b0f975506ac5de4262987f40bbee50af60b9343730fff9a37139dc7068ed8bc2",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "frozen_pilot": {
+    "primary_run_count": 3,
+    "training_validation_test_triplets": [
+      [2026090401, 2026090501, 2026090701],
+      [2026090402, 2026090502, 2026090702],
+      [2026090403, 2026090503, 2026090703]
+    ],
+    "validation_candidate_plan_count": 9,
+    "validation_exact_recourse_evaluation_count": 18000,
+    "test_probe_triplet_position": 1,
+    "test_probe_plan_count": 6,
+    "test_probe_exact_recourse_evaluation_count": 12000,
+    "test_probe_strategies_evaluated_independently": true,
+    "validation_shared_scenario_identity_field_count": 7,
+    "test_shared_scenario_identity_field_count": 7,
+    "minimum_endpoint_is_unique_M2_control_artifact": true,
+    "test_data_used_for_selection": false
+  },
+  "safety": {
+    "strictly_serial": true,
+    "full_primary_batch_required": true,
+    "run_ids_immutable": true,
+    "diagnostic_parent_required": true,
+    "failure_stops_batch": true,
+    "native_solver_timeouts_are_immutable_timeout": true,
+    "training_hard_deadline_seconds": 1800,
+    "solver_limit_capped_by_remaining_training_seconds": true,
+    "bounded_status_bytes": 16384,
+    "formal_extension_authorized": false
+  },
+  "execution_counts": {
+    "pilot_primary_runs": 0,
+    "validation_candidate_plans": 0,
+    "validation_recourse_evaluations": 0,
+    "test_probe_plans": 0,
+    "test_probe_recourse_evaluations": 0,
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0,
+    "formal_runs": 0,
+    "algorithm_performance_runs": 0,
+    "M0_E3_runs": 0
+  },
+  "CI": "recorded_in_pr_body"
+}
