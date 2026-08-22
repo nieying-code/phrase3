@@ -1,0 +1,72 @@
+protocol_id: phase6_m2_1_formal_training_validation_v1_0
+version: 1.0.0
+status: frozen_for_formal_training_validation_execution
+runner_namespace: phase6_m2_1_formal_training_validation_v1_0
+output_root: outputs/phase6_m2_1_formal_training_validation_v1_0
+initial_draft_on: 2026-08-22
+revised_on: 2026-08-22
+
+frozen_design:
+  path: configs/phase6_m2_1_endpoint_selection.yaml
+  sha256: 75668fa7a4759d02f4325113aa5abd9ffaa0e1031ea435ef43fc130297700e5c
+  protocol_id: phase6_m2_1_endpoint_selection_design_v1_0
+
+reviewed_pilot_evidence:
+  pr67_merge_commit: 5d40f93f1cf323501941343b34592053a26cccef
+  audit_path: docs/handoffs/2026-08-22_phase6_m2_1_endpoint_selection_pilot_results_v1_0_audit.json
+  audit_sha256: fe63e0e8965503eceb1e0ec99f9e9f9906de322a756e5a3e9fcfbf6f7ddee74b
+  registry_path: outputs/phase6_m2_1_endpoint_selection_pilot_v1_0/pilot/pilot_run_registry.csv
+  registry_sha256: 557ea06ea074a4625d0c89524080c3a38f9cff2d80c62bd9e896bb8c2259f553
+  projection_path: outputs/phase6_m2_1_endpoint_selection_pilot_v1_0/pilot/pilot_projection.json
+  projection_sha256: 42200d72ee02a304383f3d04a0f7749b29db5df1d5994b385dbfa1b256e5f058
+  required_primary_runs: 3
+  required_validation_evaluations: 18000
+  required_test_probe_evaluations: 12000
+  pilot_compute_gate_passed: true
+
+scientific_base:
+  formal_extension_config: configs/phase6_m2_formal_extension.yaml
+  formal_extension_config_sha256: e3eb0ae4c79e9e0859ecc33e4707aecc7ce1a7a1aed3166453f8af2ed2db6792
+  confirmation_config: configs/phase6_m2_two_item_confirmation.yaml
+  confirmation_config_sha256: d6e28d2171aceacd750a74bcc58a01c3c7383ffdab7ce7fca53e7451fe5f39a5
+  model: unchanged_M2_supply_disruption
+  tier_id: M2F2
+  beta: 1.1
+  profile_id: T03
+  training_scenario_count: 100
+  validation_scenario_count: 2000
+  test_scenario_count: 2000
+
+formal_matrix:
+  training_seeds: [2026090101, 2026090102, 2026090103, 2026090104, 2026090105, 2026090106, 2026090107, 2026090108, 2026090109, 2026090110]
+  validation_seeds: [2026090201, 2026090202, 2026090203, 2026090204, 2026090205, 2026090206, 2026090207, 2026090208, 2026090209, 2026090210]
+  test_seeds: [2026090301, 2026090302, 2026090303, 2026090304, 2026090305, 2026090306, 2026090307, 2026090308, 2026090309, 2026090310]
+  pairing: same_list_position_training_validation_test
+  primary_run_count: 10
+  candidate_ids: [minimum_endpoint, interval_midpoint, maximum_endpoint]
+  validation_candidate_plan_count: 30
+  validation_exact_recourse_evaluation_count: 60000
+  test_scenario_generation_count: 0
+  test_recourse_evaluation_count: 0
+
+phase_boundary:
+  training_and_validation_only: true
+  selected_plan_identities_are_finalized_but_not_yet_authorized_for_test: true
+  formal_test_data_access_forbidden: true
+  all_ten_runs_must_finish_before_plan_freeze_review: true
+  validation_outcome_may_not_change_frozen_matrix: true
+
+execution_boundaries:
+  runner_implemented: true
+  formal_training_authorized: true
+  formal_validation_authorized: true
+  selected_plan_freeze_authorized: false
+  formal_test_authorized: false
+  formal_extension_authorized: false
+  explicit_cli_authorization_required: true
+  scenario_generation_count: 0
+  gurobi_call_count: 0
+  formal_primary_run_count: 0
+  formal_test_run_count: 0
+  algorithm_performance_runs: 0
+  M0_E3_runs: 0

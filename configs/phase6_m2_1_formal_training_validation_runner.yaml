@@ -1,0 +1,29 @@
+namespace: phase6_m2_1_formal_training_validation_v1_0
+protocol: phase6_m2_1_formal_training_validation_v1_0
+output_root: outputs/phase6_m2_1_formal_training_validation_v1_0
+execution:
+  strictly_serial: true
+  empty_output_namespace_required_for_primary_batch: true
+  explicit_cli_authorization_required: true
+  immutable_run_ids: true
+  complete_ten_triplet_primary_batch_required: true
+  diagnostic_retry_requires_case_id_and_parent_run_id: true
+  failure_stops_batch: true
+  formal_test_data_access_forbidden: true
+  reviewed_pilot_evidence_is_read_only: true
+limits:
+  solver_call_seconds: 120
+  training_triplet_wall_seconds: 1800
+  validation_candidate_wall_seconds: 7200
+  test_plan_wall_seconds: 7200
+  threads: 1
+solver:
+  interface: gurobi_direct
+  optimizer_version: 13.0.2
+  gurobipy_version: 13.0.2
+  fallback_allowed: false
+status_protocol:
+  bounded_status_bytes: 16384
+  large_result_or_checkpoint_status_parsing_forbidden: true
+  heartbeat_required: true
+  sampled_peak_rss_required: true

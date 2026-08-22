@@ -1,0 +1,80 @@
+{
+  "schema_version": "phase6_m2_1_formal_training_validation_freeze_v1_0",
+  "base": {
+    "pr67_merge_commit": "5d40f93f1cf323501941343b34592053a26cccef",
+    "base_tree_sha256": "51cc2373b2f5f41d5efe18530fb65abe6e41ff2f"
+  },
+  "reviewed_pilot_evidence": {
+    "audit_sha256": "fe63e0e8965503eceb1e0ec99f9e9f9906de322a756e5a3e9fcfbf6f7ddee74b",
+    "registry_sha256": "557ea06ea074a4625d0c89524080c3a38f9cff2d80c62bd9e896bb8c2259f553",
+    "projection_sha256": "42200d72ee02a304383f3d04a0f7749b29db5df1d5994b385dbfa1b256e5f058",
+    "primary_runs": 3,
+    "validation_exact_recourse_evaluations": 18000,
+    "test_probe_exact_recourse_evaluations": 12000,
+    "pilot_compute_gate_passed": true,
+    "formal_extension_authorized_by_pilot": false
+  },
+  "formal_matrix": {
+    "tier_id": "M2F2",
+    "beta": 1.1,
+    "profile_id": "T03",
+    "training_seeds": [2026090101, 2026090102, 2026090103, 2026090104, 2026090105, 2026090106, 2026090107, 2026090108, 2026090109, 2026090110],
+    "validation_seeds": [2026090201, 2026090202, 2026090203, 2026090204, 2026090205, 2026090206, 2026090207, 2026090208, 2026090209, 2026090210],
+    "reserved_test_seeds_not_accessed": [2026090301, 2026090302, 2026090303, 2026090304, 2026090305, 2026090306, 2026090307, 2026090308, 2026090309, 2026090310],
+    "primary_run_count": 10,
+    "validation_candidate_plan_count": 30,
+    "validation_exact_recourse_evaluation_count": 60000,
+    "formal_test_scenario_generation_count": 0,
+    "formal_test_recourse_evaluation_count": 0
+  },
+  "phase_authorization": {
+    "formal_training_authorized": true,
+    "formal_validation_authorized": true,
+    "selected_plan_freeze_authorized": false,
+    "formal_test_authorized": false,
+    "formal_extension_authorized": false,
+    "explicit_cli_authorization_required": true,
+    "complete_ten_triplet_primary_batch_required": true,
+    "next_review_if_complete": "selected_plan_identity_freeze_and_formal_test_authorization_PR"
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "d5af07fc57c6b0a88ad2d09a3171c6854a08bbd4db5c91bdf8753adb3c509ebe",
+    "e3_component_sha256": "b1a91aaf6e14d5955ddee3d09036623f43dbd3abd1c8ff908ae3e25661deb5ef",
+    "family_component_sha256": "f2c1ac9e4bcc5967c31f005bb3ec27b0522b7b03ce1ce805ccdc8d33c35c1c0d",
+    "runner_config_sha256": "065426e037c57a4fa1872298b68793d9de68279320187eb55ae0f3955a120d35",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "artifact_sha256": {
+    "formal_config": "44082996c1a0bb2c527a17bf168b4e2db4054677976edbd8bc4c9e07b981195c",
+    "runner_config": "065426e037c57a4fa1872298b68793d9de68279320187eb55ae0f3955a120d35",
+    "approval": "18707bb276f72a69851ed971e9cbb71ad7ba867cb2a5ba3a618e59482c53f708",
+    "runner_module": "e22c963c5ced45d2bf363592bdc55d26ace7618610c7f571cead565ca3e61bf7",
+    "cli": "c941b1f6cc1f4342124346e4c253765027473946a4aa3f57a4928ca7ed9d05f0",
+    "status_module": "c95a5ccfd5f3698cbf639e75bab25ea478442365c870712e47a8eaa231c4b1cb"
+  },
+  "safety": {
+    "strictly_serial": true,
+    "empty_output_namespace_required": true,
+    "immutable_run_ids": true,
+    "failed_primary_permanently_blocks_gate": true,
+    "diagnostic_retry_requires_new_run_id_and_parent": true,
+    "result_manifest_registry_projection_order": true,
+    "formal_test_data_access_forbidden": true,
+    "reviewed_pilot_outputs_read_only": true,
+    "bounded_status_bytes": 16384
+  },
+  "execution_counts_in_this_pr": {
+    "formal_primary_runs": 0,
+    "training_scenario_sets": 0,
+    "validation_scenario_sets": 0,
+    "validation_candidate_plans": 0,
+    "validation_recourse_evaluations": 0,
+    "formal_test_runs": 0,
+    "formal_test_scenario_sets": 0,
+    "formal_test_recourse_evaluations": 0,
+    "gurobi_calls": 0,
+    "algorithm_performance_runs": 0,
+    "M0_E3_runs": 0
+  },
+  "CI": "recorded_in_pr_body"
+}

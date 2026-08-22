@@ -1,0 +1,33 @@
+approval_id: phase6_m2_1_formal_training_validation_execution_v1_0
+status: approved_for_formal_training_validation_execution
+scientific_protocol: phase6_m2_1_formal_training_validation_v1_0
+runner_namespace: phase6_m2_1_formal_training_validation_v1_0
+explicit_cli_authorization_required: true
+complete_ten_triplet_primary_batch_required: true
+formal_training_authorized: true
+formal_validation_authorized: true
+selected_plan_freeze_authorized: false
+formal_test_authorized: false
+formal_extension_authorized: false
+accept_M2_authorization: false
+reviewed_pilot_audit_sha256: fe63e0e8965503eceb1e0ec99f9e9f9906de322a756e5a3e9fcfbf6f7ddee74b
+reviewed_pilot_registry_sha256: 557ea06ea074a4625d0c89524080c3a38f9cff2d80c62bd9e896bb8c2259f553
+reviewed_pilot_projection_sha256: 42200d72ee02a304383f3d04a0f7749b29db5df1d5994b385dbfa1b256e5f058
+approved_fingerprints:
+  scientific_config_sha256: d5af07fc57c6b0a88ad2d09a3171c6854a08bbd4db5c91bdf8753adb3c509ebe
+  e3_component_sha256: b1a91aaf6e14d5955ddee3d09036623f43dbd3abd1c8ff908ae3e25661deb5ef
+  family_component_sha256: f2c1ac9e4bcc5967c31f005bb3ec27b0522b7b03ce1ce805ccdc8d33c35c1c0d
+  runner_config_sha256: 065426e037c57a4fa1872298b68793d9de68279320187eb55ae0f3955a120d35
+  environment_sha256: b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af
+execution_counts_in_this_revision:
+  formal_primary_runs: 0
+  training_scenario_sets: 0
+  validation_scenario_sets: 0
+  validation_candidate_plans: 0
+  validation_recourse_evaluations: 0
+  formal_test_runs: 0
+  formal_test_scenario_sets: 0
+  formal_test_recourse_evaluations: 0
+  gurobi_call_count: 0
+  algorithm_performance_runs: 0
+  M0_E3_runs: 0
