@@ -65,9 +65,13 @@ def test_runner_artifacts_parent_evidence_and_fingerprints_are_locked() -> None:
         "status_module": (ROOT / "src/phase6_m2_1_pilot_status.py", "e913f26a12890ea192bfd6ce292f948b990c53464d6005a4c87da35a167b20a3"),
     }
     assert audit["artifact_sha256"] == {name: expected for name, (_, expected) in artifacts.items()}
-    # PR #63's audit is itself byte-locked by the authorization audit.  Its
-    # artifact map remains historical after lifecycle authorization changes.
-    assert all(len(expected) == 64 for _, expected in artifacts.values())
+    # Authorization legitimately changes only the pilot protocol and approval.
+    # Every execution artifact must remain byte-identical to reviewed PR #63.
+    for name in ("runner_config", "runner_module", "cli", "status_module"):
+        path, expected = artifacts[name]
+        assert _sha256(path) == expected, name
+    for name in ("pilot_config", "approval"):
+        assert len(artifacts[name][1]) == 64
     assert audit["parent_evidence"] == {
         "design_config_sha256": _sha256(DESIGN),
         "pr62_audit_sha256": _sha256(ROOT / "docs/handoffs/2026-08-21_phase6_m2_1_endpoint_selection_design_v1_0_audit.json"),
