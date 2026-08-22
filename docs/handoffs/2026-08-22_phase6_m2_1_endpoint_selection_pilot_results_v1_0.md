@@ -30,4 +30,6 @@
 
 大型原始结果保留在D盘受控输出目录；GitHub仅提交紧凑审计、handoff和专项测试。
 
-本地验证：专项审计`4 passed`、普通回归`544 passed`、Phase 5 `6 passed`、Windows复现专项`16 passed`；`compileall`与`git diff --check`通过。最终CI记录在PR正文中。
+紧凑审计现已从保留制品机械提取完整的方案—场景—评价身份：每个验证候选和测试策略均记录最终方案哈希、采购决策哈希、储备金额、训练目标、训练场景哈希、来源run/case、7类评价场景身份、评价状态及关键指标。专项测试使用冻结的`select_validation_candidate()`重新选择三个候选，逐组核验共同场景身份，并从明细独立汇总18,000和12,000次评价。M2控制与M2.1最小端点共享同一方案身份，但保留两个独立策略评价记录。
+
+本地验证：专项审计`6 passed`、普通回归`546 passed`、Phase 5 `6 passed`、Windows复现专项`16 passed`；最终CI记录在PR正文中。

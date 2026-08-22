@@ -1,6 +1,16 @@
+import hashlib
 import json
 import math
 from pathlib import Path
+
+from src.phase6_m2_1_endpoint_selection import (
+    CANDIDATE_IDS,
+    PLAN_IDENTITY_FIELDS,
+    SCENARIO_IDENTITY_FIELDS,
+    TEST_STRATEGIES,
+    select_validation_candidate,
+    validate_shared_scenario_identity,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,10 +39,17 @@ EXPECTED_ARTIFACTS = {
         "15e3338db5fc29e478bcc9f14441e8cd776410d1aa62ef2ec22757acda344be1",
     ),
 }
+EXPECTED_VALIDATION_EVIDENCE_SHA256 = "b0a1358e168d651b37965356b2947c029a3d1500e06cc6b00aae245227cb836b"
+EXPECTED_TEST_PROBE_EVIDENCE_SHA256 = "ea4fb9c4a81697df1f1989f93f45ccea8e1a9aec60e2aba38a4a18c39c52e3a8"
 
 
 def _load():
     return json.loads(AUDIT.read_text(encoding="utf-8"))
+
+
+def _canonical_sha256(value):
+    payload = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
 
 
 def test_execution_identity_fingerprints_and_run_artifacts_are_locked():
@@ -101,6 +118,109 @@ def test_candidates_are_tolerance_optimal_and_validation_is_complete():
             difference = objective - row["complete_extensive_objective"]
             assert math.isfinite(difference) and difference >= 0
             assert difference <= row["objective_tolerance"] + 1e-8
+
+
+def test_validation_plan_scenario_and_evaluation_evidence_closes_independently():
+    audit = _load()
+    run_rows = {row["run_id"]: row for row in audit["runs"]}
+    evidence = audit["validation_evidence"]
+    assert _canonical_sha256(evidence) == EXPECTED_VALIDATION_EVIDENCE_SHA256
+    assert set(evidence) == set(run_rows)
+    optimal_evaluations = 0
+    for run_id, record in evidence.items():
+        run = run_rows[run_id]
+        assert record["case_id"] == run["case_id"]
+        candidates = record["candidates"]
+        assert tuple(candidates) == CANDIDATE_IDS
+        shared = validate_shared_scenario_identity(
+            {candidate_id: row["scenario_identity"] for candidate_id, row in candidates.items()},
+            expected_ids=CANDIDATE_IDS,
+            phase="validation_audit",
+        )
+        assert shared["scenario_set_sha256"] == run["validation_scenario_sha256"]
+        selection_metrics = {}
+        for index, candidate_id in enumerate(CANDIDATE_IDS):
+            candidate = candidates[candidate_id]
+            assert candidate["source_run_id"] == run_id
+            assert candidate["source_case_id"] == run["case_id"]
+            plan = candidate["plan_identity"]
+            assert tuple(plan) == PLAN_IDENTITY_FIELDS
+            assert plan["finalized_plan_artifact_sha256"] == run["candidate_plan_sha256"][index]
+            assert plan["reserve_amount"] == run["candidate_reserves"][index]
+            assert plan["exact_training_objective"] == run["candidate_training_objectives"][index]
+            assert plan["training_joint_scenario_set_sha256"] == run["training_scenario_sha256"]
+            assert len(plan["regular_purchase_sha256"]) == 64
+            assert tuple(candidate["scenario_identity"]) == SCENARIO_IDENTITY_FIELDS
+            evaluation = candidate["evaluation"]
+            assert evaluation["candidate_id"] == candidate_id
+            assert evaluation["plan_oos_status"] == "complete_feasible"
+            assert evaluation["total_scenario_count"] == evaluation["optimal_scenario_count"] == 2000
+            assert evaluation["infeasible_scenario_count"] == evaluation["solver_failure_count"] == 0
+            assert math.isfinite(evaluation["mean_total_cost"]) and evaluation["mean_total_cost"] > 0
+            assert math.isfinite(evaluation["total_cost_cvar95"]) and evaluation["total_cost_cvar95"] > 0
+            assert 0.0 <= evaluation["service_level"] <= 1.0
+            assert evaluation["total_cost_cvar95"] == run["candidate_validation_cvar95"][index]
+            selection_metrics[candidate_id] = {
+                "total_cost_cvar95": evaluation["total_cost_cvar95"],
+                "mean_total_cost": evaluation["mean_total_cost"],
+                "reserve": plan["reserve_amount"],
+            }
+            optimal_evaluations += evaluation["optimal_scenario_count"]
+        assert select_validation_candidate(selection_metrics) == record["selection"]
+        assert record["selection"]["selected_candidate_id"] == run["selected_candidate_id"]
+    assert optimal_evaluations == 3 * 3 * 2000 == 18000
+
+
+def test_test_probe_plan_scenario_and_separate_evaluation_evidence_closes():
+    audit = _load()
+    evidence = audit["test_probe_evidence"]
+    assert _canonical_sha256(evidence) == EXPECTED_TEST_PROBE_EVIDENCE_SHA256
+    source_run = next(row for row in audit["runs"] if row["run_id"] == evidence["source_run_id"])
+    assert evidence["source_case_id"] == source_run["case_id"]
+    strategies = evidence["strategies"]
+    assert tuple(strategies) == TEST_STRATEGIES
+    shared = validate_shared_scenario_identity(
+        {strategy_id: row["scenario_identity"] for strategy_id, row in strategies.items()},
+        expected_ids=TEST_STRATEGIES,
+        phase="test_probe_audit",
+    )
+    assert shared["scenario_set_sha256"] == source_run["test_scenario_sha256"]
+    optimal_evaluations = 0
+    for strategy_id, record in strategies.items():
+        assert record["source_run_id"] == source_run["run_id"]
+        assert record["source_case_id"] == source_run["case_id"]
+        assert tuple(record["plan_identity"]) == PLAN_IDENTITY_FIELDS
+        assert tuple(record["scenario_identity"]) == SCENARIO_IDENTITY_FIELDS
+        plan = record["plan_identity"]
+        assert all(
+            len(plan[field]) == 64
+            for field in (
+                "finalized_plan_artifact_sha256",
+                "regular_purchase_sha256",
+                "training_joint_scenario_set_sha256",
+            )
+        )
+        assert plan["training_joint_scenario_set_sha256"] == source_run["training_scenario_sha256"]
+        evaluation = record["evaluation"]
+        assert evaluation["strategy_id"] == strategy_id
+        assert evaluation["plan_oos_status"] == "complete_feasible"
+        assert evaluation["total_scenario_count"] == evaluation["optimal_scenario_count"] == 2000
+        assert evaluation["infeasible_scenario_count"] == evaluation["solver_failure_count"] == 0
+        assert math.isfinite(evaluation["mean_total_cost"]) and evaluation["mean_total_cost"] > 0
+        assert math.isfinite(evaluation["total_cost_cvar95"]) and evaluation["total_cost_cvar95"] > 0
+        assert 0.0 <= evaluation["service_level"] <= 1.0
+        optimal_evaluations += evaluation["optimal_scenario_count"]
+    m2 = strategies["M2_minimum_endpoint"]
+    m21 = strategies["M2_1_validation_selected_endpoint"]
+    assert m2["source_candidate_id"] == m21["source_candidate_id"] == "minimum_endpoint"
+    assert m2["plan_identity"] == m21["plan_identity"]
+    assert m2["evaluation"]["strategy_id"] != m21["evaluation"]["strategy_id"]
+    assert {
+        key: value for key, value in m2["evaluation"].items() if key != "strategy_id"
+    } == {
+        key: value for key, value in m21["evaluation"].items() if key != "strategy_id"
+    }
+    assert optimal_evaluations == 6 * 2000 == 12000
 
 
 def test_test_probe_identity_counts_and_stop_boundary_close():

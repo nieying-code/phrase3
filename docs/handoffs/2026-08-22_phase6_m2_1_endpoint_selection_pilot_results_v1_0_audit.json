@@ -159,6 +159,545 @@
       "fixed_autonomous_reserve_0_50": {"reserve": 1285.6860082873086, "mean_total_cost": 14163.610093358202, "cvar95": 40643.7446186614, "service_level": 0.786471247703969}
     }
   },
+    "validation_evidence": {
+      "m21pilot_v10_20260822a_M2_1_triplet01_train2026090401_validation2026090501_test2026090701": {
+        "case_id": "M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+        "selection": {
+          "selected_candidate_id": "minimum_endpoint",
+          "selection_metrics_sha256": "09db218e181b8245d1a4520ab14aed7649c06ac0ae3ecb25169a5ba4c29e32e6",
+          "cvar95_best": 44829.167029595505,
+          "cvar95_tie_limit": 44829.17152251221,
+          "mean_cost_best_within_cvar_tie": 27213.69681693182,
+          "mean_cost_tie_limit": 27213.6995483015,
+          "cvar_tied_candidate_ids": [
+            "minimum_endpoint"
+          ],
+          "finalist_candidate_ids": [
+            "minimum_endpoint"
+          ],
+          "test_metrics_used": false
+        },
+        "candidates": {
+          "minimum_endpoint": {
+            "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+            "source_case_id": "M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+            "plan_identity": {
+              "finalized_plan_artifact_sha256": "48c2894050e1db1f0b405cbec57766a47c7327554fdc059903cfd62efdf41252",
+              "regular_purchase_sha256": "249779865e97aecb4771930187d30b3381cb4f4d8d871ad6f3fd40bab91e0167",
+              "reserve_amount": 0,
+              "exact_training_objective": 49067.607571045075,
+              "training_joint_scenario_set_sha256": "81bd1105a675b0a24fab4993a3156a84ffb24736bc5411ac9600b7733817a8bf"
+            },
+            "scenario_identity": {
+              "scenario_set_sha256": "1079c465d8c8ba1d839ce455a346d3c48d3dce35db1e9d0b4e323e1a71a49465",
+              "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+              "latent_draw_sha256": "4b9e123bebc65098b4fa3592b73845e11d8f05d1e143a4aca132c141ca050cde",
+              "demand_sha256": "a12925d61ef93e936fb40cdc45acae2ddf8507c8b08ff41a73cf43bd56670fff",
+              "emergency_price_sha256": "735c775a4fab27d94c795407d6522a260a71585008267dbbe25e8619f22a0c61",
+              "emergency_supply_sha256": "71e8adca7224e7a420963ee9c06b13d6e3a4af0d229be854580bdbd4528317ca",
+              "fulfillment_sha256": "50fb85bd733b11aee96532d2fe12829c8b3c9858561a540c520de3e402a16b74"
+            },
+            "evaluation": {
+              "candidate_id": "minimum_endpoint",
+              "plan_oos_status": "complete_feasible",
+              "total_scenario_count": 2000,
+              "optimal_scenario_count": 2000,
+              "infeasible_scenario_count": 0,
+              "solver_failure_count": 0,
+              "mean_total_cost": 27213.69681693182,
+              "total_cost_cvar95": 44829.167029595505,
+              "service_level": 0.5686458926523906
+            }
+          },
+          "interval_midpoint": {
+            "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+            "source_case_id": "M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+            "plan_identity": {
+              "finalized_plan_artifact_sha256": "6597f131fe23900d05584d3ca82860b013399baf2f200c9d964127d4a1ea6d08",
+              "regular_purchase_sha256": "613355dc8b331e4bcab07f148f68f0f352dde4f837ac106c78c4843d5f4f0b43",
+              "reserve_amount": 0.008311616696119017,
+              "exact_training_objective": 49067.60511266494,
+              "training_joint_scenario_set_sha256": "81bd1105a675b0a24fab4993a3156a84ffb24736bc5411ac9600b7733817a8bf"
+            },
+            "scenario_identity": {
+              "scenario_set_sha256": "1079c465d8c8ba1d839ce455a346d3c48d3dce35db1e9d0b4e323e1a71a49465",
+              "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+              "latent_draw_sha256": "4b9e123bebc65098b4fa3592b73845e11d8f05d1e143a4aca132c141ca050cde",
+              "demand_sha256": "a12925d61ef93e936fb40cdc45acae2ddf8507c8b08ff41a73cf43bd56670fff",
+              "emergency_price_sha256": "735c775a4fab27d94c795407d6522a260a71585008267dbbe25e8619f22a0c61",
+              "emergency_supply_sha256": "71e8adca7224e7a420963ee9c06b13d6e3a4af0d229be854580bdbd4528317ca",
+              "fulfillment_sha256": "50fb85bd733b11aee96532d2fe12829c8b3c9858561a540c520de3e402a16b74"
+            },
+            "evaluation": {
+              "candidate_id": "interval_midpoint",
+              "plan_oos_status": "complete_feasible",
+              "total_scenario_count": 2000,
+              "optimal_scenario_count": 2000,
+              "infeasible_scenario_count": 0,
+              "solver_failure_count": 0,
+              "mean_total_cost": 27213.56936309682,
+              "total_cost_cvar95": 44829.23341092486,
+              "service_level": 0.5686480202168215
+            }
+          },
+          "maximum_endpoint": {
+            "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+            "source_case_id": "M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+            "plan_identity": {
+              "finalized_plan_artifact_sha256": "d24afab335f6416094ff093933a11cd92172b0223693b406732e6bcbf46519d2",
+              "regular_purchase_sha256": "be63ce8b3ce88ffce0a7b3be85c43143f6b83eee6da9335021e04e7439b0df1f",
+              "reserve_amount": 0.016623233392238035,
+              "exact_training_objective": 49067.607571045075,
+              "training_joint_scenario_set_sha256": "81bd1105a675b0a24fab4993a3156a84ffb24736bc5411ac9600b7733817a8bf"
+            },
+            "scenario_identity": {
+              "scenario_set_sha256": "1079c465d8c8ba1d839ce455a346d3c48d3dce35db1e9d0b4e323e1a71a49465",
+              "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+              "latent_draw_sha256": "4b9e123bebc65098b4fa3592b73845e11d8f05d1e143a4aca132c141ca050cde",
+              "demand_sha256": "a12925d61ef93e936fb40cdc45acae2ddf8507c8b08ff41a73cf43bd56670fff",
+              "emergency_price_sha256": "735c775a4fab27d94c795407d6522a260a71585008267dbbe25e8619f22a0c61",
+              "emergency_supply_sha256": "71e8adca7224e7a420963ee9c06b13d6e3a4af0d229be854580bdbd4528317ca",
+              "fulfillment_sha256": "50fb85bd733b11aee96532d2fe12829c8b3c9858561a540c520de3e402a16b74"
+            },
+            "evaluation": {
+              "candidate_id": "maximum_endpoint",
+              "plan_oos_status": "complete_feasible",
+              "total_scenario_count": 2000,
+              "optimal_scenario_count": 2000,
+              "infeasible_scenario_count": 0,
+              "solver_failure_count": 0,
+              "mean_total_cost": 27213.42253806134,
+              "total_cost_cvar95": 44829.17818052731,
+              "service_level": 0.5686505491456849
+            }
+          }
+        }
+      },
+      "m21pilot_v10_20260822a_M2_1_triplet02_train2026090402_validation2026090502_test2026090702": {
+        "case_id": "M2_1_triplet02_train2026090402_validation2026090502_test2026090702",
+        "selection": {
+          "selected_candidate_id": "minimum_endpoint",
+          "selection_metrics_sha256": "aaf1348eea38b301b36b91e68cc5134969cb1031466d8dc03b0352d3823c8280",
+          "cvar95_best": 41575.32665492592,
+          "cvar95_tie_limit": 41575.330822458585,
+          "mean_cost_best_within_cvar_tie": 14543.784654252617,
+          "mean_cost_tie_limit": 14543.786118631082,
+          "cvar_tied_candidate_ids": [
+            "minimum_endpoint"
+          ],
+          "finalist_candidate_ids": [
+            "minimum_endpoint"
+          ],
+          "test_metrics_used": false
+        },
+        "candidates": {
+          "minimum_endpoint": {
+            "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet02_train2026090402_validation2026090502_test2026090702",
+            "source_case_id": "M2_1_triplet02_train2026090402_validation2026090502_test2026090702",
+            "plan_identity": {
+              "finalized_plan_artifact_sha256": "a0efab2ae75a26f4a0c652a7dddab984389c61c2002300a8b7eb33fddd071c3f",
+              "regular_purchase_sha256": "aae3498ae74eaad6a231c1da683a38a2b52b81c9c708102c9e84a66f8d7b6225",
+              "reserve_amount": 498.47749449333656,
+              "exact_training_objective": 33249.837396076015,
+              "training_joint_scenario_set_sha256": "ad3bbc255c174d0f3321ee4835626b2515ad5cdddd25ff5b4d67bd53ba861e37"
+            },
+            "scenario_identity": {
+              "scenario_set_sha256": "da59c1aa66bec323a4e04a00809f6c2b880f46410d37e5f78dcc2f0144b278af",
+              "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+              "latent_draw_sha256": "8cf55f651b758f2bad7b9e84f61060738d5136fb74b9e256e6ecfae1e46017b6",
+              "demand_sha256": "19691a9646bd2137676c758b1143c7fc0db631d101bb18ef5fd971fa2f8ccfbd",
+              "emergency_price_sha256": "0c4f44f695815cc8f14e6860327d658d0f8d889f56fbf5b92eeffd1cbc72916c",
+              "emergency_supply_sha256": "f58b0978f1b6ed8e20fee7b0600de33e370f5e3c0f25ba53029eb8331a857058",
+              "fulfillment_sha256": "28ef4f30e0081d94b8921fea2e56ae34cbcda18d55a90c6119f4ea155e9be198"
+            },
+            "evaluation": {
+              "candidate_id": "minimum_endpoint",
+              "plan_oos_status": "complete_feasible",
+              "total_scenario_count": 2000,
+              "optimal_scenario_count": 2000,
+              "infeasible_scenario_count": 0,
+              "solver_failure_count": 0,
+              "mean_total_cost": 14543.784654252617,
+              "total_cost_cvar95": 41575.32665492592,
+              "service_level": 0.7850198666157453
+            }
+          },
+          "interval_midpoint": {
+            "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet02_train2026090402_validation2026090502_test2026090702",
+            "source_case_id": "M2_1_triplet02_train2026090402_validation2026090502_test2026090702",
+            "plan_identity": {
+              "finalized_plan_artifact_sha256": "6476eaad0adf6519eccfca8f01e4f0d59c8e245df7cec1ca86dd051d5072d92c",
+              "regular_purchase_sha256": "69032697fc3056dac46718136b36e4da5f91391c0dd0c6cf1c8d5001f0f691bd",
+              "reserve_amount": 498.48699744218953,
+              "exact_training_objective": 33249.83470654435,
+              "training_joint_scenario_set_sha256": "ad3bbc255c174d0f3321ee4835626b2515ad5cdddd25ff5b4d67bd53ba861e37"
+            },
+            "scenario_identity": {
+              "scenario_set_sha256": "da59c1aa66bec323a4e04a00809f6c2b880f46410d37e5f78dcc2f0144b278af",
+              "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+              "latent_draw_sha256": "8cf55f651b758f2bad7b9e84f61060738d5136fb74b9e256e6ecfae1e46017b6",
+              "demand_sha256": "19691a9646bd2137676c758b1143c7fc0db631d101bb18ef5fd971fa2f8ccfbd",
+              "emergency_price_sha256": "0c4f44f695815cc8f14e6860327d658d0f8d889f56fbf5b92eeffd1cbc72916c",
+              "emergency_supply_sha256": "f58b0978f1b6ed8e20fee7b0600de33e370f5e3c0f25ba53029eb8331a857058",
+              "fulfillment_sha256": "28ef4f30e0081d94b8921fea2e56ae34cbcda18d55a90c6119f4ea155e9be198"
+            },
+            "evaluation": {
+              "candidate_id": "interval_midpoint",
+              "plan_oos_status": "complete_feasible",
+              "total_scenario_count": 2000,
+              "optimal_scenario_count": 2000,
+              "infeasible_scenario_count": 0,
+              "solver_failure_count": 0,
+              "mean_total_cost": 14543.780316705106,
+              "total_cost_cvar95": 41575.34401513456,
+              "service_level": 0.7850196637632139
+            }
+          },
+          "maximum_endpoint": {
+            "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet02_train2026090402_validation2026090502_test2026090702",
+            "source_case_id": "M2_1_triplet02_train2026090402_validation2026090502_test2026090702",
+            "plan_identity": {
+              "finalized_plan_artifact_sha256": "15f7dca557063a17f006d95a4822424c1b695a3b026e866795c777db356a17aa",
+              "regular_purchase_sha256": "ea0b7ff9ee9dd9eccedbf40f97a113ba61a2d1032757b6cb046a7d987261dc88",
+              "reserve_amount": 498.4965003910425,
+              "exact_training_objective": 33249.83739607603,
+              "training_joint_scenario_set_sha256": "ad3bbc255c174d0f3321ee4835626b2515ad5cdddd25ff5b4d67bd53ba861e37"
+            },
+            "scenario_identity": {
+              "scenario_set_sha256": "da59c1aa66bec323a4e04a00809f6c2b880f46410d37e5f78dcc2f0144b278af",
+              "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+              "latent_draw_sha256": "8cf55f651b758f2bad7b9e84f61060738d5136fb74b9e256e6ecfae1e46017b6",
+              "demand_sha256": "19691a9646bd2137676c758b1143c7fc0db631d101bb18ef5fd971fa2f8ccfbd",
+              "emergency_price_sha256": "0c4f44f695815cc8f14e6860327d658d0f8d889f56fbf5b92eeffd1cbc72916c",
+              "emergency_supply_sha256": "f58b0978f1b6ed8e20fee7b0600de33e370f5e3c0f25ba53029eb8331a857058",
+              "fulfillment_sha256": "28ef4f30e0081d94b8921fea2e56ae34cbcda18d55a90c6119f4ea155e9be198"
+            },
+            "evaluation": {
+              "candidate_id": "maximum_endpoint",
+              "plan_oos_status": "complete_feasible",
+              "total_scenario_count": 2000,
+              "optimal_scenario_count": 2000,
+              "infeasible_scenario_count": 0,
+              "solver_failure_count": 0,
+              "mean_total_cost": 14543.690119383913,
+              "total_cost_cvar95": 41575.349437619654,
+              "service_level": 0.7850211410509278
+            }
+          }
+        }
+      },
+      "m21pilot_v10_20260822a_M2_1_triplet03_train2026090403_validation2026090503_test2026090703": {
+        "case_id": "M2_1_triplet03_train2026090403_validation2026090503_test2026090703",
+        "selection": {
+          "selected_candidate_id": "minimum_endpoint",
+          "selection_metrics_sha256": "15c67afb5e5197bb56158257cf7abd56b65a2e059805bfa6bb25e5ccdcf37e95",
+          "cvar95_best": 38446.87891652309,
+          "cvar95_tie_limit": 38446.882771210985,
+          "mean_cost_best_within_cvar_tie": 11290.033671761135,
+          "mean_cost_tie_limit": 11290.034810764502,
+          "cvar_tied_candidate_ids": [
+            "minimum_endpoint"
+          ],
+          "finalist_candidate_ids": [
+            "minimum_endpoint"
+          ],
+          "test_metrics_used": false
+        },
+        "candidates": {
+          "minimum_endpoint": {
+            "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet03_train2026090403_validation2026090503_test2026090703",
+            "source_case_id": "M2_1_triplet03_train2026090403_validation2026090503_test2026090703",
+            "plan_identity": {
+              "finalized_plan_artifact_sha256": "9b4882b96350173b34fc8e86c542de22ba883cc6bcecd628f4b79ebe74efcfc9",
+              "regular_purchase_sha256": "fc9667b7cad207f68003d5690d40bc5624f1c528daaf9404fb9d60e0782b5856",
+              "reserve_amount": 1144.3411678052282,
+              "exact_training_objective": 44043.974657776,
+              "training_joint_scenario_set_sha256": "dc7b8f18d7b4355185c3e7a9d76caf1a54414713a7060f49e61ce44a6f5137ec"
+            },
+            "scenario_identity": {
+              "scenario_set_sha256": "745d327ee7963c0208ec20dd3f7e91f65db09bf98c05318b06815aa09624b992",
+              "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+              "latent_draw_sha256": "4235b9595bfa3320d8fc54589834bc543541f1f4fc6a0336ab8f40cf1975e4d3",
+              "demand_sha256": "08c29f0903281e11effb745a71be842bf443505651d54e910c3b7912147b7c80",
+              "emergency_price_sha256": "74c6a3cbde995edf85ecc6ae13bb0b33ca6e382945a6192556a97cce1ccb98f1",
+              "emergency_supply_sha256": "f6a0e3dd901685d004862bb8c6adf950550cfb7c954432d37052115de828893e",
+              "fulfillment_sha256": "c8082ebc0f46c73f18e64dd77dfd5c9ed99a3277fc83edace95b104e7453b9c5"
+            },
+            "evaluation": {
+              "candidate_id": "minimum_endpoint",
+              "plan_oos_status": "complete_feasible",
+              "total_scenario_count": 2000,
+              "optimal_scenario_count": 2000,
+              "infeasible_scenario_count": 0,
+              "solver_failure_count": 0,
+              "mean_total_cost": 11290.033671761135,
+              "total_cost_cvar95": 38446.87891652309,
+              "service_level": 0.8417845598761905
+            }
+          },
+          "interval_midpoint": {
+            "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet03_train2026090403_validation2026090503_test2026090703",
+            "source_case_id": "M2_1_triplet03_train2026090403_validation2026090503_test2026090703",
+            "plan_identity": {
+              "finalized_plan_artifact_sha256": "9a876effee3665b32dbed87a92238748a1987b46ea8a593cbc58f6a27ac78e24",
+              "regular_purchase_sha256": "19fef9b91d0da9f35e695e5fbaa2a6d93f2e86e7314b34d460acc29d30cf6e59",
+              "reserve_amount": 1144.3834632125677,
+              "exact_training_objective": 44043.972018762695,
+              "training_joint_scenario_set_sha256": "dc7b8f18d7b4355185c3e7a9d76caf1a54414713a7060f49e61ce44a6f5137ec"
+            },
+            "scenario_identity": {
+              "scenario_set_sha256": "745d327ee7963c0208ec20dd3f7e91f65db09bf98c05318b06815aa09624b992",
+              "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+              "latent_draw_sha256": "4235b9595bfa3320d8fc54589834bc543541f1f4fc6a0336ab8f40cf1975e4d3",
+              "demand_sha256": "08c29f0903281e11effb745a71be842bf443505651d54e910c3b7912147b7c80",
+              "emergency_price_sha256": "74c6a3cbde995edf85ecc6ae13bb0b33ca6e382945a6192556a97cce1ccb98f1",
+              "emergency_supply_sha256": "f6a0e3dd901685d004862bb8c6adf950550cfb7c954432d37052115de828893e",
+              "fulfillment_sha256": "c8082ebc0f46c73f18e64dd77dfd5c9ed99a3277fc83edace95b104e7453b9c5"
+            },
+            "evaluation": {
+              "candidate_id": "interval_midpoint",
+              "plan_oos_status": "complete_feasible",
+              "total_scenario_count": 2000,
+              "optimal_scenario_count": 2000,
+              "infeasible_scenario_count": 0,
+              "solver_failure_count": 0,
+              "mean_total_cost": 11289.869504010894,
+              "total_cost_cvar95": 38446.95223888297,
+              "service_level": 0.8417869849661473
+            }
+          },
+          "maximum_endpoint": {
+            "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet03_train2026090403_validation2026090503_test2026090703",
+            "source_case_id": "M2_1_triplet03_train2026090403_validation2026090503_test2026090703",
+            "plan_identity": {
+              "finalized_plan_artifact_sha256": "58e02f60f6fa61c942d8a6ca160a8b1005128c0f6eef11766bd7cabaaabda0b1",
+              "regular_purchase_sha256": "8b21e8f5a6b5f1450df7289cb66c20d56b4bf81ef51be3af5c2a63c993c1c8d1",
+              "reserve_amount": 1144.4257586199071,
+              "exact_training_objective": 44043.974657776,
+              "training_joint_scenario_set_sha256": "dc7b8f18d7b4355185c3e7a9d76caf1a54414713a7060f49e61ce44a6f5137ec"
+            },
+            "scenario_identity": {
+              "scenario_set_sha256": "745d327ee7963c0208ec20dd3f7e91f65db09bf98c05318b06815aa09624b992",
+              "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+              "latent_draw_sha256": "4235b9595bfa3320d8fc54589834bc543541f1f4fc6a0336ab8f40cf1975e4d3",
+              "demand_sha256": "08c29f0903281e11effb745a71be842bf443505651d54e910c3b7912147b7c80",
+              "emergency_price_sha256": "74c6a3cbde995edf85ecc6ae13bb0b33ca6e382945a6192556a97cce1ccb98f1",
+              "emergency_supply_sha256": "f6a0e3dd901685d004862bb8c6adf950550cfb7c954432d37052115de828893e",
+              "fulfillment_sha256": "c8082ebc0f46c73f18e64dd77dfd5c9ed99a3277fc83edace95b104e7453b9c5"
+            },
+            "evaluation": {
+              "candidate_id": "maximum_endpoint",
+              "plan_oos_status": "complete_feasible",
+              "total_scenario_count": 2000,
+              "optimal_scenario_count": 2000,
+              "infeasible_scenario_count": 0,
+              "solver_failure_count": 0,
+              "mean_total_cost": 11289.77723365247,
+              "total_cost_cvar95": 38447.00325011841,
+              "service_level": 0.8417883476696449
+            }
+          }
+        }
+      }
+    },
+    "test_probe_evidence": {
+      "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+      "source_case_id": "M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+      "strategies": {
+        "M2_minimum_endpoint": {
+          "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_case_id": "M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_candidate_id": "minimum_endpoint",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "48c2894050e1db1f0b405cbec57766a47c7327554fdc059903cfd62efdf41252",
+            "regular_purchase_sha256": "249779865e97aecb4771930187d30b3381cb4f4d8d871ad6f3fd40bab91e0167",
+            "reserve_amount": 0,
+            "exact_training_objective": 49067.607571045075,
+            "training_joint_scenario_set_sha256": "81bd1105a675b0a24fab4993a3156a84ffb24736bc5411ac9600b7733817a8bf"
+          },
+          "scenario_identity": {
+            "scenario_set_sha256": "4d8bcd8db977f0a004bfce5cfc5d32472af6dd96b3e4d0f91a3627637487e695",
+            "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+            "latent_draw_sha256": "d739998cfefb4d8ce91e4f0a1369de0dbdb438b13966d864f54c56acfc1d1051",
+            "demand_sha256": "941c8ead45bc08f6611df9ea52fcf1145513eb500e1b74f0b8b80b6d66d950ec",
+            "emergency_price_sha256": "07163b8171292b7482fa9f1a285b3bd6c7534233522dbc8a873f11c59c5dfeef",
+            "emergency_supply_sha256": "6256672255b6b5924db511e1ffd3e82e8292bd1cd937b8b81eaea8d01d75ee58",
+            "fulfillment_sha256": "97d6fdca5903860703b85c0f28b2b0fa38bee6a078800458d7305ae1e4a37ee2"
+          },
+          "evaluation": {
+            "strategy_id": "M2_minimum_endpoint",
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27095.207675303638,
+            "total_cost_cvar95": 43481.3046040411,
+            "service_level": 0.5666760666117084
+          }
+        },
+        "M2_1_validation_selected_endpoint": {
+          "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_case_id": "M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_candidate_id": "minimum_endpoint",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "48c2894050e1db1f0b405cbec57766a47c7327554fdc059903cfd62efdf41252",
+            "regular_purchase_sha256": "249779865e97aecb4771930187d30b3381cb4f4d8d871ad6f3fd40bab91e0167",
+            "reserve_amount": 0,
+            "exact_training_objective": 49067.607571045075,
+            "training_joint_scenario_set_sha256": "81bd1105a675b0a24fab4993a3156a84ffb24736bc5411ac9600b7733817a8bf"
+          },
+          "scenario_identity": {
+            "scenario_set_sha256": "4d8bcd8db977f0a004bfce5cfc5d32472af6dd96b3e4d0f91a3627637487e695",
+            "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+            "latent_draw_sha256": "d739998cfefb4d8ce91e4f0a1369de0dbdb438b13966d864f54c56acfc1d1051",
+            "demand_sha256": "941c8ead45bc08f6611df9ea52fcf1145513eb500e1b74f0b8b80b6d66d950ec",
+            "emergency_price_sha256": "07163b8171292b7482fa9f1a285b3bd6c7534233522dbc8a873f11c59c5dfeef",
+            "emergency_supply_sha256": "6256672255b6b5924db511e1ffd3e82e8292bd1cd937b8b81eaea8d01d75ee58",
+            "fulfillment_sha256": "97d6fdca5903860703b85c0f28b2b0fa38bee6a078800458d7305ae1e4a37ee2"
+          },
+          "evaluation": {
+            "strategy_id": "M2_1_validation_selected_endpoint",
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27095.207675303638,
+            "total_cost_cvar95": 43481.3046040411,
+            "service_level": 0.5666760666117084
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_case_id": "M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_candidate_id": "zero_autonomous_reserve",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "a5a16255d62451d39926e30a05fe551f3d2c0358af9014bc936ba6a3af819eb3",
+            "regular_purchase_sha256": "2df58ad8fd17b0c8ea5fc7df26c6d804a79d33bb6fc957c6c637ea10cc9be942",
+            "reserve_amount": 0,
+            "exact_training_objective": 49067.60265428481,
+            "training_joint_scenario_set_sha256": "81bd1105a675b0a24fab4993a3156a84ffb24736bc5411ac9600b7733817a8bf"
+          },
+          "scenario_identity": {
+            "scenario_set_sha256": "4d8bcd8db977f0a004bfce5cfc5d32472af6dd96b3e4d0f91a3627637487e695",
+            "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+            "latent_draw_sha256": "d739998cfefb4d8ce91e4f0a1369de0dbdb438b13966d864f54c56acfc1d1051",
+            "demand_sha256": "941c8ead45bc08f6611df9ea52fcf1145513eb500e1b74f0b8b80b6d66d950ec",
+            "emergency_price_sha256": "07163b8171292b7482fa9f1a285b3bd6c7534233522dbc8a873f11c59c5dfeef",
+            "emergency_supply_sha256": "6256672255b6b5924db511e1ffd3e82e8292bd1cd937b8b81eaea8d01d75ee58",
+            "fulfillment_sha256": "97d6fdca5903860703b85c0f28b2b0fa38bee6a078800458d7305ae1e4a37ee2"
+          },
+          "evaluation": {
+            "strategy_id": "zero_autonomous_reserve",
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27095.2240239217,
+            "total_cost_cvar95": 43481.382891114474,
+            "service_level": 0.5666757261128811
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_case_id": "M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_candidate_id": "fixed_autonomous_reserve_0_10",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "8c3ef06a61ea9e9f44346780b37ba14e861048acf48849f6ca73f71cd119f5e9",
+            "regular_purchase_sha256": "9a4ae9716861eeb0f27928ddc80c096c176fd8a6b7ee727d2fe41654f0201242",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 49176.692991880926,
+            "training_joint_scenario_set_sha256": "81bd1105a675b0a24fab4993a3156a84ffb24736bc5411ac9600b7733817a8bf"
+          },
+          "scenario_identity": {
+            "scenario_set_sha256": "4d8bcd8db977f0a004bfce5cfc5d32472af6dd96b3e4d0f91a3627637487e695",
+            "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+            "latent_draw_sha256": "d739998cfefb4d8ce91e4f0a1369de0dbdb438b13966d864f54c56acfc1d1051",
+            "demand_sha256": "941c8ead45bc08f6611df9ea52fcf1145513eb500e1b74f0b8b80b6d66d950ec",
+            "emergency_price_sha256": "07163b8171292b7482fa9f1a285b3bd6c7534233522dbc8a873f11c59c5dfeef",
+            "emergency_supply_sha256": "6256672255b6b5924db511e1ffd3e82e8292bd1cd937b8b81eaea8d01d75ee58",
+            "fulfillment_sha256": "97d6fdca5903860703b85c0f28b2b0fa38bee6a078800458d7305ae1e4a37ee2"
+          },
+          "evaluation": {
+            "strategy_id": "fixed_autonomous_reserve_0_10",
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 22709.880597442643,
+            "total_cost_cvar95": 41711.75988783635,
+            "service_level": 0.6427445828752333
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_case_id": "M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_candidate_id": "fixed_autonomous_reserve_0_30",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "df136bd77dbb92e1182ce6a9e3200a269bb19be5836d0411c5a7006dd63926e1",
+            "regular_purchase_sha256": "a9a863868fdff89b9d66af82a9713c7c3d4e0f775843d516ab3f073a5dcfacea",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 49970.50730606196,
+            "training_joint_scenario_set_sha256": "81bd1105a675b0a24fab4993a3156a84ffb24736bc5411ac9600b7733817a8bf"
+          },
+          "scenario_identity": {
+            "scenario_set_sha256": "4d8bcd8db977f0a004bfce5cfc5d32472af6dd96b3e4d0f91a3627637487e695",
+            "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+            "latent_draw_sha256": "d739998cfefb4d8ce91e4f0a1369de0dbdb438b13966d864f54c56acfc1d1051",
+            "demand_sha256": "941c8ead45bc08f6611df9ea52fcf1145513eb500e1b74f0b8b80b6d66d950ec",
+            "emergency_price_sha256": "07163b8171292b7482fa9f1a285b3bd6c7534233522dbc8a873f11c59c5dfeef",
+            "emergency_supply_sha256": "6256672255b6b5924db511e1ffd3e82e8292bd1cd937b8b81eaea8d01d75ee58",
+            "fulfillment_sha256": "97d6fdca5903860703b85c0f28b2b0fa38bee6a078800458d7305ae1e4a37ee2"
+          },
+          "evaluation": {
+            "strategy_id": "fixed_autonomous_reserve_0_30",
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 16161.641789627663,
+            "total_cost_cvar95": 40030.21116548669,
+            "service_level": 0.7553228596799999
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_run_id": "m21pilot_v10_20260822a_M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_case_id": "M2_1_triplet01_train2026090401_validation2026090501_test2026090701",
+          "source_candidate_id": "fixed_autonomous_reserve_0_50",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "09fd2d6b7aa564ae3b0c7ad04ef57564b54249866a80abacb5370eef8b270a71",
+            "regular_purchase_sha256": "4653d79a2a0edc9d181dfeb359e7eeb100ada32e88c7c64cf8f59eced32106bc",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 51043.65595855774,
+            "training_joint_scenario_set_sha256": "81bd1105a675b0a24fab4993a3156a84ffb24736bc5411ac9600b7733817a8bf"
+          },
+          "scenario_identity": {
+            "scenario_set_sha256": "4d8bcd8db977f0a004bfce5cfc5d32472af6dd96b3e4d0f91a3627637487e695",
+            "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+            "latent_draw_sha256": "d739998cfefb4d8ce91e4f0a1369de0dbdb438b13966d864f54c56acfc1d1051",
+            "demand_sha256": "941c8ead45bc08f6611df9ea52fcf1145513eb500e1b74f0b8b80b6d66d950ec",
+            "emergency_price_sha256": "07163b8171292b7482fa9f1a285b3bd6c7534233522dbc8a873f11c59c5dfeef",
+            "emergency_supply_sha256": "6256672255b6b5924db511e1ffd3e82e8292bd1cd937b8b81eaea8d01d75ee58",
+            "fulfillment_sha256": "97d6fdca5903860703b85c0f28b2b0fa38bee6a078800458d7305ae1e4a37ee2"
+          },
+          "evaluation": {
+            "strategy_id": "fixed_autonomous_reserve_0_50",
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 14163.610093358202,
+            "total_cost_cvar95": 40643.7446186614,
+            "service_level": 0.786471247703969
+          }
+        }
+      }
+    },
   "aggregate": {
     "completed_primary_run_count": 3,
     "optimal_primary_run_count": 3,
