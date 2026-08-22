@@ -29,7 +29,17 @@ def test_runner_audit_locks_code_config_and_fingerprints() -> None:
     paths = {"runner_module":"src/phase6_m2_1_formal_test.py", "cli":"src/run_phase6_m2_1_formal_test.py", "status_module":"src/phase6_m2_1_formal_test_status.py", "runner_config":"configs/phase6_m2_1_formal_test_runner.yaml", "approval":"configs/phase6_m2_1_formal_test_approval.yaml"}
     for key, path in paths.items(): assert sha256_file(ROOT / path) == artifacts[key]
     assert orchestrator_sha256(ROOT) == artifacts["formal_test_orchestrator_sha256"]
-    assert formal_test_fingerprints(ROOT, ROOT/"configs/phase6_m2_1_selected_plan_freeze_v1_0.yaml", ROOT/"configs/phase6_m2_1_formal_test_runner.yaml") == audit["fingerprints"]
+    actual = formal_test_fingerprints(
+        ROOT, ROOT/"configs/phase6_m2_1_selected_plan_freeze_v1_0.yaml",
+        ROOT/"configs/phase6_m2_1_formal_test_runner.yaml",
+    )
+    for field in (
+        "scientific_config_sha256", "e3_component_sha256",
+        "family_component_sha256", "runner_config_sha256",
+    ):
+        assert actual[field] == audit["fingerprints"][field]
+    assert len(actual["environment_sha256"]) == 64
+    assert audit["fingerprints"]["environment_sha256"] == "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
     approval = yaml.safe_load((ROOT / "configs/phase6_m2_1_formal_test_approval.yaml").read_text(encoding="utf-8"))
     assert approval["approved_fingerprints"] == audit["fingerprints"]
 
