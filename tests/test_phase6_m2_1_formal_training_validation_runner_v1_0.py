@@ -56,10 +56,6 @@ def test_reviewed_pr67_evidence_is_cryptographically_cross_bound(tmp_path):
     for relative in (parent["audit_path"], parent["registry_path"], parent["projection_path"]):
         (tmp_path / relative).parent.mkdir(parents=True, exist_ok=True)
     audit = json.loads((ROOT / parent["audit_path"]).read_text(encoding="utf-8"))
-    (tmp_path / parent["audit_path"]).write_text(json.dumps(audit), encoding="utf-8")
-    # Use exact bytes for the reviewed audit, and compact stand-ins whose hashes
-    # are updated in a local copy of the otherwise frozen evidence declaration.
-    (tmp_path / parent["audit_path"]).write_bytes((ROOT / parent["audit_path"]).read_bytes())
     (tmp_path / parent["registry_path"]).write_text("reviewed-registry", encoding="utf-8")
     projection = {
         "fingerprints": audit["fingerprints"], "pilot_compute_gate_passed": True,
@@ -70,7 +66,14 @@ def test_reviewed_pr67_evidence_is_cryptographically_cross_bound(tmp_path):
     local_parent = local["reviewed_pilot_evidence"]
     local_parent["registry_sha256"] = runner.sha256_file(tmp_path / parent["registry_path"])
     local_parent["projection_sha256"] = runner.sha256_file(tmp_path / parent["projection_path"])
+    audit["global_artifacts"] = {
+        "pilot_run_registry_sha256": local_parent["registry_sha256"],
+        "pilot_projection_sha256": local_parent["projection_sha256"],
+    }
+    (tmp_path / parent["audit_path"]).write_text(json.dumps(audit), encoding="utf-8")
+    local_parent["audit_sha256"] = runner.sha256_file(tmp_path / parent["audit_path"])
     local_approval = dict(approval)
+    local_approval["reviewed_pilot_audit_sha256"] = local_parent["audit_sha256"]
     local_approval["reviewed_pilot_registry_sha256"] = local_parent["registry_sha256"]
     local_approval["reviewed_pilot_projection_sha256"] = local_parent["projection_sha256"]
     evidence = runner._validate_reviewed_pilot(tmp_path, local, local_approval)

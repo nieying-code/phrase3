@@ -253,7 +253,11 @@ def _validate_reviewed_pilot(root: Path, config: Mapping[str, Any], approval: Ma
     projection = json.loads(projection_path.read_text(encoding="utf-8"))
     aggregate = audit.get("aggregate") or {}
     if (
-        aggregate.get("completed_primary_run_count") != 3
+        audit.get("global_artifacts") != {
+            "pilot_run_registry_sha256": expected["registry"],
+            "pilot_projection_sha256": expected["projection"],
+        }
+        or aggregate.get("completed_primary_run_count") != 3
         or aggregate.get("optimal_primary_run_count") != 3
         or aggregate.get("validation_optimal_recourse_evaluation_count") != 18000
         or aggregate.get("test_probe_optimal_recourse_evaluation_count") != 12000
@@ -262,6 +266,7 @@ def _validate_reviewed_pilot(root: Path, config: Mapping[str, Any], approval: Ma
             "diagnostic_run_ids", "finalization_failure_run_ids",
         ))
         or projection.get("pilot_compute_gate_passed") is not True
+        or (audit.get("projection") or {}).get("pilot_compute_gate_passed") is not True
         or projection.get("formal_extension_authorized") is not False
         or audit.get("fingerprints") != projection.get("fingerprints")
     ):
@@ -465,7 +470,9 @@ def update_projection(
         for case in cases:
             result = verified.get(case.case_id)
             try:
-                row = _derive_triplet(result["science"], result["case"]) if result else None
+                if result and result.get("case") != case.as_dict():
+                    raise ValueError("M2.1 formal case identity mismatch")
+                row = _derive_triplet(result["science"], case.as_dict()) if result else None
                 derived.append(row)
                 if row:
                     selected = row["selected_candidate_id"]
