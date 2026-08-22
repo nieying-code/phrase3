@@ -28,7 +28,7 @@ EXPECTED_RUNNER_FINGERPRINTS = {
     "runner_config_sha256": "b0f975506ac5de4262987f40bbee50af60b9343730fff9a37139dc7068ed8bc2",
     "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
 }
-EXPECTED_AUTHORIZED_FINGERPRINTS = {
+HISTORICAL_AUTHORIZED_FINGERPRINTS = {
     "scientific_config_sha256": "1cb170cda4ea880482208419be5fe61218b4bc113eb38a756164ac9ca0a62a60",
     "e3_component_sha256": "987755f9df12339008f057fa5323406dfa41a0331bdc14b790df9a6d2220b1a1",
     "family_component_sha256": "c32e61061da0fea90ea195546a9b7550d919a4ba96c1d3b528cbf2040905e531",
@@ -85,14 +85,15 @@ def test_runner_artifacts_parent_evidence_and_fingerprints_are_locked() -> None:
         "family_component_sha256", "runner_config_sha256",
     ):
         if field in {"e3_component_sha256", "family_component_sha256"}:
-            assert actual[field] != EXPECTED_AUTHORIZED_FINGERPRINTS[field]
+            assert actual[field] != HISTORICAL_AUTHORIZED_FINGERPRINTS[field]
         else:
-            assert actual[field] == EXPECTED_AUTHORIZED_FINGERPRINTS[field]
+            assert actual[field] == HISTORICAL_AUTHORIZED_FINGERPRINTS[field]
     # CI hardware is intentionally different from the approved experiment
     # machine.  Actual pilot preflight still compares all five fields against
     # approval and therefore cannot run on CI or a different workstation.
     assert len(actual["environment_sha256"]) == 64
-    assert yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))["approved_fingerprints"] == EXPECTED_AUTHORIZED_FINGERPRINTS
+    approval = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))
+    assert approval["approved_fingerprints"] == actual
     assert audit["fingerprints"] == EXPECTED_RUNNER_FINGERPRINTS
 
 
@@ -226,8 +227,9 @@ def test_authorized_revision_still_requires_cli_and_strict_preflight(monkeypatch
             root=ROOT, pilot_path=CONFIG, runner_path=RUNNER,
             approval_path=APPROVAL, authorize=False,
         )
+    current_approved = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))["approved_fingerprints"]
     monkeypatch.setattr(
-        pilot, "pilot_fingerprints", lambda *args, **kwargs: EXPECTED_AUTHORIZED_FINGERPRINTS,
+        pilot, "pilot_fingerprints", lambda *args, **kwargs: current_approved,
     )
     monkeypatch.setattr(pilot, "validate_execution_source", lambda *args, **kwargs: {
         "commit_sha": "a" * 40, "tree_sha": "b" * 40,
@@ -240,7 +242,7 @@ def test_authorized_revision_still_requires_cli_and_strict_preflight(monkeypatch
         root=ROOT, pilot_path=CONFIG, runner_path=RUNNER,
         approval_path=APPROVAL, authorize=True,
     )
-    assert preflight["fingerprints"] == EXPECTED_AUTHORIZED_FINGERPRINTS
+    assert preflight["fingerprints"] == current_approved
 
 
 @pytest.mark.parametrize("target", ["parent", "base", "seed", "count", "identity", "gate", "formal"])

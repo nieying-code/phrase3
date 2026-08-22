@@ -4,7 +4,6 @@ import hashlib
 import json
 from pathlib import Path
 
-import pytest
 import yaml
 
 from src import phase6_m2_1_pilot as pilot
@@ -22,7 +21,7 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def test_fix_is_bound_and_old_authorization_cannot_execute() -> None:
+def test_fix_is_bound_and_historical_authorization_invalidation_is_preserved() -> None:
     audit = json.loads(AUDIT.read_text(encoding="utf-8"))
     approval = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))
     assert audit["base"]["pr64_authorization_audit_sha256"] == _sha256(AUTH_AUDIT)
@@ -37,11 +36,9 @@ def test_fix_is_bound_and_old_authorization_cannot_execute() -> None:
     assert audit["current_fingerprints"]["environment_sha256"] == (
         "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
     )
-    assert approval["approved_fingerprints"] != actual
-    with pytest.raises(RuntimeError, match="approved fingerprint mismatch"):
-        pilot.validate_preflight(
-            root=ROOT, pilot_path=PILOT, runner_path=RUNNER,
-            approval_path=APPROVAL, authorize=True,
-        )
+    # PR #65 deliberately invalidated the then-current PR #64 approval.  The
+    # historical audit must retain that fact even after a separately reviewed
+    # approval is issued for the corrected runner fingerprints.
     assert audit["old_authorization_rejected_by_new_fingerprints"] is True
+    assert approval["approved_fingerprints"] == actual
     assert all(value == 0 for value in audit["execution_counts"].values())
