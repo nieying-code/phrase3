@@ -90,8 +90,11 @@ def test_new_seed_sets_are_exact_disjoint_and_not_in_prior_tracks() -> None:
     all_new = set().union(*(set(values) for values in observed.values()))
     assert sum(map(len, observed.values())) == len(all_new) == 39
     prior_numbers: set[int] = set()
+    derived_pilot = ROOT / "configs/phase6_m2_1_pilot.yaml"
     for path in (ROOT / "configs").glob("phase6*.yaml"):
-        if path == CONFIG:
+        # The reviewed runner protocol must repeat the frozen M2.1 seeds by
+        # identity; it is not an independent seed source or a prior track.
+        if path in {CONFIG, derived_pilot}:
             continue
         text = path.read_text(encoding="utf-8")
         for token in text.replace("[", " ").replace("]", " ").replace(",", " ").split():

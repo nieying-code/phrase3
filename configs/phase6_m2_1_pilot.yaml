@@ -1,0 +1,94 @@
+protocol_id: phase6_m2_1_endpoint_selection_pilot_v1_0
+version: 1.0.0
+status: frozen_for_pilot_execution
+runner_namespace: phase6_m2_1_endpoint_selection_pilot_v1_0
+output_root: outputs/phase6_m2_1_endpoint_selection_pilot_v1_0
+initial_draft_on: 2026-08-22
+revised_on: 2026-08-22
+
+frozen_design:
+  path: configs/phase6_m2_1_endpoint_selection.yaml
+  sha256: 75668fa7a4759d02f4325113aa5abd9ffaa0e1031ea435ef43fc130297700e5c
+  protocol_id: phase6_m2_1_endpoint_selection_design_v1_0
+  pr62_merge_commit: 770c863d69ba37ba858b00931310f94a9fb84e77
+  pr62_merge_tree: 043de6a433376928e9544c6e2d7784811a37a7d2
+  audit_path: docs/handoffs/2026-08-21_phase6_m2_1_endpoint_selection_design_v1_0_audit.json
+  audit_sha256: 724f6aad499fb4d39a27a17b9b5f300410c809a4c3aa3dc03494468ac2d31a9d
+
+scientific_base:
+  formal_extension_config: configs/phase6_m2_formal_extension.yaml
+  formal_extension_config_sha256: e3eb0ae4c79e9e0859ecc33e4707aecc7ce1a7a1aed3166453f8af2ed2db6792
+  confirmation_config: configs/phase6_m2_two_item_confirmation.yaml
+  confirmation_config_sha256: d6e28d2171aceacd750a74bcc58a01c3c7383ffdab7ce7fca53e7451fe5f39a5
+  model: unchanged_M2_supply_disruption
+  tier_id: M2F2
+  beta: 1.1
+  profile_id: T03
+  training_scenario_count: 100
+  validation_scenario_count: 2000
+  test_scenario_count: 2000
+
+pilot_matrix:
+  training_seeds: [2026090401, 2026090402, 2026090403]
+  validation_seeds: [2026090501, 2026090502, 2026090503]
+  test_seeds: [2026090701, 2026090702, 2026090703]
+  pairing: same_list_position_training_validation_test
+  triplet_count: 3
+  candidate_ids: [minimum_endpoint, interval_midpoint, maximum_endpoint]
+  validation_candidate_plan_count: 9
+  validation_exact_recourse_evaluation_count: 18000
+  one_time_test_probe_triplet_position: 1
+  test_strategy_ids:
+    - M2_minimum_endpoint
+    - M2_1_validation_selected_endpoint
+    - zero_autonomous_reserve
+    - fixed_autonomous_reserve_0_10
+    - fixed_autonomous_reserve_0_30
+    - fixed_autonomous_reserve_0_50
+  test_probe_plan_count: 6
+  test_probe_exact_recourse_evaluation_count: 12000
+  primary_run_count: 3
+
+identity_gates:
+  validation_scenario_generated_once_per_triplet: true
+  test_scenario_generated_once_for_probe_triplet: true
+  required_scenario_identity_fields:
+    - scenario_set_sha256
+    - scenario_order_sha256
+    - latent_draw_sha256
+    - demand_sha256
+    - emergency_price_sha256
+    - emergency_supply_sha256
+    - fulfillment_sha256
+  minimum_endpoint_is_M2_control_artifact: true
+  selected_minimum_reuses_M2_control_artifact: true
+  selected_minimum_test_difference_zero_within_frozen_tolerance: true
+  finalized_plan_identity_fields:
+    - finalized_plan_artifact_sha256
+    - regular_purchase_sha256
+    - reserve_amount
+    - exact_training_objective
+    - training_joint_scenario_set_sha256
+
+compute_gate:
+  projection_method: maximum_observed_triplet_wall_seconds_times_ten
+  projected_formal_wall_hours_maximum: 72.0
+  all_three_triplets_optimal_required: true
+  all_validation_and_probe_recourse_optimal_required: true
+  common_random_numbers_required: true
+  activation_or_selection_outcome_may_not_change_formal_design: true
+
+execution_boundaries:
+  runner_implemented: true
+  pilot_authorized: false
+  formal_training_authorized: false
+  formal_validation_authorized: false
+  selected_plan_freeze_authorized: false
+  formal_test_authorized: false
+  formal_extension_authorized: false
+  scenario_generation_count: 0
+  gurobi_call_count: 0
+  pilot_run_count: 0
+  formal_run_count: 0
+  algorithm_performance_runs: 0
+  M0_E3_runs: 0
