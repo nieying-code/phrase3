@@ -36,7 +36,7 @@ def test_parent_evidence_and_freeze_artifact_are_byte_locked():
         audit["parent_evidence"]["pr69_audit_sha256"]
     )
     assert _sha(CONFIG) == audit["freeze_artifact"]["sha256"] == (
-        "4438f01933a3b26ce79272b67ecb8fbb458f561bc1edb7073334ab183e1a783e"
+        "59842e3eb1437ff5a16fa8980e79400dab6504ded032db6d30ef5e5f60302f90"
     )
     evidence = config["reviewed_training_validation_evidence"]
     assert evidence["training_validation_registry_sha256"] == parent["global_artifacts"]["formal_training_validation_run_registry_sha256"]

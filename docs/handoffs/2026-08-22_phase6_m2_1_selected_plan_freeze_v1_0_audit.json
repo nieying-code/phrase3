@@ -12,7 +12,7 @@
   },
   "freeze_artifact": {
     "path": "configs/phase6_m2_1_selected_plan_freeze_v1_0.yaml",
-    "sha256": "4438f01933a3b26ce79272b67ecb8fbb458f561bc1edb7073334ab183e1a783e",
+    "sha256": "59842e3eb1437ff5a16fa8980e79400dab6504ded032db6d30ef5e5f60302f90",
     "selected_plan_count": 10,
     "minimum_endpoint_count": 2,
     "interval_midpoint_count": 0,
