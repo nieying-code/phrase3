@@ -28,7 +28,7 @@
 
 - 3个训练区间run；
 - 9个验证候选方案、18,000次精确补救评价；
-- 6个测试探针方案、12,000次精确补救评价。
+- 6个逻辑测试探针方案分别独立评价，每个2,000个场景，共12,000次精确补救评价；即使M2控制与M2.1选择方案引用同一最小端点制品，也不复用评价结果。
 
 ## 身份与选择门槛
 
@@ -48,13 +48,15 @@
 - result→manifest→registry→projection顺序最终化，registry/projection使用跨进程锁；
 - 小型status工具只读取不超过16 KiB的`status_summary.json`，不解析大型result/checkpoint；
 - 任一失败、超时、身份不一致或最终化失败停止后续case；
+- 原生`time_limit`或`master_time_limit`（包括嵌套在`oracle_failure`中的状态）统一进入不可变`timeout`终态；
+- 训练阶段使用1,800秒硬deadline；场景生成后及每次求解前检查剩余时间，单次Gurobi时限取`min(120秒, 剩余训练时间)`；
 - projection即使通过也始终保持`formal_extension_authorized=false`。
 
 ## 五类指纹
 
 - scientific config：`91e20926b71287e61ea0adcd95c4f6c2f67c452c678c2a7bd380c02c27515c71`
-- E3 component：`ec5545db03791d053b14942fa02f94215a2d3711634c90a747fec6e9e5dfe618`
-- family component：`3807bffa3e301656a818a80a5942439ed6bd1b2ece9812b47be661b29758f071`
+- E3 component：`398415ae6fd87228247eb44f65729ea191db35840e094e13dad44912e40c2d04`
+- family component：`9dd020fe5b48eb02937b1a086cb3ad75ceb7127766b0c998aacf17bcbb31cf05`
 - runner config：`b0f975506ac5de4262987f40bbee50af60b9343730fff9a37139dc7068ed8bc2`
 - environment：`b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af`
 

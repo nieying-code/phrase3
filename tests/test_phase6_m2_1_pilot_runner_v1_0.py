@@ -23,8 +23,8 @@ AUDIT = ROOT / "docs/handoffs/2026-08-22_phase6_m2_1_pilot_runner_v1_0_audit.jso
 SHA = "a" * 64
 EXPECTED_FINGERPRINTS = {
     "scientific_config_sha256": "91e20926b71287e61ea0adcd95c4f6c2f67c452c678c2a7bd380c02c27515c71",
-    "e3_component_sha256": "ec5545db03791d053b14942fa02f94215a2d3711634c90a747fec6e9e5dfe618",
-    "family_component_sha256": "3807bffa3e301656a818a80a5942439ed6bd1b2ece9812b47be661b29758f071",
+    "e3_component_sha256": "398415ae6fd87228247eb44f65729ea191db35840e094e13dad44912e40c2d04",
+    "family_component_sha256": "9dd020fe5b48eb02937b1a086cb3ad75ceb7127766b0c998aacf17bcbb31cf05",
     "runner_config_sha256": "b0f975506ac5de4262987f40bbee50af60b9343730fff9a37139dc7068ed8bc2",
     "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
 }
@@ -52,8 +52,8 @@ def test_runner_artifacts_parent_evidence_and_fingerprints_are_locked() -> None:
     artifacts = {
         "pilot_config": (CONFIG, "f593c2469ee88ba49098e96c2e42354af74ae7f0d8cea59d15a3d1f8b4aa8fbf"),
         "runner_config": (RUNNER, "b0f975506ac5de4262987f40bbee50af60b9343730fff9a37139dc7068ed8bc2"),
-        "approval": (APPROVAL, "8920e27bf392f9dbdb113352b8610c15290f42b1bfb6f9085c21b570854d4d2b"),
-        "runner_module": (ROOT / "src/phase6_m2_1_pilot.py", "e912c4b630a279fadb368a3e62244d77f30cd730edc4d996ac05c567f104138c"),
+        "approval": (APPROVAL, "e96f62f58cdca24e372b0bbf6bcefd3b2c9ae9250250bc2c98cd117add3855d8"),
+        "runner_module": (ROOT / "src/phase6_m2_1_pilot.py", "1cc65ea38f4c51e145501eca1b80ae3a42346db1dc83310a0623d07400941c67"),
         "cli": (ROOT / "src/run_phase6_m2_1_pilot.py", "415759c084400c256440a9634ac10b54b98d829ec01a0ba32140831cce7609c7"),
         "status_module": (ROOT / "src/phase6_m2_1_pilot_status.py", "e913f26a12890ea192bfd6ce292f948b990c53464d6005a4c87da35a167b20a3"),
     }
@@ -326,6 +326,135 @@ def test_selected_minimum_reuses_control_and_has_zero_probe_difference() -> None
         pilot._derive_triplet(science, case.as_dict())
 
 
+def test_selected_minimum_still_executes_six_independent_test_evaluations(monkeypatch) -> None:
+    shared_minimum = {
+        "reserve_amount": 10.0,
+        "regular_purchase_sha256": "a" * 64,
+        "exact_training_objective": 100.0,
+    }
+    strategy_plan = {
+        "M2_minimum_endpoint": shared_minimum,
+        "M2_1_validation_selected_endpoint": shared_minimum,
+        "zero_autonomous_reserve": {
+            "reserve_amount": 0.0, "regular_purchase_sha256": "b" * 64,
+            "exact_training_objective": 101.0,
+        },
+        "fixed_autonomous_reserve_0_10": {
+            "reserve_amount": 20.0, "regular_purchase_sha256": "c" * 64,
+            "exact_training_objective": 102.0,
+        },
+        "fixed_autonomous_reserve_0_30": {
+            "reserve_amount": 30.0, "regular_purchase_sha256": "d" * 64,
+            "exact_training_objective": 103.0,
+        },
+        "fixed_autonomous_reserve_0_50": {
+            "reserve_amount": 40.0, "regular_purchase_sha256": "e" * 64,
+            "exact_training_objective": 104.0,
+        },
+    }
+    calls: list[str] = []
+
+    def evaluate(**kwargs):
+        calls.append(kwargs["stage"])
+        return {
+            "plan_oos_status": "complete_feasible", "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0, "solver_failure_count": 0,
+            "mean_total_cost": 1.0, "total_cost_cvar95": 2.0, "service_level": 1.0,
+        }
+
+    monkeypatch.setattr(pilot, "_evaluate_plan", evaluate)
+    results = pilot._evaluate_test_strategies(
+        generated=object(), strategy_plan=strategy_plan, seconds=120.0,
+        wall_seconds=7200.0, progress=lambda *args: None,
+        test_identity=_scenario_identity("f"), selected_id="minimum_endpoint",
+    )
+    assert len(calls) == 6
+    assert calls == [f"test_{strategy}" for strategy in pilot.TEST_STRATEGIES]
+    assert len(results) == 6
+    assert 6 * 2000 == 12000
+    assert (
+        results["M2_minimum_endpoint"]["regular_purchase_sha256"]
+        == results["M2_1_validation_selected_endpoint"]["regular_purchase_sha256"]
+    )
+
+
+def test_training_deadline_caps_each_solver_call_and_stops_expired_stage(monkeypatch) -> None:
+    times = iter([0.0, 10.0, 119.0, 121.0])
+    monkeypatch.setattr(pilot, "perf_counter", lambda: next(times))
+    deadline = pilot._TrainingDeadline(wall_seconds=120.0, solver_call_seconds=60.0)
+    assert deadline.solver_seconds("first") == 60.0
+    assert deadline.solver_seconds("second") == 1.0
+    with pytest.raises(TimeoutError, match="before third"):
+        deadline.check("third")
+
+
+@pytest.mark.parametrize(
+    "solver_status,message",
+    [
+        ("time_limit", "direct time limit"),
+        ("master_time_limit", "direct master time limit"),
+        ("time_limit", "minimum endpoint failed: oracle_failure"),
+        ("master_time_limit", "minimum endpoint failed: oracle_failure"),
+    ],
+)
+def test_native_solver_timeout_is_immutable_timeout(
+    monkeypatch, tmp_path, solver_status, message,
+) -> None:
+    config, design = _configs(); case = pilot.build_pilot_cases(config, design)[0]
+    runner_config = yaml.safe_load(RUNNER.read_text(encoding="utf-8"))
+    monkeypatch.setattr(pilot, "load_phase6_matrix", lambda path: {})
+    monkeypatch.setattr(pilot, "capture_runtime_context", lambda **kwargs: {})
+    monkeypatch.setattr(pilot, "update_projection", lambda **kwargs: {
+        "pilot_compute_gate_passed": False,
+    })
+
+    def fail(**kwargs):
+        kwargs["progress"]("minimum_tolerance_optimal_reserve", {})
+        raise pilot.DevelopmentStageError(
+            "minimum_tolerance_optimal_reserve", solver_status, message,
+        )
+
+    output = tmp_path / "out"
+    result = pilot.run_case(
+        root=tmp_path, output_root=output, matrix_path=tmp_path / "matrix.yaml",
+        pilot=config, design=design, runner=runner_config,
+        fingerprints=_fingerprints(), locked_environment={},
+        source={"commit_sha": "a" * 40, "tree_sha": "b" * 40},
+        case=case, run_id=f"timeout_{solver_status}_{len(message)}", science_executor=fail,
+    )
+    assert result["status"] == "timeout"
+    assert result["failure"]["solver_status"] == solver_status
+    run_dir = output / "pilot/runs" / f"timeout_{solver_status}_{len(message)}"
+    assert json.loads((run_dir / "status_summary.json").read_text(encoding="utf-8"))["status"] == "timeout"
+    registry = pilot._read_registry(output / "pilot/pilot_run_registry.csv")
+    assert registry[0]["status"] == "timeout"
+
+
+def test_timeout_stops_remaining_triplets_and_cli_is_nonzero(monkeypatch, tmp_path, capsys) -> None:
+    config, design = _configs(); calls: list[str] = []
+    monkeypatch.setattr(pilot, "validate_preflight", lambda **kwargs: {
+        "pilot": config, "design": design,
+        "runner": yaml.safe_load(RUNNER.read_text(encoding="utf-8")),
+        "fingerprints": _fingerprints(), "locked_environment": {}, "source": {},
+    })
+
+    def timed_out_case(**kwargs):
+        calls.append(kwargs["case"].case_id)
+        return {"status": "timeout", "projection": {"pilot_compute_gate_passed": False}}
+
+    monkeypatch.setattr(pilot, "run_case", timed_out_case)
+    results = pilot.run_pilot(
+        root=tmp_path, pilot_path=CONFIG, runner_path=RUNNER, approval_path=APPROVAL,
+        authorize=True, run_id_prefix="timeout_batch",
+    )
+    assert len(calls) == 1
+    assert len(results) == 1 and results[0]["status"] == "timeout"
+
+    monkeypatch.setattr(cli, "run_pilot", lambda **kwargs: results)
+    assert cli.main(["--run-id-prefix", "timeout_batch"]) != 0
+    assert json.loads(capsys.readouterr().out)["status"] == "incomplete"
+
+
 def test_primary_subset_and_unbound_diagnostic_are_forbidden(monkeypatch) -> None:
     config, design = _configs()
     monkeypatch.setattr(pilot, "validate_preflight", lambda **kwargs: {
@@ -457,5 +586,9 @@ def test_revision_records_zero_science_execution() -> None:
     assert audit["frozen_pilot"]["validation_exact_recourse_evaluation_count"] == 18000
     assert audit["frozen_pilot"]["test_probe_plan_count"] == 6
     assert audit["frozen_pilot"]["test_probe_exact_recourse_evaluation_count"] == 12000
+    assert audit["frozen_pilot"]["test_probe_strategies_evaluated_independently"] is True
+    assert audit["safety"]["native_solver_timeouts_are_immutable_timeout"] is True
+    assert audit["safety"]["training_hard_deadline_seconds"] == 1800
+    assert audit["safety"]["solver_limit_capped_by_remaining_training_seconds"] is True
     assert audit["safety"]["formal_extension_authorized"] is False
     assert audit["CI"] == "recorded_in_pr_body"

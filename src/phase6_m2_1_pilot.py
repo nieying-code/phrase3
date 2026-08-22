@@ -324,6 +324,59 @@ def _evaluate_plan(
     return metrics
 
 
+class _TrainingDeadline:
+    """Hard wall-clock budget shared by all training stages in one triplet."""
+
+    def __init__(self, *, wall_seconds: float, solver_call_seconds: float) -> None:
+        if not math.isfinite(wall_seconds) or wall_seconds <= 0:
+            raise ValueError("training_triplet_wall_seconds must be finite and positive")
+        if not math.isfinite(solver_call_seconds) or solver_call_seconds <= 0:
+            raise ValueError("solver_call_seconds must be finite and positive")
+        self.deadline = perf_counter() + wall_seconds
+        self.solver_call_seconds = solver_call_seconds
+
+    def check(self, stage: str) -> None:
+        if self.deadline - perf_counter() <= 0:
+            raise TimeoutError(f"training_triplet_wall_seconds exceeded before {stage}")
+
+    def solver_seconds(self, stage: str) -> float:
+        remaining = self.deadline - perf_counter()
+        if remaining <= 0:
+            raise TimeoutError(f"training_triplet_wall_seconds exceeded before {stage}")
+        return min(self.solver_call_seconds, remaining)
+
+
+def _evaluate_test_strategies(
+    *, generated: Any, strategy_plan: Mapping[str, Mapping[str, Any]],
+    seconds: float, wall_seconds: float, progress: Callable[[str, Mapping[str, Any]], None],
+    test_identity: Mapping[str, str], selected_id: str,
+) -> dict[str, dict[str, Any]]:
+    """Evaluate all six logical strategies independently, even for one shared plan."""
+
+    results: dict[str, dict[str, Any]] = {}
+    for strategy_id in TEST_STRATEGIES:
+        plan = strategy_plan[strategy_id]
+        progress(f"test_{strategy_id}", {})
+        metrics = _evaluate_plan(
+            generated=generated, plan=plan, seconds=seconds,
+            wall_seconds=wall_seconds, stage=f"test_{strategy_id}",
+        )
+        results[strategy_id] = {
+            "strategy_id": strategy_id,
+            "source_candidate_id": (
+                "minimum_endpoint" if strategy_id == "M2_minimum_endpoint"
+                else selected_id if strategy_id == "M2_1_validation_selected_endpoint"
+                else strategy_id
+            ),
+            "reserve": float(plan["reserve_amount"]),
+            "regular_purchase_sha256": plan["regular_purchase_sha256"],
+            "exact_training_objective": plan["exact_training_objective"],
+            "metrics": metrics,
+            **test_identity,
+        }
+    return results
+
+
 def execute_triplet_science(**kwargs: Any) -> dict[str, Any]:
     """Run one indivisible training-validation-test pilot triplet."""
 
@@ -338,8 +391,12 @@ def execute_triplet_science(**kwargs: Any) -> dict[str, Any]:
     seconds = float(runner["limits"]["solver_call_seconds"])
     plan_wall = float(runner["limits"]["validation_candidate_wall_seconds"])
     absolute, relative = 1.0e-5, 1.0e-7
-    training_started = perf_counter()
+    training_deadline = _TrainingDeadline(
+        wall_seconds=float(runner["limits"]["training_triplet_wall_seconds"]),
+        solver_call_seconds=seconds,
+    )
 
+    training_deadline.check("training_scenario_generation")
     progress("training_scenario_generation", {"seed": case.training_seed})
     training, budget = _generate_data(
         root=root, matrix=matrix, matrix_path=matrix_path, formal=formal,
@@ -347,14 +404,17 @@ def execute_triplet_science(**kwargs: Any) -> dict[str, Any]:
     )
     training_identity = _scenario_identity(training)
     data = training.data
+    training_deadline.check("minimum_feasible_reserve")
     progress("minimum_feasible_reserve", {})
     floor = solve_minimum_feasible_reserve(
-        data, solver_threads=1, time_limit_seconds=seconds,
+        data, solver_threads=1,
+        time_limit_seconds=training_deadline.solver_seconds("minimum_feasible_reserve"),
     )
     _require_optimal("minimum_feasible_reserve", floor.status, f"floor failed: {floor.status}")
     progress("complete_extensive_optimum", {})
     optimum = solve_m2_endogenous_extensive(
-        data, solver_threads=1, time_limit_seconds=seconds,
+        data, solver_threads=1,
+        time_limit_seconds=training_deadline.solver_seconds("complete_extensive_optimum"),
         consistency_tolerance=absolute,
     )
     _require_optimal(
@@ -369,19 +429,31 @@ def execute_triplet_science(**kwargs: Any) -> dict[str, Any]:
     common = dict(
         data=data, master_optimum=float(optimum.master.objective),
         exact_optimum=float(optimum.objective), tolerance=tolerance,
-        solver_preference=("gurobi",), time_limit_seconds=seconds,
+        solver_preference=("gurobi",),
         solver_threads=1, feasibility_tolerance=1.0e-7, optimality_tolerance=1.0e-7,
     )
     progress("minimum_tolerance_optimal_reserve", {})
     with m2_model_context():
-        minimum = solve_reserve_face_point(direction="min", **common)
+        minimum = solve_reserve_face_point(
+            direction="min",
+            time_limit_seconds=training_deadline.solver_seconds(
+                "minimum_tolerance_optimal_reserve"
+            ),
+            **common,
+        )
     _require_optimal(
         "minimum_tolerance_optimal_reserve", _native_failure_status(minimum),
         f"minimum endpoint failed: {minimum.status}",
     )
     progress("maximum_tolerance_optimal_reserve", {})
     with m2_model_context():
-        maximum_face = solve_reserve_face_point(direction="max", **common)
+        maximum_face = solve_reserve_face_point(
+            direction="max",
+            time_limit_seconds=training_deadline.solver_seconds(
+                "maximum_tolerance_optimal_reserve"
+            ),
+            **common,
+        )
     _require_optimal(
         "maximum_tolerance_optimal_reserve", _native_failure_status(maximum_face),
         f"maximum endpoint failed: {maximum_face.status}",
@@ -413,7 +485,10 @@ def execute_triplet_science(**kwargs: Any) -> dict[str, Any]:
         progress(f"reoptimize_{candidate_id}", {"reserve": endpoints[candidate_id]})
         solution = solve_m2_fixed_reserve(
             data, reserve_ratio=endpoints[candidate_id] / budget,
-            solver_threads=1, time_limit_seconds=seconds,
+            solver_threads=1,
+            time_limit_seconds=training_deadline.solver_seconds(
+                f"reoptimize_{candidate_id}"
+            ),
             consistency_tolerance=absolute,
         )
         _require_optimal(
@@ -445,7 +520,8 @@ def execute_triplet_science(**kwargs: Any) -> dict[str, Any]:
         reserve = float(floor.reserve) + rho * (budget - float(floor.reserve))
         solution = solve_m2_fixed_reserve(
             data, reserve_ratio=reserve / budget, solver_threads=1,
-            time_limit_seconds=seconds, consistency_tolerance=absolute,
+            time_limit_seconds=training_deadline.solver_seconds(f"train_{strategy}"),
+            consistency_tolerance=absolute,
         )
         _require_optimal(
             f"train_{strategy}", _native_failure_status(solution),
@@ -459,8 +535,7 @@ def execute_triplet_science(**kwargs: Any) -> dict[str, Any]:
             objective=solution.objective,
             joint_scenario_set_sha256=training_hash,
         )
-    if perf_counter() - training_started > float(runner["limits"]["training_triplet_wall_seconds"]):
-        raise TimeoutError("training_triplet_wall_seconds exceeded")
+    training_deadline.check("validation_scenario_generation")
 
     progress("validation_scenario_generation", {"seed": case.validation_seed})
     validation, validation_budget = _generate_data(
@@ -517,30 +592,11 @@ def execute_triplet_science(**kwargs: Any) -> dict[str, Any]:
             "fixed_autonomous_reserve_0_30": plans["fixed_autonomous_reserve_0_30"],
             "fixed_autonomous_reserve_0_50": plans["fixed_autonomous_reserve_0_50"],
         }
-        cached: dict[int, dict[str, Any]] = {}
-        for strategy_id in TEST_STRATEGIES:
-            plan = strategy_plan[strategy_id]
-            object_key = id(plan)
-            if object_key not in cached:
-                progress(f"test_{strategy_id}", {})
-                cached[object_key] = _evaluate_plan(
-                    generated=test, plan=plan, seconds=seconds,
-                    wall_seconds=float(runner["limits"]["test_plan_wall_seconds"]),
-                    stage=f"test_{strategy_id}",
-                )
-            test_results[strategy_id] = {
-                "strategy_id": strategy_id,
-                "source_candidate_id": (
-                    "minimum_endpoint" if strategy_id == "M2_minimum_endpoint"
-                    else selected_id if strategy_id == "M2_1_validation_selected_endpoint"
-                    else strategy_id
-                ),
-                "reserve": float(plan["reserve_amount"]),
-                "regular_purchase_sha256": plan["regular_purchase_sha256"],
-                "exact_training_objective": plan["exact_training_objective"],
-                "metrics": cached[object_key],
-                **test_identity,
-            }
+        test_results = _evaluate_test_strategies(
+            generated=test, strategy_plan=strategy_plan, seconds=seconds,
+            wall_seconds=float(runner["limits"]["test_plan_wall_seconds"]),
+            progress=progress, test_identity=test_identity, selected_id=selected_id,
+        )
         validate_shared_scenario_identity(
             test_results, expected_ids=TEST_STRATEGIES, phase="test",
         )
@@ -1074,8 +1130,21 @@ def run_case(
             status = "interrupted"
             failure = {"stage": stages[-1]["stage"] if stages else "initialization", "status": status, "message": "KeyboardInterrupt", "exception_type": "KeyboardInterrupt"}
         except Exception as exc:
-            status = "timeout" if isinstance(exc, TimeoutError) or "time_limit" in str(exc) else "stage_failure"
-            failure = {"stage": stages[-1]["stage"] if stages else "initialization", "status": status, "message": f"{type(exc).__name__}: {exc}"[:1000], "exception_type": type(exc).__name__}
+            solver_status = (
+                str(exc.solver_status).strip().lower()
+                if isinstance(exc, DevelopmentStageError) else ""
+            )
+            is_solver_timeout = (
+                solver_status in {"time_limit", "master_time_limit"}
+                or solver_status.endswith("_time_limit")
+            )
+            status = "timeout" if isinstance(exc, TimeoutError) or is_solver_timeout else "stage_failure"
+            failure = {
+                "stage": getattr(exc, "stage", stages[-1]["stage"] if stages else "initialization"),
+                "status": status, "solver_status": solver_status or None,
+                "message": f"{type(exc).__name__}: {exc}"[:1000],
+                "exception_type": type(exc).__name__,
+            }
 
         finalization_stage = "memory_sampling"
         try:
