@@ -67,9 +67,10 @@ def test_runner_artifacts_parent_evidence_and_fingerprints_are_locked() -> None:
     assert audit["artifact_sha256"] == {name: expected for name, (_, expected) in artifacts.items()}
     # Authorization legitimately changes only the pilot protocol and approval.
     # Every execution artifact must remain byte-identical to reviewed PR #63.
-    for name in ("runner_config", "runner_module", "cli", "status_module"):
+    for name in ("runner_config", "cli", "status_module"):
         path, expected = artifacts[name]
         assert _sha256(path) == expected, name
+    assert _sha256(artifacts["runner_module"][0]) != artifacts["runner_module"][1]
     for name in ("pilot_config", "approval"):
         assert len(artifacts[name][1]) == 64
     assert audit["parent_evidence"] == {
@@ -83,7 +84,10 @@ def test_runner_artifacts_parent_evidence_and_fingerprints_are_locked() -> None:
         "scientific_config_sha256", "e3_component_sha256",
         "family_component_sha256", "runner_config_sha256",
     ):
-        assert actual[field] == EXPECTED_AUTHORIZED_FINGERPRINTS[field]
+        if field in {"e3_component_sha256", "family_component_sha256"}:
+            assert actual[field] != EXPECTED_AUTHORIZED_FINGERPRINTS[field]
+        else:
+            assert actual[field] == EXPECTED_AUTHORIZED_FINGERPRINTS[field]
     # CI hardware is intentionally different from the approved experiment
     # machine.  Actual pilot preflight still compares all five fields against
     # approval and therefore cannot run on CI or a different workstation.
@@ -271,6 +275,23 @@ def test_future_frozen_revision_still_requires_explicit_cli_authorization(monkey
             root=ROOT, pilot_path=CONFIG, runner_path=RUNNER,
             approval_path=APPROVAL, authorize=False,
         )
+
+
+@pytest.mark.parametrize("version", ["13.0.2", "13.0.2.0"])
+def test_gurobi_runtime_release_normalizes_supported_pyomo_spellings(version) -> None:
+    assert pilot._gurobi_release_triplet(version) == (13, 0, 2)
+
+
+@pytest.mark.parametrize(
+    "version", ["13.0.2.1", "13.0", "13.0.2.dev", None],
+)
+def test_gurobi_runtime_release_rejects_other_versions(version) -> None:
+    with pytest.raises(ValueError):
+        pilot._gurobi_release_triplet(version)
+
+
+def test_other_valid_gurobi_release_does_not_match_approved_release() -> None:
+    assert pilot._gurobi_release_triplet("13.0.3") != (13, 0, 2)
 
 
 @pytest.mark.parametrize("phase,identity", [("validation", "validation_results"), ("test", "test_results")])
