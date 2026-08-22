@@ -197,5 +197,5 @@
     "algorithm_performance_runs": 0,
     "M0_E3_runs": 0
   },
-  "CI": "pending"
+  "CI": "recorded_in_pr_body"
 }
