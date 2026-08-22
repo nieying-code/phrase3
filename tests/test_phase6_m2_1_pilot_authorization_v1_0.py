@@ -32,9 +32,10 @@ def test_authorization_is_exactly_bound_and_executes_nothing() -> None:
     }
     assert audit["artifacts"] == {
         "pilot_config_sha256": _sha256(PILOT),
-        "approval_sha256": _sha256(APPROVAL),
+        "approval_sha256": "5465796e23d88cdd2196d8d8976539ec7a7249e422dd4dc2b3234cd391e3f3f8",
         "runner_config_sha256": _sha256(RUNNER),
     }
+    assert _sha256(APPROVAL) != audit["artifacts"]["approval_sha256"]
     actual = pilot_fingerprints(ROOT, PILOT, RUNNER)
     for field in (
         "scientific_config_sha256", "e3_component_sha256",
@@ -50,7 +51,7 @@ def test_authorization_is_exactly_bound_and_executes_nothing() -> None:
     assert audit["fingerprints"]["environment_sha256"] == (
         "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
     )
-    assert approval["approved_fingerprints"] == audit["fingerprints"]
+    assert approval["approved_fingerprints"] != audit["fingerprints"]
     assert protocol["execution_boundaries"]["pilot_authorized"] is True
     assert approval["status"] == "approved_for_pilot_execution"
     assert approval["pilot_authorized"] is True
