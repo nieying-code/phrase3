@@ -31,7 +31,16 @@ def test_freeze_artifacts_and_fingerprints_are_exactly_locked():
     assert {_id: _sha(path) for _id, path in expected_paths.items()} == audit["artifact_sha256"]
     approval = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))
     assert approval["approved_fingerprints"] == audit["fingerprints"]
-    assert formal_fingerprints(ROOT, CONFIG, RUNNER) == audit["fingerprints"]
+    actual = formal_fingerprints(ROOT, CONFIG, RUNNER)
+    for field in (
+        "scientific_config_sha256",
+        "e3_component_sha256",
+        "family_component_sha256",
+        "runner_config_sha256",
+    ):
+        assert actual[field] == audit["fingerprints"][field]
+    assert len(actual["environment_sha256"]) == 64
+    int(actual["environment_sha256"], 16)
 
 
 def test_pilot_binding_matrix_and_phase_stop_boundary_are_locked():

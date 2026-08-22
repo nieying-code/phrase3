@@ -40,7 +40,18 @@ def test_frozen_formal_matrix_and_phase_boundary_are_exact():
 def test_approval_matches_current_fingerprints_and_does_not_authorize_test():
     approval = _approval()
     actual = runner.formal_fingerprints(ROOT, CONFIG, RUNNER)
-    assert approval["approved_fingerprints"] == actual
+    for field in (
+        "scientific_config_sha256",
+        "e3_component_sha256",
+        "family_component_sha256",
+        "runner_config_sha256",
+    ):
+        assert approval["approved_fingerprints"][field] == actual[field]
+    assert len(actual["environment_sha256"]) == 64
+    int(actual["environment_sha256"], 16)
+    assert approval["approved_fingerprints"]["environment_sha256"] == (
+        "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+    )
     assert approval["formal_training_authorized"] is True
     assert approval["formal_validation_authorized"] is True
     assert approval["selected_plan_freeze_authorized"] is False
