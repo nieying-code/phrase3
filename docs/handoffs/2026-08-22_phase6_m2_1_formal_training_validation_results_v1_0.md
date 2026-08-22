@@ -67,6 +67,7 @@ test_scenario_identity=null
 - 完整普通回归：563 passed；
 - Phase 5：6 passed；
 - Windows复现专项：16 passed；
-- Linux/Windows CI：待最终提交记录。
+- 首个结果证据提交CI：[run 32578771258](https://github.com/nieying-code/phrase3/actions/runs/32578771258)，Linux普通回归563 passed、Phase 5为6 passed、Windows复现16 passed；
+- 最终纯追溯提交的CI记录在PR正文，避免提交自引用。
 
 下一步只能在独立PR中冻结10个最终入选方案及其哈希，并继续保持正式测试关闭，直到该PR完成复审和人工合并。
