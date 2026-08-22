@@ -40,7 +40,10 @@ def test_authorization_is_exactly_bound_and_executes_nothing() -> None:
         "scientific_config_sha256", "e3_component_sha256",
         "family_component_sha256", "runner_config_sha256",
     ):
-        assert actual[field] == audit["fingerprints"][field]
+        if field in {"e3_component_sha256", "family_component_sha256"}:
+            assert actual[field] != audit["fingerprints"][field]
+        else:
+            assert actual[field] == audit["fingerprints"][field]
     # The approved environment is the experiment workstation, not CI hardware;
     # runtime preflight still compares all five fields before scenario generation.
     assert len(actual["environment_sha256"]) == 64

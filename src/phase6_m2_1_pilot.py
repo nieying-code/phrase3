@@ -131,6 +131,17 @@ def _component_sha256(root: Path, files: Sequence[str]) -> str:
     return digest.hexdigest()
 
 
+def _gurobi_release_triplet(value: Any) -> tuple[int, int, int]:
+    """Normalize Pyomo's 3- or 4-component Gurobi release string."""
+
+    parts = str(value or "").strip().split(".")
+    if len(parts) not in {3, 4} or any(not part.isdigit() for part in parts):
+        raise ValueError(f"invalid Gurobi runtime version: {value!r}")
+    if len(parts) == 4 and int(parts[3]) != 0:
+        raise ValueError(f"unsupported nonzero Gurobi build component: {value!r}")
+    return tuple(int(part) for part in parts[:3])
+
+
 def load_pilot_config(path: Path) -> dict[str, Any]:
     payload = yaml.safe_load(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict) or payload.get("protocol_id") != PROTOCOL_ID:
@@ -1045,7 +1056,7 @@ def validate_preflight(
     solver = runtime.get("solver") or {}
     if (
         solver.get("selected") != "gurobi_direct"
-        or str(solver.get("version")) != "13.0.2"
+        or _gurobi_release_triplet(solver.get("version")) != (13, 0, 2)
         or int(solver.get("threads", -1)) != 1
     ):
         raise RuntimeError("M2.1 runtime is not Gurobi 13.0.2 through gurobi_direct Threads=1")
