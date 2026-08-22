@@ -1,0 +1,31 @@
+namespace: phase6_m2_1_formal_test_v1_0
+protocol: phase6_m2_1_selected_plan_freeze_v1_0
+output_root: outputs/phase6_m2_1_formal_test_v1_0
+formal_subdirectory: formal/test
+source_output_root: outputs/phase6_m2_1_formal_training_validation_v1_0
+source_subdirectory: training_validation
+execution:
+  strictly_serial: true
+  empty_output_namespace_required_for_primary_batch: true
+  explicit_cli_authorization_required: true
+  immutable_run_ids: true
+  complete_ten_triplet_primary_batch_required: true
+  diagnostic_retry_requires_case_id_and_parent_run_id: true
+  failed_primary_permanently_blocks_batch_gate: true
+  reviewed_selected_plan_freeze_is_read_only: true
+  source_plan_reoptimization_or_substitution_forbidden: true
+  one_shared_test_scenario_set_per_triplet: true
+  six_strategies_are_evaluated_independently: true
+  formal_test_primary_run_count: 10
+  formal_test_plan_count: 60
+  formal_test_recourse_evaluation_count: 120000
+  algorithm_performance_authorized: false
+limits:
+  solver_call_seconds: 120
+  test_plan_wall_seconds: 7200
+  threads: 1
+solver:
+  interface: gurobi_direct
+  optimizer_version: 13.0.2
+  gurobipy_version: 13.0.2
+  fallback_allowed: false
