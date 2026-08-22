@@ -1,0 +1,71 @@
+{
+  "schema_version": "phase6_m2_1_endpoint_selection_design_v1_0",
+  "created_on": "2026-08-21",
+  "base": {
+    "pr61_merge_commit": "e03c6fcbe15e8b25ef73e7b760bc31ca29219e27",
+    "pr61_merge_tree": "e5d131c47f3f70dc8230810440862d3aae02e305",
+    "branch": "agent/phase6-m2-1-endpoint-selection-design"
+  },
+  "parent_evidence": {
+    "pr58_mechanism_audit_sha256": "bce5b075d352a4679b4371a073f5cc0a931a6b309b401318e9f4c38a8a7489a5",
+    "pr60_oos_audit_sha256": "ee1a767df0962b0e625ef0dbe4acbe99b719c14f576b8464a9d338dffe976cd4",
+    "pr61_diagnostic_audit_sha256": "920db65ad09e2c0d46b662b84a80f19ae0ed495dbe75896754683d2a3336bce9",
+    "pr61_required_status": "M2_1_candidate_requires_new_freeze_validation_and_test_sets"
+  },
+  "artifact_sha256": {
+    "config": "75668fa7a4759d02f4325113aa5abd9ffaa0e1031ea435ef43fc130297700e5c",
+    "runner_config": "aeb4281753a938e61d03c4c537a126fb7d752e7df63620f1788f01f6b304fc62",
+    "approval": "8ec9f6b935e092256636d20f28689889355817f7f0c3650975614cc3a104b824",
+    "protocol_module": "b9f1ce9e450ac5e420a5eb8ef775ed57a016ff44285f349ae63afaf71e0d52cf",
+    "cli_guard": "f5389de11078bc21ea8f3484958a7f8df8b7d02c813b9fef8cddb04c5cff88bd"
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "6ae0e6623647f9d70bf7a6cdba6114585a1a4b72727cdd222025508b68829941",
+    "e3_component_sha256": "9697e08863336c3c4917eaabd5a9e7f32145d4cbfba57a78f04b51143883d279",
+    "family_component_sha256": "b9046cb7447612cc2c33d43f8e788d54130ef2bdc75f90005c4123979c32ed8f",
+    "runner_config_sha256": "aeb4281753a938e61d03c4c537a126fb7d752e7df63620f1788f01f6b304fc62",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "design": {
+    "model_changed": false,
+    "core_configuration": {"tier_id": "M2F2", "beta": 1.1, "profile_id": "T03"},
+    "candidate_ids": ["minimum_endpoint", "interval_midpoint", "maximum_endpoint"],
+    "validation_candidates_share_one_scenario_identity_per_triplet": true,
+    "test_strategies_share_one_scenario_identity_per_triplet": true,
+    "scenario_identity_field_count": 7,
+    "minimum_endpoint_is_unique_M2_control_artifact": true,
+    "minimum_endpoint_plan_identity_field_count": 5,
+    "selected_minimum_endpoint_reuses_M2_control_artifact": true,
+    "selection_order": ["minimum_cvar95", "minimum_mean_total_cost", "minimum_reserve"],
+    "primary_estimand": "M2_1_minus_M2_oos_cvar95",
+    "primary_confirmatory_test_count": 1,
+    "formal_seed_triplet_count": 10,
+    "formal_validation_candidate_plan_count": 30,
+    "formal_validation_exact_recourse_evaluation_count": 60000,
+    "formal_test_strategy_plan_count": 60,
+    "formal_test_exact_recourse_evaluation_count": 120000,
+    "test_data_used_for_selection": false
+  },
+  "pilot_plan": {
+    "training_validation_triplet_count": 3,
+    "validation_candidate_plan_count": 9,
+    "validation_exact_recourse_evaluation_count": 18000,
+    "one_time_test_probe_strategy_count": 6,
+    "one_time_test_probe_exact_recourse_evaluation_count": 12000
+  },
+  "execution_boundaries": {
+    "scientific_runner_enabled": false,
+    "pilot_authorized": false,
+    "formal_training_authorized": false,
+    "formal_validation_authorized": false,
+    "selected_plan_freeze_authorized": false,
+    "formal_test_authorized": false,
+    "M2_1_runs": 0,
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0,
+    "algorithm_performance_runs": 0,
+    "M0_E3_runs": 0
+  },
+  "status": "candidate_design_ready_for_review",
+  "CI": "recorded_in_pr_body"
+}

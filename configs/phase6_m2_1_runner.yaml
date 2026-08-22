@@ -1,0 +1,18 @@
+namespace: phase6_m2_1_endpoint_selection_v1_0
+protocol: phase6_m2_1_endpoint_selection_design_v1_0
+output_root: outputs/phase6_m2_1_endpoint_selection_v1_0
+execution:
+  strictly_serial: true
+  empty_output_namespace_required_for_primary_batch: true
+  explicit_cli_authorization_required: true
+  immutable_run_ids: true
+  diagnostic_retry_requires_case_id_and_parent_run_id: true
+  failure_stops_batch: true
+  test_phase_requires_finalized_validation_selection_artifacts: true
+  existing_M2_outputs_are_read_only: true
+limits:
+  solver_call_seconds: 120
+  training_case_wall_seconds: 900
+  validation_candidate_wall_seconds: 7200
+  test_plan_wall_seconds: 7200
+  threads: 1
