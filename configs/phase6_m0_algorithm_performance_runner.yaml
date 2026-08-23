@@ -1,0 +1,40 @@
+namespace: phase6_m0_e3_algorithm_performance_v1_0
+protocol: phase6_streamlined_experiments_v2_1
+matrix_path: configs/phase6_experiment_matrix.yaml
+e3_runner_config_path: configs/phase6_runner.yaml
+output_root: outputs/phase6_m0_e3_algorithm_performance_v1_0
+formal_subdirectory: formal/primary
+execution:
+  strictly_serial: true
+  complete_primary_batch_required: true
+  empty_output_namespace_required: true
+  explicit_cli_authorization_required: true
+  immutable_run_ids: true
+  diagnostic_retry_requires_case_id_and_parent_run_id: true
+  failed_primary_permanently_blocks_batch_gate: true
+  execution_branch_required: main
+matrix_identity:
+  tiers: [V1, V2, P1, P2]
+  algorithms: [standard_ccg_cold, spw_ccg_warm]
+  budget_factors: [0.9, 1.1, 1.3]
+  expected_primary_run_count: 21
+  expected_budget_pair_count: 63
+  expected_algorithm_execution_count: 246
+  V2_technical_repetitions: 3
+reporting_roles:
+  E1_existing_evidence: extensive_formulation_vs_standard_CCG_correctness
+  E3_current_batch: standard_CCG_cold_vs_SPW_CCG_cross_budget_warm_start
+  V2: primary_inferential_seed_level
+  P2: descriptive_pressure_test_only
+  technical_repetitions_are_not_independent_samples: true
+limits:
+  threads: 1
+  optimizer_version: 13.0.2
+  gurobipy_version: 13.0.2
+  interface: gurobi_direct
+authorizations:
+  M0_E3_algorithm_performance_authorized: true
+  M2_formal_authorized: false
+  M2_formal_OOS_authorized: false
+  M2_1_authorized: false
+  other_formal_experiments_authorized: false
