@@ -94,7 +94,15 @@ def test_reviewed_pr70_freeze_audit_uses_real_authorization_schema() -> None:
         _validate_reviewed_freeze_audit(wrong_schema, binding)
 
 
-def test_pr72_authorization_is_revoked_by_runner_fix_before_source_loading() -> None:
+def test_pr72_authorization_is_revoked_by_runner_fix_before_source_loading(monkeypatch) -> None:
+    approval = yaml.safe_load(
+        (ROOT / "configs/phase6_m2_1_formal_test_authorization_v1_0.yaml")
+        .read_text(encoding="utf-8")
+    )
+    monkeypatch.setattr(
+        "src.phase6_m2_1_formal_test.formal_test_fingerprints",
+        lambda *args, **kwargs: approval["approved_fingerprints"],
+    )
     with pytest.raises(RuntimeError, match="orchestrator mismatch"):
         validate_preflight(
             root=ROOT,

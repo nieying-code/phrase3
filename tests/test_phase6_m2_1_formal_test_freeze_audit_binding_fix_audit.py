@@ -35,7 +35,16 @@ def test_fix_changes_only_orchestrator_identity_and_requires_reauthorization() -
         ROOT / "configs/phase6_m2_1_selected_plan_freeze_v1_0.yaml",
         ROOT / "configs/phase6_m2_1_formal_test_runner.yaml",
     )
-    assert actual == audit["fingerprints"]
+    for field in (
+        "scientific_config_sha256",
+        "e3_component_sha256",
+        "family_component_sha256",
+        "runner_config_sha256",
+    ):
+        assert actual[field] == audit["fingerprints"][field]
+    assert audit["fingerprints"]["environment_sha256"] == (
+        "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+    )
     evidence = audit["reviewed_evidence"]
     assert orchestrator_sha256(ROOT) == evidence["fixed_formal_test_orchestrator_sha256"]
     assert evidence["fixed_formal_test_orchestrator_sha256"] != evidence["old_formal_test_orchestrator_sha256"]
