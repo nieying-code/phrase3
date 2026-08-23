@@ -7,11 +7,15 @@ import math
 from pathlib import Path
 
 import numpy as np
+import pytest
+import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
 AUDIT_PATH = ROOT / "docs/handoffs/2026-08-23_phase6_m2_1_formal_test_results_v1_0_audit.json"
 CSV_PATH = ROOT / "docs/handoffs/2026-08-23_phase6_m2_1_formal_test_results_v1_0.csv"
+PR69_PATH = ROOT / "docs/handoffs/2026-08-22_phase6_m2_1_formal_training_validation_results_v1_0_audit.json"
+FREEZE_PATH = ROOT / "configs/phase6_m2_1_selected_plan_freeze_v1_0.yaml"
 SHA256 = __import__("re").compile(r"[0-9a-f]{64}")
 STRATEGIES = (
     "M2_minimum_endpoint",
@@ -29,6 +33,13 @@ IDENTITY_FIELDS = (
     "emergency_price_sha256",
     "emergency_supply_sha256",
     "fulfillment_sha256",
+)
+PLAN_IDENTITY_FIELDS = (
+    "finalized_plan_artifact_sha256",
+    "regular_purchase_sha256",
+    "reserve_amount",
+    "exact_training_objective",
+    "training_joint_scenario_set_sha256",
 )
 
 
@@ -75,6 +86,46 @@ def _wilcoxon_pratt(values: list[float]) -> dict[str, float]:
     }
 
 
+def _validate_source_binding(audit: dict, pr69: dict, freeze: dict) -> None:
+    reviewed = audit["reviewed_source_evidence"]
+    assert hashlib.sha256(PR69_PATH.read_bytes()).hexdigest() == reviewed["pr69_audit_sha256"]
+    assert hashlib.sha256(FREEZE_PATH.read_bytes()).hexdigest() == reviewed["pr70_selected_plan_freeze_sha256"]
+    by_case = {row["case_id"]: row for row in pr69["runs"]}
+    frozen_by_case = {row["case_id"]: row for row in freeze["selected_plans"]}
+    source_mapping = {}
+    for run in audit["runs"]:
+        source = run["source_evidence"]
+        historical = by_case[run["case_id"]]
+        frozen = frozen_by_case[run["case_id"]]
+        assert source["source_result_sha256"] == historical["result_sha256"]
+        assert source["source_run_id"] == historical["run_id"] == run["source_run_id"]
+        assert source["source_case_id"] == historical["case_id"] == run["case_id"]
+        assert source["training_seed"] == historical["training_seed"] == run["training_seed"]
+        assert source["validation_seed"] == historical["validation_seed"] == run["validation_seed"]
+        assert source["reserved_test_seed"] == historical["reserved_test_seed"] == run["test_seed"]
+        assert source["selected_candidate_id"] == historical["selected_candidate_id"] == run["selected_candidate_id"]
+        identities = source["strategy_plan_identities"]
+        assert set(identities) == set(STRATEGIES)
+        assert identities["M2_minimum_endpoint"] == historical["candidates"]["minimum_endpoint"]["plan_identity"]
+        selected = identities["M2_1_validation_selected_endpoint"]
+        assert selected == historical["candidates"][historical["selected_candidate_id"]]["plan_identity"]
+        assert frozen["source_run_id"] == source["source_run_id"]
+        assert frozen["training_seed"] == source["training_seed"]
+        assert frozen["validation_seed"] == source["validation_seed"]
+        assert frozen["formal_test_seed"] == source["reserved_test_seed"]
+        assert frozen["selected_candidate_id"] == source["selected_candidate_id"]
+        assert frozen["plan_identity"] == selected
+        for strategy_id in STRATEGIES:
+            assert set(identities[strategy_id]) == set(PLAN_IDENTITY_FIELDS)
+            assert run["strategies"][strategy_id]["plan_identity"] == identities[strategy_id]
+        source_mapping[run["case_id"]] = {
+            "source_result_sha256": source["source_result_sha256"],
+            "source_run_id": source["source_run_id"],
+            "strategies": identities,
+        }
+    assert _canonical_sha(source_mapping) == reviewed["source_plan_identity_mapping_sha256"]
+
+
 def test_execution_identity_fingerprints_and_global_artifacts_are_locked() -> None:
     audit = _load()
     assert audit["schema_version"] == "phase6_m2_1_formal_test_results_v1_0"
@@ -102,6 +153,34 @@ def test_execution_identity_fingerprints_and_global_artifacts_are_locked() -> No
         "selected_plan_freeze_sha256": "59842e3eb1437ff5a16fa8980e79400dab6504ded032db6d30ef5e5f60302f90",
         "formal_test_reauthorization_sha256": "31d022833dd239793224aee799498374f1c471459045cc39328d0beebad38085",
     }
+
+
+def test_all_six_strategies_are_bound_to_pr69_and_pr70_source_evidence() -> None:
+    audit = _load()
+    pr69 = json.loads(PR69_PATH.read_text(encoding="utf-8"))
+    freeze = yaml.safe_load(FREEZE_PATH.read_text(encoding="utf-8"))
+    assert audit["reviewed_source_evidence"] == {
+        "pr69_audit_path": "docs/handoffs/2026-08-22_phase6_m2_1_formal_training_validation_results_v1_0_audit.json",
+        "pr69_audit_sha256": "0bbda4798caef1b7115de4f04ca46b0a716fd6f2a0a69d2d6d99498a878247b9",
+        "pr70_selected_plan_freeze_path": "configs/phase6_m2_1_selected_plan_freeze_v1_0.yaml",
+        "pr70_selected_plan_freeze_sha256": "59842e3eb1437ff5a16fa8980e79400dab6504ded032db6d30ef5e5f60302f90",
+        "source_plan_identity_mapping_sha256": "62e4a2aa6f8b8ca7ed113dd4b892a71f044b9f57f0bd7bb7340b54f762661ae9",
+    }
+    _validate_source_binding(audit, pr69, freeze)
+
+
+@pytest.mark.parametrize("strategy_id", STRATEGIES)
+@pytest.mark.parametrize("field", PLAN_IDENTITY_FIELDS)
+def test_any_source_plan_identity_tampering_is_rejected(
+    strategy_id: str, field: str
+) -> None:
+    audit = _load()
+    pr69 = json.loads(PR69_PATH.read_text(encoding="utf-8"))
+    freeze = yaml.safe_load(FREEZE_PATH.read_text(encoding="utf-8"))
+    identity = audit["runs"][0]["source_evidence"]["strategy_plan_identities"][strategy_id]
+    identity[field] = identity[field] + 1.0 if isinstance(identity[field], float) else "0" * 64
+    with pytest.raises(AssertionError):
+        _validate_source_binding(audit, pr69, freeze)
 
 
 def test_ten_runs_sixty_plans_and_scenario_identities_close_independently() -> None:
