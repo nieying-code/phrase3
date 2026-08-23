@@ -33,6 +33,7 @@
 - 独立命名空间：`phase6_m0_e3_algorithm_performance_v1_0`。
 - 独立输出根：`outputs/phase6_m0_e3_algorithm_performance_v1_0/formal/primary`。
 - 只允许从包含本PR合并树的干净`main`执行。
+- runner只读验证`branch.main.remote=origin`、`branch.main.merge=refs/heads/main`且`HEAD=refs/remotes/origin/main`；用户须在执行前自行完成`fetch`、切换`main`和`pull --ff-only`。
 - CLI必须显式提供`--authorize-m0-e3-algorithm-performance`和全新run ID前缀。
 - primary只能在空命名空间中按V1→V2→P1→P2严格串行完整执行。
 - 每条run继续由既有Phase 6 runner记录目标、界、gap、迭代、主/子问题调用、墙钟、内存、场景身份以及Git/环境指纹。

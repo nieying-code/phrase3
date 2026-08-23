@@ -142,6 +142,40 @@ def _git(root: Path, *args: str) -> str:
     return subprocess.check_output(("git", *args), cwd=root, text=True).strip()
 
 
+def _validate_synchronized_main(root: Path, *, reviewed_base_commit: str) -> dict[str, str]:
+    """Prove execution is on the locally fetched, reviewed remote main tip.
+
+    This deliberately does not fetch, pull, switch branches, or otherwise
+    mutate Git state. The operator must synchronize refs before execution.
+    """
+
+    branch = _git(root, "branch", "--show-current")
+    if branch != "main":
+        raise RuntimeError("formal algorithm performance must execute from main")
+    try:
+        upstream_remote = _git(root, "config", "--get", "branch.main.remote")
+        upstream_merge = _git(root, "config", "--get", "branch.main.merge")
+        head = _git(root, "rev-parse", "HEAD")
+        remote_main = _git(root, "rev-parse", "refs/remotes/origin/main")
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError("formal algorithm performance requires a configured and fetched origin/main") from exc
+    if upstream_remote != "origin" or upstream_merge != "refs/heads/main":
+        raise RuntimeError("local main must track origin/main")
+    if head != remote_main:
+        raise RuntimeError("formal algorithm performance requires main synchronized with origin/main")
+    try:
+        _git(root, "merge-base", "--is-ancestor", reviewed_base_commit, head)
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError("reviewed PR #75 base is not an ancestor of synchronized main") from exc
+    return {
+        "branch": branch,
+        "upstream_remote": upstream_remote,
+        "upstream_merge": upstream_merge,
+        "head": head,
+        "remote_main": remote_main,
+    }
+
+
 def _validate_reviewed_evidence(root: Path, approval: Mapping[str, Any], actual: Mapping[str, str]) -> None:
     evidence = approval["reviewed_gate_evidence"]
     projection_path = root / str(evidence["final_projection_audit_path"])
@@ -235,16 +269,21 @@ def validate_preflight(
         if artifacts.get(name) != sha256_file(path):
             raise RuntimeError(f"approved execution artifact mismatch: {name}")
     _validate_reviewed_evidence(root, approval, actual)
+    synchronized_main = None
+    if require_execution_branch:
+        synchronized_main = _validate_synchronized_main(
+            root,
+            reviewed_base_commit=str(approval["review_base_commit"]),
+        )
     validate_gurobi_runtime()
     limits = runner["limits"]
     if limits != {"threads": 1, "optimizer_version": "13.0.2", "gurobipy_version": "13.0.2", "interface": "gurobi_direct"}:
         raise RuntimeError("solver limits changed")
-    if require_execution_branch:
-        if _git(root, "branch", "--show-current") != "main":
-            raise RuntimeError("formal algorithm performance must execute from main")
-        base = str(approval["review_base_commit"])
-        subprocess.check_call(("git", "merge-base", "--is-ancestor", base, "HEAD"), cwd=root)
-    return {"runner": runner, "approval": approval, "matrix": matrix, "e3_config": e3_config, "cases": cases, "fingerprints": actual}
+    return {
+        "runner": runner, "approval": approval, "matrix": matrix,
+        "e3_config": e3_config, "cases": cases, "fingerprints": actual,
+        "synchronized_main": synchronized_main,
+    }
 
 
 def _compatibility_projection(*, matrix: Mapping[str, Any], fingerprints: Mapping[str, str], approval: Mapping[str, Any]) -> dict[str, Any]:

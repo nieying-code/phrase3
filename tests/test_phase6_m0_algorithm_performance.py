@@ -105,6 +105,56 @@ def test_missing_explicit_authorization_rejects_before_preflight(monkeypatch, tm
     assert called is False
 
 
+def test_synchronized_main_gate_accepts_exact_origin_main(monkeypatch, tmp_path):
+    base = "a" * 40
+    head = "b" * 40
+    values = {
+        ("branch", "--show-current"): "main",
+        ("config", "--get", "branch.main.remote"): "origin",
+        ("config", "--get", "branch.main.merge"): "refs/heads/main",
+        ("rev-parse", "HEAD"): head,
+        ("rev-parse", "refs/remotes/origin/main"): head,
+        ("merge-base", "--is-ancestor", base, head): "",
+    }
+    monkeypatch.setattr(performance, "_git", lambda root, *args: values[args])
+    evidence = performance._validate_synchronized_main(tmp_path, reviewed_base_commit=base)
+    assert evidence["head"] == evidence["remote_main"] == head
+    assert evidence["upstream_remote"] == "origin"
+
+
+def test_local_main_ahead_of_origin_is_rejected_before_runtime_check(monkeypatch, tmp_path):
+    base = "a" * 40
+    local_head = "b" * 40
+    remote_head = "c" * 40
+    values = {
+        ("branch", "--show-current"): "main",
+        ("config", "--get", "branch.main.remote"): "origin",
+        ("config", "--get", "branch.main.merge"): "refs/heads/main",
+        ("rev-parse", "HEAD"): local_head,
+        ("rev-parse", "refs/remotes/origin/main"): remote_head,
+    }
+    monkeypatch.setattr(performance, "_git", lambda root, *args: values[args])
+    with pytest.raises(RuntimeError, match="synchronized with origin/main"):
+        performance._validate_synchronized_main(tmp_path, reviewed_base_commit=base)
+
+
+@pytest.mark.parametrize(
+    ("remote", "merge"),
+    [(".", "refs/heads/main"), ("origin", "refs/heads/not-main")],
+)
+def test_main_must_track_exact_origin_main(monkeypatch, tmp_path, remote, merge):
+    values = {
+        ("branch", "--show-current"): "main",
+        ("config", "--get", "branch.main.remote"): remote,
+        ("config", "--get", "branch.main.merge"): merge,
+        ("rev-parse", "HEAD"): "b" * 40,
+        ("rev-parse", "refs/remotes/origin/main"): "b" * 40,
+    }
+    monkeypatch.setattr(performance, "_git", lambda root, *args: values[args])
+    with pytest.raises(RuntimeError, match="track origin/main"):
+        performance._validate_synchronized_main(tmp_path, reviewed_base_commit="a" * 40)
+
+
 @pytest.mark.parametrize("run_id", ["../escape", "a/b", "a\\b", "C:bad", "bad space"])
 def test_unsafe_run_id_prefix_is_rejected_before_preflight(monkeypatch, tmp_path, run_id):
     monkeypatch.setattr(performance, "validate_preflight", lambda **kwargs: pytest.fail("preflight reached"))
