@@ -28,9 +28,13 @@ def test_runner_audit_binds_reviewed_evidence_and_exact_matrix() -> None:
 
 def test_runner_audit_locks_code_config_and_fingerprints() -> None:
     audit = json.loads(AUDIT.read_text(encoding="utf-8")); artifacts = audit["artifact_sha256"]
-    paths = {"runner_module":"src/phase6_m2_1_formal_test.py", "cli":"src/run_phase6_m2_1_formal_test.py", "status_module":"src/phase6_m2_1_formal_test_status.py", "runner_config":"configs/phase6_m2_1_formal_test_runner.yaml", "approval":"configs/phase6_m2_1_formal_test_approval.yaml"}
+    paths = {"cli":"src/run_phase6_m2_1_formal_test.py", "status_module":"src/phase6_m2_1_formal_test_status.py", "runner_config":"configs/phase6_m2_1_formal_test_runner.yaml", "approval":"configs/phase6_m2_1_formal_test_approval.yaml"}
     for key, path in paths.items(): assert sha256_file(ROOT / path) == artifacts[key]
-    assert orchestrator_sha256(ROOT) == artifacts["formal_test_orchestrator_sha256"]
+    # The PR #71 audit remains an immutable record of the reviewed runner.  The
+    # subsequent freeze-audit binding fix must change both identities and thereby
+    # revoke every authorization issued for the old runner.
+    assert sha256_file(ROOT / "src/phase6_m2_1_formal_test.py") != artifacts["runner_module"]
+    assert orchestrator_sha256(ROOT) != artifacts["formal_test_orchestrator_sha256"]
     actual = formal_test_fingerprints(
         ROOT, ROOT/"configs/phase6_m2_1_selected_plan_freeze_v1_0.yaml",
         ROOT/"configs/phase6_m2_1_formal_test_runner.yaml",

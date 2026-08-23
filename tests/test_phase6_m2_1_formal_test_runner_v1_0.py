@@ -18,6 +18,7 @@ from src.phase6_m2_1_formal_test import (
     _derive_science,
     _load_freeze,
     _test_scenario_uniqueness,
+    _validate_reviewed_freeze_audit,
     build_cases,
     execute_formal_test_science,
     run_formal_test,
@@ -63,6 +64,52 @@ def test_explicit_cli_authorization_is_required() -> None:
             root=ROOT, freeze_path=ROOT / FREEZE_PATH,
             runner_path=ROOT / RUNNER_PATH, approval_path=ROOT / APPROVAL_PATH,
             authorize=False,
+        )
+
+
+def test_reviewed_pr70_freeze_audit_uses_real_authorization_schema() -> None:
+    audit = json.loads(
+        (ROOT / "docs/handoffs/2026-08-22_phase6_m2_1_selected_plan_freeze_v1_0_audit.json")
+        .read_text(encoding="utf-8")
+    )
+    binding = {
+        "sha256": "59842e3eb1437ff5a16fa8980e79400dab6504ded032db6d30ef5e5f60302f90"
+    }
+    _validate_reviewed_freeze_audit(audit, binding)
+
+    for field, value in (
+        ("selected_plan_freeze_authorized", False),
+        ("formal_test_runner_implemented", True),
+        ("formal_test_authorized", True),
+        ("formal_extension_authorized", True),
+    ):
+        tampered = copy.deepcopy(audit)
+        tampered["authorization"][field] = value
+        with pytest.raises(RuntimeError, match="PR #70 freeze audit boundary mismatch"):
+            _validate_reviewed_freeze_audit(tampered, binding)
+
+    wrong_schema = copy.deepcopy(audit)
+    wrong_schema["execution_boundaries"] = wrong_schema.pop("authorization")
+    with pytest.raises(RuntimeError, match="PR #70 freeze audit boundary mismatch"):
+        _validate_reviewed_freeze_audit(wrong_schema, binding)
+
+
+def test_pr72_authorization_is_revoked_by_runner_fix_before_source_loading(monkeypatch) -> None:
+    approval = yaml.safe_load(
+        (ROOT / "configs/phase6_m2_1_formal_test_authorization_v1_0.yaml")
+        .read_text(encoding="utf-8")
+    )
+    monkeypatch.setattr(
+        "src.phase6_m2_1_formal_test.formal_test_fingerprints",
+        lambda *args, **kwargs: approval["approved_fingerprints"],
+    )
+    with pytest.raises(RuntimeError, match="orchestrator mismatch"):
+        validate_preflight(
+            root=ROOT,
+            freeze_path=ROOT / FREEZE_PATH,
+            runner_path=ROOT / RUNNER_PATH,
+            approval_path=ROOT / "configs/phase6_m2_1_formal_test_authorization_v1_0.yaml",
+            authorize=True,
         )
 
 
