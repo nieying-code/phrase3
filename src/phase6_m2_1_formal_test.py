@@ -407,6 +407,43 @@ def _finalization_failures(base: Path) -> list[str]:
     return sorted({path.parent.name for name in ("runner_exception.json", "registry_failure.json", "projection_failure.json") for path in (base / "runs").glob(f"*/{name}")})
 
 
+def _test_scenario_uniqueness(
+    primary: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Independently bind and verify the ten statistical test units."""
+
+    mapping: dict[str, dict[str, str]] = {}
+    for case_id, result in sorted(primary.items()):
+        if result.get("status") != "optimal":
+            continue
+        identity = (result.get("science") or {}).get("test_scenario_identity")
+        if not isinstance(identity, Mapping) or len(identity) != 7:
+            raise ValueError("formal-test run lacks its complete test scenario identity")
+        normalized = {str(key): str(value) for key, value in sorted(identity.items())}
+        if any(len(value) != 64 for value in normalized.values()):
+            raise ValueError("formal-test scenario identity contains an invalid hash")
+        mapping[case_id] = normalized
+
+    scenario_groups: dict[str, list[str]] = {}
+    identity_groups: dict[str, list[str]] = {}
+    for case_id, identity in mapping.items():
+        scenario_groups.setdefault(identity["scenario_set_sha256"], []).append(case_id)
+        identity_groups.setdefault(_canonical_sha256(identity), []).append(case_id)
+    duplicates = sorted({
+        case_id
+        for groups in (scenario_groups, identity_groups)
+        for case_ids in groups.values()
+        if len(case_ids) > 1
+        for case_id in case_ids
+    })
+    return {
+        "verified_unique_test_scenario_set_count": len(scenario_groups),
+        "verified_unique_test_scenario_identity_count": len(identity_groups),
+        "test_scenario_identity_mapping_sha256": _canonical_sha256(mapping),
+        "duplicate_test_scenario_identity_case_ids": duplicates,
+    }
+
+
 def update_projection(*, output_root: Path, freeze: Mapping[str, Any], fingerprints: Mapping[str, str], orchestrator: str, sources: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
     base = _base(output_root)
     with exclusive_file_lock(base / ".projection.lock"):
@@ -424,8 +461,15 @@ def update_projection(*, output_root: Path, freeze: Mapping[str, Any], fingerpri
                 evaluation_count += _derive_science(result["science"], case_map[case_id], sources[case_id])
             except Exception: invalid.append(row.get("run_id", ""))
         missing=[case.case_id for case in cases if case.case_id not in primary]; finalization=_finalization_failures(base)
-        complete=(len(primary)==10 and evaluation_count==120000 and not any((missing,invalid,failed,diagnostics,duplicates,finalization)))
-        payload={"status":"complete" if complete else "incomplete", "fingerprints":dict(fingerprints), "formal_test_orchestrator_sha256":orchestrator, "required_primary_run_count":10, "completed_primary_run_count":len(primary), "required_plan_count":60, "completed_plan_count":sum(len((r.get("science") or {}).get("strategy_results") or {}) for r in primary.values() if r.get("status")=="optimal"), "required_exact_recourse_evaluation_count":120000, "completed_exact_recourse_evaluation_count":evaluation_count, "missing_case_ids":missing, "invalid_primary_run_ids":sorted(invalid), "failed_primary_run_ids":sorted(failed), "duplicate_case_ids":sorted(set(duplicates)), "diagnostic_run_ids":sorted(diagnostics), "finalization_failure_run_ids":finalization, "formal_test_gate_passed":complete, "formal_extension_authorized":False, "algorithm_performance_authorized":False, "next_decision":"permit_formal_test_results_review_only" if complete else "formal_test_incomplete_or_failed", "updated_at_utc":utc_now()}
+        uniqueness = _test_scenario_uniqueness(primary)
+        complete=(
+            len(primary)==10 and evaluation_count==120000
+            and uniqueness["verified_unique_test_scenario_set_count"]==10
+            and uniqueness["verified_unique_test_scenario_identity_count"]==10
+            and not uniqueness["duplicate_test_scenario_identity_case_ids"]
+            and not any((missing,invalid,failed,diagnostics,duplicates,finalization))
+        )
+        payload={"status":"complete" if complete else "incomplete", "fingerprints":dict(fingerprints), "formal_test_orchestrator_sha256":orchestrator, "required_primary_run_count":10, "completed_primary_run_count":len(primary), "required_plan_count":60, "completed_plan_count":sum(len((r.get("science") or {}).get("strategy_results") or {}) for r in primary.values() if r.get("status")=="optimal"), "required_exact_recourse_evaluation_count":120000, "completed_exact_recourse_evaluation_count":evaluation_count, **uniqueness, "missing_case_ids":missing, "invalid_primary_run_ids":sorted(invalid), "failed_primary_run_ids":sorted(failed), "duplicate_case_ids":sorted(set(duplicates)), "diagnostic_run_ids":sorted(diagnostics), "finalization_failure_run_ids":finalization, "formal_test_gate_passed":complete, "formal_extension_authorized":False, "algorithm_performance_authorized":False, "next_decision":"permit_formal_test_results_review_only" if complete else "formal_test_incomplete_or_failed", "updated_at_utc":utc_now()}
         atomic_write_json(base / "formal_test_projection.json", payload); return payload
 
 

@@ -17,9 +17,11 @@ from src.phase6_m2_1_formal_test import (
     RUNNER_PATH,
     _derive_science,
     _load_freeze,
+    _test_scenario_uniqueness,
     build_cases,
     execute_formal_test_science,
     run_formal_test,
+    update_projection,
     validate_preflight,
 )
 
@@ -113,6 +115,80 @@ def _science_fixture():
 def test_projection_derivation_recomputes_plan_crn_and_evaluation_bindings() -> None:
     science, case, source = _science_fixture()
     assert _derive_science(science, case, source) == 12000
+
+
+def _primary_scenario_fixture() -> dict[str, dict]:
+    freeze = _load_freeze(ROOT / FREEZE_PATH)
+    primary = {}
+    for index, case in enumerate(build_cases(freeze), start=1):
+        identity = {
+            "scenario_set_sha256": f"{index:064x}",
+            "scenario_order_sha256": f"{index + 20:064x}",
+            "latent_draw_sha256": f"{index + 40:064x}",
+            "demand_sha256": f"{index + 60:064x}",
+            "emergency_price_sha256": f"{index + 80:064x}",
+            "emergency_supply_sha256": f"{index + 100:064x}",
+            "fulfillment_sha256": f"{index + 120:064x}",
+        }
+        primary[case.case_id] = {
+            "status": "optimal", "science": {"test_scenario_identity": identity},
+        }
+    return primary
+
+
+def test_projection_recomputes_ten_unique_test_scenario_identities() -> None:
+    result = _test_scenario_uniqueness(_primary_scenario_fixture())
+    assert result["verified_unique_test_scenario_set_count"] == 10
+    assert result["verified_unique_test_scenario_identity_count"] == 10
+    assert len(result["test_scenario_identity_mapping_sha256"]) == 64
+    assert result["duplicate_test_scenario_identity_case_ids"] == []
+
+
+def test_projection_rejects_two_runs_sharing_one_test_scenario_identity() -> None:
+    primary = _primary_scenario_fixture()
+    first, second = list(primary)[:2]
+    primary[second]["science"]["test_scenario_identity"] = copy.deepcopy(
+        primary[first]["science"]["test_scenario_identity"]
+    )
+    result = _test_scenario_uniqueness(primary)
+    assert result["verified_unique_test_scenario_set_count"] == 9
+    assert result["verified_unique_test_scenario_identity_count"] == 9
+    assert result["duplicate_test_scenario_identity_case_ids"] == [first, second]
+
+
+def test_projection_gate_rejects_duplicate_test_units(monkeypatch, tmp_path) -> None:
+    freeze = _load_freeze(ROOT / FREEZE_PATH); cases = build_cases(freeze)
+    primary = _primary_scenario_fixture(); first, second = list(primary)[:2]
+    primary[second]["science"]["test_scenario_identity"] = copy.deepcopy(
+        primary[first]["science"]["test_scenario_identity"]
+    )
+    rows = [
+        {"run_id": f"run_{index}", "case_id": case.case_id,
+         "parent_run_id": "", "fingerprint": "locked",
+         "formal_test_orchestrator_sha256": "o" * 64}
+        for index, case in enumerate(cases, start=1)
+    ]
+    results = {
+        row["run_id"]: {
+            "run_id": row["run_id"], "case_id": row["case_id"], "status": "optimal",
+            "science": {**primary[row["case_id"]]["science"],
+                        "strategy_results": {strategy: {} for strategy in TEST_STRATEGIES}},
+        }
+        for row in rows
+    }
+    monkeypatch.setattr("src.phase6_m2_1_formal_test._read_registry", lambda path: rows)
+    monkeypatch.setattr("src.phase6_m2_1_formal_test._validate_artifact", lambda output, row, fingerprints, orchestrator: results[row["run_id"]])
+    monkeypatch.setattr("src.phase6_m2_1_formal_test._derive_science", lambda science, case, source: 12000)
+    monkeypatch.setattr("src.phase6_m2_1_formal_test._finalization_failures", lambda base: [])
+    payload = update_projection(
+        output_root=tmp_path, freeze=freeze, fingerprints={"fingerprint":"locked"},
+        orchestrator="o" * 64, sources={case.case_id:{} for case in cases},
+    )
+    assert payload["completed_primary_run_count"] == 10
+    assert payload["completed_exact_recourse_evaluation_count"] == 120000
+    assert payload["verified_unique_test_scenario_set_count"] == 9
+    assert payload["duplicate_test_scenario_identity_case_ids"] == [first, second]
+    assert payload["formal_test_gate_passed"] is False
 
 
 @pytest.mark.parametrize("mutation", ["plan", "scenario", "count", "solver", "nan"])

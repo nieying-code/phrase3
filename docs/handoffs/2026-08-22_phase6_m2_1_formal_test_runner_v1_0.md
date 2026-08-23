@@ -20,6 +20,7 @@
 - `time_limit`、墙钟超时、补救失败或制品最终化异常均阻止后续策略和run。
 - run ID不可覆盖；诊断重试必须使用新run ID、单一case和失败的`parent_run_id`。
 - projection独立复算10/60/120,000、逐策略方案身份、CRN、指标有限性和零失败集合。
+- projection还从10条primary独立构造七类测试场景身份映射；只有10个场景集合及10个完整身份均互不相同时，正式测试门槛才可能通过。
 
 ## 当前停止边界
 
@@ -39,8 +40,8 @@ M0_E3_runs=0
 
 ## 验证
 
-- 专项测试：17 passed。
-- 普通回归：584 passed。
+- 专项测试：20 passed。
+- 普通回归：587 passed。
 - Phase 5：6 passed。
 - Windows复现：16 passed。
 - `git diff --check`：通过。

@@ -22,6 +22,8 @@ def test_runner_audit_binds_reviewed_evidence_and_exact_matrix() -> None:
     matrix = audit["matrix"]
     assert matrix["triplet_count"] * matrix["strategy_count_per_triplet"] == matrix["formal_test_plan_count"] == 60
     assert matrix["formal_test_plan_count"] * matrix["scenario_count_per_strategy"] == matrix["formal_test_exact_recourse_evaluation_count"] == 120000
+    assert matrix["required_unique_test_scenario_set_count"] == 10
+    assert matrix["required_unique_complete_test_scenario_identity_count"] == 10
 
 
 def test_runner_audit_locks_code_config_and_fingerprints() -> None:
