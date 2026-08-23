@@ -36,4 +36,3 @@ formal_test_authorized_for_fixed_runner=false
 ```
 
 科学配置、E3、family、runner配置和实验环境指纹均保持不变。正式测试输出目录`outputs/phase6_m2_1_formal_test_v1_0`不存在。
-
