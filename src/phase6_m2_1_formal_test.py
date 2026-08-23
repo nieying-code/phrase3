@@ -122,6 +122,26 @@ def _load_freeze(path: Path) -> dict[str, Any]:
     return payload
 
 
+def _validate_reviewed_freeze_audit(
+    freeze_audit: Mapping[str, Any], binding: Mapping[str, Any]
+) -> None:
+    """Validate the exact schema of the reviewed PR #70 freeze audit.
+
+    PR #70 records lifecycle permissions under ``authorization``.  Keeping this
+    check separate from the current runner's own ``execution_boundaries`` schema
+    prevents a mocked or pending approval from hiding an interface mismatch.
+    """
+    authorization = freeze_audit.get("authorization") or {}
+    if (
+        freeze_audit.get("freeze_artifact", {}).get("sha256") != binding["sha256"]
+        or authorization.get("selected_plan_freeze_authorized") is not True
+        or authorization.get("formal_test_runner_implemented") is not False
+        or authorization.get("formal_test_authorized") is not False
+        or authorization.get("formal_extension_authorized") is not False
+    ):
+        raise RuntimeError("PR #70 freeze audit boundary mismatch")
+
+
 def build_cases(freeze: Mapping[str, Any]) -> tuple[FormalTestCase, ...]:
     rows = freeze.get("selected_plans") or []
     cases = tuple(FormalTestCase(
@@ -250,12 +270,7 @@ def validate_preflight(*, root: Path, freeze_path: Path, runner_path: Path, appr
     ):
         raise RuntimeError("approval is not bound to reviewed PR #70 freeze")
     freeze_audit = _load_json(root / FREEZE_AUDIT_PATH)
-    if (
-        freeze_audit.get("freeze_artifact", {}).get("sha256") != binding["sha256"]
-        or freeze_audit.get("execution_boundaries", {}).get("selected_plan_freeze_authorized") is not True
-        or freeze_audit.get("execution_boundaries", {}).get("formal_test_authorized") is not False
-    ):
-        raise RuntimeError("PR #70 freeze audit boundary mismatch")
+    _validate_reviewed_freeze_audit(freeze_audit, binding)
     fingerprints = formal_test_fingerprints(root, freeze_path, runner_path)
     if approval.get("approved_fingerprints") != fingerprints:
         raise RuntimeError("M2.1 formal-test fingerprint mismatch")
