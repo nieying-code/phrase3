@@ -1,0 +1,2856 @@
+{
+  "schema_version": "phase6_m2_1_formal_test_results_v1_0",
+  "evidence_class": "formal_test_results",
+  "provenance": {
+    "output_root": "outputs/phase6_m2_1_formal_test_v1_0/formal/test",
+    "pr74_merge_commit": "bcb3d91e3e0cf668b67057b0b8becbe0c252e4f4",
+    "pr74_merge_tree": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+    "execution_git_sha": "1688f504c1af276893682d3a38def4247fc53ad1",
+    "execution_git_tree_sha": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+    "execution_tree_equals_pr74_merge_tree": true,
+    "working_tree_dirty": false,
+    "untracked_execution_input_count_at_start": 0
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "e277d43153f1a2f462423c6bd8ba25b0cd1931ff25dfcff3a34e69e3eb45aeaf",
+    "e3_component_sha256": "e6444ac18bab5db5032860276e829af1b52103d9bbe92240ebecb8eb98fbf47c",
+    "family_component_sha256": "67058c0aab89bdc6ca1722539320733ffc1b8c22e362599289f0e92bace740f5",
+    "runner_config_sha256": "3cec059352dc14efb9c76748924b1815716ac0e68c07a4b8ab2b9b530c1c6333",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+  },
+  "formal_test_orchestrator_sha256": "e361b8031bcf4d81292c91d8482772d0154f25d69ded771c37215a59f40ff49b",
+  "design": {
+    "tier_id": "M2F2",
+    "beta": 1.1,
+    "profile_id": "T03",
+    "primary_run_count": 10,
+    "strategy_count_per_run": 6,
+    "test_scenario_count_per_strategy": 2000,
+    "exact_recourse_evaluation_count": 120000,
+    "statistical_unit": "paired_training_validation_test_seed_triplet",
+    "primary_estimand": "M2_1_validation_selected_endpoint minus M2_minimum_endpoint OOS total_cost_cvar95"
+  },
+  "runs": [
+    {
+      "run_id": "m21formaltest_v11_20260823_M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+      "case_id": "M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+      "status": "optimal",
+      "training_seed": 2026090101,
+      "validation_seed": 2026090201,
+      "test_seed": 2026090301,
+      "selected_candidate_id": "maximum_endpoint",
+      "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+      "git_sha": "1688f504c1af276893682d3a38def4247fc53ad1",
+      "git_tree_sha": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+      "result_sha256": "70f305e775e3317c6350bb0a75f8b45509d83e080be70b81584145d26faacd3a",
+      "manifest_sha256": "03ccfc32b728ab46938dfb9506503e90e967359cf8e5ccee35b468f664706c8b",
+      "status_summary_sha256": "1c206a0907c1022aa9024473e96e5324a678638caa776071a2304b8b27f53338",
+      "test_scenario_identity": {
+        "scenario_set_sha256": "9d79c694257e2659bb6752f87df529bd3f6b1690c9200c9dca29cf67797820a7",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+        "latent_draw_sha256": "56dd7b1011e9d47ce8f2e14a5826a6ee99e569632fb44273d54ad040e953991f",
+        "demand_sha256": "2ac461512a3d2548743163d5479654c3686768b91c18978a96367968ff3fc19d",
+        "emergency_price_sha256": "80232f13cb76cf6fc6e3b1493fc44cba45b75ff017b1f5adaf3f9f5d3762b0b8",
+        "emergency_supply_sha256": "49f7e25e5c3c1879395d5dccbf893c298757881b6fbae8f87baaa0cf776711af",
+        "fulfillment_sha256": "a886ac796d295f6aee54e5bbd512d6f41023e39046239a1330efc9f6f6d66808"
+      },
+      "wall_seconds": 274.66572500000075,
+      "peak_memory_mb": 136.359375,
+      "strategies": {
+        "M2_minimum_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "source_case_id": "M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "092fbb4ac439b93b5d04ba1ef0e8727a4a9080fb80169558579591e4df1c51a3",
+            "regular_purchase_sha256": "4fec7c20012ac78ca37388e1312f09bf66b1ccb193bcbdc0a075480fcf4a3170",
+            "reserve_amount": 190.89688135701132,
+            "exact_training_objective": 44320.462023745444,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          },
+          "wall_seconds": 43.82668889999877,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 23720.246445425415,
+            "total_cost_cvar95": 41495.969334932954,
+            "service_level": 0.6296319184602739,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 190.89688135701132
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "84622dfacd78c1d3958ec5c9c085a3a9b9cb7246f0d3ff6a8c900d309e0de51f",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "M2_1_validation_selected_endpoint": {
+          "source_candidate_id": "maximum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "source_case_id": "M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "e44dd6ba03e124abda48c13adf4dbbf5cae0a411c7e58e7184f38fe655b5611a",
+            "regular_purchase_sha256": "bcb2483050cf05f203d18af6939176a7850cf00d6ebf245aa4bf1e20f787999b",
+            "reserve_amount": 190.90496136514952,
+            "exact_training_objective": 44320.462023745444,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          },
+          "wall_seconds": 45.038825100000395,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 23720.103693197318,
+            "total_cost_cvar95": 41495.898416097465,
+            "service_level": 0.6296343909421316,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 190.90496136514952
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "af6dac8ba63b31f8acf81d161d2bf954a8259257b8c1328bb8ce750063589f1c",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_candidate_id": "zero_autonomous_reserve",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "source_case_id": "M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "5b33ab1166b2a80aba1defcfb73fda2f88bd6c98b19b7e15822db33939324337",
+            "regular_purchase_sha256": "8f10595886623e2236a58c6360b86d628b896490e3c0b2299a5abb2f19f3ef92",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 44779.17513771958,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          },
+          "wall_seconds": 45.78167459999895,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 25222.675626436012,
+            "total_cost_cvar95": 42479.73172862377,
+            "service_level": 0.6035465816348229,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_10",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "source_case_id": "M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "244269d97831042db234f23b4edceebe4e99418e1d83045bd0df39c5561f19be",
+            "regular_purchase_sha256": "8c244172a8bdcafd925a2788cf71735129a397f4532c06eb913773bcdb4547d1",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 44382.75262032412,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          },
+          "wall_seconds": 46.21269000000029,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 22567.745533813737,
+            "total_cost_cvar95": 40982.069904138974,
+            "service_level": 0.6495835943012445,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 257.13720165746173
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "a84a6e874593b150dfe35ccf34a31096f77f73db5864f83eb251d6528b7d0c77",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_30",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "source_case_id": "M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "acb8070bf418204e3f9ee8b7a645f52a00839c46c9292dd8327c5a4700f5bc3d",
+            "regular_purchase_sha256": "70cbb81c9f0e781d528d8ec8906340556f5e0eaab02d17fcb0f690f627e80aef",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 45121.88902464007,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          },
+          "wall_seconds": 46.62386929999957,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 15131.681588990903,
+            "total_cost_cvar95": 40065.388640566234,
+            "service_level": 0.7773725132674852,
+            "shortage_probability": 0.973,
+            "mean_emergency_spend": 769.3418972615314
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "0747a6fa43cd2c4070dd02819924a982652d770bc9aa62fa427b55174b655680",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8880435643270588
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_50",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "source_case_id": "M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "5c9fc4bccde89e16dd32bef62fcd39b0f4dc5eae72fd84bd18a4b1804db71120",
+            "regular_purchase_sha256": "d4a2a3a468dc7a7bd3e5e20dd37d90561d3e79f7fe4cbc7c383328b3629888ef",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 46409.732472783886,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          },
+          "wall_seconds": 46.73033039999973,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 11039.670691250652,
+            "total_cost_cvar95": 40023.09159847724,
+            "service_level": 0.8450318612426556,
+            "shortage_probability": 0.748,
+            "mean_emergency_spend": 1212.3954398730061
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "b26f51148e06b3fc8551946b8eb1175105eac1cbfc3a895a23a04738dda0b835",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8374310365251924
+          }
+        }
+      },
+      "primary_cvar95_difference_m2_1_minus_m2": -0.07091883548855549,
+      "source_evidence": {
+        "source_result_sha256": "9aa4262d673f224cf56c144cd53b334d936e99d068a1a8e24ec3d7365513e2a0",
+        "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+        "source_case_id": "M2_1_formal_triplet01_train2026090101_validation2026090201_test2026090301",
+        "training_seed": 2026090101,
+        "validation_seed": 2026090201,
+        "reserved_test_seed": 2026090301,
+        "selected_candidate_id": "maximum_endpoint",
+        "strategy_plan_identities": {
+          "M2_minimum_endpoint": {
+            "finalized_plan_artifact_sha256": "092fbb4ac439b93b5d04ba1ef0e8727a4a9080fb80169558579591e4df1c51a3",
+            "regular_purchase_sha256": "4fec7c20012ac78ca37388e1312f09bf66b1ccb193bcbdc0a075480fcf4a3170",
+            "reserve_amount": 190.89688135701132,
+            "exact_training_objective": 44320.462023745444,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          },
+          "M2_1_validation_selected_endpoint": {
+            "finalized_plan_artifact_sha256": "e44dd6ba03e124abda48c13adf4dbbf5cae0a411c7e58e7184f38fe655b5611a",
+            "regular_purchase_sha256": "bcb2483050cf05f203d18af6939176a7850cf00d6ebf245aa4bf1e20f787999b",
+            "reserve_amount": 190.90496136514952,
+            "exact_training_objective": 44320.462023745444,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          },
+          "zero_autonomous_reserve": {
+            "finalized_plan_artifact_sha256": "5b33ab1166b2a80aba1defcfb73fda2f88bd6c98b19b7e15822db33939324337",
+            "regular_purchase_sha256": "8f10595886623e2236a58c6360b86d628b896490e3c0b2299a5abb2f19f3ef92",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 44779.17513771958,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          },
+          "fixed_autonomous_reserve_0_10": {
+            "finalized_plan_artifact_sha256": "244269d97831042db234f23b4edceebe4e99418e1d83045bd0df39c5561f19be",
+            "regular_purchase_sha256": "8c244172a8bdcafd925a2788cf71735129a397f4532c06eb913773bcdb4547d1",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 44382.75262032412,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          },
+          "fixed_autonomous_reserve_0_30": {
+            "finalized_plan_artifact_sha256": "acb8070bf418204e3f9ee8b7a645f52a00839c46c9292dd8327c5a4700f5bc3d",
+            "regular_purchase_sha256": "70cbb81c9f0e781d528d8ec8906340556f5e0eaab02d17fcb0f690f627e80aef",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 45121.88902464007,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          },
+          "fixed_autonomous_reserve_0_50": {
+            "finalized_plan_artifact_sha256": "5c9fc4bccde89e16dd32bef62fcd39b0f4dc5eae72fd84bd18a4b1804db71120",
+            "regular_purchase_sha256": "d4a2a3a468dc7a7bd3e5e20dd37d90561d3e79f7fe4cbc7c383328b3629888ef",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 46409.732472783886,
+            "training_joint_scenario_set_sha256": "de82730a552021e8516cc04f9d3cde40fc386ee4fc4f0df41245c4f29b561805"
+          }
+        }
+      }
+    },
+    {
+      "run_id": "m21formaltest_v11_20260823_M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+      "case_id": "M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+      "status": "optimal",
+      "training_seed": 2026090102,
+      "validation_seed": 2026090202,
+      "test_seed": 2026090302,
+      "selected_candidate_id": "maximum_endpoint",
+      "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+      "git_sha": "1688f504c1af276893682d3a38def4247fc53ad1",
+      "git_tree_sha": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+      "result_sha256": "7c50acbe0ef443e52ca2a530db5ea190a6d5d9f8b4b46698f062e0a49b6d5526",
+      "manifest_sha256": "765100644a699768f5343d33a7c7ed10152ebf07349d83167ef95447901accba",
+      "status_summary_sha256": "b2b26f0e76db683dcc750f7b15d2d21f03bfa8583f940adfbf7f7b466b43bc06",
+      "test_scenario_identity": {
+        "scenario_set_sha256": "7979ee9f5d07fa0dfde7581d42348b29bc332540b056d555e1b88766f10adc91",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+        "latent_draw_sha256": "afc50728370f32e6453c9dda1bd7a798520b966e4ae8ea126792b440e6f28dbe",
+        "demand_sha256": "14cd87d876e2a9f6aaa4a2a23d9f0dea96544df25f61c94734ffbc91f83abf2e",
+        "emergency_price_sha256": "037cb2c1a00624450ee18b33ef6701ae37e28fd7c91704fead31375eeaff3734",
+        "emergency_supply_sha256": "5e9dfb56d45df1fafbecd2937332906d9e041ec1dec8791b5cc427a6edaead86",
+        "fulfillment_sha256": "a713c0f158213259513a87608375b8a80945c12fe34866441895e12f32e4cc88"
+      },
+      "wall_seconds": 301.1299068999997,
+      "peak_memory_mb": 136.7890625,
+      "strategies": {
+        "M2_minimum_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "source_case_id": "M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "1b7b238c81c9790c6c7b9735b671850626661a93584c4fe0a13ec86ebedb99a3",
+            "regular_purchase_sha256": "2bf6302713013e14d3379e33ab03e388bec0c78fb324d59eadf28bddbb948c9f",
+            "reserve_amount": 575.8480774516883,
+            "exact_training_objective": 42206.10918594464,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          },
+          "wall_seconds": 49.090271800001574,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 17656.543938659615,
+            "total_cost_cvar95": 40414.07829644171,
+            "service_level": 0.7343269938551833,
+            "shortage_probability": 0.9965,
+            "mean_emergency_spend": 575.6763796031474
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "da9742c1ce5f110920681f248bb9c650624706ce08d89a82e564feab8aba3e6f",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9030378553485511
+          }
+        },
+        "M2_1_validation_selected_endpoint": {
+          "source_candidate_id": "maximum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "source_case_id": "M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "d8d23271139ec96432f32473170686fd5ef6e9b8e75c7d59235c6cf0572ca241",
+            "regular_purchase_sha256": "795ee31dd3c688d7be90189f7874bdf24ba0e2e1c2b802f88fa00fa13b1305a8",
+            "reserve_amount": 575.8642970032402,
+            "exact_training_objective": 42206.10918594464,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          },
+          "wall_seconds": 49.85069349999867,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 17656.30621770195,
+            "total_cost_cvar95": 40414.04594166132,
+            "service_level": 0.7343310850063423,
+            "shortage_probability": 0.9965,
+            "mean_emergency_spend": 575.6925424997078
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "a23f62e83909d33c10ed4e25d0d478834624753c731f263ad9aacc40f9d0c36c",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.903034514702425
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_candidate_id": "zero_autonomous_reserve",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "source_case_id": "M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "2eef93a2daf556e0f0f95645b1540a3188eff1cae54e9351c044aff78112983c",
+            "regular_purchase_sha256": "6f52d5c2778889f676878af2fa2f9ce28160d405787791d302dd0ebed8de7a4a",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 42975.18408524282,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          },
+          "wall_seconds": 50.085365200000524,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 23000.38943972509,
+            "total_cost_cvar95": 42052.177173383156,
+            "service_level": 0.6418995832980667,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_10",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "source_case_id": "M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "ab262bfaedfc00a48edcb09d52ffeefd9c14381b3bd6e4331ca2bfa547969e49",
+            "regular_purchase_sha256": "a0d0d2fe1f3b6e7041b1430499a1d5ddcc382aee785c26dfb47a15218c087418",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 42487.72906960367,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          },
+          "wall_seconds": 50.25625349999973,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 22705.70839977275,
+            "total_cost_cvar95": 41501.57828016787,
+            "service_level": 0.6471738635105663,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 257.13720165746173
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "8bd7f9e7cda302b9a8fbab8d0aabc6d0695b74eb68152bafd1657b9dc06efa6c",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_30",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "source_case_id": "M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "0802309ee4e19c5bf66f187935470aa9a64e334e38ab7ae20be92359d7fcd4cf",
+            "regular_purchase_sha256": "e93c3c5f7afea12bc1aac3a42bbcce13acac6813de1b73468356a8d67672d4a3",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 42280.83327677331,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          },
+          "wall_seconds": 50.87756900000022,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 15164.69523580445,
+            "total_cost_cvar95": 40429.00377185188,
+            "service_level": 0.7767579746020699,
+            "shortage_probability": 0.972,
+            "mean_emergency_spend": 768.9965168697158
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "a101b4b73fd3b146d1ea55235252618d57e057df2f54e7c3f89b9be8fa3b4fae",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.965437999254104
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_50",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "source_case_id": "M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "e8debfcd626121a890f01d52c9442ada866f529ee0ff973f42cff7b97a5e020f",
+            "regular_purchase_sha256": "70b087eb922337e2c494e3a5e6b45c4b80f78d1f6deb2735a0d903ea4701ab9f",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 42884.2170626507,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          },
+          "wall_seconds": 50.4892673000013,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 12775.578791061993,
+            "total_cost_cvar95": 41393.414583959275,
+            "service_level": 0.813979533634299,
+            "shortage_probability": 0.7945,
+            "mean_emergency_spend": 1227.5957745913379
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "01fc99f92007083eee1f1130c44219ab5a8234996b7825740113f4b082e882f7",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8209712689711713
+          }
+        }
+      },
+      "primary_cvar95_difference_m2_1_minus_m2": -0.032354780385503545,
+      "source_evidence": {
+        "source_result_sha256": "285a8d086f344ce74a959249feccadce63eb569c518ff10d2ba83c46d49cba55",
+        "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+        "source_case_id": "M2_1_formal_triplet02_train2026090102_validation2026090202_test2026090302",
+        "training_seed": 2026090102,
+        "validation_seed": 2026090202,
+        "reserved_test_seed": 2026090302,
+        "selected_candidate_id": "maximum_endpoint",
+        "strategy_plan_identities": {
+          "M2_minimum_endpoint": {
+            "finalized_plan_artifact_sha256": "1b7b238c81c9790c6c7b9735b671850626661a93584c4fe0a13ec86ebedb99a3",
+            "regular_purchase_sha256": "2bf6302713013e14d3379e33ab03e388bec0c78fb324d59eadf28bddbb948c9f",
+            "reserve_amount": 575.8480774516883,
+            "exact_training_objective": 42206.10918594464,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          },
+          "M2_1_validation_selected_endpoint": {
+            "finalized_plan_artifact_sha256": "d8d23271139ec96432f32473170686fd5ef6e9b8e75c7d59235c6cf0572ca241",
+            "regular_purchase_sha256": "795ee31dd3c688d7be90189f7874bdf24ba0e2e1c2b802f88fa00fa13b1305a8",
+            "reserve_amount": 575.8642970032402,
+            "exact_training_objective": 42206.10918594464,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          },
+          "zero_autonomous_reserve": {
+            "finalized_plan_artifact_sha256": "2eef93a2daf556e0f0f95645b1540a3188eff1cae54e9351c044aff78112983c",
+            "regular_purchase_sha256": "6f52d5c2778889f676878af2fa2f9ce28160d405787791d302dd0ebed8de7a4a",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 42975.18408524282,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          },
+          "fixed_autonomous_reserve_0_10": {
+            "finalized_plan_artifact_sha256": "ab262bfaedfc00a48edcb09d52ffeefd9c14381b3bd6e4331ca2bfa547969e49",
+            "regular_purchase_sha256": "a0d0d2fe1f3b6e7041b1430499a1d5ddcc382aee785c26dfb47a15218c087418",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 42487.72906960367,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          },
+          "fixed_autonomous_reserve_0_30": {
+            "finalized_plan_artifact_sha256": "0802309ee4e19c5bf66f187935470aa9a64e334e38ab7ae20be92359d7fcd4cf",
+            "regular_purchase_sha256": "e93c3c5f7afea12bc1aac3a42bbcce13acac6813de1b73468356a8d67672d4a3",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 42280.83327677331,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          },
+          "fixed_autonomous_reserve_0_50": {
+            "finalized_plan_artifact_sha256": "e8debfcd626121a890f01d52c9442ada866f529ee0ff973f42cff7b97a5e020f",
+            "regular_purchase_sha256": "70b087eb922337e2c494e3a5e6b45c4b80f78d1f6deb2735a0d903ea4701ab9f",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 42884.2170626507,
+            "training_joint_scenario_set_sha256": "89640359df1a4a5b50d6022ba5901ea944936c321d7149d56c6cc281a5e9fcf2"
+          }
+        }
+      }
+    },
+    {
+      "run_id": "m21formaltest_v11_20260823_M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+      "case_id": "M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+      "status": "optimal",
+      "training_seed": 2026090103,
+      "validation_seed": 2026090203,
+      "test_seed": 2026090303,
+      "selected_candidate_id": "maximum_endpoint",
+      "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+      "git_sha": "1688f504c1af276893682d3a38def4247fc53ad1",
+      "git_tree_sha": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+      "result_sha256": "811b7a83fdb5925e4d60a58150534266ac0c3c12df2323ed286b97f9b7a69493",
+      "manifest_sha256": "6dd4254b7e3df0275c52d300df71305fcc36a31138ccac45435ddb68a0d81df3",
+      "status_summary_sha256": "ebf973a79ff63abf717cf6c1f79a145904800d831a62fbb8a37a3b63cf0d1ee3",
+      "test_scenario_identity": {
+        "scenario_set_sha256": "70ca0f5b6c36d7d02c2e4c72764195ad5459a9cfa70dbcd142bd4e35ffe3b10c",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+        "latent_draw_sha256": "82fffadaef4ba4572209dee86ba597ba4129c35ed8b33cf30c42d607517cf7a2",
+        "demand_sha256": "74eeebbf78f4f8b673dd5a1f0e1195153c2bc553ab8479205f3eb45912da63cd",
+        "emergency_price_sha256": "c799cea34ff4d0aa16c2271c83d00e470bdac0cddf90d58de5f02e7bb1fc0e8b",
+        "emergency_supply_sha256": "875fa0c383baaee95b9a37d13a4ec22d68dd79b55c68f2a199fd210ec4980d42",
+        "fulfillment_sha256": "c9ca17283c1a9f031f0606d0fde37c1152a842a57136153b27f6df990ab13707"
+      },
+      "wall_seconds": 307.9701151999998,
+      "peak_memory_mb": 137.515625,
+      "strategies": {
+        "M2_minimum_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "source_case_id": "M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "2a80fb114e0cea44a1f94fd3b8c730e04374309b9d950bb84df7bb22ef07e31f",
+            "regular_purchase_sha256": "b545e61d7a897d6c885a54dcc07c5b3fceb93a8ea02d90fdfbb4861341e4a217",
+            "reserve_amount": 75.9143172874929,
+            "exact_training_objective": 52726.10005790474,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          },
+          "wall_seconds": 49.58334140000079,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 26166.878287935877,
+            "total_cost_cvar95": 44038.113001527534,
+            "service_level": 0.5895656182664987,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 75.9143172874929
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "af9a235a2119c347acee8b891851865244235ac80b89c9be619910704834d392",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "M2_1_validation_selected_endpoint": {
+          "source_candidate_id": "maximum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "source_case_id": "M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "a3bb0aaa15db0221c73f97de1444e5c5154ad8c89c76a678e7c1d25197a233f9",
+            "regular_purchase_sha256": "63a7780bb11a64c4b52d03a013fb33792b0ee57c2211ef58a78d6e368d8ee75b",
+            "reserve_amount": 75.97609385065192,
+            "exact_training_objective": 52726.10005790475,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          },
+          "wall_seconds": 50.81772050000109,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 26165.795598296918,
+            "total_cost_cvar95": 44037.796581799594,
+            "service_level": 0.5895841200476536,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 75.97609385065192
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "b6be61c4cf042bbed2f42064eebda6eebad9dd970a826a2a6063c081ec220d04",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_candidate_id": "zero_autonomous_reserve",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "source_case_id": "M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "953b7b3160e3653728d033fa380d8df76008a6753184269761360421ff170949",
+            "regular_purchase_sha256": "63dec76b96af0cec5cb314b4d85b1c394450441a2c0f755ec4bfdf0c25d4f32f",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 52732.99763203856,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          },
+          "wall_seconds": 51.38546519999909,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27513.215804208707,
+            "total_cost_cvar95": 44555.59078860888,
+            "service_level": 0.5665123471933677,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_10",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "source_case_id": "M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "30c8f2a742932a440d495c30b1baec298326df71e585682df81a83baea3e95b8",
+            "regular_purchase_sha256": "392f0a26bdfcd73daf13052ce17245b3dd8a821bef2a94c461437ae430df904f",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 53001.20599785904,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          },
+          "wall_seconds": 51.844671599999856,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 23076.303317954036,
+            "total_cost_cvar95": 43102.558072294196,
+            "service_level": 0.6423215542694491,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 257.13720165746173
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "50dea34dcaf4a905ed43e0a9884e429bb181ae542ee2ce5c415f63bc34713fea",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_30",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "source_case_id": "M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "02a8d1d176ab750cc3e2bcf315023c78c29c9867edb5c89a0b21aa7dbd082aa6",
+            "regular_purchase_sha256": "f706aee3bbd8479724a269e332da671c3008c74617da152774d85fed56a96dba",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 53970.64095679006,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          },
+          "wall_seconds": 51.779851999999664,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 15094.935053235446,
+            "total_cost_cvar95": 40676.87658601235,
+            "service_level": 0.7796735520492128,
+            "shortage_probability": 0.972,
+            "mean_emergency_spend": 768.9993322507709
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "973d81a1ce1935730e9d0f29e287bf095b409b82cc08fe66c7b1d624efa5a220",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_50",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "source_case_id": "M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "9a6973f4a6a0ec210018ee072cbbff1c7a029a81074b43273df2d2577378b356",
+            "regular_purchase_sha256": "93f0f47f8e9b07acc3074372e98c086829e5ae5c84680c080d70d906cab2bcbd",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 55050.93713188459,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          },
+          "wall_seconds": 52.11835079999946,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 11289.507690452474,
+            "total_cost_cvar95": 41546.87215188361,
+            "service_level": 0.8416329829116056,
+            "shortage_probability": 0.7385,
+            "mean_emergency_spend": 1208.3828726196293
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "f50d005dfb46db8e740173c291f10582cf7453abd9931f43e1959d3f0600c6a9",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9333479183211724
+          }
+        }
+      },
+      "primary_cvar95_difference_m2_1_minus_m2": -0.31641972794022877,
+      "source_evidence": {
+        "source_result_sha256": "75c572247c69b29535670fd9a5153e4af25ead79e03532a03e4a2aab3f7c42d3",
+        "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+        "source_case_id": "M2_1_formal_triplet03_train2026090103_validation2026090203_test2026090303",
+        "training_seed": 2026090103,
+        "validation_seed": 2026090203,
+        "reserved_test_seed": 2026090303,
+        "selected_candidate_id": "maximum_endpoint",
+        "strategy_plan_identities": {
+          "M2_minimum_endpoint": {
+            "finalized_plan_artifact_sha256": "2a80fb114e0cea44a1f94fd3b8c730e04374309b9d950bb84df7bb22ef07e31f",
+            "regular_purchase_sha256": "b545e61d7a897d6c885a54dcc07c5b3fceb93a8ea02d90fdfbb4861341e4a217",
+            "reserve_amount": 75.9143172874929,
+            "exact_training_objective": 52726.10005790474,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          },
+          "M2_1_validation_selected_endpoint": {
+            "finalized_plan_artifact_sha256": "a3bb0aaa15db0221c73f97de1444e5c5154ad8c89c76a678e7c1d25197a233f9",
+            "regular_purchase_sha256": "63a7780bb11a64c4b52d03a013fb33792b0ee57c2211ef58a78d6e368d8ee75b",
+            "reserve_amount": 75.97609385065192,
+            "exact_training_objective": 52726.10005790475,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          },
+          "zero_autonomous_reserve": {
+            "finalized_plan_artifact_sha256": "953b7b3160e3653728d033fa380d8df76008a6753184269761360421ff170949",
+            "regular_purchase_sha256": "63dec76b96af0cec5cb314b4d85b1c394450441a2c0f755ec4bfdf0c25d4f32f",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 52732.99763203856,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          },
+          "fixed_autonomous_reserve_0_10": {
+            "finalized_plan_artifact_sha256": "30c8f2a742932a440d495c30b1baec298326df71e585682df81a83baea3e95b8",
+            "regular_purchase_sha256": "392f0a26bdfcd73daf13052ce17245b3dd8a821bef2a94c461437ae430df904f",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 53001.20599785904,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          },
+          "fixed_autonomous_reserve_0_30": {
+            "finalized_plan_artifact_sha256": "02a8d1d176ab750cc3e2bcf315023c78c29c9867edb5c89a0b21aa7dbd082aa6",
+            "regular_purchase_sha256": "f706aee3bbd8479724a269e332da671c3008c74617da152774d85fed56a96dba",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 53970.64095679006,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          },
+          "fixed_autonomous_reserve_0_50": {
+            "finalized_plan_artifact_sha256": "9a6973f4a6a0ec210018ee072cbbff1c7a029a81074b43273df2d2577378b356",
+            "regular_purchase_sha256": "93f0f47f8e9b07acc3074372e98c086829e5ae5c84680c080d70d906cab2bcbd",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 55050.93713188459,
+            "training_joint_scenario_set_sha256": "214b8cb822376b169f6812afdcf9ee639ebec62877dd1df52207244e49275fc1"
+          }
+        }
+      }
+    },
+    {
+      "run_id": "m21formaltest_v11_20260823_M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+      "case_id": "M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+      "status": "optimal",
+      "training_seed": 2026090104,
+      "validation_seed": 2026090204,
+      "test_seed": 2026090304,
+      "selected_candidate_id": "maximum_endpoint",
+      "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+      "git_sha": "1688f504c1af276893682d3a38def4247fc53ad1",
+      "git_tree_sha": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+      "result_sha256": "9d7030b8b0b544ba83405f7e611adeeb5173a49d02435f519f76bc45c4e41b74",
+      "manifest_sha256": "2fd92eca81164083d83bc1c361b277b1378964296b016eac4ced45efa63adb7f",
+      "status_summary_sha256": "1c6f8317d1868facddfce8e635554e96994dab2055c28c994804c1cccbb6299a",
+      "test_scenario_identity": {
+        "scenario_set_sha256": "2cddd99dc717131b54a08d871edada46d703264a7cc30872c987f42d0450a75f",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+        "latent_draw_sha256": "23ec964ee0cacf78cfb94e3ab8641fac3d52a142a07d659ff90c2655bd75a221",
+        "demand_sha256": "b657b6f734248a47f3723cea55417b3ac73f1b16017883f0599ffa4fb772dbc6",
+        "emergency_price_sha256": "cfbf2fcdf9c6cb5a9d3327c15311944b154165988b2caf342ff7a2da03d41f35",
+        "emergency_supply_sha256": "f3cfab54298478b9dd80627a9c2ed79e3e4c02000a7516206787c0d288b5144c",
+        "fulfillment_sha256": "60f4eb101014256ab130f9f2359f2a38c192817131fa55bfbe00c837fab035d2"
+      },
+      "wall_seconds": 309.76937400000133,
+      "peak_memory_mb": 137.59375,
+      "strategies": {
+        "M2_minimum_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "source_case_id": "M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "09aad25db7ddd53f61e05da8bdfc9310bac85d16479a1d8b7a5c335fba7146fd",
+            "regular_purchase_sha256": "a8a0e218c10c97b14c7b1808dbaf32910d746b94c236fed7d21f3052ac17af5c",
+            "reserve_amount": 472.83189837811665,
+            "exact_training_objective": 34595.24151521632,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          },
+          "wall_seconds": 49.95834669999931,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 19119.90067080406,
+            "total_cost_cvar95": 40166.552391616664,
+            "service_level": 0.7095426915315426,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 472.83189837811665
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "05ca76210e99da4f72b5b94f5f7f4f2c0fcaf67cb577a2e5aa9599a6f476689e",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "M2_1_validation_selected_endpoint": {
+          "source_candidate_id": "maximum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "source_case_id": "M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "895ccaefa2b3d3503191fe8a012e9b3b4749a8e77a7e7dba33d06e8b09c3e5f1",
+            "regular_purchase_sha256": "420643947e459881de7e20033f37ef62e987929084cca2fdf57816289f59830c",
+            "reserve_amount": 472.8390387721867,
+            "exact_training_objective": 34595.241515216316,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          },
+          "wall_seconds": 51.158469300000434,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 19119.792569711055,
+            "total_cost_cvar95": 40166.53733500443,
+            "service_level": 0.70954454721238,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 472.8390387721867
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "944ad090004ff00972e42bef6efcd23f8dc1a4cefe2e932a6fd85de25b7fa16e",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_candidate_id": "zero_autonomous_reserve",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "source_case_id": "M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "bfdc6d1f295101b87b73ee9ae9925b9f420fccaf88ad99708af2e7af8bce96f1",
+            "regular_purchase_sha256": "da94667d71a3eca85dfeb19e656af025a409592a260a714e14dc8785b35a55ce",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 35678.85986378948,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          },
+          "wall_seconds": 51.475986999999805,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 20992.151263633474,
+            "total_cost_cvar95": 41097.31701626741,
+            "service_level": 0.67576958711558,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_10",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "source_case_id": "M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "02161d30ea5c782bfa4fa3807d8508b7e1eea081ee6f70168cecf69377678d1c",
+            "regular_purchase_sha256": "463182a0ad51f211ca593f4867cfa31b48675c9f92ea07f03c37e5237f3843db",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 34921.37172996885,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          },
+          "wall_seconds": 51.724081399999704,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 19798.636824447112,
+            "total_cost_cvar95": 40449.72653966368,
+            "service_level": 0.6977458073269647,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 257.13720165746173
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "38b351ad86d37de408c8d3cec19170769af5639445192ddf999f72833a3d5f1f",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_30",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "source_case_id": "M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "04f521739c7feebbd395dffad5ed2ef20a5f48145fb31fd9844bb0ec329d530d",
+            "regular_purchase_sha256": "5ee8d4a1a25104a92151607635a5d4908e038dfaeb508f89c590178951faf515",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 34914.72318584598,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          },
+          "wall_seconds": 52.43270019999909,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 14814.827368172455,
+            "total_cost_cvar95": 39418.38023371247,
+            "service_level": 0.7833704097716001,
+            "shortage_probability": 0.9685,
+            "mean_emergency_spend": 768.6189170750462
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "86b09a7d9cfd5dc896d0627990adc3e05809e0590dcccc767c797f72fa924725",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8363448396318967
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_50",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "source_case_id": "M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "505e58f14605aa6ab24fd6f7a934b3ca3977eeba63d899adef7864516f26f899",
+            "regular_purchase_sha256": "e95c68620e0e49faefa42ee49d95672a64f4fd8d331e14edb72061da48971238",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 35781.10143248147,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          },
+          "wall_seconds": 52.539858499998445,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 11101.098069911384,
+            "total_cost_cvar95": 40274.89675406127,
+            "service_level": 0.8436790830134128,
+            "shortage_probability": 0.7225,
+            "mean_emergency_spend": 1201.1691480842908
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "816e75595140098d2a39e310882b65b4a7e7f94a3b7893ce5e678ef66fb51385",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9069773776475244
+          }
+        }
+      },
+      "primary_cvar95_difference_m2_1_minus_m2": -0.015056612232001498,
+      "source_evidence": {
+        "source_result_sha256": "59989eb28fc1f1a7012816b0966d0616fed2aa60f3b3d5a5f8cca30e7adb66b3",
+        "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+        "source_case_id": "M2_1_formal_triplet04_train2026090104_validation2026090204_test2026090304",
+        "training_seed": 2026090104,
+        "validation_seed": 2026090204,
+        "reserved_test_seed": 2026090304,
+        "selected_candidate_id": "maximum_endpoint",
+        "strategy_plan_identities": {
+          "M2_minimum_endpoint": {
+            "finalized_plan_artifact_sha256": "09aad25db7ddd53f61e05da8bdfc9310bac85d16479a1d8b7a5c335fba7146fd",
+            "regular_purchase_sha256": "a8a0e218c10c97b14c7b1808dbaf32910d746b94c236fed7d21f3052ac17af5c",
+            "reserve_amount": 472.83189837811665,
+            "exact_training_objective": 34595.24151521632,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          },
+          "M2_1_validation_selected_endpoint": {
+            "finalized_plan_artifact_sha256": "895ccaefa2b3d3503191fe8a012e9b3b4749a8e77a7e7dba33d06e8b09c3e5f1",
+            "regular_purchase_sha256": "420643947e459881de7e20033f37ef62e987929084cca2fdf57816289f59830c",
+            "reserve_amount": 472.8390387721867,
+            "exact_training_objective": 34595.241515216316,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          },
+          "zero_autonomous_reserve": {
+            "finalized_plan_artifact_sha256": "bfdc6d1f295101b87b73ee9ae9925b9f420fccaf88ad99708af2e7af8bce96f1",
+            "regular_purchase_sha256": "da94667d71a3eca85dfeb19e656af025a409592a260a714e14dc8785b35a55ce",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 35678.85986378948,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          },
+          "fixed_autonomous_reserve_0_10": {
+            "finalized_plan_artifact_sha256": "02161d30ea5c782bfa4fa3807d8508b7e1eea081ee6f70168cecf69377678d1c",
+            "regular_purchase_sha256": "463182a0ad51f211ca593f4867cfa31b48675c9f92ea07f03c37e5237f3843db",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 34921.37172996885,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          },
+          "fixed_autonomous_reserve_0_30": {
+            "finalized_plan_artifact_sha256": "04f521739c7feebbd395dffad5ed2ef20a5f48145fb31fd9844bb0ec329d530d",
+            "regular_purchase_sha256": "5ee8d4a1a25104a92151607635a5d4908e038dfaeb508f89c590178951faf515",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 34914.72318584598,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          },
+          "fixed_autonomous_reserve_0_50": {
+            "finalized_plan_artifact_sha256": "505e58f14605aa6ab24fd6f7a934b3ca3977eeba63d899adef7864516f26f899",
+            "regular_purchase_sha256": "e95c68620e0e49faefa42ee49d95672a64f4fd8d331e14edb72061da48971238",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 35781.10143248147,
+            "training_joint_scenario_set_sha256": "aa4c8518294368fbd7957f4560b46083d57c2f0e7e80a8ce99743732f8a1f70d"
+          }
+        }
+      }
+    },
+    {
+      "run_id": "m21formaltest_v11_20260823_M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+      "case_id": "M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+      "status": "optimal",
+      "training_seed": 2026090105,
+      "validation_seed": 2026090205,
+      "test_seed": 2026090305,
+      "selected_candidate_id": "maximum_endpoint",
+      "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+      "git_sha": "1688f504c1af276893682d3a38def4247fc53ad1",
+      "git_tree_sha": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+      "result_sha256": "51e2bc2e08e9010f6c3b22989490f4f03bb5737413b54c3d340113a6fc299d76",
+      "manifest_sha256": "dcf428a879df06093d502a9ce6876bb379983e04b8c41d68a097b34f2e7f22f7",
+      "status_summary_sha256": "8520d2627f08b6a063c93bc93f28ff218d2ce8a275ddb01cfceda402acd1b071",
+      "test_scenario_identity": {
+        "scenario_set_sha256": "7b39121936a38d1e4bca5e25c8df35cc2debcd27a7e03b35f5992c7b098bc0ee",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+        "latent_draw_sha256": "bd9b587c7d69e0be2f480499fd95cd81bb271dbd5864f70066c4e6c7200119d0",
+        "demand_sha256": "caf952ee6c8d61366a1926aca44078ee09e951d32db7b40da30d3ea9e0223eb3",
+        "emergency_price_sha256": "8392655cd9289c40b2777bd8538b16d43290dbe5afc102f4eaec287d3df84c67",
+        "emergency_supply_sha256": "83ae92dd707a08735796b74e819fa0e921f4615c63cdab9067960d04958ad086",
+        "fulfillment_sha256": "de933e4dd535c2352ae5981df23a3d9f317eb437fb7e5ea0860cb273993f0888"
+      },
+      "wall_seconds": 309.3962578999999,
+      "peak_memory_mb": 138.76171875,
+      "strategies": {
+        "M2_minimum_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "source_case_id": "M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "296269b9baf2038552f42e1abdf07a807a26e02e3798ce0609f247716c3fc199",
+            "regular_purchase_sha256": "7079aa0916fede4c4273476046bfa5c3f9e03d7f7931a104b671814f70ea40b7",
+            "reserve_amount": 130.4999908138782,
+            "exact_training_objective": 50503.099767540305,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          },
+          "wall_seconds": 50.11118119999992,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 23789.57268751201,
+            "total_cost_cvar95": 41694.8482763129,
+            "service_level": 0.6286812360602994,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 130.4999908138782
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "6a278071d04c6ffbb2e1f77abbddc6f5e60ad4ffe0766c4561965fd8e65fd2c0",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "M2_1_validation_selected_endpoint": {
+          "source_candidate_id": "maximum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "source_case_id": "M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "557f7ed9616f8c7d0ded27d520d9608159b6961914934cd667ef59e06a9fb56b",
+            "regular_purchase_sha256": "4809a98f76cf9870f4cf7870e18025a463d2ea29127422b2b442024b1c1ee3d0",
+            "reserve_amount": 130.66323101355226,
+            "exact_training_objective": 50503.099767540305,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          },
+          "wall_seconds": 51.11751369999911,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 23789.366583863535,
+            "total_cost_cvar95": 41694.54024187939,
+            "service_level": 0.628684880680465,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 130.66323101355226
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "86312a92d3176183ce1c18183f24428469b362b2acbd676bb6dfd77a7ec25ca6",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_candidate_id": "zero_autonomous_reserve",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "source_case_id": "M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "4a3b466b8a70f3cc4cc1e9d1351a451724d27b0ef60396eddddeb27458fc3427",
+            "regular_purchase_sha256": "4a4141f8cddeb5ca1172e5cdad760445bd65e147c55c7cf63b1b927693f01750",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 50507.24325607428,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          },
+          "wall_seconds": 51.20962780000082,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 24704.987029397314,
+            "total_cost_cvar95": 41968.60790573497,
+            "service_level": 0.6126200100616885,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_10",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "source_case_id": "M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "40af9ebaeee6543a16eec79701d4669aed71bede364c691dc8b8b2ed2a7c414a",
+            "regular_purchase_sha256": "bf76c3a882ce190e42cf48e408d6b3ee337cf353f123cb646e9b47b86eb8fae0",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 50675.50538333116,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          },
+          "wall_seconds": 51.770583599998645,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 21619.908367362666,
+            "total_cost_cvar95": 40883.89013567311,
+            "service_level": 0.6660376139208994,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 257.13720165746173
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "0cee0ba1b080cf1fccd1846573f45d194a1205d1faeeafa7d491cf278a15721a",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_30",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "source_case_id": "M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "dda391fd3ca6e35c4789014b04d343d5a9aa18ad0f46846799a8a986899317b8",
+            "regular_purchase_sha256": "9219e5cddfa4aaa58faa141a8a9b2a97b23a685554440121b075d7448a1ee907",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 51600.885202892474,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          },
+          "wall_seconds": 52.36490999999842,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 16482.667413451476,
+            "total_cost_cvar95": 40736.04910632086,
+            "service_level": 0.7517108128900929,
+            "shortage_probability": 0.969,
+            "mean_emergency_spend": 768.5813995395929
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "3aa0bf309ff45db61baf05583cfb506c6a3bfe1711662447a8669d6e361e6bf4",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9037931743831452
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_50",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "source_case_id": "M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "521c002d7dccbc99c87652becdf2530f02954457d6def464b53ba429855a6113",
+            "regular_purchase_sha256": "46472e102576392de4b3156656d0792d8ef10b0758147dfa66a892116ed919b7",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 52927.70194211298,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          },
+          "wall_seconds": 52.28992229999858,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 11877.581530236592,
+            "total_cost_cvar95": 40375.95428550193,
+            "service_level": 0.8297376788285041,
+            "shortage_probability": 0.76,
+            "mean_emergency_spend": 1214.3807772513228
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "4e6772c24c1288908e791c6e24d5d9c6460821752604b9d332eee9bd259517b1",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9422759046298871
+          }
+        }
+      },
+      "primary_cvar95_difference_m2_1_minus_m2": -0.3080344335103291,
+      "source_evidence": {
+        "source_result_sha256": "f1e798cb0f309773346d6fedcbc2f38ba1e7cf71a428f75945531d52a877fb98",
+        "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+        "source_case_id": "M2_1_formal_triplet05_train2026090105_validation2026090205_test2026090305",
+        "training_seed": 2026090105,
+        "validation_seed": 2026090205,
+        "reserved_test_seed": 2026090305,
+        "selected_candidate_id": "maximum_endpoint",
+        "strategy_plan_identities": {
+          "M2_minimum_endpoint": {
+            "finalized_plan_artifact_sha256": "296269b9baf2038552f42e1abdf07a807a26e02e3798ce0609f247716c3fc199",
+            "regular_purchase_sha256": "7079aa0916fede4c4273476046bfa5c3f9e03d7f7931a104b671814f70ea40b7",
+            "reserve_amount": 130.4999908138782,
+            "exact_training_objective": 50503.099767540305,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          },
+          "M2_1_validation_selected_endpoint": {
+            "finalized_plan_artifact_sha256": "557f7ed9616f8c7d0ded27d520d9608159b6961914934cd667ef59e06a9fb56b",
+            "regular_purchase_sha256": "4809a98f76cf9870f4cf7870e18025a463d2ea29127422b2b442024b1c1ee3d0",
+            "reserve_amount": 130.66323101355226,
+            "exact_training_objective": 50503.099767540305,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          },
+          "zero_autonomous_reserve": {
+            "finalized_plan_artifact_sha256": "4a3b466b8a70f3cc4cc1e9d1351a451724d27b0ef60396eddddeb27458fc3427",
+            "regular_purchase_sha256": "4a4141f8cddeb5ca1172e5cdad760445bd65e147c55c7cf63b1b927693f01750",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 50507.24325607428,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          },
+          "fixed_autonomous_reserve_0_10": {
+            "finalized_plan_artifact_sha256": "40af9ebaeee6543a16eec79701d4669aed71bede364c691dc8b8b2ed2a7c414a",
+            "regular_purchase_sha256": "bf76c3a882ce190e42cf48e408d6b3ee337cf353f123cb646e9b47b86eb8fae0",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 50675.50538333116,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          },
+          "fixed_autonomous_reserve_0_30": {
+            "finalized_plan_artifact_sha256": "dda391fd3ca6e35c4789014b04d343d5a9aa18ad0f46846799a8a986899317b8",
+            "regular_purchase_sha256": "9219e5cddfa4aaa58faa141a8a9b2a97b23a685554440121b075d7448a1ee907",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 51600.885202892474,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          },
+          "fixed_autonomous_reserve_0_50": {
+            "finalized_plan_artifact_sha256": "521c002d7dccbc99c87652becdf2530f02954457d6def464b53ba429855a6113",
+            "regular_purchase_sha256": "46472e102576392de4b3156656d0792d8ef10b0758147dfa66a892116ed919b7",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 52927.70194211298,
+            "training_joint_scenario_set_sha256": "04533e8bf53d2142f928c60de103278cbc9101edee5d2068cba906e980cd1b7f"
+          }
+        }
+      }
+    },
+    {
+      "run_id": "m21formaltest_v11_20260823_M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+      "case_id": "M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+      "status": "optimal",
+      "training_seed": 2026090106,
+      "validation_seed": 2026090206,
+      "test_seed": 2026090306,
+      "selected_candidate_id": "minimum_endpoint",
+      "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+      "git_sha": "1688f504c1af276893682d3a38def4247fc53ad1",
+      "git_tree_sha": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+      "result_sha256": "55aeff38b51c714ce0fbc18f0e4faeb49b220ca7d917b2ecbeb31b5ac39e4e86",
+      "manifest_sha256": "2c215e095737c7d9df15e438794c9382cef86c11a1fade0ea146d2dfba0d076b",
+      "status_summary_sha256": "004ff5806b002036a559dc79d7c678792d4096b5af78416298c15de9e158022c",
+      "test_scenario_identity": {
+        "scenario_set_sha256": "f7896e33fe51a9daf9baf0fc8df776a08ccedf4e0438c388c83a2ae6014ef3c2",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+        "latent_draw_sha256": "55fc789782e48136ed1ae4e816bcd9613c65d2e38d1a3681c330b8999feb73a0",
+        "demand_sha256": "9fa53612b281e33231604aee7e5d9daa6f31afb889d3b6e2ca77a1c1339fdf77",
+        "emergency_price_sha256": "80584468708bec51c5aff4c2d43bffb3737ae6c53b1689ee7778fc6d037d973c",
+        "emergency_supply_sha256": "46275e1f18cc7b3e3e7baf53493e068435afdc614045a9178cb32de2cddcc784",
+        "fulfillment_sha256": "325966e88375363791c89980a7357334f5e4d9d7d9d51d156f1ca789ab641f4c"
+      },
+      "wall_seconds": 308.96155179999914,
+      "peak_memory_mb": 138.53515625,
+      "strategies": {
+        "M2_minimum_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "source_case_id": "M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "d2bce8f0488b5dde935ef53092b1681ef75fd7206365750f7408ca612cd707a3",
+            "regular_purchase_sha256": "a105a7416cdffb2c6f0df5dec05beea101c9ee7a0bce32d157bd6ce39adf0410",
+            "reserve_amount": 176.6452464525188,
+            "exact_training_objective": 38452.531483792634,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          },
+          "wall_seconds": 50.054967600000964,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 21442.324534892632,
+            "total_cost_cvar95": 40913.10729016536,
+            "service_level": 0.6679092569792668,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 176.6452464525188
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "14ff68639846a217f069ded958c2cd9efc6c3ef1a675c35aee01d59434cb2d5b",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "M2_1_validation_selected_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "source_case_id": "M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "d2bce8f0488b5dde935ef53092b1681ef75fd7206365750f7408ca612cd707a3",
+            "regular_purchase_sha256": "a105a7416cdffb2c6f0df5dec05beea101c9ee7a0bce32d157bd6ce39adf0410",
+            "reserve_amount": 176.6452464525188,
+            "exact_training_objective": 38452.531483792634,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          },
+          "wall_seconds": 50.76766609999868,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 21442.324534892632,
+            "total_cost_cvar95": 40913.10729016536,
+            "service_level": 0.6679092569792668,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 176.6452464525188
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "14ff68639846a217f069ded958c2cd9efc6c3ef1a675c35aee01d59434cb2d5b",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_candidate_id": "zero_autonomous_reserve",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "source_case_id": "M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "63a1d7ee9595954db97d1a4ebdefed8b930f59fee94d494f25df8a953bb54b39",
+            "regular_purchase_sha256": "c9ed0aa6a9d537f93debfc906bd6450eee96428d3f6056ecc2de1aacc7ac5a36",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 38501.06869977143,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          },
+          "wall_seconds": 51.395339099999546,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 21015.145097314413,
+            "total_cost_cvar95": 40890.644067611924,
+            "service_level": 0.6751110833688782,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_10",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "source_case_id": "M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "0bc92ce6ba1fc0f12c093d8c5e1c1289acfa88330c73b59202fa94065314984a",
+            "regular_purchase_sha256": "521cba9f840fd796db418151e361ae0acdefebcd0b4679b2138bdaeb7bfbefc7",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 38504.46572619139,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          },
+          "wall_seconds": 52.10352030000104,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 21652.494928921195,
+            "total_cost_cvar95": 40931.324243787305,
+            "service_level": 0.6643352871050843,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 257.13720165746173
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "5e4116f1748a866a7d2c82b93f1c7d6ddefa4cee9c15ac0ed79426bb92e49d9c",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_30",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "source_case_id": "M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "b4268516d7a28b31d060b1e7ea3d23798ae5f75852017ab1d4b83d9daf6ae352",
+            "regular_purchase_sha256": "cb4de7ce47ac077dac90dacfb3f22ec65ecff13bca3a1cb73eaf003786240d6f",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 39084.41153255841,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          },
+          "wall_seconds": 52.036827699999776,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 15634.424900395672,
+            "total_cost_cvar95": 39663.163546949254,
+            "service_level": 0.766934740260427,
+            "shortage_probability": 0.9685,
+            "mean_emergency_spend": 769.1132806614822
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "f2297b2fecc12feb5a4047e2a4cbae6b841fbe63cb70304885b8811c52bac423",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9894369002468173
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_50",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "source_case_id": "M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "9d33abef52a10b55219a414599af2cb8b0448f86860f283c093580fba9b4b892",
+            "regular_purchase_sha256": "0c3de2ba053797c3b74572d2ab9892346dc40e7d2377e8785494a909e3435d6a",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 40414.93426661762,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          },
+          "wall_seconds": 52.121769100000165,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 13789.567427939848,
+            "total_cost_cvar95": 40830.687605336134,
+            "service_level": 0.7931614753074061,
+            "shortage_probability": 0.829,
+            "mean_emergency_spend": 1237.8887395633326
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "075a2b067747889320f0884764626fc99ba8423d6ca773652977a88ad05de391",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.82361969960773
+          }
+        }
+      },
+      "primary_cvar95_difference_m2_1_minus_m2": 0.0,
+      "source_evidence": {
+        "source_result_sha256": "1e01c3b0924d0880b7452820b295aabf26a5fa6d04113ea0ad73f1a00084afed",
+        "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+        "source_case_id": "M2_1_formal_triplet06_train2026090106_validation2026090206_test2026090306",
+        "training_seed": 2026090106,
+        "validation_seed": 2026090206,
+        "reserved_test_seed": 2026090306,
+        "selected_candidate_id": "minimum_endpoint",
+        "strategy_plan_identities": {
+          "M2_minimum_endpoint": {
+            "finalized_plan_artifact_sha256": "d2bce8f0488b5dde935ef53092b1681ef75fd7206365750f7408ca612cd707a3",
+            "regular_purchase_sha256": "a105a7416cdffb2c6f0df5dec05beea101c9ee7a0bce32d157bd6ce39adf0410",
+            "reserve_amount": 176.6452464525188,
+            "exact_training_objective": 38452.531483792634,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          },
+          "M2_1_validation_selected_endpoint": {
+            "finalized_plan_artifact_sha256": "d2bce8f0488b5dde935ef53092b1681ef75fd7206365750f7408ca612cd707a3",
+            "regular_purchase_sha256": "a105a7416cdffb2c6f0df5dec05beea101c9ee7a0bce32d157bd6ce39adf0410",
+            "reserve_amount": 176.6452464525188,
+            "exact_training_objective": 38452.531483792634,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          },
+          "zero_autonomous_reserve": {
+            "finalized_plan_artifact_sha256": "63a1d7ee9595954db97d1a4ebdefed8b930f59fee94d494f25df8a953bb54b39",
+            "regular_purchase_sha256": "c9ed0aa6a9d537f93debfc906bd6450eee96428d3f6056ecc2de1aacc7ac5a36",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 38501.06869977143,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          },
+          "fixed_autonomous_reserve_0_10": {
+            "finalized_plan_artifact_sha256": "0bc92ce6ba1fc0f12c093d8c5e1c1289acfa88330c73b59202fa94065314984a",
+            "regular_purchase_sha256": "521cba9f840fd796db418151e361ae0acdefebcd0b4679b2138bdaeb7bfbefc7",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 38504.46572619139,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          },
+          "fixed_autonomous_reserve_0_30": {
+            "finalized_plan_artifact_sha256": "b4268516d7a28b31d060b1e7ea3d23798ae5f75852017ab1d4b83d9daf6ae352",
+            "regular_purchase_sha256": "cb4de7ce47ac077dac90dacfb3f22ec65ecff13bca3a1cb73eaf003786240d6f",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 39084.41153255841,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          },
+          "fixed_autonomous_reserve_0_50": {
+            "finalized_plan_artifact_sha256": "9d33abef52a10b55219a414599af2cb8b0448f86860f283c093580fba9b4b892",
+            "regular_purchase_sha256": "0c3de2ba053797c3b74572d2ab9892346dc40e7d2377e8785494a909e3435d6a",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 40414.93426661762,
+            "training_joint_scenario_set_sha256": "5744db868b7eb6049b47e2ed39ae72c88249b3eeaef51fdde6d72be6a112c35e"
+          }
+        }
+      }
+    },
+    {
+      "run_id": "m21formaltest_v11_20260823_M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+      "case_id": "M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+      "status": "optimal",
+      "training_seed": 2026090107,
+      "validation_seed": 2026090207,
+      "test_seed": 2026090307,
+      "selected_candidate_id": "maximum_endpoint",
+      "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+      "git_sha": "1688f504c1af276893682d3a38def4247fc53ad1",
+      "git_tree_sha": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+      "result_sha256": "4116b7f8b13824eab88ae7e70b32f1d5d387b0a863f6f2d86ef2b9ce0ade8460",
+      "manifest_sha256": "4085d69ebce6b1fe70793a8a93498bc3a2d9d7f88465d29aca6fe7f2ccaceae4",
+      "status_summary_sha256": "f30600de419ab2daf941a8db9749e9ce6555db431343667f1c58016193fe4fbb",
+      "test_scenario_identity": {
+        "scenario_set_sha256": "d8d16698cd07814d09e7c07b7ec6afa6ffc610080ad7b79c035c1cc7b560adce",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+        "latent_draw_sha256": "3072a3595e9247dcc560d57d19dba5848de1d38da59f89606034e054e3fd343f",
+        "demand_sha256": "5724553f37a429f5385f9af14f3b71743fd46a6cb46fba112d4cae9f982f571d",
+        "emergency_price_sha256": "afcf82868eb83cd3219cf7139510c36474f20c962a560aa86a31f189a0d8c170",
+        "emergency_supply_sha256": "cf7422f16c424c1e26f635ea0df17e2fa42717426be15cdf88df766803858ac0",
+        "fulfillment_sha256": "8d0739e422afcbbd9a5f445aaf8d6d82f86af3c1a8e4710d747b2645d84b8af8"
+      },
+      "wall_seconds": 309.8920713000007,
+      "peak_memory_mb": 139.21875,
+      "strategies": {
+        "M2_minimum_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "source_case_id": "M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "a82542f322fde39f531b44bcdf1cf84fa7c1758950d8de78140786d3b59dae93",
+            "regular_purchase_sha256": "b4ac4ba65dfce6ca5d7178e4414622451b1a313907680316bd18fa7fdfdb095c",
+            "reserve_amount": 349.46655528265035,
+            "exact_training_objective": 41578.89906776057,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          },
+          "wall_seconds": 49.973819700000604,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 18268.585326670396,
+            "total_cost_cvar95": 39458.367615613,
+            "service_level": 0.7213542903280608,
+            "shortage_probability": 0.9995,
+            "mean_emergency_spend": 349.4543530637533
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "d93e439aed31ea66c1db4920cf742ff2c03c501c7494c4d09647bff01e4b3bd0",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "M2_1_validation_selected_endpoint": {
+          "source_candidate_id": "maximum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "source_case_id": "M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "f2b58e91e81cc6b955f7bacd0355148ebe5d6feaaa68d7862b9ee93b074c7e60",
+            "regular_purchase_sha256": "f9cc65d7d698102043468732ba07f2e5dba62e97021e7f3a2564289e30d5fcc3",
+            "reserve_amount": 349.5152696754967,
+            "exact_training_objective": 41578.899067760576,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          },
+          "wall_seconds": 51.367963299999246,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 18268.63450963428,
+            "total_cost_cvar95": 39458.32524780195,
+            "service_level": 0.7213534706587666,
+            "shortage_probability": 0.9995,
+            "mean_emergency_spend": 349.50306938831244
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1caf1c4ceb97786a056c9223391d18dad716bf060214085cc7ab6a1fe3db8cc3",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_candidate_id": "zero_autonomous_reserve",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "source_case_id": "M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "74c3bb1805e155dafdd41a4b824b9654199405e350995099ee143940183ad6a4",
+            "regular_purchase_sha256": "e6a51099ee62e1ff4748e3fcdf181599ce6f354e2dc538907726e9f9138623d2",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 41794.82131645799,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          },
+          "wall_seconds": 51.5202234999997,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 19171.828524320157,
+            "total_cost_cvar95": 40657.42861359446,
+            "service_level": 0.7014810140623942,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_10",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "source_case_id": "M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "cbf545837fe72fc081ced3d3723a356058b0451db2533d56d6816b87367270b9",
+            "regular_purchase_sha256": "b7b8653b0bdfc69f17a850497003b1700954d9eb7a95f2e197f2ede086f584c7",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 41594.15811066939,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          },
+          "wall_seconds": 51.8899831000017,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 18213.899983998086,
+            "total_cost_cvar95": 39551.40472021265,
+            "service_level": 0.7221462232137879,
+            "shortage_probability": 0.9995,
+            "mean_emergency_spend": 257.12133822499834
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "5744d3bcd394dab83b84b39f8b43211c82e8c7f34c4b63590da07dc7f78e7b13",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_30",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "source_case_id": "M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "d03b559c3285b367bd4ad51ffd3a9911276a0283eb5b76686748fb8cc91703bf",
+            "regular_purchase_sha256": "600540469cc19f9a0fa7a8f1478a32be3c429dfeaedbee7beb8b78de2bec0934",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 41848.082353429054,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          },
+          "wall_seconds": 52.0677072999988,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 14451.24585793161,
+            "total_cost_cvar95": 39265.558806565496,
+            "service_level": 0.7875446466083844,
+            "shortage_probability": 0.9545,
+            "mean_emergency_spend": 767.9102216334201
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "3e1da0c07f3cad9797472fe1535adf79abf9d89059f1847a321e0d3c7d86ac67",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8669020700470706
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_50",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "source_case_id": "M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "40712c923a7ff103527e23c0708e98f3e2b83f952864e2dfdea0aceaff24238e",
+            "regular_purchase_sha256": "ec8c9c638aa85fba158d1b2132c0fa442abbb63cc36f917ee01db954c0c47fa9",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 42694.2654260564,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          },
+          "wall_seconds": 52.57737400000042,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 10523.059688012314,
+            "total_cost_cvar95": 39275.83106031585,
+            "service_level": 0.853183896924494,
+            "shortage_probability": 0.705,
+            "mean_emergency_spend": 1198.7605200691285
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "f4e3a3c8827e098684ca1285387df60b8f8a5b9def8383854adb980a3c849d17",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.8232460754046397
+          }
+        }
+      },
+      "primary_cvar95_difference_m2_1_minus_m2": -0.042367811052827165,
+      "source_evidence": {
+        "source_result_sha256": "d307967907f6fa72672df0c3c4cbb8b880d07d9554a1931db9229a4748225f88",
+        "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+        "source_case_id": "M2_1_formal_triplet07_train2026090107_validation2026090207_test2026090307",
+        "training_seed": 2026090107,
+        "validation_seed": 2026090207,
+        "reserved_test_seed": 2026090307,
+        "selected_candidate_id": "maximum_endpoint",
+        "strategy_plan_identities": {
+          "M2_minimum_endpoint": {
+            "finalized_plan_artifact_sha256": "a82542f322fde39f531b44bcdf1cf84fa7c1758950d8de78140786d3b59dae93",
+            "regular_purchase_sha256": "b4ac4ba65dfce6ca5d7178e4414622451b1a313907680316bd18fa7fdfdb095c",
+            "reserve_amount": 349.46655528265035,
+            "exact_training_objective": 41578.89906776057,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          },
+          "M2_1_validation_selected_endpoint": {
+            "finalized_plan_artifact_sha256": "f2b58e91e81cc6b955f7bacd0355148ebe5d6feaaa68d7862b9ee93b074c7e60",
+            "regular_purchase_sha256": "f9cc65d7d698102043468732ba07f2e5dba62e97021e7f3a2564289e30d5fcc3",
+            "reserve_amount": 349.5152696754967,
+            "exact_training_objective": 41578.899067760576,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          },
+          "zero_autonomous_reserve": {
+            "finalized_plan_artifact_sha256": "74c3bb1805e155dafdd41a4b824b9654199405e350995099ee143940183ad6a4",
+            "regular_purchase_sha256": "e6a51099ee62e1ff4748e3fcdf181599ce6f354e2dc538907726e9f9138623d2",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 41794.82131645799,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          },
+          "fixed_autonomous_reserve_0_10": {
+            "finalized_plan_artifact_sha256": "cbf545837fe72fc081ced3d3723a356058b0451db2533d56d6816b87367270b9",
+            "regular_purchase_sha256": "b7b8653b0bdfc69f17a850497003b1700954d9eb7a95f2e197f2ede086f584c7",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 41594.15811066939,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          },
+          "fixed_autonomous_reserve_0_30": {
+            "finalized_plan_artifact_sha256": "d03b559c3285b367bd4ad51ffd3a9911276a0283eb5b76686748fb8cc91703bf",
+            "regular_purchase_sha256": "600540469cc19f9a0fa7a8f1478a32be3c429dfeaedbee7beb8b78de2bec0934",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 41848.082353429054,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          },
+          "fixed_autonomous_reserve_0_50": {
+            "finalized_plan_artifact_sha256": "40712c923a7ff103527e23c0708e98f3e2b83f952864e2dfdea0aceaff24238e",
+            "regular_purchase_sha256": "ec8c9c638aa85fba158d1b2132c0fa442abbb63cc36f917ee01db954c0c47fa9",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 42694.2654260564,
+            "training_joint_scenario_set_sha256": "eb746b7abafccfdb1707abbae1f9c2d40499b9265fa162222ffc9d4acad197e2"
+          }
+        }
+      }
+    },
+    {
+      "run_id": "m21formaltest_v11_20260823_M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+      "case_id": "M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+      "status": "optimal",
+      "training_seed": 2026090108,
+      "validation_seed": 2026090208,
+      "test_seed": 2026090308,
+      "selected_candidate_id": "maximum_endpoint",
+      "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+      "git_sha": "1688f504c1af276893682d3a38def4247fc53ad1",
+      "git_tree_sha": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+      "result_sha256": "755564dd5492fb6ec8e3b3b7705744850b1d58a025a49769ef6eaf975e3a535f",
+      "manifest_sha256": "b70a041af4ad09406f350cf704913dc3c5114cb1522cf67a59aac5bf2b28701c",
+      "status_summary_sha256": "879af9e1cfe8ee8d47cb7cbf6a62a07f1efe47a894788dea00c36c589e81585a",
+      "test_scenario_identity": {
+        "scenario_set_sha256": "0efcd5e5aaaeac71ffb3f5e75f4acb8cec5ed343be7dc6335e070b35270c1408",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+        "latent_draw_sha256": "d5d79bbf7d9ff57c7443ea9104538efa68167c6661ac5f48f89bf76201e80574",
+        "demand_sha256": "c0e264d5d403c32f85f4728b9dfc4740da969a010d35d5a314c943a246e835fd",
+        "emergency_price_sha256": "ce1f032bff12d66e08da24d1c5768e247e8d2300e880c2eb6b6815e761ed7347",
+        "emergency_supply_sha256": "a6b143a73d21e4c8d55c356216c68667d407934d386a49548016470c58f7e606",
+        "fulfillment_sha256": "7dfde77f2862ddb8f0cd79817b46a91cdde915e8634595ce8c2b3d300d3efd2a"
+      },
+      "wall_seconds": 308.3354979000014,
+      "peak_memory_mb": 140.140625,
+      "strategies": {
+        "M2_minimum_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "source_case_id": "M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "043b9bec7904ea70d562d4f82505a6e0f1e466791751f37657a1659bb3d8e5f2",
+            "regular_purchase_sha256": "2d7b7429280d392684b5531def46d8549854120049c1ef4c39307044cc0566ce",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 51945.940783293,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          },
+          "wall_seconds": 49.573266800000056,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27322.65012395493,
+            "total_cost_cvar95": 44411.75281794588,
+            "service_level": 0.565015115832957,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "M2_1_validation_selected_endpoint": {
+          "source_candidate_id": "maximum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "source_case_id": "M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "83187dc5ad19f76ab479c1de9860ea2c4e916ba717406fe3e3bf897ec3a5344c",
+            "regular_purchase_sha256": "d7770e16d76e157acd2532b14f18f768908109c9a3b9c049e6c688ed9d1e0d46",
+            "reserve_amount": 0.004336668196115346,
+            "exact_training_objective": 51945.940783293,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          },
+          "wall_seconds": 51.01819539999997,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27322.5747027491,
+            "total_cost_cvar95": 44411.702309607695,
+            "service_level": 0.5650165065808261,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.004336668196115346
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "e4d51d3a4a8dc39d8ad966e1196ce2c4da97d0b1a8fd2ef2aca1969b7cccda7d",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_candidate_id": "zero_autonomous_reserve",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "source_case_id": "M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "675454a9024bb1ffb7724dfd1d16bae28c99f72315a1d9662b16b6bddda83d16",
+            "regular_purchase_sha256": "0ce1d39339c0ad3a55cfbc2d23e259cf24c59909f544622471e97c4e5336f823",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 51945.93557869945,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          },
+          "wall_seconds": 51.0555121999987,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27322.655489788176,
+            "total_cost_cvar95": 44411.7637060431,
+            "service_level": 0.5650150918695873,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_10",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "source_case_id": "M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "ce6de2b423b6e38fc7e8d7ab019cd134fcf51aac01d7ce6e27bdcd719841529c",
+            "regular_purchase_sha256": "453ff035b7dee0e0b09c306471a1d003642a960e93ed00d1df3f136ce1bf571e",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 52254.535306093545,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          },
+          "wall_seconds": 51.587043800000174,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 22704.506303498107,
+            "total_cost_cvar95": 41787.90909792329,
+            "service_level": 0.6455448713687525,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 257.13720165746173
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "3e140af1177fe5ebe1cc2c1c73aeeec01d4f9d82c14e98d188753f7e25262744",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_30",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "source_case_id": "M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "99d992e1ec7f1e2e879e57f4a099be16c31a4dfdfc961db6fe4bf395bac749e5",
+            "regular_purchase_sha256": "8ffe44479fe8434539320f081a2f94ee004761b8f37aa543c557c85780dc91d0",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 53036.65717810698,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          },
+          "wall_seconds": 52.28366769999957,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 16154.109892300634,
+            "total_cost_cvar95": 41622.97894136225,
+            "service_level": 0.757519674329005,
+            "shortage_probability": 0.971,
+            "mean_emergency_spend": 769.2309458433676
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "5ff1434afcb6dad105ae7ed1a51d8fb52de832dea8243a70ef54fa345e842dc2",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9739300842607013
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_50",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "source_case_id": "M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "5ee3fdc0f881c1c74537aacb6e03976aa766c07984cc24a720631182bc8e9867",
+            "regular_purchase_sha256": "4653d79a2a0edc9d181dfeb359e7eeb100ada32e88c7c64cf8f59eced32106bc",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 54169.94379346724,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          },
+          "wall_seconds": 52.271494200000234,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 14382.30753640598,
+            "total_cost_cvar95": 41535.98692053139,
+            "service_level": 0.7834688565231807,
+            "shortage_probability": 0.8485,
+            "mean_emergency_spend": 1248.6997821563007
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "5b80d0bf8f13ce0846ebd3fe0e81da8bbc4c0ca445b406ae2eb46f1018099038",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9238679632697168
+          }
+        }
+      },
+      "primary_cvar95_difference_m2_1_minus_m2": -0.05050833818677347,
+      "source_evidence": {
+        "source_result_sha256": "6ba35147ebb2104e8797c26e93ed70687e7f010d689e3fbfb470e3a3c2aa0d74",
+        "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+        "source_case_id": "M2_1_formal_triplet08_train2026090108_validation2026090208_test2026090308",
+        "training_seed": 2026090108,
+        "validation_seed": 2026090208,
+        "reserved_test_seed": 2026090308,
+        "selected_candidate_id": "maximum_endpoint",
+        "strategy_plan_identities": {
+          "M2_minimum_endpoint": {
+            "finalized_plan_artifact_sha256": "043b9bec7904ea70d562d4f82505a6e0f1e466791751f37657a1659bb3d8e5f2",
+            "regular_purchase_sha256": "2d7b7429280d392684b5531def46d8549854120049c1ef4c39307044cc0566ce",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 51945.940783293,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          },
+          "M2_1_validation_selected_endpoint": {
+            "finalized_plan_artifact_sha256": "83187dc5ad19f76ab479c1de9860ea2c4e916ba717406fe3e3bf897ec3a5344c",
+            "regular_purchase_sha256": "d7770e16d76e157acd2532b14f18f768908109c9a3b9c049e6c688ed9d1e0d46",
+            "reserve_amount": 0.004336668196115346,
+            "exact_training_objective": 51945.940783293,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          },
+          "zero_autonomous_reserve": {
+            "finalized_plan_artifact_sha256": "675454a9024bb1ffb7724dfd1d16bae28c99f72315a1d9662b16b6bddda83d16",
+            "regular_purchase_sha256": "0ce1d39339c0ad3a55cfbc2d23e259cf24c59909f544622471e97c4e5336f823",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 51945.93557869945,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          },
+          "fixed_autonomous_reserve_0_10": {
+            "finalized_plan_artifact_sha256": "ce6de2b423b6e38fc7e8d7ab019cd134fcf51aac01d7ce6e27bdcd719841529c",
+            "regular_purchase_sha256": "453ff035b7dee0e0b09c306471a1d003642a960e93ed00d1df3f136ce1bf571e",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 52254.535306093545,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          },
+          "fixed_autonomous_reserve_0_30": {
+            "finalized_plan_artifact_sha256": "99d992e1ec7f1e2e879e57f4a099be16c31a4dfdfc961db6fe4bf395bac749e5",
+            "regular_purchase_sha256": "8ffe44479fe8434539320f081a2f94ee004761b8f37aa543c557c85780dc91d0",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 53036.65717810698,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          },
+          "fixed_autonomous_reserve_0_50": {
+            "finalized_plan_artifact_sha256": "5ee3fdc0f881c1c74537aacb6e03976aa766c07984cc24a720631182bc8e9867",
+            "regular_purchase_sha256": "4653d79a2a0edc9d181dfeb359e7eeb100ada32e88c7c64cf8f59eced32106bc",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 54169.94379346724,
+            "training_joint_scenario_set_sha256": "cb3755602b52bd995d3ba31b2161a18a0444c0b68d11fd7ed2d0872dd52cab76"
+          }
+        }
+      }
+    },
+    {
+      "run_id": "m21formaltest_v11_20260823_M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+      "case_id": "M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+      "status": "optimal",
+      "training_seed": 2026090109,
+      "validation_seed": 2026090209,
+      "test_seed": 2026090309,
+      "selected_candidate_id": "minimum_endpoint",
+      "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+      "git_sha": "1688f504c1af276893682d3a38def4247fc53ad1",
+      "git_tree_sha": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+      "result_sha256": "2afe34e8038887b77cb5ab3cef9fb81cc47c6e1fcda85b8d703a5de1728f75a3",
+      "manifest_sha256": "05e8659424f21bfcc4a4da6e4437b1406a39ee12ad18064b2eaf42296416dfbb",
+      "status_summary_sha256": "246bf581fa5a486db5e8e4763b9645fbd0a91dcc95af3f33e5db06a9ef04de04",
+      "test_scenario_identity": {
+        "scenario_set_sha256": "05f483a3ba93128445e61b2db29a4bbd2992813a21eaad313c3ebaaaad0ce1b7",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+        "latent_draw_sha256": "a9c3e94bee5d4e7a65ff3a6fb8b2d1ce28f9f8c6e1d764b3e7c73873f486faab",
+        "demand_sha256": "cc7a5575ff391ae7606ca504f9f50de52fd2c6c35ef04e970e43851a61193666",
+        "emergency_price_sha256": "ae20877406d3df5f57faa14f89e93b776e3a5fa5346ea00f9f67da4a0d64a1e7",
+        "emergency_supply_sha256": "51f86993647dee5115fc3949ce4b345dc3f965c397539fd1dce647aad3f78c21",
+        "fulfillment_sha256": "4e8b00ee6b236c3d98b828ce8d40ae96d5f7900d85d7189e2428d9205ef0d306"
+      },
+      "wall_seconds": 309.11672660000113,
+      "peak_memory_mb": 137.8515625,
+      "strategies": {
+        "M2_minimum_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "source_case_id": "M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "f7f60a36f648cc7404390a5f4e9ee76ebe61f4f2c03d427795727a2a90ca04a1",
+            "regular_purchase_sha256": "f15e0e7d1f517f43a7f547dcdee9a1ba4968a68a8427e5fc552d0d49a4acb84f",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 46578.03480957108,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          },
+          "wall_seconds": 49.90221679999922,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27072.946869809286,
+            "total_cost_cvar95": 43605.037920035014,
+            "service_level": 0.5681701014354705,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "M2_1_validation_selected_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "source_case_id": "M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "f7f60a36f648cc7404390a5f4e9ee76ebe61f4f2c03d427795727a2a90ca04a1",
+            "regular_purchase_sha256": "f15e0e7d1f517f43a7f547dcdee9a1ba4968a68a8427e5fc552d0d49a4acb84f",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 46578.03480957108,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          },
+          "wall_seconds": 50.52845479999996,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27072.946869809286,
+            "total_cost_cvar95": 43605.037920035014,
+            "service_level": 0.5681701014354705,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_candidate_id": "zero_autonomous_reserve",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "source_case_id": "M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "c4c9d4bf0ffcbb8074cbf6ac164cf205ab84ae2028175d843569f0672f3f94eb",
+            "regular_purchase_sha256": "790ba2ae8981719687651939ea6afa2bc0541baba35f2d0db68601d6c437a990",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 46578.03014176807,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          },
+          "wall_seconds": 51.35219599999982,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27073.634781468794,
+            "total_cost_cvar95": 43609.6499830484,
+            "service_level": 0.568157212761407,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_10",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "source_case_id": "M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "69065179da3c0f6b2836fa6406e84de42a240c2f25ec2a39d9ebb861a0314645",
+            "regular_purchase_sha256": "7db80e7769789cfdaf26db9f4dee14c4d3a8e5d4758e16045800c49b6b7d32a4",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 46875.5048569154,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          },
+          "wall_seconds": 52.03129499999886,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 22902.23846413458,
+            "total_cost_cvar95": 42353.08006964975,
+            "service_level": 0.6405206048634398,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 257.13720165746173
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "ed3a915da278c97b8e42eb1a53a9f9adccbf9515ba098ad339b994af21cd0b8c",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_30",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "source_case_id": "M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "78393a2650643ce5647b3a7f399b093d5288dfc9b2884df7cecc156615882789",
+            "regular_purchase_sha256": "2683795bc0f66823987bc697131e76a7a6c7f569c253ba3d8cd26c83698f885c",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 47953.657664290935,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          },
+          "wall_seconds": 52.3538965000007,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 14874.522217177759,
+            "total_cost_cvar95": 38969.77183762117,
+            "service_level": 0.7807711669195777,
+            "shortage_probability": 0.9735,
+            "mean_emergency_spend": 769.3729701842311
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "8c11c97e69cd4bc5b24266bba210a51a6f5ee13c744d3543be025ed7f5e1d1a4",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_50",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "source_case_id": "M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "8b105eac5443c40c2d338f213c2c8b175dc159cd14a6a002b19e5f5d3cbd52c1",
+            "regular_purchase_sha256": "8e8924be59b8f70589df6a1180f95b96c85e42df51e076280cd53763e280f788",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 49471.92465532103,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          },
+          "wall_seconds": 52.47897870000088,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 12727.51123634974,
+            "total_cost_cvar95": 39791.39313387315,
+            "service_level": 0.8139303958939111,
+            "shortage_probability": 0.82,
+            "mean_emergency_spend": 1234.688400419693
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "c8da5bed3e3c839e2a9fb85269d2e64cd9de86d87656acdd4ea78c05d76fd637",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.7758597379860354
+          }
+        }
+      },
+      "primary_cvar95_difference_m2_1_minus_m2": 0.0,
+      "source_evidence": {
+        "source_result_sha256": "536e85705145d8a3242933632aec2f372f324b61e718c5349fdc4e4024a65fed",
+        "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+        "source_case_id": "M2_1_formal_triplet09_train2026090109_validation2026090209_test2026090309",
+        "training_seed": 2026090109,
+        "validation_seed": 2026090209,
+        "reserved_test_seed": 2026090309,
+        "selected_candidate_id": "minimum_endpoint",
+        "strategy_plan_identities": {
+          "M2_minimum_endpoint": {
+            "finalized_plan_artifact_sha256": "f7f60a36f648cc7404390a5f4e9ee76ebe61f4f2c03d427795727a2a90ca04a1",
+            "regular_purchase_sha256": "f15e0e7d1f517f43a7f547dcdee9a1ba4968a68a8427e5fc552d0d49a4acb84f",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 46578.03480957108,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          },
+          "M2_1_validation_selected_endpoint": {
+            "finalized_plan_artifact_sha256": "f7f60a36f648cc7404390a5f4e9ee76ebe61f4f2c03d427795727a2a90ca04a1",
+            "regular_purchase_sha256": "f15e0e7d1f517f43a7f547dcdee9a1ba4968a68a8427e5fc552d0d49a4acb84f",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 46578.03480957108,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          },
+          "zero_autonomous_reserve": {
+            "finalized_plan_artifact_sha256": "c4c9d4bf0ffcbb8074cbf6ac164cf205ab84ae2028175d843569f0672f3f94eb",
+            "regular_purchase_sha256": "790ba2ae8981719687651939ea6afa2bc0541baba35f2d0db68601d6c437a990",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 46578.03014176807,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          },
+          "fixed_autonomous_reserve_0_10": {
+            "finalized_plan_artifact_sha256": "69065179da3c0f6b2836fa6406e84de42a240c2f25ec2a39d9ebb861a0314645",
+            "regular_purchase_sha256": "7db80e7769789cfdaf26db9f4dee14c4d3a8e5d4758e16045800c49b6b7d32a4",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 46875.5048569154,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          },
+          "fixed_autonomous_reserve_0_30": {
+            "finalized_plan_artifact_sha256": "78393a2650643ce5647b3a7f399b093d5288dfc9b2884df7cecc156615882789",
+            "regular_purchase_sha256": "2683795bc0f66823987bc697131e76a7a6c7f569c253ba3d8cd26c83698f885c",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 47953.657664290935,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          },
+          "fixed_autonomous_reserve_0_50": {
+            "finalized_plan_artifact_sha256": "8b105eac5443c40c2d338f213c2c8b175dc159cd14a6a002b19e5f5d3cbd52c1",
+            "regular_purchase_sha256": "8e8924be59b8f70589df6a1180f95b96c85e42df51e076280cd53763e280f788",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 49471.92465532103,
+            "training_joint_scenario_set_sha256": "855451d3cced2578f77b0e47eabaf9f99c201d90d47f87c0f8cb1c66b72500ad"
+          }
+        }
+      }
+    },
+    {
+      "run_id": "m21formaltest_v11_20260823_M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+      "case_id": "M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+      "status": "optimal",
+      "training_seed": 2026090110,
+      "validation_seed": 2026090210,
+      "test_seed": 2026090310,
+      "selected_candidate_id": "maximum_endpoint",
+      "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+      "git_sha": "1688f504c1af276893682d3a38def4247fc53ad1",
+      "git_tree_sha": "8569866da6a81fc25c4d1fa163b55644e6ec5761",
+      "result_sha256": "71be80c24aea98bf84dde4bef6fca2326629a1a186f67aee0e90e7901dffd9b1",
+      "manifest_sha256": "5c7d4f0769b07bc9134c12b0a8a759be45fd1473bf47f8952a10e54995efedb1",
+      "status_summary_sha256": "545d7af4bb89df46df9bd415b28a95288d281a04c4a349a602deccf4ff4cba75",
+      "test_scenario_identity": {
+        "scenario_set_sha256": "12d169857a10bf623824d1be1520d958a0f2f03d6e0c7b75e3bb86a13985a741",
+        "scenario_order_sha256": "458e3072874347885cec448e853a7c953e35d5505861f0b54e1b41cc7e5a99e0",
+        "latent_draw_sha256": "45c3d2e46690cb478c8fafc3c9e7e885ae04b92ab72a47462050b61a068a629b",
+        "demand_sha256": "2c323f2658a170bafbbed93ac7b765e8b997bef548a7fd1d29dd533f4d4a4342",
+        "emergency_price_sha256": "1dc3092522b3b3a1149601fb42d9fae4fd0c2cd5a9b9bf3a652c525c479aa4c1",
+        "emergency_supply_sha256": "53eb9e2dd06f3fa346ea9a041067aafa9c8c07c76f3b76dfa3618e43e1502672",
+        "fulfillment_sha256": "681421f0226d37dd504bb2478ed18cf4f35d22b4254583a6191fa41ed7d026cb"
+      },
+      "wall_seconds": 305.4666572999995,
+      "peak_memory_mb": 138.65234375,
+      "strategies": {
+        "M2_minimum_endpoint": {
+          "source_candidate_id": "minimum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "source_case_id": "M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "3d5833e1b0d15fe091ac41e25880493107607cc4cde73c4db0472e5663093904",
+            "regular_purchase_sha256": "72e211033fb4a216a329dbe79fe99f76042b4cefd07cec0f5649bd471f954af6",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 41217.079464657734,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          },
+          "wall_seconds": 49.31130219999977,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27221.315985993657,
+            "total_cost_cvar95": 44910.329979231916,
+            "service_level": 0.5687717964372413,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "M2_1_validation_selected_endpoint": {
+          "source_candidate_id": "maximum_endpoint",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "source_case_id": "M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "1b9b7719f75946d8970127695ccdf0899adbb52baacc92627278f8390d91b398",
+            "regular_purchase_sha256": "ba2068b36f8e0441f9f43e7dcbef4bcdf5ff2cf090bd7b760a0c6a2f7f90540a",
+            "reserve_amount": 0.03625505587531532,
+            "exact_training_objective": 41217.07946465773,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          },
+          "wall_seconds": 50.26665099999991,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27220.844142405178,
+            "total_cost_cvar95": 44910.05966593156,
+            "service_level": 0.5687830953698167,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.03625505587531532
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "8bdbe73c5286adb4722a1268021374f4eddb47557d39db4fd6940b97dafe2203",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "zero_autonomous_reserve": {
+          "source_candidate_id": "zero_autonomous_reserve",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "source_case_id": "M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "c80d25b57aa96b165fd06247ef01a496697d51a98573bdaa78c7ed1e7d645894",
+            "regular_purchase_sha256": "99321c38ad40e981043b1c07855ea9a58e32891cd476679433ab6ef9cf2afb37",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 41217.075332950204,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          },
+          "wall_seconds": 50.25844810000126,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 27221.49514081834,
+            "total_cost_cvar95": 44910.35520616952,
+            "service_level": 0.5687718322984934,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 0.0
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "1b6f2cd3befe637730c4aacec67ada9cd83f469f637e5d1f68913c8e8d835ef4",
+            "positive_total_emergency_spend_scenario_count": 0,
+            "both_items_each_positive_in_at_least_one_scenario": false,
+            "item1_emergency_spend_share_range": 0.0
+          }
+        },
+        "fixed_autonomous_reserve_0_10": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_10",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "source_case_id": "M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "cd9faafb6382fc8478dfcada634f0464c586790dbbeaef2f0c643edd2629f24e",
+            "regular_purchase_sha256": "0dda913b809bae69365c9c6390ffd6452770ae1b7742b2093ba1b99bd534727e",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 41285.14553871793,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          },
+          "wall_seconds": 51.36501230000067,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 22731.88104525659,
+            "total_cost_cvar95": 43091.72827742109,
+            "service_level": 0.6462598927843023,
+            "shortage_probability": 1.0,
+            "mean_emergency_spend": 257.13720165746173
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "18084c3243c577246cfb296e4bc65d9544f23e5ae1914d27a2f3566c7a8cdaac",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 1.0
+          }
+        },
+        "fixed_autonomous_reserve_0_30": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_30",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "source_case_id": "M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "bf8958079b1e39e3d4281d4fcf63c9263d06b5f3a746e1a4f3d3f8616c08ec5e",
+            "regular_purchase_sha256": "1618a7bd94f810d9974a98661539722571b8d9dff9bbd121ee2b4af28df3b21d",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 41776.88474252553,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          },
+          "wall_seconds": 51.83689869999944,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 16500.311712930918,
+            "total_cost_cvar95": 42624.81997022923,
+            "service_level": 0.7513004577722895,
+            "shortage_probability": 0.964,
+            "mean_emergency_spend": 768.3545299378695
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "47066cefcb04a7df8c01665ad8e2e93f762b20867d0cc934c619705dea56c57f",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9707287855815218
+          }
+        },
+        "fixed_autonomous_reserve_0_50": {
+          "source_candidate_id": "fixed_autonomous_reserve_0_50",
+          "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "source_case_id": "M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+          "plan_identity": {
+            "finalized_plan_artifact_sha256": "32ebcbb0597661675eb06ef615c262e44ab9432a4d5ed240305fbbe0fb0f0b4d",
+            "regular_purchase_sha256": "4653d79a2a0edc9d181dfeb359e7eeb100ada32e88c7c64cf8f59eced32106bc",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 43032.102052989314,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          },
+          "wall_seconds": 51.9551148999999,
+          "metrics": {
+            "plan_oos_status": "complete_feasible",
+            "total_scenario_count": 2000,
+            "optimal_scenario_count": 2000,
+            "infeasible_scenario_count": 0,
+            "solver_failure_count": 0,
+            "mean_total_cost": 14650.40260952013,
+            "total_cost_cvar95": 43471.377162721445,
+            "service_level": 0.7793428379495,
+            "shortage_probability": 0.8515,
+            "mean_emergency_spend": 1244.1691820704248
+          },
+          "cross_item_allocation": {
+            "scenario_item_emergency_spend_sha256": "a3a020234c3666e2fe980857bc031280fc9dd1f08bfca50d1ed07ee691413c47",
+            "positive_total_emergency_spend_scenario_count": 2000,
+            "both_items_each_positive_in_at_least_one_scenario": true,
+            "item1_emergency_spend_share_range": 0.9157453224312416
+          }
+        }
+      },
+      "primary_cvar95_difference_m2_1_minus_m2": -0.2703133003524272,
+      "source_evidence": {
+        "source_result_sha256": "5c716e5195c2d1465c85ab7cf2df2ebf8c84bacedec7b44623084a9804872f46",
+        "source_run_id": "m21formal_tv_v10_20260822_M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+        "source_case_id": "M2_1_formal_triplet10_train2026090110_validation2026090210_test2026090310",
+        "training_seed": 2026090110,
+        "validation_seed": 2026090210,
+        "reserved_test_seed": 2026090310,
+        "selected_candidate_id": "maximum_endpoint",
+        "strategy_plan_identities": {
+          "M2_minimum_endpoint": {
+            "finalized_plan_artifact_sha256": "3d5833e1b0d15fe091ac41e25880493107607cc4cde73c4db0472e5663093904",
+            "regular_purchase_sha256": "72e211033fb4a216a329dbe79fe99f76042b4cefd07cec0f5649bd471f954af6",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 41217.079464657734,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          },
+          "M2_1_validation_selected_endpoint": {
+            "finalized_plan_artifact_sha256": "1b9b7719f75946d8970127695ccdf0899adbb52baacc92627278f8390d91b398",
+            "regular_purchase_sha256": "ba2068b36f8e0441f9f43e7dcbef4bcdf5ff2cf090bd7b760a0c6a2f7f90540a",
+            "reserve_amount": 0.03625505587531532,
+            "exact_training_objective": 41217.07946465773,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          },
+          "zero_autonomous_reserve": {
+            "finalized_plan_artifact_sha256": "c80d25b57aa96b165fd06247ef01a496697d51a98573bdaa78c7ed1e7d645894",
+            "regular_purchase_sha256": "99321c38ad40e981043b1c07855ea9a58e32891cd476679433ab6ef9cf2afb37",
+            "reserve_amount": 0.0,
+            "exact_training_objective": 41217.075332950204,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          },
+          "fixed_autonomous_reserve_0_10": {
+            "finalized_plan_artifact_sha256": "cd9faafb6382fc8478dfcada634f0464c586790dbbeaef2f0c643edd2629f24e",
+            "regular_purchase_sha256": "0dda913b809bae69365c9c6390ffd6452770ae1b7742b2093ba1b99bd534727e",
+            "reserve_amount": 257.13720165746173,
+            "exact_training_objective": 41285.14553871793,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          },
+          "fixed_autonomous_reserve_0_30": {
+            "finalized_plan_artifact_sha256": "bf8958079b1e39e3d4281d4fcf63c9263d06b5f3a746e1a4f3d3f8616c08ec5e",
+            "regular_purchase_sha256": "1618a7bd94f810d9974a98661539722571b8d9dff9bbd121ee2b4af28df3b21d",
+            "reserve_amount": 771.4116049723851,
+            "exact_training_objective": 41776.88474252553,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          },
+          "fixed_autonomous_reserve_0_50": {
+            "finalized_plan_artifact_sha256": "32ebcbb0597661675eb06ef615c262e44ab9432a4d5ed240305fbbe0fb0f0b4d",
+            "regular_purchase_sha256": "4653d79a2a0edc9d181dfeb359e7eeb100ada32e88c7c64cf8f59eced32106bc",
+            "reserve_amount": 1285.6860082873086,
+            "exact_training_objective": 43032.102052989314,
+            "training_joint_scenario_set_sha256": "da8893d620db36bc9ca6c4cd56fd7fc20a001dae2735c0ec164af24149c43db2"
+          }
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "completed_primary_run_count": 10,
+    "completed_plan_count": 60,
+    "completed_exact_recourse_evaluation_count": 120000,
+    "total_wall_seconds": 3044.7038839000033,
+    "maximum_peak_memory_mb": 140.140625,
+    "selected_maximum_endpoint_count": 8,
+    "selected_minimum_endpoint_count": 2,
+    "unique_test_scenario_set_count": 10,
+    "unique_complete_test_scenario_identity_count": 10,
+    "failed_primary_run_ids": [],
+    "invalid_primary_run_ids": [],
+    "duplicate_case_ids": [],
+    "diagnostic_run_ids": [],
+    "finalization_failure_run_ids": []
+  },
+  "primary_analysis": {
+    "paired_differences": [
+      -0.07091883548855549,
+      -0.032354780385503545,
+      -0.31641972794022877,
+      -0.015056612232001498,
+      -0.3080344335103291,
+      0.0,
+      -0.042367811052827165,
+      -0.05050833818677347,
+      0.0,
+      -0.2703133003524272
+    ],
+    "paired_mean_difference": -0.11059738391486462,
+    "paired_median_difference": -0.04643807461980032,
+    "minimum_difference": -0.31641972794022877,
+    "maximum_difference": 0.0,
+    "bootstrap": {
+      "random_engine": "numpy.Generator(PCG64DXSM)",
+      "random_seed": 2026090999,
+      "resamples": 10000,
+      "cluster_unit": "paired_seed_triplet",
+      "point_estimator": "arithmetic_mean_of_ten_paired_differences",
+      "percentile_method": "linear",
+      "confidence_level": 0.95,
+      "percentile_95_ci": [
+        -0.19313806539434156,
+        -0.03810267027260127
+      ]
+    },
+    "wilcoxon": {
+      "name": "wilcoxon_signed_rank",
+      "zero_method": "pratt",
+      "method": "normal_approximation_without_continuity_correction",
+      "statistic": 0,
+      "positive_rank_sum": 0,
+      "negative_rank_sum": 52.0,
+      "null_mean": 26.0,
+      "standard_error": 9.746794344808963,
+      "z_value": -2.667543715421401,
+      "raw_two_sided_p_value": 0.00764079482470999
+    },
+    "frozen_support_rule": "paired_mean_difference < 0 and bootstrap_95_ci_upper < 0",
+    "frozen_support_rule_passed": true,
+    "m2_mean_cvar95": 42110.8156923823,
+    "m2_1_mean_cvar95": 42110.705094998375,
+    "relative_mean_cvar95_difference_percent": -0.00026263415252455275,
+    "interpretation_boundary": "directionally_supported_but_practically_negligible_in_observed_scale"
+  },
+  "strategy_aggregate_means": {
+    "M2_minimum_endpoint": {
+      "mean_total_cost": 23178.09648716579,
+      "total_cost_cvar95": 42110.8156923823,
+      "service_level": 0.6382969019186794,
+      "shortage_probability": 0.9996,
+      "mean_emergency_spend": 197.19190669559185
+    },
+    "M2_1_validation_selected_endpoint": {
+      "mean_total_cost": 23177.868942226127,
+      "total_cost_cvar95": 42110.705094998375,
+      "service_level": 0.6383011454913119,
+      "shortage_probability": 0.9996,
+      "mean_emergency_spend": 197.22647750661508
+    },
+    "zero_autonomous_reserve": {
+      "mean_total_cost": 24323.817819711046,
+      "total_cost_cvar95": 42663.326618908555,
+      "service_level": 0.6178884343664286,
+      "shortage_probability": 1.0,
+      "mean_emergency_spend": 0.0
+    },
+    "fixed_autonomous_reserve_0_10": {
+      "mean_total_cost": 21797.332316915887,
+      "total_cost_cvar95": 41463.52693409319,
+      "service_level": 0.6621669312664491,
+      "shortage_probability": 0.9999500000000001,
+      "mean_emergency_spend": 257.13561531421544
+    },
+    "fixed_autonomous_reserve_0_30": {
+      "mean_total_cost": 15430.342124039133,
+      "total_cost_cvar95": 40347.19914411912,
+      "service_level": 0.7712955948470144,
+      "shortage_probability": 0.9686,
+      "mean_emergency_spend": 768.8520011257027
+    },
+    "fixed_autonomous_reserve_0_50": {
+      "mean_total_cost": 12415.62852711411,
+      "total_cost_cvar95": 40851.950525666136,
+      "service_level": 0.819714860222897,
+      "shortage_probability": 0.78175,
+      "mean_emergency_spend": 1222.8130636698465
+    }
+  },
+  "mapping_sha256": {
+    "run_artifact_mapping_sha256": "277c3ef61db5d380d6a08a5c2c1b8163137e2769337da232a3cceda9832aae5f",
+    "science_evidence_mapping_sha256": "22e1793200c17992f9d168c38ade739cb6039c7707ee4f26b00902a33b45c5d4",
+    "test_scenario_identity_mapping_sha256": "9d542ca0620dcc184ef3c3585e0a8d2f1b45e53c2d6ec8688ff0f831a12bf03d"
+  },
+  "global_artifacts": {
+    "formal_test_projection_sha256": "f8cb1865a3aa6f04fcc27b76c5464bf9c3e8ff2829039c4eb03e4a0b3423deb6",
+    "formal_test_run_registry_sha256": "569e1a47687033060bf6f377f7f9ef245a976253b56caa9b6b257a2cba0f4232",
+    "selected_plan_freeze_sha256": "59842e3eb1437ff5a16fa8980e79400dab6504ded032db6d30ef5e5f60302f90",
+    "formal_test_reauthorization_sha256": "31d022833dd239793224aee799498374f1c471459045cc39328d0beebad38085"
+  },
+  "gates": {
+    "projection_status": "complete",
+    "formal_test_gate_passed": true,
+    "formal_extension_authorized": false,
+    "algorithm_performance_authorized": false,
+    "next_decision": "formal_test_results_review_only"
+  },
+  "execution_counts_outside_this_batch": {
+    "new_scenario_generation_after_batch": 0,
+    "new_gurobi_calls_after_batch": 0,
+    "algorithm_performance_runs": 0,
+    "M0_E3_runs": 0
+  },
+  "CI": "recorded_in_pr_body",
+  "reviewed_source_evidence": {
+    "pr69_audit_path": "docs/handoffs/2026-08-22_phase6_m2_1_formal_training_validation_results_v1_0_audit.json",
+    "pr69_audit_sha256": "0bbda4798caef1b7115de4f04ca46b0a716fd6f2a0a69d2d6d99498a878247b9",
+    "pr70_selected_plan_freeze_path": "configs/phase6_m2_1_selected_plan_freeze_v1_0.yaml",
+    "pr70_selected_plan_freeze_sha256": "59842e3eb1437ff5a16fa8980e79400dab6504ded032db6d30ef5e5f60302f90",
+    "source_plan_identity_mapping_sha256": "62e4a2aa6f8b8ca7ed113dd4b892a71f044b9f57f0bd7bb7340b54f762661ae9"
+  }
+}
