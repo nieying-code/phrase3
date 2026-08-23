@@ -41,6 +41,5 @@
     "formal_test_authorized_for_fixed_runner": false,
     "next_decision": "require_separate_reviewed_reauthorization_PR"
   },
-  "CI": "pending"
+  "CI": "recorded_in_pr_body"
 }
-
