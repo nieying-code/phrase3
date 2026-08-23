@@ -1,0 +1,92 @@
+{
+  "audit_schema": "phase6_m0_e3_algorithm_performance_runner_v1_0",
+  "classification": "non_execution_runner_and_authorization_freeze",
+  "source": {
+    "base_pr": 75,
+    "base_merge_commit": "fb646602d2fe0de1fe960e003502db5601c205c9",
+    "base_tree_sha": "f8a49e919bf332caad78849e4e19278d1c4fb583",
+    "branch": "agent/phase6-m0-algorithm-performance-v1-0",
+    "final_head_and_tree": "recorded_in_pr_body"
+  },
+  "scientific_roles": {
+    "E1_existing_evidence": "extensive_formulation_vs_standard_CCG_correctness",
+    "E3_frozen_batch": "standard_CCG_cold_vs_SPW_CCG_cross_budget_warm_start",
+    "V2_independent_statistical_unit": "formal_training_seed",
+    "V2_technical_repetitions_are_independent_samples": false,
+    "P2_role": "descriptive_pressure_test_only",
+    "M2_speed_comparison_in_scope": false
+  },
+  "matrix": {
+    "matrix_sha256": "61de9544a4ca80a904700ddf5e12c3dd75e568c31b7d8d2bd24e76c59fabc731",
+    "algorithms": ["standard_ccg_cold", "spw_ccg_warm"],
+    "budget_factors": [0.9, 1.1, 1.3],
+    "tiers": {
+      "V1": {"formal_seed_count": 3, "timing_repetitions": 1, "algorithm_execution_count": 18},
+      "V2": {"formal_seed_count": 10, "timing_repetitions": 3, "algorithm_execution_count": 180},
+      "P1": {"formal_seed_count": 5, "timing_repetitions": 1, "algorithm_execution_count": 30},
+      "P2": {"formal_seed_count": 3, "timing_repetitions": 1, "algorithm_execution_count": 18}
+    },
+    "primary_run_count": 21,
+    "budget_pair_count": 63,
+    "algorithm_execution_count": 246,
+    "objective_absolute_tolerance": 0.00001,
+    "objective_relative_tolerance": 0.0000001
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3",
+    "e3_component_sha256": "20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e",
+    "e3_runner_config_sha256": "3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
+    "algorithm_performance_orchestrator_sha256": "003b14b60ed06e1993bddcd2bd0704eafd9b2a7a7e8a42819a5c723c52f3f0cc"
+  },
+  "reviewed_evidence": {
+    "final_projection_audit_path": "docs/handoffs/2026-08-09_phase6_final_projection_reaggregation_audit.json",
+    "final_projection_audit_sha256": "b219305b196d54602764303525f23e5b05f577fa1eac17209abf701837af7657",
+    "E1_formal_audit_path": "docs/handoffs/2026-08-01_phase6_v2_1_e1_formal_audit.json",
+    "E1_formal_audit_sha256": "9657cb4c094d0515d3152bde3bd4703852de8bdf3eb8e33a90abe6cc397ef70f",
+    "E3_pilot_coverage": "12/12",
+    "E1_formal_runs": "14/14",
+    "E1_work_units": "45/45",
+    "compute_gate_passed": true
+  },
+  "artifact_sha256": {
+    "runner_config": "645b49423dabda7328e457ca6518e82c88856ac60b8de5c03ad1f52fed8db145",
+    "approval": "8e03bebb3b5ee41ddd57848a3b578ec8a7a3d2590f88330acc5a693933ccfcdb",
+    "orchestrator_module": "fe4ecde9a753f12756a18445554483e92234f4615892c1a28d715bae47a094e5",
+    "cli": "755fb04bbd0e84e3a8cda2142a1ccee2d5ef49ef5a7a79d495827d7c837ffa6d",
+    "status_module": "2cc8359c270e604fcc40ed598a37eada44da1ef6b53e98ab83e136c855c0e067"
+  },
+  "execution_protocol": {
+    "namespace": "phase6_m0_e3_algorithm_performance_v1_0",
+    "output_root": "outputs/phase6_m0_e3_algorithm_performance_v1_0/formal/primary",
+    "strictly_serial": true,
+    "complete_primary_batch_required": true,
+    "empty_output_namespace_required": true,
+    "explicit_cli_authorization_required": true,
+    "execution_requires_main_tracking_origin_main": true,
+    "execution_requires_HEAD_equal_fetched_origin_main": true,
+    "runner_performs_network_or_git_mutation": false,
+    "immutable_run_ids": true,
+    "failed_primary_permanently_blocks_gate": true,
+    "diagnostic_requires_new_run_id_and_parent_run_id": true
+  },
+  "authorizations": {
+    "M0_E3_algorithm_performance_authorized": true,
+    "M2_formal_authorized": false,
+    "M2_formal_OOS_authorized": false,
+    "M2_1_authorized": false,
+    "other_formal_experiments_authorized": false
+  },
+  "execution_counts_in_this_revision": {
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0,
+    "algorithm_performance_runs": 0,
+    "M2_performance_runs": 0,
+    "M2_1_runs": 0
+  },
+  "validation": {
+    "local_tests": "recorded_in_pr_body",
+    "CI": "recorded_in_pr_body",
+    "git_diff_check": "recorded_in_pr_body"
+  }
+}

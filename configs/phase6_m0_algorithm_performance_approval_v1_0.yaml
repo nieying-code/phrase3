@@ -1,0 +1,42 @@
+approval_id: phase6_m0_e3_algorithm_performance_execution_v1_0
+status: frozen_for_m0_e3_algorithm_performance_execution
+runner_namespace: phase6_m0_e3_algorithm_performance_v1_0
+explicit_cli_authorization_required: true
+complete_primary_batch_required: true
+review_base_commit: fb646602d2fe0de1fe960e003502db5601c205c9
+approved_fingerprints:
+  scientific_config_sha256: f709cad35c79619673beeaa7dbe9bf51d75700aee4b2d6dcd2b8eb0d639505b3
+  e3_component_sha256: 20e1b80c1b117e8e801755d754f9005a8b386644c193dcb503396e4f3ec2cc5e
+  runner_config_sha256: 3f176c3b64bc187ba94265866445a5518ffaf17abc642c9cd57c2abc531d9dcd
+  environment_sha256: b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af
+  algorithm_performance_orchestrator_sha256: 003b14b60ed06e1993bddcd2bd0704eafd9b2a7a7e8a42819a5c723c52f3f0cc
+reviewed_gate_evidence:
+  final_projection_audit_path: docs/handoffs/2026-08-09_phase6_final_projection_reaggregation_audit.json
+  final_projection_audit_sha256: b219305b196d54602764303525f23e5b05f577fa1eac17209abf701837af7657
+  E1_formal_audit_path: docs/handoffs/2026-08-01_phase6_v2_1_e1_formal_audit.json
+  E1_formal_audit_sha256: 9657cb4c094d0515d3152bde3bd4703852de8bdf3eb8e33a90abe6cc397ef70f
+  required_compute_gate_passed: true
+  required_formal_execution_authorized: true
+  required_E3_pilot_run_count: 12
+  required_E1_run_count: 14
+  required_E1_work_unit_count: 45
+matrix_identity:
+  expected_primary_run_count: 21
+  expected_budget_pair_count: 63
+  expected_algorithm_execution_count: 246
+  algorithms: [standard_ccg_cold, spw_ccg_warm]
+artifact_sha256:
+  runner_config: 645b49423dabda7328e457ca6518e82c88856ac60b8de5c03ad1f52fed8db145
+  orchestrator_module: fe4ecde9a753f12756a18445554483e92234f4615892c1a28d715bae47a094e5
+  cli: 755fb04bbd0e84e3a8cda2142a1ccee2d5ef49ef5a7a79d495827d7c837ffa6d
+  status_module: 2cc8359c270e604fcc40ed598a37eada44da1ef6b53e98ab83e136c855c0e067
+authorizations:
+  M0_E3_algorithm_performance_authorized: true
+  M2_formal_authorized: false
+  M2_formal_OOS_authorized: false
+  M2_1_authorized: false
+  other_formal_experiments_authorized: false
+execution_counts_in_this_revision:
+  scenario_generation_count: 0
+  gurobi_call_count: 0
+  algorithm_performance_runs: 0
