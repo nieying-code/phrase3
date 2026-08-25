@@ -13,9 +13,9 @@ from src.reproducibility import sha256_file
 
 
 ROOT = Path(__file__).resolve().parents[1]
-RUNNER = ROOT / "configs/phase6_m2_algorithm_performance_formal_runner_v1_0.yaml"
-APPROVAL = ROOT / "configs/phase6_m2_algorithm_performance_formal_approval_v1_0.yaml"
-AUDIT = ROOT / "docs/handoffs/2026-08-25_phase6_m2_algorithm_performance_formal_runner_v1_0_audit.json"
+RUNNER = ROOT / "configs/phase6_m2_algorithm_performance_formal_runner_v1_1.yaml"
+APPROVAL = ROOT / "configs/phase6_m2_algorithm_performance_formal_approval_v1_1.yaml"
+AUDIT = ROOT / "docs/handoffs/2026-08-25_phase6_m2_algorithm_performance_formal_runner_v1_1_audit.json"
 
 
 def test_authorization_binds_reviewed_runner_and_all_execution_artifacts() -> None:
@@ -29,8 +29,8 @@ def test_authorization_binds_reviewed_runner_and_all_execution_artifacts() -> No
     # are therefore locked directly, while every executable byte is rehashed
     # below from the checkout.
     assert audit["reviewed_runner"] == {
-        "commit": "df24c953880f40873adb9b23f64d39fcd9bffbb9",
-        "tree": "952307a5eb66d5eecf11a05d4bc9495a449c87d8",
+        "commit": "1e855af3936cc19c6a6ab75a7b59efcf357a85b2",
+        "tree": "ec3f82e8a33c2065259e0c415812f1dac13f4eb7",
     }
     paths = {
         "approval": APPROVAL,
@@ -111,3 +111,30 @@ def test_reviewed_pilot_evidence_and_zero_execution_are_locked() -> None:
     }
     output_root = ROOT / audit["output_root"]
     assert not output_root.exists() or not any(output_root.iterdir())
+    assert audit["safety"] == {
+        "old_namespace": "phase6_m2_algorithm_performance_formal_v1_0",
+        "old_output_preserved_and_excluded": True,
+        "new_namespace": "phase6_m2_algorithm_performance_formal_v1_1",
+        "new_output_root_must_start_empty": True,
+        "old_primary_results_migrated": 0,
+    }
+    normalization = audit["gap_evidence_normalization"]
+    assert normalization == {
+        "numerical_protection": 1.0e-9,
+        "reject_below": -1.0e-9,
+        "accepted_negative_interval": "[-1e-9,0)",
+        "preserve_reported_gap": True,
+        "machine_accepted_gap_for_negative_interval": 0.0,
+        "reported_gap_must_match_upper_minus_lower_within": 1.0e-9,
+        "nonfinite_values_rejected": True,
+        "scientific_objective_tolerance_used_for_gap_normalization": False,
+    }
+    failure_evidence = audit["reviewed_failure_evidence"]
+    failure_path = ROOT / failure_evidence["audit_path"]
+    assert sha256_file(failure_path) == failure_evidence["audit_sha256"]
+    failure = json.loads(failure_path.read_text(encoding="utf-8"))
+    assert failure["status"] == failure_evidence["status"] == (
+        "stopped_after_first_invalid_primary"
+    )
+    assert failure["batch_closure"]["formal_algorithm_performance_gate_passed"] is False
+    assert failure["failed_primary"]["reported_gap"] == -1.4551915228366852e-11
