@@ -50,11 +50,11 @@ def test_frozen_formal_matrix_is_exact_and_pending() -> None:
     assert len(cases)==20
     assert [(c.seed,c.profile_id) for c in cases]==[(s,p) for s in range(2026091101,2026091111) for p in ("C0","T03")]
     assert context["runner"]["execution"]["algorithm_execution_count"]==240
-    assert context["approval"]["formal_authorized"] is False
+    assert context["approval"]["formal_authorized"] is True
     assert not (ROOT/context["runner"]["output_root"]).exists()
 
 
-def test_pending_preflight_does_not_call_gurobi(monkeypatch) -> None:
+def test_read_only_preflight_does_not_call_gurobi(monkeypatch) -> None:
     called=False
     def forbidden():
         nonlocal called; called=True; raise AssertionError
@@ -62,9 +62,14 @@ def test_pending_preflight_does_not_call_gurobi(monkeypatch) -> None:
     monkeypatch.setattr("src.phase6_m2_algorithm_performance_formal.validate_execution_source",lambda *args,**kwargs:{})
     context=validate_preflight(ROOT,RUNNER,APPROVAL,require_authorization=False)
     assert len(context["cases"])==20 and called is False
-    with pytest.raises(RuntimeError,match="not authorized"):
-        validate_preflight(ROOT,RUNNER,APPROVAL,require_authorization=True)
-    assert called is False
+
+
+def test_explicit_cli_authorization_is_required_before_preflight(tmp_path) -> None:
+    with pytest.raises(RuntimeError,match="explicit formal"):
+        run_formal_batch(
+            root=ROOT,runner_path=RUNNER,approval_path=APPROVAL,
+            authorize=False,run_id_prefix="forbidden",
+        )
 
 
 def test_one_formal_sequence_has_12_fresh_solves_and_three_transfer_chains(tmp_path) -> None:
