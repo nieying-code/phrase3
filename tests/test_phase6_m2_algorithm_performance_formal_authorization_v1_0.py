@@ -29,8 +29,8 @@ def test_authorization_binds_reviewed_runner_and_all_execution_artifacts() -> No
     # are therefore locked directly, while every executable byte is rehashed
     # below from the checkout.
     assert audit["reviewed_runner"] == {
-        "commit": "794856b7b50e1c118b6ec8b56b34c4c30f752225",
-        "tree": "5f896aa32a7d1f5b1ee3e68f0f1b879f4ab54ce6",
+        "commit": "f1aae824e4cef1581a04e92690aebfc6dd7e9712",
+        "tree": "374e53614146180d300f8261526f6c012d34f30d",
     }
     paths = {
         "approval": APPROVAL,
@@ -71,6 +71,17 @@ def test_fingerprints_matrix_and_scope_are_exact() -> None:
         "algorithm_execution_count": 240,
         "technical_repetitions_per_algorithm_budget": 3,
         "scenario_count": 100,
+    }
+    assert audit["statistical_protocol"] == {
+        "independent_unit": "formal_performance_seed",
+        "technical_repetitions_reduced_by": "median",
+        "primary_estimand": "T03_beta_1_3_cross_budget_transfer_speedup",
+        "confirmatory_estimand": "paired_T03_vs_C0_beta_1_3_speedup_ratio",
+        "secondary_end_to_end_formula": "sum_two_budget_cold_medians_divided_by_sum_two_budget_warm_medians",
+        "random_number_generator": "numpy_Generator_PCG64DXSM",
+        "random_seed": 2026091299, "resamples": 10000,
+        "confidence_level": 0.95, "interval": "percentile_linear",
+        "effect_direction_does_not_control_execution_completeness_gate": True,
     }
     authorization = audit["authorization"]
     assert authorization["formal_authorized"] is True
