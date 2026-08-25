@@ -27,11 +27,11 @@ from .phase6_protocol import load_phase6_matrix
 from .reproducibility import sha256_file, validate_execution_source
 
 
-NAMESPACE = "phase6_m2_algorithm_performance_formal_v1_0"
+NAMESPACE = "phase6_m2_algorithm_performance_formal_v1_1"
 PENDING_STATUS = "formal_runner_frozen_pending_authorization"
 READY_STATUS = "frozen_for_formal_algorithm_performance_execution"
-RUNNER_PATH = "configs/phase6_m2_algorithm_performance_formal_runner_v1_0.yaml"
-APPROVAL_PATH = "configs/phase6_m2_algorithm_performance_formal_approval_v1_0.yaml"
+RUNNER_PATH = "configs/phase6_m2_algorithm_performance_formal_runner_v1_1.yaml"
+APPROVAL_PATH = "configs/phase6_m2_algorithm_performance_formal_approval_v1_1.yaml"
 DESIGN_PATH = "configs/phase6_m2_algorithm_performance_design_v1_0.yaml"
 PILOT_AUDIT_PATH = "docs/handoffs/2026-08-25_phase6_m2_algorithm_performance_pilot_results_v1_1_audit.json"
 PILOT_AUDIT_SHA256 = "d9ef03ea75e4cd7f5a2c0c988fe37adada4ef9ae9f94114133ff3aaeef0dfb3d"
@@ -51,6 +51,7 @@ COMPONENT_FIELDS = (
     "scenario_order_sha256",
 )
 CRN_FIELDS = tuple(field for field in COMPONENT_FIELDS if field != "fulfillment_sha256")
+GAP_NUMERICAL_PROTECTION = 1.0e-9
 
 
 @dataclass(frozen=True)
@@ -154,6 +155,13 @@ def validate_static_freeze(root: Path, runner_path: Path, approval_path: Path) -
         "absolute_tolerance": 1.0e-5, "relative_tolerance": 1.0e-7,
     }:
         raise RuntimeError("formal objective-consistency protocol changed")
+    if runner.get("evidence_normalization") != {
+        "gap_numerical_protection": GAP_NUMERICAL_PROTECTION,
+        "preserve_reported_gap": True,
+        "normalize_accepted_negative_gap_to_zero": True,
+        "require_reported_gap_matches_upper_minus_lower": True,
+    }:
+        raise RuntimeError("formal gap-evidence normalization protocol changed")
     _validate_pilot_evidence(root)
     return {"runner": runner, "approval": approval, "design": design, "cases": build_formal_cases(design)}
 
@@ -261,7 +269,13 @@ def _method_metrics(row: Mapping[str, Any]) -> dict[str, Any]:
     objective = _finite(row["objective"], name="objective")
     lower = _finite(ccg["lower_bound"], name="lower bound")
     upper = _finite(ccg["upper_bound"], name="upper bound")
-    gap = _finite(ccg["gap"], name="optimality gap", nonnegative=True)
+    reported_gap = _finite(ccg["gap"], name="reported optimality gap")
+    recomputed_gap = upper - lower
+    if abs(reported_gap - recomputed_gap) > GAP_NUMERICAL_PROTECTION:
+        raise ValueError("reported optimality gap differs from upper minus lower")
+    if reported_gap < -GAP_NUMERICAL_PROTECTION:
+        raise ValueError("reported optimality gap is below numerical protection")
+    gap = 0.0 if reported_gap < 0.0 else reported_gap
     iterations = int(ccg["iterations"])
     if iterations <= 0:
         raise ValueError("iterations must be positive")
@@ -286,6 +300,8 @@ def _method_metrics(row: Mapping[str, Any]) -> dict[str, Any]:
         raise ValueError("formal scenario-pool evidence is incomplete")
     return {
         "objective": objective, "lower_bound": lower, "upper_bound": upper,
+        "reported_optimality_gap": reported_gap,
+        "recomputed_upper_minus_lower": recomputed_gap,
         "optimality_gap": gap, "iterations": iterations,
         "master_solve_count": iterations, "oracle_call_count": iterations * 100,
         "master_runtime_seconds": master, "oracle_runtime_seconds": oracle,

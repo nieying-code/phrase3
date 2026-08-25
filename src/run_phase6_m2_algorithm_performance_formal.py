@@ -11,8 +11,8 @@ from .phase6_m2_algorithm_performance_formal import run_formal_batch, validate_p
 
 def main(argv=None) -> int:
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--runner-config",default="configs/phase6_m2_algorithm_performance_formal_runner_v1_0.yaml")
-    parser.add_argument("--approval",default="configs/phase6_m2_algorithm_performance_formal_approval_v1_0.yaml")
+    parser.add_argument("--runner-config",default="configs/phase6_m2_algorithm_performance_formal_runner_v1_1.yaml")
+    parser.add_argument("--approval",default="configs/phase6_m2_algorithm_performance_formal_approval_v1_1.yaml")
     parser.add_argument("--run-id-prefix")
     parser.add_argument("--authorize-m2-algorithm-performance-formal",action="store_true")
     parser.add_argument("--preflight-only",action="store_true")
