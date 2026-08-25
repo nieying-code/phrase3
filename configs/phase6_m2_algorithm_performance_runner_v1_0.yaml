@@ -18,6 +18,10 @@ ccg:
   relative_tolerance: 1.0e-6
   max_iterations: 100
   active_scenario_tolerance: 1.0e-6
+objective_consistency:
+  source: frozen_M2_scientific_objective_consistency_tolerance
+  absolute_tolerance: 1.0e-5
+  relative_tolerance: 1.0e-7
 execution:
   strictly_serial: true
   full_primary_pilot_required: true

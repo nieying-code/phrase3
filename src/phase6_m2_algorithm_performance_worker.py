@@ -88,9 +88,10 @@ def _generated(request: dict[str, Any]):
     latent = reconstruct_frozen_demand_latent(frozen, base)
     config = _science_config_for_formal(root, formal)
     from .phase6_m2 import resolve_supply_disruption_profile
+    profile = resolve_supply_disruption_profile(config, str(request["profile_id"]))
     generated = apply_m2c2_supply_disruption(
         base,
-        profile=resolve_supply_disruption_profile(config, str(request["profile_id"])),
+        profile=profile,
         demand_latent=latent,
         item_vulnerability_multiplier={"relief_food_1": 0.8, "relief_food_2": 1.2},
     )
@@ -123,7 +124,11 @@ def execute_worker_request(request: dict[str, Any]) -> dict[str, Any]:
         if algorithm == "extensive":
             stage = "complete_extensive_model"
             solution = solve_m2_endogenous_extensive(
-                data, consistency_tolerance=float(ccg["absolute_tolerance"]), **common,
+                data,
+                consistency_tolerance=float(
+                    request["objective_consistency"]["absolute_tolerance"]
+                ),
+                **common,
             )
             status = str(_native_failure_status(solution))
             objective = solution.objective
@@ -156,6 +161,13 @@ def execute_worker_request(request: dict[str, Any]) -> dict[str, Any]:
             evidence = solution.as_dict()
         components = dict(generated.component_set_sha256)
         components["scenario_order_sha256"] = _canonical_sha(list(data.scenarios))
+        previous_state = request.get("previous_state")
+        transferred = []
+        if previous_state is not None:
+            reusable = set(previous_state["active_scenarios"]) | set(
+                previous_state["historical_adversarial_scenarios"]
+            )
+            transferred = [name for name in initial if name in reusable]
         return {
             "status": status,
             "algorithm": algorithm,
@@ -168,6 +180,19 @@ def execute_worker_request(request: dict[str, Any]) -> dict[str, Any]:
             "joint_scenario_set_sha256": generated.joint_scenario_set_sha256,
             "component_set_sha256": components,
             "initial_scenarios": list(initial),
+            "initial_scenario_pool_size": len(initial),
+            "transfer_source_state_sha256": (
+                None if previous_state is None else _canonical_sha(previous_state)
+            ),
+            "transfer_source_budget": (
+                None if previous_state is None else float(previous_state["budget"])
+            ),
+            "transferred_exact_scenarios": transferred,
+            "transferred_exact_scenario_count": len(transferred),
+            "transferred_scenario_reuse_rate": (
+                0.0 if previous_state is None or not initial
+                else len(transferred) / len(initial)
+            ),
             "pool_build_seconds": pool_seconds,
             "objective": None if objective is None else float(objective),
             "scientific_result": evidence,

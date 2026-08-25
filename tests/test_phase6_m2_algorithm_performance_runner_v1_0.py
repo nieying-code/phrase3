@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import json
 import hashlib
+import math
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import yaml
 
 from src.phase6_m2_algorithm_performance import (
     PerformanceCase,
+    _objective_tolerance,
     build_pilot_cases,
     read_status,
     run_sequence,
@@ -16,6 +19,7 @@ from src.phase6_m2_algorithm_performance import (
     validate_preflight,
     validate_static_freeze,
 )
+from src.phase6_m2_algorithm_performance_worker import _generated
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,14 +43,17 @@ def _fingerprints() -> dict[str, str]:
     }
 
 
-def _fake_worker(calls: list[dict], *, failure_at: int | None = None, native="time_limit"):
+def _fake_worker(
+    calls: list[dict], *, failure_at: int | None = None,
+    native="time_limit", exact_count: int = 50,
+):
     def execute(request: dict, timeout: float, directory: Path) -> dict:
         calls.append(request)
         if failure_at is not None and len(calls) == failure_at:
             return {"status": native, "solver_status": native, "failure": {"stage": "solver"}}
         profile = request["profile_id"]
         beta = request["beta"]
-        scenario_order = ["scenario_0001", "scenario_0002"]
+        scenario_order = [f"scenario_{index:04d}" for index in range(1, 51)]
         components = {
             "latent_draw_sha256": "a" * 64,
             "demand_sha256": "b" * 64,
@@ -57,17 +64,37 @@ def _fake_worker(calls: list[dict], *, failure_at: int | None = None, native="ti
         }
         ccg = {
             "objective": 100.0 + beta,
-            "exact_scenario_costs": {scenario_order[0]: 5.0, scenario_order[1]: 7.0},
+            "exact_scenario_costs": {
+                name: float(index)
+                for index, name in enumerate(scenario_order[:exact_count])
+            },
             "iteration_log": [{"added_scenario": scenario_order[1], "added_type": "worst_cost"}],
             "worst_scenario": scenario_order[1],
             "final_scenario_set": scenario_order,
             "iterations": 1,
         }
+        prior = request.get("previous_state")
+        reusable = set() if prior is None else (
+            set(prior["active_scenarios"]) | set(prior["historical_adversarial_scenarios"])
+        )
+        initial = scenario_order[:1] if prior is None else [name for name in scenario_order if name in reusable or name == scenario_order[0]]
+        canonical = None if prior is None else hashlib.sha256(json.dumps(
+            prior, sort_keys=True, ensure_ascii=False, separators=(",", ":")
+        ).encode()).hexdigest()
+        transferred = [name for name in initial if name in reusable]
         return {
             "status": "optimal", "solver_status": "optimal",
             "algorithm": request["algorithm"], "objective": 100.0 + beta,
             "joint_scenario_set_sha256": ("7" if profile == "C0" else "8") * 64,
             "component_set_sha256": components,
+            "scenario_count": 50,
+            "initial_scenarios": initial,
+            "initial_scenario_pool_size": len(initial),
+            "transfer_source_state_sha256": canonical,
+            "transfer_source_budget": None if prior is None else prior["budget"],
+            "transferred_exact_scenarios": transferred,
+            "transferred_exact_scenario_count": len(transferred),
+            "transferred_scenario_reuse_rate": 0.0 if not initial else len(transferred) / len(initial),
             "ccg_result": ccg if request["algorithm"] != "extensive" else None,
             "scientific_result": ccg, "subprocess_wall_seconds": 1.0,
             "sampled_peak_RSS_MiB": 10.0, "failure": None,
@@ -168,42 +195,59 @@ def test_native_timeout_is_terminal_and_stops_sequence(tmp_path, native) -> None
     assert status["status"] == "timeout"
 
 
-def _write_final_run(root: Path, case: PerformanceCase, *, crn: str) -> dict:
-    run_id = f"run_{case.case_id}"
-    run_dir = root / "runs" / run_id
-    run_dir.mkdir(parents=True)
-    methods = {
-        name: {
-            "component_set_sha256": {
-                "latent_draw_sha256": crn, "demand_sha256": "b" * 64,
-                "fulfillment_sha256": ("c" if case.profile_id == "C0" else "d") * 64,
-                "emergency_price_sha256": "e" * 64,
-                "emergency_supply_sha256": "f" * 64, "scenario_order_sha256": "9" * 64,
-            }
-        }
-        for name in ("extensive", "cold", "warm")
-    }
-    result = {
-        "artifact_state": "finalized", "status": "optimal", "run_id": run_id,
-        "case_id": case.case_id, "seed": case.seed, "profile_id": case.profile_id,
-        "completed_algorithm_solve_count": 6, "fingerprints": _fingerprints(),
-        "comparisons": [{"methods": methods}, {"methods": methods}],
-    }
-    result_path = run_dir / "result.json"
-    result_path.write_text(json.dumps(result), encoding="utf-8")
-    import hashlib
-    sha = hashlib.sha256(result_path.read_bytes()).hexdigest()
-    (run_dir / "manifest.json").write_text(json.dumps({"result_sha256": sha}), encoding="utf-8")
-    return {"run_id": run_id, "parent_run_id": None, "case_id": case.case_id, "status": "optimal"}
+def test_incomplete_exact_oracle_stops_before_next_method(tmp_path) -> None:
+    context = validate_static_freeze(ROOT, RUNNER, APPROVAL)
+    calls: list[dict] = []
+    with pytest.raises(ValueError, match="exact oracle"):
+        run_sequence(
+            root=ROOT, runner=context["runner"], design=context["design"],
+            fingerprints=_fingerprints(), case=PerformanceCase("case", 2026091001, "C0"),
+            run_id="incomplete_oracle", execution_root=tmp_path,
+            worker_executor=_fake_worker(calls, exact_count=49),
+        )
+    # EF has no C&CG exact-cost mapping; the first cold call is rejected and warm is not started.
+    assert [row["algorithm"] for row in calls] == ["extensive", "cold"]
 
 
 def test_projection_recomputes_crn_as_a_hard_gate(tmp_path) -> None:
+    context = validate_static_freeze(ROOT, RUNNER, APPROVAL)
     cases = tuple(
         PerformanceCase(f"s{seed}_{profile}", seed, profile)
         for seed in (1, 2, 3) for profile in ("C0", "T03")
     )
-    rows = [_write_final_run(tmp_path, case, crn=("a" * 64 if not (case.seed == 2 and case.profile_id == "T03") else "0" * 64)) for case in cases]
+    rows = []
+    for case in cases:
+        calls: list[dict] = []
+        run_id = f"run_{case.case_id}"
+        run_sequence(
+            root=ROOT, runner=context["runner"], design=context["design"],
+            fingerprints=_fingerprints(), case=case, run_id=run_id,
+            execution_root=tmp_path, worker_executor=_fake_worker(calls),
+        )
+        rows.append({"run_id": run_id, "parent_run_id": None, "case_id": case.case_id, "status": "optimal"})
     (tmp_path / "run_registry.json").write_text(json.dumps({"runs": rows}), encoding="utf-8")
+    complete = update_projection(tmp_path, cases, _fingerprints())
+    assert complete["pilot_compute_gate_passed"] is True
+    assert complete["completed_budget_pair_count"] == 12
+    assert complete["completed_algorithm_solve_count"] == 36
+    assert complete["formal_compute_projection"] == {
+        "status": "projected",
+        "method": "240_times_maximum_pilot_CCG_worker_seconds",
+        "planned_formal_algorithm_execution_count": 240,
+        "conservative_seconds_per_execution": 1.0,
+        "projected_wall_hours": 1.0 / 15.0,
+        "maximum_sampled_peak_RSS_MiB": 10.0,
+    }
+    tampered = tmp_path / "runs/run_s2_T03/result.json"
+    payload = json.loads(tampered.read_text(encoding="utf-8"))
+    for comparison in payload["comparisons"]:
+        for method in comparison["methods"].values():
+            method["component_set_sha256"]["latent_draw_sha256"] = "0" * 64
+    tampered.write_text(json.dumps(payload), encoding="utf-8")
+    manifest = tampered.with_name("manifest.json")
+    manifest_payload = json.loads(manifest.read_text(encoding="utf-8"))
+    manifest_payload["result_sha256"] = _sha(tampered)
+    manifest.write_text(json.dumps(manifest_payload), encoding="utf-8")
     projection = update_projection(tmp_path, cases, _fingerprints())
     assert projection["pilot_compute_gate_passed"] is False
     assert projection["common_random_number_mismatches"] == [
@@ -211,6 +255,53 @@ def test_projection_recomputes_crn_as_a_hard_gate(tmp_path) -> None:
         {"seed": 2, "budget_index": 1, "field": "latent_draw_sha256"},
     ]
     assert projection["formal_authorized"] is False
+
+
+@pytest.mark.parametrize("bad", [math.nan, math.inf, -math.inf, -1.0])
+def test_objective_consistency_rejects_nonfinite_or_negative_tolerances(bad) -> None:
+    with pytest.raises(ValueError, match="finite and nonnegative"):
+        _objective_tolerance([30000.0], {"absolute_tolerance": bad, "relative_tolerance": 1.0e-7})
+    with pytest.raises(ValueError, match="finite and nonnegative"):
+        _objective_tolerance([30000.0], {"absolute_tolerance": 1.0e-5, "relative_tolerance": bad})
+
+
+def test_frozen_m2_objective_tolerance_boundary_is_exact() -> None:
+    assert math.isclose(
+        _objective_tolerance([30000.0, 30000.00301], {
+            "absolute_tolerance": 1.0e-5, "relative_tolerance": 1.0e-7,
+        }),
+        0.003010000301,
+        rel_tol=0.0, abs_tol=1.0e-15,
+    )
+
+
+def test_generated_resolves_and_passes_profile_without_real_generation(monkeypatch, tmp_path) -> None:
+    design = yaml.safe_load((ROOT / "configs/phase6_m2_algorithm_performance_design_v1_0.yaml").read_text(encoding="utf-8"))
+    design_path = tmp_path / "design.yaml"
+    design_path.write_text(yaml.safe_dump(design), encoding="utf-8")
+    base = SimpleNamespace(data=SimpleNamespace(storage_capacity=(1.0,) * 6))
+    generated = object()
+    profile = object()
+    monkeypatch.setattr("src.phase6_m2_algorithm_performance_worker.load_phase6_matrix", lambda path: {})
+    monkeypatch.setattr("src.phase6_m2_algorithm_performance_worker._confirmation_config", lambda root: {})
+    monkeypatch.setattr("src.phase6_m2_algorithm_performance_worker._validate_formal_baseline_before_generation", lambda *args, **kwargs: ({}, 10.0, 11.0, (1.0,) * 6))
+    monkeypatch.setattr("src.phase6_m2_algorithm_performance_worker.generate_phase6_data", lambda *args, **kwargs: base)
+    monkeypatch.setattr("src.phase6_m2_algorithm_performance_worker.reconstruct_frozen_demand_latent", lambda *args: "latent")
+    monkeypatch.setattr("src.phase6_m2_algorithm_performance_worker._science_config_for_formal", lambda *args: {"profiles": "frozen"})
+    monkeypatch.setattr("src.phase6_m2.resolve_supply_disruption_profile", lambda config, profile_id: profile)
+    observed = {}
+    def apply(base_arg, **kwargs):
+        observed.update(kwargs)
+        return generated
+    monkeypatch.setattr("src.phase6_m2_algorithm_performance_worker.apply_m2c2_supply_disruption", apply)
+    result, reference, returned_profile = _generated({
+        "project_root": str(ROOT), "matrix_path": str(ROOT / "configs/phase6_experiment_matrix.yaml"),
+        "design_path": str(design_path), "beta": 1.1, "scenario_count": 50,
+        "seed": 2026091001, "profile_id": "T03",
+    })
+    assert result is generated and reference == 10.0
+    assert returned_profile is profile
+    assert observed["profile"] is profile
 
 
 def test_status_reader_is_bounded_and_run_ids_are_safe(tmp_path) -> None:

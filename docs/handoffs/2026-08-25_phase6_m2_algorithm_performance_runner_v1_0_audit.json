@@ -8,20 +8,20 @@
   },
   "artifacts": {
     "design_config_sha256": "f78fae4652c24e438b09424343340b2b3fa2c1370156f38d1946d9e25e9d8855",
-    "runner_config_sha256": "19df3cfca0b2de8383e5731acac1a8e14c99f06fc91d142277f064144c2df04d",
-    "approval_sha256": "906f731da731948bb16dcbd45c00dae4a7e4dc71e8dd2c29e02e6f0c4f3e64c9",
-    "orchestrator_module_sha256": "14d3a8a1b15c3f25a852cfdd8208fd1d62f3be9f8553e7abdb43b69831e6987d",
-    "worker_module_sha256": "a59c97999a5bc060fa18c69888ea66ed686200c0f836cdac446f8059565b2f84",
+    "runner_config_sha256": "a08c5ae3251262f7177c788c6de846770eb7b4ae9ca369e692d8b5b3d933c6c0",
+    "approval_sha256": "df4c4f16b974f4c7872b76e1f48fa9fecdfcfc9b90a37f097bf45e529a681dcb",
+    "orchestrator_module_sha256": "71df9da7800b9f07e04815b10bd2bb91ab8597851a55dae7387583df4f48a918",
+    "worker_module_sha256": "90c292a1ad15eff93ba40a48ca4f0f0d07a2d757fd9209c5b9dd6eac86245e1b",
     "cli_sha256": "563ac6958d56dcd4deff403e8d06b8a7cf5b65502680a3551f401a0be7cb93c2",
     "status_module_sha256": "d137fdab8ebe919ea56f12228593ffb7b6ec5881510a6e15cbc899ea0e3fe4d8"
   },
   "fingerprints": {
     "scientific_config_sha256": "ce001f9fdce3eae0f9a14a99093186e90072fb945e546406305764e765bb0734",
-    "e3_component_sha256": "b3f7738cbcfd260584620adaf1a2ceb8105aaffa898f996a067f1f1ce87a1ccb",
-    "family_component_sha256": "25adb219744c4529aebf01b28be2d5336e3febcc507d54d5b3820c367527966f",
-    "runner_config_sha256": "19df3cfca0b2de8383e5731acac1a8e14c99f06fc91d142277f064144c2df04d",
+    "e3_component_sha256": "0d044a99b0acf5c19ee3fd3d43f40579c2e340ec7fa5fa8ebad791e0ba597328",
+    "family_component_sha256": "6f7a8bc1ec5470cc87fee8eafbad08639e064312d6bdacf3e440e8b752fa4d82",
+    "runner_config_sha256": "a08c5ae3251262f7177c788c6de846770eb7b4ae9ca369e692d8b5b3d933c6c0",
     "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
-    "algorithm_performance_orchestrator_sha256": "d15e3ae8588ec423c84dadb8f239fe9f2bb535f2724e8c9ed9b9700aa175b036"
+    "algorithm_performance_orchestrator_sha256": "64f1a07c984144e7e07fda85feae3ad42ecba4c40762a4236fd581c8ff747e6a"
   },
   "matrix": {
     "tier_id": "M2AP2",
@@ -42,6 +42,13 @@
     "worker_wall_seconds": 180,
     "threads": 1,
     "pre_generation_budget_and_capacity_recomputation": true,
+    "objective_consistency_absolute_tolerance": 1.0e-5,
+    "objective_consistency_relative_tolerance": 1.0e-7,
+    "CCG_convergence_tolerance_is_separate": true,
+    "complete_50_scenario_exact_oracle_is_hard_gate": true,
+    "cross_budget_scenario_identity_is_hard_gate": true,
+    "transfer_source_identity_and_reuse_are_hard_gate": true,
+    "formal_240_execution_compute_projection_required": true,
     "common_random_numbers_are_hard_gate": true,
     "native_timeout_is_immutable_terminal": true,
     "run_id_overwrite_forbidden": true,

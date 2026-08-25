@@ -36,6 +36,8 @@ DESIGN_STATUS = "frozen_for_runner_implementation"
 APPROVAL_PENDING_STATUS = "runner_frozen_pilot_pending_authorization"
 APPROVAL_READY_STATUS = "frozen_for_pilot_execution"
 SAFE_RUN_ID = re.compile(r"[A-Za-z0-9._-]+")
+M2_OBJECTIVE_ABSOLUTE_TOLERANCE = 1.0e-5
+M2_OBJECTIVE_RELATIVE_TOLERANCE = 1.0e-7
 LIFECYCLE_FIELDS = {"status", "version", "designed_on", "execution_boundaries"}
 ORCHESTRATOR_FILES = (
     "src/phase6_m2_algorithm_performance.py",
@@ -147,6 +149,12 @@ def validate_static_freeze(root: Path, runner_path: Path, approval_path: Path) -
         raise RuntimeError("solver configuration changed")
     if runner.get("limits") != {"worker_wall_seconds": 180, "threads": 1}:
         raise RuntimeError("runner limits changed")
+    if runner.get("objective_consistency") != {
+        "source": "frozen_M2_scientific_objective_consistency_tolerance",
+        "absolute_tolerance": 1.0e-5,
+        "relative_tolerance": 1.0e-7,
+    }:
+        raise RuntimeError("frozen M2 objective-consistency tolerance changed")
     if runner["execution"].get("formal_authorized") is not False:
         raise RuntimeError("runner may not authorize formal execution")
     return {
@@ -256,8 +264,35 @@ def _worker_executor(request: dict[str, Any], timeout_seconds: float, directory:
     return payload
 
 
-def _objective_tolerance(values: Sequence[float], ccg: Mapping[str, Any]) -> float:
-    return float(ccg["absolute_tolerance"]) + float(ccg["relative_tolerance"]) * max(1.0, *(abs(v) for v in values))
+def _objective_tolerance(values: Sequence[float], consistency: Mapping[str, Any]) -> float:
+    numeric = tuple(float(value) for value in values)
+    absolute = float(consistency["absolute_tolerance"])
+    relative = float(consistency["relative_tolerance"])
+    if not numeric or not all(math.isfinite(value) for value in numeric):
+        raise ValueError("objective values must be finite")
+    if not all(math.isfinite(value) and value >= 0.0 for value in (absolute, relative)):
+        raise ValueError("objective-consistency tolerances must be finite and nonnegative")
+    return absolute + relative * max(1.0, *(abs(value) for value in numeric))
+
+
+def _validate_worker_evidence(row: Mapping[str, Any], *, expected_scenarios: int) -> None:
+    objective = float(row["objective"])
+    wall = float(row["subprocess_wall_seconds"])
+    memory = float(row["sampled_peak_RSS_MiB"])
+    if not math.isfinite(objective):
+        raise ValueError("worker objective is not finite")
+    if not math.isfinite(wall) or wall <= 0.0:
+        raise ValueError("worker wall time must be finite and positive")
+    if not math.isfinite(memory) or memory < 0.0:
+        raise ValueError("worker peak RSS must be finite and nonnegative")
+    if int(row.get("scenario_count", -1)) != expected_scenarios:
+        raise ValueError("worker scenario count differs from frozen pilot")
+    if row["algorithm"] in {"cold", "warm"}:
+        exact = row.get("ccg_result", {}).get("exact_scenario_costs", {})
+        if len(exact) != expected_scenarios:
+            raise ValueError("C&CG exact oracle does not cover all pilot scenarios")
+        if not all(math.isfinite(float(value)) for value in exact.values()):
+            raise ValueError("C&CG exact oracle contains non-finite costs")
 
 
 def _manifest(result_path: Path, result: Mapping[str, Any], fingerprints: Mapping[str, str]) -> dict[str, Any]:
@@ -286,6 +321,7 @@ def run_sequence(
     started = utc_now()
     comparisons: list[dict[str, Any]] = []
     previous_state: dict[str, Any] | None = None
+    prior_components: dict[str, str] | None = None
     try:
         for budget_index, (beta, budget) in enumerate(zip(design["budget_sequence"]["betas"], design["budget_sequence"]["budgets"], strict=True)):
             order = ("extensive", "cold", "warm") if budget_index == 0 else ("extensive", "warm", "cold")
@@ -299,6 +335,7 @@ def run_sequence(
                     "profile_id": case.profile_id, "scenario_count": 50, "repetition": 1,
                     "previous_state": previous_state if algorithm == "warm" else None,
                     "solver": runner["solver"], "ccg": runner["ccg"],
+                    "objective_consistency": runner["objective_consistency"],
                 }
                 row = worker_executor(request, float(runner["limits"]["worker_wall_seconds"]), run_dir / "workers")
                 rows[algorithm] = row
@@ -306,24 +343,43 @@ def run_sequence(
                     native = str(row.get("solver_status") or row.get("status"))
                     terminal = "timeout" if native in {"time_limit", "master_time_limit", "external_wall_timeout"} or row.get("status") == "timeout" else "stage_failure"
                     raise RuntimeError(json.dumps({"terminal": terminal, "algorithm": algorithm, "native_status": native, "failure": row.get("failure")}, ensure_ascii=False))
+                _validate_worker_evidence(row, expected_scenarios=50)
                 if algorithm == "warm":
                     previous_state = _build_transferred_state(
                         row, previous_state, budget=float(budget),
                         tolerance=float(runner["ccg"]["active_scenario_tolerance"]),
                     )
             objectives = [float(rows[name]["objective"]) for name in ("extensive", "cold", "warm")]
-            tolerance = _objective_tolerance(objectives, runner["ccg"])
+            tolerance = _objective_tolerance(objectives, runner["objective_consistency"])
             maximum_difference = max(objectives) - min(objectives)
-            if maximum_difference > tolerance:
+            if not math.isfinite(maximum_difference) or maximum_difference < 0.0 or maximum_difference > tolerance:
                 raise RuntimeError("objective_consistency_failure")
             identity = {rows[name]["joint_scenario_set_sha256"] for name in rows}
             if len(identity) != 1:
                 raise RuntimeError("algorithm joint scenario identity mismatch")
+            component_identities = [rows[name]["component_set_sha256"] for name in rows]
+            if any(value != component_identities[0] for value in component_identities[1:]):
+                raise RuntimeError("algorithm component scenario identity mismatch")
+            if prior_components is not None and component_identities[0] != prior_components:
+                raise RuntimeError("budget regeneration changed scenario components")
+            transfer_input = None if budget_index == 0 else comparisons[0]["transferred_state"]
+            warm = rows["warm"]
+            expected_source_sha = None if transfer_input is None else _canonical_sha(transfer_input)
+            if warm.get("transfer_source_state_sha256") != expected_source_sha:
+                raise RuntimeError("warm transfer source identity mismatch")
+            if budget_index == 1 and not math.isclose(
+                float(warm.get("transfer_source_budget", math.nan)),
+                float(design["budget_sequence"]["budgets"][0]),
+                rel_tol=0.0, abs_tol=1.0e-9,
+            ):
+                raise RuntimeError("warm transfer source budget mismatch")
+            prior_components = dict(component_identities[0])
             comparisons.append({
                 "budget_index": budget_index, "beta": float(beta), "budget": float(budget),
                 "execution_order": list(order), "status": "optimal", "methods": rows,
                 "objective_tolerance": tolerance,
                 "maximum_objective_difference": maximum_difference,
+                "transfer_input_state": transfer_input,
                 "transferred_state": previous_state,
             })
             atomic_write_json(status_path, {"status": "running", "run_id": run_id, "completed_budget_count": len(comparisons), "updated_at_utc": utc_now()})
@@ -357,6 +413,133 @@ def _registry(path: Path) -> list[dict[str, Any]]:
     return list(payload.get("runs", []))
 
 
+def _validate_pilot_result(
+    result: Mapping[str, Any], case: PerformanceCase,
+    fingerprints: Mapping[str, str],
+) -> dict[str, Any]:
+    if result.get("fingerprints") != dict(fingerprints):
+        raise ValueError("result fingerprints mismatch")
+    if (
+        result.get("case_id") != case.case_id
+        or int(result.get("seed", -1)) != case.seed
+        or result.get("profile_id") != case.profile_id
+        or result.get("tier_id") != "M2AP2"
+        or result.get("execution_mode") != "pilot"
+    ):
+        raise ValueError("result case identity mismatch")
+    comparisons = result.get("comparisons", [])
+    if len(comparisons) != 2:
+        raise ValueError("pilot result must contain two budget comparisons")
+    solve_count = 0
+    all_walls: list[float] = []
+    ccg_walls: list[float] = []
+    all_memory: list[float] = []
+    prior_components: dict[str, str] | None = None
+    prior_state: dict[str, Any] | None = None
+    for budget_index, comparison in enumerate(comparisons):
+        expected_order = (
+            ["extensive", "cold", "warm"]
+            if budget_index == 0 else ["extensive", "warm", "cold"]
+        )
+        if (
+            comparison.get("budget_index") != budget_index
+            or not math.isclose(float(comparison.get("beta", math.nan)), (1.1, 1.3)[budget_index], abs_tol=1.0e-12)
+            or not math.isclose(float(comparison.get("budget", math.nan)), (2571.372016574617, 3038.894201406366)[budget_index], abs_tol=1.0e-9)
+            or comparison.get("execution_order") != expected_order
+            or comparison.get("status") != "optimal"
+        ):
+            raise ValueError("budget comparison identity or order mismatch")
+        methods = comparison.get("methods", {})
+        if set(methods) != {"extensive", "cold", "warm"}:
+            raise ValueError("budget comparison must contain exactly three methods")
+        objectives: list[float] = []
+        component_rows: list[dict[str, str]] = []
+        joint: set[str] = set()
+        for method in ("extensive", "cold", "warm"):
+            row = methods[method]
+            if row.get("status") != "optimal" or row.get("algorithm") != method:
+                raise ValueError("method identity or status mismatch")
+            _validate_worker_evidence(row, expected_scenarios=50)
+            objective = float(row["objective"])
+            objectives.append(objective)
+            all_walls.append(float(row["subprocess_wall_seconds"]))
+            all_memory.append(float(row["sampled_peak_RSS_MiB"]))
+            if method in {"cold", "warm"}:
+                ccg_walls.append(float(row["subprocess_wall_seconds"]))
+            joint.add(str(row["joint_scenario_set_sha256"]))
+            components = row.get("component_set_sha256", {})
+            required_components = {
+                "latent_draw_sha256", "demand_sha256", "fulfillment_sha256",
+                "emergency_price_sha256", "emergency_supply_sha256",
+                "scenario_order_sha256",
+            }
+            if set(components) != required_components or any(
+                SAFE_RUN_ID.fullmatch(str(value)) is None or len(str(value)) != 64
+                for value in components.values()
+            ):
+                raise ValueError("method component identities are incomplete")
+            component_rows.append(dict(components))
+            solve_count += 1
+        if len(joint) != 1 or any(row != component_rows[0] for row in component_rows[1:]):
+            raise ValueError("methods do not use an identical joint scenario set")
+        if prior_components is not None and component_rows[0] != prior_components:
+            raise ValueError("same sequence regenerated different scenarios across budgets")
+        tolerance = _objective_tolerance(
+            objectives,
+            {
+                "absolute_tolerance": M2_OBJECTIVE_ABSOLUTE_TOLERANCE,
+                "relative_tolerance": M2_OBJECTIVE_RELATIVE_TOLERANCE,
+            },
+        )
+        difference = max(objectives) - min(objectives)
+        recorded_tolerance = float(comparison.get("objective_tolerance", math.nan))
+        recorded_difference = float(comparison.get("maximum_objective_difference", math.nan))
+        if not all(math.isfinite(value) and value >= 0.0 for value in (difference, recorded_difference, recorded_tolerance)):
+            raise ValueError("objective consistency evidence must be finite and nonnegative")
+        if not math.isclose(recorded_tolerance, tolerance, rel_tol=0.0, abs_tol=1.0e-12):
+            raise ValueError("recorded objective tolerance is not the frozen M2 tolerance")
+        if not math.isclose(recorded_difference, difference, rel_tol=0.0, abs_tol=1.0e-12) or difference > tolerance:
+            raise ValueError("three-method objective consistency gate failed")
+        warm = methods["warm"]
+        expected_source_sha = None if prior_state is None else _canonical_sha(prior_state)
+        if warm.get("transfer_source_state_sha256") != expected_source_sha:
+            raise ValueError("warm result is not bound to the prior budget state")
+        transfer_count = int(warm.get("transferred_exact_scenario_count", -1))
+        transfer_names = list(warm.get("transferred_exact_scenarios", []))
+        reuse_rate = float(warm.get("transferred_scenario_reuse_rate", math.nan))
+        if transfer_count != len(transfer_names) or transfer_count < 0:
+            raise ValueError("transferred scenario count mismatch")
+        if not math.isfinite(reuse_rate) or not 0.0 <= reuse_rate <= 1.0:
+            raise ValueError("transferred scenario reuse rate is invalid")
+        if budget_index == 0:
+            if warm.get("transfer_source_budget") is not None or transfer_count != 0:
+                raise ValueError("first budget may not claim cross-budget transfer")
+        else:
+            if not math.isclose(float(warm.get("transfer_source_budget", math.nan)), 2571.372016574617, abs_tol=1.0e-9):
+                raise ValueError("second-budget warm result has the wrong source budget")
+            if comparison.get("transfer_input_state") != prior_state:
+                raise ValueError("comparison transfer input is not the prior warm state")
+            if not set(transfer_names).issubset(set(warm.get("initial_scenarios", []))):
+                raise ValueError("transferred scenarios are missing from the warm initial pool")
+        prior_state = comparison.get("transferred_state")
+        if not isinstance(prior_state, dict):
+            raise ValueError("warm solve did not finalize a transferable state")
+        prior_components = component_rows[0]
+    if solve_count != 6 or int(result.get("completed_algorithm_solve_count", -1)) != 6:
+        raise ValueError("pilot sequence does not contain six solves")
+    return {
+        "solve_count": solve_count,
+        "budget_pair_count": 2,
+        "all_worker_seconds": all_walls,
+        "ccg_worker_seconds": ccg_walls,
+        "peak_memory_MiB": max(all_memory),
+        "component_set_by_budget": [
+            comparisons[index]["methods"]["cold"]["component_set_sha256"]
+            for index in (0, 1)
+        ],
+    }
+
+
 def update_projection(execution_root: Path, cases: Sequence[PerformanceCase], fingerprints: Mapping[str, str]) -> dict[str, Any]:
     registry_path = execution_root / "run_registry.json"
     rows = _registry(registry_path)
@@ -364,7 +547,7 @@ def update_projection(execution_root: Path, cases: Sequence[PerformanceCase], fi
     primary = {case_id: [row for row in rows if row.get("case_id") == case_id and not row.get("parent_run_id")] for case_id in expected}
     missing = [key for key, values in primary.items() if not values]
     duplicates = [key for key, values in primary.items() if len(values) > 1]
-    failed, invalid, results = [], [], []
+    failed, invalid, results, derived_rows = [], [], [], []
     for case_id, values in primary.items():
         if len(values) != 1: continue
         row = values[0]
@@ -376,13 +559,11 @@ def update_projection(execution_root: Path, cases: Sequence[PerformanceCase], fi
                 raise ValueError("artifact path escapes output root")
             result = json.loads(result_path.read_text(encoding="utf-8"))
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            if result.get("fingerprints") != dict(fingerprints) or result.get("case_id") != case_id:
-                raise ValueError("result identity or fingerprints mismatch")
             if manifest.get("result_sha256") != sha256_file(result_path):
                 raise ValueError("result hash mismatch")
-            if len(result.get("comparisons", [])) != 2 or result.get("completed_algorithm_solve_count") != 6:
-                raise ValueError("pilot solve count mismatch")
+            derived = _validate_pilot_result(result, expected[case_id], fingerprints)
             results.append(result)
+            derived_rows.append({"result": result, "derived": derived})
         except Exception as exc:
             invalid.append({"case_id": case_id, "message": f"{type(exc).__name__}: {exc}"})
     crn_mismatches: list[dict[str, Any]] = []
@@ -394,16 +575,42 @@ def update_projection(execution_root: Path, cases: Sequence[PerformanceCase], fi
             for field in ("latent_draw_sha256", "demand_sha256", "emergency_price_sha256", "emergency_supply_sha256", "scenario_order_sha256"):
                 if len({value[field] for value in components}) != 1:
                     crn_mismatches.append({"seed": seed, "budget_index": budget_index, "field": field})
+            if len({value["fulfillment_sha256"] for value in components}) != 2:
+                crn_mismatches.append({"seed": seed, "budget_index": budget_index, "field": "fulfillment_profile_separation"})
     diagnostics = [row["run_id"] for row in rows if row.get("parent_run_id")]
-    gate = not (missing or duplicates or failed or invalid or diagnostics or crn_mismatches) and len(results) == 6
+    completed_pairs = sum(row["derived"]["budget_pair_count"] for row in derived_rows)
+    completed_solves = sum(row["derived"]["solve_count"] for row in derived_rows)
+    ccg_seconds = [value for row in derived_rows for value in row["derived"]["ccg_worker_seconds"]]
+    maximum_peak_memory = max((row["derived"]["peak_memory_MiB"] for row in derived_rows), default=0.0)
+    conservative_seconds = max(ccg_seconds, default=0.0)
+    projected_hours = 240.0 * conservative_seconds / 3600.0
+    projection_complete = (
+        len(ccg_seconds) == 24
+        and math.isfinite(conservative_seconds) and conservative_seconds > 0.0
+        and math.isfinite(projected_hours) and projected_hours > 0.0
+        and math.isfinite(maximum_peak_memory) and maximum_peak_memory >= 0.0
+    )
+    gate = (
+        not (missing or duplicates or failed or invalid or diagnostics or crn_mismatches)
+        and len(results) == 6 and completed_pairs == 12 and completed_solves == 36
+        and projection_complete
+    )
     payload = {
         "status": "passed" if gate else "incomplete",
         "required_primary_sequence_count": 6, "completed_primary_sequence_count": len(results),
-        "required_budget_pair_count": 12, "completed_budget_pair_count": sum(len(row["comparisons"]) for row in results),
-        "required_algorithm_solve_count": 36, "completed_algorithm_solve_count": sum(row["completed_algorithm_solve_count"] for row in results),
+        "required_budget_pair_count": 12, "completed_budget_pair_count": completed_pairs,
+        "required_algorithm_solve_count": 36, "completed_algorithm_solve_count": completed_solves,
         "missing_case_ids": missing, "duplicate_case_ids": duplicates,
         "failed_primary_run_ids": failed, "invalid_primary_runs": invalid,
         "diagnostic_run_ids": diagnostics, "common_random_number_mismatches": crn_mismatches,
+        "formal_compute_projection": {
+            "status": "projected" if projection_complete else "unavailable",
+            "method": "240_times_maximum_pilot_CCG_worker_seconds",
+            "planned_formal_algorithm_execution_count": 240,
+            "conservative_seconds_per_execution": conservative_seconds,
+            "projected_wall_hours": projected_hours,
+            "maximum_sampled_peak_RSS_MiB": maximum_peak_memory,
+        },
         "fingerprints": dict(fingerprints), "pilot_compute_gate_passed": gate,
         "formal_authorized": False, "updated_at_utc": utc_now(),
     }
