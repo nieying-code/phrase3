@@ -1,0 +1,271 @@
+protocol_id: phase6_m2_algorithm_performance_design_v1_0
+version: 1.0.0-design-only
+status: candidate_design_pending_review
+runner_namespace: phase6_m2_algorithm_performance_v1_0
+output_root: outputs/phase6_m2_algorithm_performance_v1_0
+designed_on: 2026-08-25
+
+purpose:
+  core_question: whether_cross_budget_exact_scenario_pool_warm_start_has_stronger_computational_benefit_under_M2_supply_disruption
+  M0_role: retained_correctness_and_no_disruption_algorithm_baseline
+  M2_role: core_model_algorithm_applicability_and_conditional_efficiency_extension
+  M2_1_in_scope: false
+  replace_or_hide_results_based_on_direction_forbidden: true
+  all_executed_M2_algorithm_results_must_be_reported: true
+
+parent_evidence:
+  M2_formal_mechanism_results:
+    pr: 58
+    audit: docs/handoffs/2026-08-21_phase6_m2_formal_mechanism_results_v1_1_audit.json
+    audit_sha256: bce5b075d352a4679b4371a073f5cc0a931a6b309b401318e9f4c38a8a7489a5
+    required_completed_primary_runs: 50
+    required_model: M2_supply_disruption
+  M0_algorithm_performance_results:
+    pr: 77
+    audit: docs/handoffs/2026-08-23_phase6_m0_e3_algorithm_performance_results_v1_0_audit.json
+    audit_sha256: cec805c4b414a9ebbfd0ebbb80990d85016873dbc974eea2e7f9f0ef172e2e54
+    required_algorithm_executions: 246
+    required_gate_passed: true
+  parent_outputs_are_read_only: true
+  parent_results_may_not_authorize_this_protocol: true
+
+scientific_model:
+  model: M2_supply_disruption
+  tier_id: M2AP2
+  item_count: 2
+  periods: 6
+  formal_training_scenario_count: 100
+  pilot_training_scenario_count: 50
+  shared_emergency_reserve_pool: true
+  first_stage_budget_equality_unchanged: true
+  relative_complete_recourse_unchanged: true
+  emergency_price_and_shortage_penalty: frozen_M2_baseline
+  item_ids: [relief_food_1, relief_food_2]
+  supply_vulnerability_multipliers: [0.8, 1.2]
+  reference_budget: 2337.610924158743
+  storage_capacity: [288.75, 294.841333698683, 294.841333698683, 288.75, 203.908666301317, 203.90866630131694]
+  runner_must_recompute_budget_capacity_and_identity_before_scenario_generation: true
+
+profiles:
+  C0:
+    enabled: false
+    loss_scale: 0.0
+    recovery_fraction: 0.0
+    role: no_disruption_control
+  T03:
+    enabled: true
+    loss_scale: 0.3
+    recovery_fraction: 0.0
+    role: final_M2_core_disruption_profile
+
+budget_sequence:
+  betas: [1.1, 1.3]
+  budgets: [2571.372016574617, 3038.894201406366]
+  strict_ascending_order: true
+  standard_CCG_restarts_cold_at_every_budget: true
+  SPW_CCG_first_budget_has_no_prior_budget_transfer: true
+  SPW_CCG_second_budget_reuses_only_exact_scenarios_from_first_budget: true
+  full_exact_oracle_retained_at_every_budget: true
+  first_budget_is_correctness_and_sequence_initialization_not_standalone_warm_start_evidence: true
+
+seed_protocol:
+  pilot_seeds: [2026091001, 2026091002, 2026091003]
+  formal_performance_seeds: [2026091101, 2026091102, 2026091103, 2026091104, 2026091105, 2026091106, 2026091107, 2026091108, 2026091109, 2026091110]
+  all_sets_disjoint: true
+  disjoint_from_all_M0_M1_M2_M2_1_development_pilot_formal_validation_and_test_seeds: true
+  formal_seeds_may_not_be_selected_using_pilot_speed_results: true
+
+common_random_numbers:
+  same_seed_across_profiles_and_budgets: true
+  required_equal_components_across_C0_and_T03: [latent_draw, demand, emergency_price, emergency_supply, scenario_order]
+  fulfillment_component_expected_to_differ_by_profile: true
+  budget_does_not_regenerate_scenarios: true
+  cold_and_warm_use_identical_joint_scenario_set_and_order: true
+  technical_repetitions_reuse_identical_input_data: true
+
+algorithms:
+  extensive_formulation:
+    role: pilot_correctness_only
+    formal_timing_included: false
+  standard_CCG_cold:
+    role: independent_cold_start_baseline_at_each_budget
+  SPW_CCG_cross_budget_warm:
+    role: exact_cross_budget_scenario_pool_warm_start
+    may_delete_or_skip_candidate_scenarios: false
+    may_use_approximate_oracle: false
+  claim_boundary:
+    direct_comparison: standard_CCG_cold_complete_workflow_vs_SPW_CCG_cross_budget_warm_complete_workflow
+    pure_SPW_structure_effect_identified: false
+    pure_solver_variable_warm_start_effect_identified: false
+    M2_speedup_may_not_be_extrapolated_to_unrun_profiles_or_scales: true
+
+pilot_protocol:
+  pilot_primary_sequence_count: 6
+  profiles_per_seed: 2
+  budgets_per_sequence: 2
+  methods_per_budget: 3
+  planned_algorithm_solve_count: 36
+  repetitions_per_method: 1
+  strictly_serial: true
+  checks_only:
+    - extensive_standard_CCG_SPW_CCG_objective_consistency
+    - identical_joint_scenario_identity
+    - full_exact_oracle_retained
+    - all_statuses_optimal
+    - no_timeout_failure_invalid_duplicate_or_diagnostic_run
+    - runtime_memory_and_formal_compute_projection_complete
+  speed_direction_may_not_gate_or_modify_formal_matrix: true
+  pilot_completion_does_not_authorize_formal_execution: true
+
+formal_matrix:
+  primary_sequence_count: 20
+  seed_count: 10
+  profile_count: 2
+  budget_count: 2
+  algorithm_count: 2
+  technical_repetitions_per_algorithm_budget: 3
+  budget_pair_count: 40
+  planned_algorithm_execution_count: 240
+  strictly_serial: true
+  complete_batch_required: true
+  no_adaptive_stopping_or_configuration_changes: true
+  technical_repetitions_are_not_independent_samples: true
+  execution_order:
+    sequence_unit: seed_profile
+    profile_order: [C0, T03]
+    budget_order: [1.1, 1.3]
+    alternate_algorithm_first_by_budget_index: true
+    budget_index_0: [standard_CCG_cold, SPW_CCG_cross_budget_warm]
+    budget_index_1: [SPW_CCG_cross_budget_warm, standard_CCG_cold]
+    repetitions_contiguous_within_algorithm: true
+
+correctness_gate:
+  objective_tolerance_source: existing_frozen_M2_objective_consistency_tolerance
+  pilot_required_equalities:
+    - extensive_vs_standard_CCG
+    - extensive_vs_SPW_CCG
+    - standard_CCG_vs_SPW_CCG
+  formal_required_equality: standard_CCG_vs_SPW_CCG
+  all_technical_repeat_objectives_must_match_within_tolerance: true
+  failed_timeout_invalid_duplicate_missing_or_diagnostic_primary_allowed: 0
+  any_failure_stops_entire_batch: true
+  automatic_retry_forbidden: true
+  diagnostic_retry_requires_new_run_id_and_parent_run_id: true
+  diagnostic_results_excluded_from_statistics: true
+
+timing_and_metrics:
+  subprocess_wall_time_is_primary_timing_measure: true
+  each_technical_repetition_is_a_fresh_solver_execution: true
+  report:
+    - objective
+    - lower_bound
+    - upper_bound
+    - optimality_gap
+    - iterations
+    - master_solve_count
+    - oracle_call_count
+    - master_runtime_seconds
+    - oracle_runtime_seconds
+    - subprocess_wall_seconds
+    - sampled_peak_RSS_MiB
+    - initial_scenario_pool_size
+    - final_scenario_pool_size
+    - transferred_exact_scenario_count
+    - transferred_scenario_reuse_rate
+    - transferred_scenarios_becoming_active_or_worst_count
+    - joint_scenario_set_sha256
+    - execution_identity_and_fingerprints
+  timing_repetitions_first_reduced_by: median
+
+statistical_protocol:
+  independent_unit: formal_performance_seed
+  technical_repetitions_profiles_budgets_algorithms_and_scenarios_are_not_independent_samples: true
+  per_budget_speedup:
+    formula: median_cold_seconds_divided_by_median_warm_seconds
+  primary_estimand:
+    name: T03_beta_1_3_cross_budget_transfer_speedup
+    formula: exp_median_across_ten_seeds_of_log_q_seed_T03_beta_1_3
+    first_budget_beta_1_1_excluded_because_no_prior_budget_transfer: true
+  confirmatory_disruption_enhancement_estimand:
+    name: paired_T03_vs_C0_beta_1_3_speedup_ratio
+    per_seed_formula: log_q_seed_T03_beta_1_3_minus_log_q_seed_C0_beta_1_3
+    aggregate_formula: exp_median_across_ten_seeds_of_paired_log_speedup_difference
+  end_to_end_sequence_speedup:
+    role: secondary_descriptive
+    per_seed_profile_formula: sum_median_cold_seconds_across_two_budgets_divided_by_sum_median_warm_seconds_across_two_budgets
+    aggregate_formula: exp_median_across_ten_seeds_of_log_per_seed_end_to_end_speedup
+    geometric_mean_of_two_budget_speed_ratios_forbidden_as_end_to_end_measure: true
+  secondary_estimands:
+    - C0_beta_1_3_cross_budget_transfer_speedup
+    - T03_end_to_end_two_budget_sequence_speedup
+    - C0_end_to_end_two_budget_sequence_speedup
+    - iteration_oracle_and_scenario_reuse_differences
+  bootstrap:
+    method: paired_seed_cluster_percentile
+    random_number_generator: numpy_Generator_PCG64DXSM
+    random_seed: 2026091299
+    resamples: 10000
+    confidence_level: 0.95
+    primary_statistic: exp_median_resampled_log_q_seed_T03_beta_1_3
+    confirmatory_disruption_enhancement_statistic: exp_median_resampled_beta_1_3_T03_minus_C0_log_speedup
+  P_values_planned: false
+  effect_sizes_confidence_intervals_and_all_seed_level_values_required: true
+
+pre_registered_interpretation:
+  reliable_M2_T03_acceleration_requires:
+    - correctness_gate_passed
+    - T03_beta_1_3_speedup_point_estimate_greater_than_1
+    - T03_beta_1_3_bootstrap_95_percentile_CI_lower_bound_greater_than_1
+  supply_disruption_enhances_warm_start_benefit_requires:
+    - reliable_M2_T03_acceleration_gate_passed
+    - paired_T03_vs_C0_beta_1_3_speedup_ratio_point_estimate_greater_than_1
+    - paired_T03_vs_C0_beta_1_3_bootstrap_95_percentile_CI_lower_bound_greater_than_1
+  if_reliable_M2_T03_acceleration_passes:
+    paper_role: M2_provides_clearer_model_specific_efficiency_evidence_M0_retained_as_baseline
+  if_reliable_M2_T03_acceleration_does_not_pass:
+    paper_role: M0_remains_primary_algorithm_evidence_M2_reported_as_extension_or_limitation
+  M2_vs_M0_cross_experiment_effect_comparison_preregistered: false
+  claim_M2_is_stronger_than_M0_forbidden: true
+  M0_results_may_not_be_deleted_or_rewritten: true
+  M2_results_may_not_be_hidden_if_unfavorable: true
+  no_further_parameter_seed_profile_or_scale_search_after_formal_results: true
+
+reproducibility_and_safety:
+  python: 3.12.10
+  gurobipy: 13.0.2
+  gurobi_optimizer: 13.0.2
+  pyomo_interface: gurobi_direct
+  threads: 1
+  independent_five_fingerprints_required: true
+  independent_algorithm_performance_orchestrator_fingerprint_required: true
+  new_output_root_registry_projection_and_run_namespace_required: true
+  M0_M2_M2_OOS_and_M2_1_outputs_are_read_only_and_not_authorization_inputs: true
+  run_ids_immutable: true
+  source_cleanliness_and_synchronized_origin_main_required_before_execution: true
+
+execution_sequence_and_stop_boundaries:
+  sequence:
+    - design_PR_review_and_merge
+    - runner_and_pilot_freeze_PR
+    - explicit_pilot_authorization_after_runner_review
+    - pilot_execution
+    - pilot_results_PR_and_compute_review
+    - separate_formal_freeze_and_authorization_PR
+    - formal_240_execution_batch
+    - formal_results_PR_and_paper_synthesis
+  no_stage_may_start_before_previous_review_is_merged_and_explicitly_authorized: true
+
+execution_boundaries:
+  runner_implemented: false
+  pilot_authorized: false
+  formal_authorized: false
+  scenario_generation_count: 0
+  gurobi_call_count: 0
+  pilot_primary_sequences: 0
+  pilot_algorithm_solves: 0
+  formal_primary_sequences: 0
+  formal_algorithm_executions: 0
+  M0_E3_additional_runs: 0
+  M2_mechanism_additional_runs: 0
+  M2_OOS_additional_runs: 0
+  M2_1_additional_runs: 0

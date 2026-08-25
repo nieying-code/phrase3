@@ -1,0 +1,114 @@
+{
+  "audit_id": "phase6_m2_algorithm_performance_design_v1_0",
+  "status": "candidate_design_pending_review",
+  "base_main_commit": "95e4a25452a47ba83e238d49a794fb236c51b0a6",
+  "base_main_tree": "28daa90572a76446f1701fc0817e386fd685f4b5",
+  "design_config": {
+    "path": "configs/phase6_m2_algorithm_performance_design_v1_0.yaml",
+    "sha256": "2c5fda31262af1522a8719044c9b4126e70c920b65ff8f3b8c382b5d6fdf1f49"
+  },
+  "parent_evidence": {
+    "M2_formal_mechanism_results": {
+      "pr": 58,
+      "path": "docs/handoffs/2026-08-21_phase6_m2_formal_mechanism_results_v1_1_audit.json",
+      "sha256": "bce5b075d352a4679b4371a073f5cc0a931a6b309b401318e9f4c38a8a7489a5",
+      "completed_primary_run_count": 50,
+      "fingerprints": {
+        "scientific_config_sha256": "02d50abd609acd9d93eca6b13f6195e6eee14330e3db5c5ca75e83d2e7b56612",
+        "e3_component_sha256": "87f643fd3bf90f825251641c1bdeeb25f4aebb1ea23d052913b27e0b5fdf2924",
+        "family_component_sha256": "b1f9278ee8a0085e80c418f33d04c92b943c215eaf9ca2cdb6144e8dcebdb68b",
+        "runner_config_sha256": "c8d9efb59649b2a3e16839cdece7c38bc5a385358c354b72310c32134f49ad8e",
+        "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af"
+      }
+    },
+    "M0_algorithm_performance_results": {
+      "pr": 77,
+      "path": "docs/handoffs/2026-08-23_phase6_m0_e3_algorithm_performance_results_v1_0_audit.json",
+      "sha256": "cec805c4b414a9ebbfd0ebbb80990d85016873dbc974eea2e7f9f0ef172e2e54",
+      "primary_run_count": 21,
+      "budget_pair_count": 63,
+      "algorithm_execution_count": 246,
+      "gate_passed": true
+    }
+  },
+  "scientific_design": {
+    "model": "M2_supply_disruption",
+    "tier_id": "M2AP2",
+    "item_count": 2,
+    "periods": 6,
+    "pilot_training_scenario_count": 50,
+    "formal_training_scenario_count": 100,
+    "profiles": ["C0", "T03"],
+    "betas": [1.1, 1.3],
+    "budgets": [2571.372016574617, 3038.894201406366],
+    "algorithms": ["standard_CCG_cold", "SPW_CCG_cross_budget_warm"],
+    "full_exact_oracle_retained": true
+  },
+  "seed_design": {
+    "pilot": [2026091001, 2026091002, 2026091003],
+    "formal_performance": [2026091101, 2026091102, 2026091103, 2026091104, 2026091105, 2026091106, 2026091107, 2026091108, 2026091109, 2026091110],
+    "all_sets_disjoint_and_unused": true
+  },
+  "pilot_design": {
+    "primary_sequence_count": 6,
+    "budget_pair_count": 12,
+    "planned_algorithm_solve_count": 36,
+    "speed_direction_may_not_gate_formal_matrix": true
+  },
+  "formal_design": {
+    "primary_sequence_count": 20,
+    "budget_pair_count": 40,
+    "technical_repetitions_per_algorithm_budget": 3,
+    "planned_algorithm_execution_count": 240,
+    "independent_seed_count": 10,
+    "technical_repetitions_are_not_independent_samples": true
+  },
+  "primary_estimand": {
+    "name": "T03_beta_1_3_cross_budget_transfer_speedup",
+    "per_budget": "median_cold_seconds_divided_by_median_warm_seconds",
+    "per_seed": "log_q_seed_T03_beta_1_3",
+    "aggregate": "exp_median_across_ten_seeds_of_log_q_seed_T03_beta_1_3",
+    "beta_1_1_excluded_because_no_prior_budget_transfer": true,
+    "bootstrap_rng": "numpy_Generator_PCG64DXSM",
+    "bootstrap_seed": 2026091299,
+    "bootstrap_resamples": 10000,
+    "confidence_level": 0.95
+  },
+  "confirmatory_disruption_enhancement_estimand": {
+    "name": "paired_T03_vs_C0_beta_1_3_speedup_ratio",
+    "per_seed": "log_q_seed_T03_beta_1_3_minus_log_q_seed_C0_beta_1_3",
+    "aggregate": "exp_median_across_ten_seeds_of_paired_log_speedup_difference",
+    "claim_requires_point_estimate_and_bootstrap_CI_lower_bound_above_one": true
+  },
+  "secondary_end_to_end_estimand": {
+    "per_seed_profile": "sum_median_cold_seconds_across_two_budgets_divided_by_sum_median_warm_seconds_across_two_budgets",
+    "geometric_mean_of_budget_speed_ratios_forbidden": true
+  },
+  "pre_registered_reporting_rule": {
+    "reliable_M2_T03_acceleration_requires_correctness_and_S_point_estimate_and_CI_lower_bound_above_one": true,
+    "disruption_enhancement_requires_reliable_acceleration_and_D_point_estimate_and_CI_lower_bound_above_one": true,
+    "M2_vs_M0_cross_experiment_effect_not_preregistered": true,
+    "claim_M2_is_stronger_than_M0_forbidden": true,
+    "M0_results_always_retained": true,
+    "M2_results_must_be_reported_regardless_of_direction": true,
+    "further_parameter_or_seed_search_after_formal_results_forbidden": true
+  },
+  "execution_counts": {
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0,
+    "pilot_primary_sequences": 0,
+    "pilot_algorithm_solves": 0,
+    "formal_primary_sequences": 0,
+    "formal_algorithm_executions": 0,
+    "M0_E3_additional_runs": 0,
+    "M2_mechanism_additional_runs": 0,
+    "M2_OOS_additional_runs": 0,
+    "M2_1_additional_runs": 0
+  },
+  "authorization": {
+    "runner_implemented": false,
+    "pilot_authorized": false,
+    "formal_authorized": false
+  },
+  "CI": "recorded_in_pr_body"
+}
