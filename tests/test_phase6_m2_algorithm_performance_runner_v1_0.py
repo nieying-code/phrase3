@@ -149,10 +149,7 @@ def test_audit_locks_runner_artifacts_fingerprints_and_zero_execution() -> None:
         "status_module_sha256": ROOT / "src/phase6_m2_algorithm_performance_status.py",
     }
     current_artifacts = {field: _sha(path) for field, path in paths.items()}
-    assert current_artifacts.pop("approval_sha256") != audit["artifacts"]["approval_sha256"]
-    historical_artifacts = dict(audit["artifacts"])
-    historical_artifacts.pop("approval_sha256")
-    assert historical_artifacts == current_artifacts
+    assert current_artifacts == audit["artifacts"]
     assert approval["approved_fingerprints"] == audit["fingerprints"]
     assert approval["artifact_sha256"] == {
         "runner_config": audit["artifacts"]["runner_config_sha256"],
@@ -162,14 +159,23 @@ def test_audit_locks_runner_artifacts_fingerprints_and_zero_execution() -> None:
         "status_module": audit["artifacts"]["status_module_sha256"],
     }
     assert audit["authorization"] == {
-        "pilot_authorized": False, "formal_authorized": False,
-        "other_tracks_authorized": False,
+        "approval_status": "frozen_for_pilot_execution",
+        "pilot_authorized": True,
+        "explicit_cli_authorization_required": True,
+        "reviewed_runner_fix_commit": "03978b0efce768672233079ea23364c6ca632418",
+        "formal_authorized": False,
+        "M0_E3_additional_runs_authorized": False,
+        "M2_mechanism_additional_runs_authorized": False,
+        "M2_OOS_additional_runs_authorized": False,
+        "M2_1_additional_runs_authorized": False,
     }
     assert all(value == 0 for value in audit["execution_counts"].values())
-    assert audit["safety"]["reviewed_runner_merge_commit"] is None
+    assert approval["reviewed_runner_merge_commit"] == audit["base"]["reviewed_runner_fix_commit"]
+    assert audit["safety"]["old_failed_evidence_is_immutable_and_excluded"] is True
+    assert audit["safety"]["new_output_root_must_be_absent_or_empty"] is True
     assert audit["safety"]["execution_requires_main_tracking_origin_main"] is True
     assert audit["safety"]["execution_requires_HEAD_equal_fetched_origin_main"] is True
-    assert audit["safety"]["execution_requires_reviewed_PR79_merge_commit_ancestor"] is True
+    assert audit["safety"]["execution_requires_reviewed_runner_fix_commit_ancestor"] is True
     assert audit["safety"]["ordered_oracle_scenario_keys_bound_to_scenario_order_sha256"] is True
     assert audit["safety"]["second_budget_transfer_recomputed_from_prior_state_and_must_be_nonempty"] is True
 

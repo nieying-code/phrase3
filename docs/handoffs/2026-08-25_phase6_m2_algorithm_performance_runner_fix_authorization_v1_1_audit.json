@@ -1,0 +1,89 @@
+{
+  "audit_id": "phase6_m2_algorithm_performance_runner_fix_authorization_v1_1",
+  "status": "pilot_authorized_execution_not_started",
+  "base": {
+    "pr81_merge_commit": "3ee18bae67694dd94d768df780d6e05a65943d8c",
+    "pr81_merge_tree": "cc8821b64d23deecde559d36e51630908699bdeb",
+    "pr81_failure_audit_path": "docs/handoffs/2026-08-25_phase6_m2_algorithm_performance_pilot_v1_0_failure_audit.json",
+    "pr81_failure_audit_sha256": "8651972b6f2f193a007d5e63b7384056f7a9d3f4288ef7ec295adfa17dc16ef5",
+    "reviewed_runner_fix_commit": "03978b0efce768672233079ea23364c6ca632418",
+    "reviewed_runner_fix_tree": "14114651d54c3169b3e87c72907557c2041032b1"
+  },
+  "artifacts": {
+    "design_config_sha256": "f78fae4652c24e438b09424343340b2b3fa2c1370156f38d1946d9e25e9d8855",
+    "runner_config_sha256": "a8798a2dd782c07bd8b17702b577faf6d25aadaac8142eee77112d4b5575e535",
+    "approval_sha256": "925db43eedf5671bccea0c3a0765890d696589497bc8f5c601cfcd32e6a6d25d",
+    "orchestrator_module_sha256": "708d93ac6d6656e6d2d1be5cbcb400ca28fa90f8dc509960642ef26b9f1dd735",
+    "worker_module_sha256": "6471c9952e26a9bd2987d0669fcb691a041fdcc731578a7217fb3ffa1924b130",
+    "cli_sha256": "4c3c766d8ad2b3cac09b4dc10959b4494f576840ad5650bf6a750c403111162e",
+    "status_module_sha256": "4028f1e113501a04ab629e9a5fbfdc5b91c13ff8af25da77066e2925a4302aab"
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "ce001f9fdce3eae0f9a14a99093186e90072fb945e546406305764e765bb0734",
+    "e3_component_sha256": "304aad69069bac84088cb2f34308c44dd54e06c4d5042170c4815086af62e6e9",
+    "family_component_sha256": "1f75200e9516aa77c93fa26deaf9e35b13106111d3a19637fa1d438ef3be6c30",
+    "runner_config_sha256": "a8798a2dd782c07bd8b17702b577faf6d25aadaac8142eee77112d4b5575e535",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
+    "algorithm_performance_orchestrator_sha256": "f19219a898d5d6401fa5beb789e12c9f46345dc29e3a60504da70e1a36eda9fc"
+  },
+  "fix": {
+    "invalid_interface": "DisruptedProcurementData.total_budget",
+    "corrected_interface": "DisruptedProcurementData.budget",
+    "real_generated_m2_data_wrapper_tested": true,
+    "real_disrupted_procurement_data_wrapper_tested": true,
+    "test_stops_at_mock_solver_boundary": true,
+    "scientific_matrix_changed": false
+  },
+  "matrix": {
+    "tier_id": "M2C2",
+    "pilot_seeds": [2026091001, 2026091002, 2026091003],
+    "profile_ids": ["C0", "T03"],
+    "budget_factors": [1.1, 1.3],
+    "pilot_primary_sequence_count": 6,
+    "pilot_budget_pair_count": 12,
+    "pilot_algorithm_solve_count": 36,
+    "formal_algorithm_execution_count": 240
+  },
+  "authorization": {
+    "approval_status": "frozen_for_pilot_execution",
+    "pilot_authorized": true,
+    "explicit_cli_authorization_required": true,
+    "reviewed_runner_fix_commit": "03978b0efce768672233079ea23364c6ca632418",
+    "formal_authorized": false,
+    "M0_E3_additional_runs_authorized": false,
+    "M2_mechanism_additional_runs_authorized": false,
+    "M2_OOS_additional_runs_authorized": false,
+    "M2_1_additional_runs_authorized": false
+  },
+  "safety": {
+    "old_namespace": "phase6_m2_algorithm_performance_v1_0",
+    "old_failed_output_root": "outputs/phase6_m2_algorithm_performance_v1_0",
+    "old_failed_evidence_is_immutable_and_excluded": true,
+    "new_namespace": "phase6_m2_algorithm_performance_v1_1",
+    "new_output_root": "outputs/phase6_m2_algorithm_performance_v1_1",
+    "new_output_root_must_be_absent_or_empty": true,
+    "complete_primary_batch_required": true,
+    "strictly_serial": true,
+    "failure_stops_batch": true,
+    "diagnostic_requires_new_run_id_and_parent_run_id": true,
+    "execution_requires_main_tracking_origin_main": true,
+    "execution_requires_HEAD_equal_fetched_origin_main": true,
+    "execution_requires_reviewed_runner_fix_commit_ancestor": true,
+    "ordered_oracle_scenario_keys_bound_to_scenario_order_sha256": true,
+    "second_budget_transfer_recomputed_from_prior_state_and_must_be_nonempty": true
+  },
+  "execution_counts": {
+    "scenario_generation_count": 0,
+    "gurobi_call_count": 0,
+    "pilot_primary_sequences": 0,
+    "pilot_budget_pairs": 0,
+    "pilot_algorithm_solves": 0,
+    "formal_primary_sequences": 0,
+    "formal_algorithm_executions": 0,
+    "M0_E3_additional_runs": 0,
+    "M2_mechanism_additional_runs": 0,
+    "M2_OOS_additional_runs": 0,
+    "M2_1_additional_runs": 0
+  },
+  "CI": "recorded_in_pr_body"
+}
