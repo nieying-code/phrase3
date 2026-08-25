@@ -29,8 +29,8 @@ def test_authorization_binds_reviewed_runner_and_all_execution_artifacts() -> No
     # are therefore locked directly, while every executable byte is rehashed
     # below from the checkout.
     assert audit["reviewed_runner"] == {
-        "commit": "f1aae824e4cef1581a04e92690aebfc6dd7e9712",
-        "tree": "374e53614146180d300f8261526f6c012d34f30d",
+        "commit": "df24c953880f40873adb9b23f64d39fcd9bffbb9",
+        "tree": "952307a5eb66d5eecf11a05d4bc9495a449c87d8",
     }
     paths = {
         "approval": APPROVAL,

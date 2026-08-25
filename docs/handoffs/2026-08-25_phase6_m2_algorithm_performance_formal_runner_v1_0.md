@@ -6,8 +6,8 @@
 
 - 基线提交：`1449fd0e37d0994e20176f31630f62f00a81105f`
 - 初始 Runner 实现提交：`794856b7b50e1c118b6ec8b56b34c4c30f752225`
-- 复审修复后的 Runner 执行基线：`f1aae824e4cef1581a04e92690aebfc6dd7e9712`
-- 复审修复后的 Runner tree：`374e53614146180d300f8261526f6c012d34f30d`
+- 最终复审修复后的 Runner 执行基线：`df24c953880f40873adb9b23f64d39fcd9bffbb9`
+- 最终复审修复后的 Runner tree：`952307a5eb66d5eecf11a05d4bc9495a449c87d8`
 - 命名空间：`phase6_m2_algorithm_performance_formal_v1_0`
 - 输出根：`outputs/phase6_m2_algorithm_performance_formal_v1_0`
 
@@ -29,6 +29,8 @@
 
 本 PR 合并后只授权完整 240 次 M2 算法性能批次。M0 E3 追加运行、M2 机制/OOS追加运行及 M2.1 追加运行均保持关闭。任一非最优、超时、目标不一致、制品无效或重复 primary 会形成不可变终态并停止整个批次。
 
+最终停止语义在写入 `optimal` 制品前验证每次 worker 的性能指标、第二预算 warm 迁移链及完整 primary；证据无效时写入不可变 `evidence_invalid` 并立即停止，后续求解和下一条 primary 均不会启动。projection 若发现任何无效、失败、重复、诊断或 CRN 异常，也会立即阻断批次。
+
 ## 非执行声明
 
 - `scenario_generation_count=0`
@@ -40,7 +42,7 @@ Runner 提交和审批提交分离：审批文件逐字节绑定 Runner 提交�
 
 ## 本地验证
 
-- 正式 runner/授权专项测试：`12 passed`；
+- 正式 runner/授权专项测试：`15 passed`；
 - 普通回归：`715 passed`；另有 9 项旧版本“输出目录必须不存在”断言因本机依法保留的历史正式结果目录而失败，不是代码失败；干净 CI checkout 不存在这些 D 盘制品；
 - Phase 5：`6 passed`；
 - Windows 可复现性专项：`16 passed`；
