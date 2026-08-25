@@ -11,8 +11,8 @@ from .phase6_m2_algorithm_performance import run_pilot_batch
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--runner-config", type=Path, default=Path("configs/phase6_m2_algorithm_performance_runner_v1_0.yaml"))
-    parser.add_argument("--approval", type=Path, default=Path("configs/phase6_m2_algorithm_performance_pilot_approval_v1_0.yaml"))
+    parser.add_argument("--runner-config", type=Path, default=Path("configs/phase6_m2_algorithm_performance_runner_v1_1.yaml"))
+    parser.add_argument("--approval", type=Path, default=Path("configs/phase6_m2_algorithm_performance_pilot_approval_v1_1.yaml"))
     parser.add_argument("--run-id-prefix", required=True)
     parser.add_argument("--authorize-m2-algorithm-performance-pilot", action="store_true")
     args = parser.parse_args()

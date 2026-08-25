@@ -23,12 +23,16 @@ from src.phase6_m2_algorithm_performance import (
     validate_static_freeze,
 )
 from src.phase6_m2_algorithm_performance_worker import _generated
+from src.phase6_m2_algorithm_performance_worker import execute_worker_request
+from src.model_data import ProcurementData
+from src.phase6_m2 import SupplyDisruptionProfile, apply_regular_supply_disruption
+from src.phase6_protocol import GeneratedPhase6Data, TierSpec
 
 
 ROOT = Path(__file__).resolve().parents[1]
-RUNNER = ROOT / "configs/phase6_m2_algorithm_performance_runner_v1_0.yaml"
-APPROVAL = ROOT / "configs/phase6_m2_algorithm_performance_pilot_approval_v1_0.yaml"
-AUDIT = ROOT / "docs/handoffs/2026-08-25_phase6_m2_algorithm_performance_runner_v1_0_audit.json"
+RUNNER = ROOT / "configs/phase6_m2_algorithm_performance_runner_v1_1.yaml"
+APPROVAL = ROOT / "configs/phase6_m2_algorithm_performance_pilot_approval_v1_1.yaml"
+AUDIT = ROOT / "docs/handoffs/2026-08-25_phase6_m2_algorithm_performance_runner_fix_authorization_v1_1_audit.json"
 
 
 def _sha(path: Path) -> str:
@@ -127,6 +131,9 @@ def test_frozen_matrix_is_exact_and_formal_remains_closed() -> None:
     assert design["formal_matrix"]["planned_algorithm_execution_count"] == 240
     assert context["runner"]["execution"]["formal_execution_implemented"] is False
     assert context["runner"]["execution"]["formal_authorized"] is False
+    assert context["runner"]["namespace"] == "phase6_m2_algorithm_performance_v1_1"
+    assert context["runner"]["output_root"] == "outputs/phase6_m2_algorithm_performance_v1_1"
+    assert not (ROOT / context["runner"]["output_root"]).exists()
 
 
 def test_audit_locks_runner_artifacts_fingerprints_and_zero_execution() -> None:
@@ -142,10 +149,7 @@ def test_audit_locks_runner_artifacts_fingerprints_and_zero_execution() -> None:
         "status_module_sha256": ROOT / "src/phase6_m2_algorithm_performance_status.py",
     }
     current_artifacts = {field: _sha(path) for field, path in paths.items()}
-    assert current_artifacts.pop("approval_sha256") != audit["artifacts"]["approval_sha256"]
-    historical_artifacts = dict(audit["artifacts"])
-    historical_artifacts.pop("approval_sha256")
-    assert historical_artifacts == current_artifacts
+    assert current_artifacts == audit["artifacts"]
     assert approval["approved_fingerprints"] == audit["fingerprints"]
     assert approval["artifact_sha256"] == {
         "runner_config": audit["artifacts"]["runner_config_sha256"],
@@ -155,14 +159,23 @@ def test_audit_locks_runner_artifacts_fingerprints_and_zero_execution() -> None:
         "status_module": audit["artifacts"]["status_module_sha256"],
     }
     assert audit["authorization"] == {
-        "pilot_authorized": False, "formal_authorized": False,
-        "other_tracks_authorized": False,
+        "approval_status": "frozen_for_pilot_execution",
+        "pilot_authorized": True,
+        "explicit_cli_authorization_required": True,
+        "reviewed_runner_fix_commit": "03978b0efce768672233079ea23364c6ca632418",
+        "formal_authorized": False,
+        "M0_E3_additional_runs_authorized": False,
+        "M2_mechanism_additional_runs_authorized": False,
+        "M2_OOS_additional_runs_authorized": False,
+        "M2_1_additional_runs_authorized": False,
     }
     assert all(value == 0 for value in audit["execution_counts"].values())
-    assert audit["safety"]["reviewed_runner_merge_commit"] is None
+    assert approval["reviewed_runner_merge_commit"] == audit["base"]["reviewed_runner_fix_commit"]
+    assert audit["safety"]["old_failed_evidence_is_immutable_and_excluded"] is True
+    assert audit["safety"]["new_output_root_must_be_absent_or_empty"] is True
     assert audit["safety"]["execution_requires_main_tracking_origin_main"] is True
     assert audit["safety"]["execution_requires_HEAD_equal_fetched_origin_main"] is True
-    assert audit["safety"]["execution_requires_reviewed_PR79_merge_commit_ancestor"] is True
+    assert audit["safety"]["execution_requires_reviewed_runner_fix_commit_ancestor"] is True
     assert audit["safety"]["ordered_oracle_scenario_keys_bound_to_scenario_order_sha256"] is True
     assert audit["safety"]["second_budget_transfer_recomputed_from_prior_state_and_must_be_nonempty"] is True
 
@@ -440,6 +453,63 @@ def test_generated_resolves_and_passes_profile_without_real_generation(monkeypat
     assert result is generated and reference == 10.0
     assert returned_profile is profile
     assert observed["profile"] is profile
+
+
+def test_real_disrupted_data_wrapper_exposes_budget_through_worker_result(monkeypatch) -> None:
+    base = ProcurementData(
+        items=("food",), periods=2, scenarios=("low", "high"), budget=17.5,
+        shelf_life={"food": 2}, initial_inventory={"food": (1.0, 0.0)},
+        storage_capacity=(20.0, 20.0), regular_price={"food": (1.0, 1.0)},
+        demand={"low": {"food": (2.0, 2.0)}, "high": {"food": (5.0, 5.0)}},
+        emergency_price={"low": {"food": (2.0, 2.0)}, "high": {"food": (2.0, 2.0)}},
+        emergency_supply={"low": {"food": (10.0, 10.0)}, "high": {"food": (10.0, 10.0)}},
+        shortage_penalty={"food": 20.0}, waste_penalty={"food": 1.0},
+    )
+    generated = GeneratedPhase6Data(
+        data=base,
+        tier=TierSpec("V1", 1, 2, 2, 0, 0, "none", 120.0, 600.0, 1800.0, 1),
+        seed=1, budget=base.budget, reference_budget=base.budget,
+        budget_factor=1.0, theoretical_mean_demand={"food": (3.5, 3.5)},
+        generator_protocol_id="wrapper-interface-test",
+    )
+    latent = {
+        "low": {"food": (-1.0, -0.5)},
+        "high": {"food": (1.0, 1.5)},
+    }
+    wrapped = apply_regular_supply_disruption(
+        generated, SupplyDisruptionProfile("C0", False, 0.0, 0.0),
+        demand_latent=latent,
+    )
+    fake_solution = SimpleNamespace(
+        objective=12.0,
+        as_dict=lambda: {"status": "optimal", "objective": 12.0},
+    )
+    monkeypatch.setattr(
+        "src.phase6_m2_algorithm_performance_worker._generated",
+        lambda request: (wrapped, base.budget, wrapped.profile),
+    )
+    monkeypatch.setattr(
+        "src.phase6_m2_algorithm_performance_worker.solve_m2_endogenous_extensive",
+        lambda *args, **kwargs: fake_solution,
+    )
+    monkeypatch.setattr(
+        "src.phase6_m2_algorithm_performance_worker._native_failure_status",
+        lambda result: "optimal",
+    )
+    result = execute_worker_request({
+        "algorithm": "extensive", "seed": 1, "profile_id": "C0",
+        "beta": 1.1, "solver": {
+            "preference": ["gurobi"], "call_time_limit_seconds": 120,
+            "threads": 1, "feasibility_tolerance": 1.0e-7,
+            "optimality_tolerance": 1.0e-7,
+        },
+        "ccg": {"active_scenario_tolerance": 1.0e-6},
+        "objective_consistency": {"absolute_tolerance": 1.0e-5},
+    })
+    assert type(wrapped.data).__name__ == "DisruptedProcurementData"
+    assert not hasattr(wrapped.data, "total_budget")
+    assert result["status"] == "optimal"
+    assert result["budget"] == wrapped.data.budget == 17.5
 
 
 def test_status_reader_is_bounded_and_run_ids_are_safe(tmp_path) -> None:
