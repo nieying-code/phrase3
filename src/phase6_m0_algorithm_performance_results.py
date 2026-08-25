@@ -83,6 +83,22 @@ def _representative(mode: dict[str, Any]) -> dict[str, Any]:
     return representative
 
 
+def _compact_repetitions(
+    mode: dict[str, Any], *, algorithm: str, first_execution_index: int,
+) -> list[dict[str, Any]]:
+    evidence = []
+    for offset, repetition in enumerate(mode["repetitions"]):
+        evidence.append({
+            "execution_index": first_execution_index + offset,
+            "repetition_index": offset + 1,
+            "algorithm": algorithm,
+            "status": str(repetition["status"]),
+            "subprocess_wall_seconds": float(repetition["subprocess_wall_seconds"]),
+            "objective": float(repetition["ccg_result"]["objective"]),
+        })
+    return evidence
+
+
 def _pair_from_result(
     result: dict[str, Any], comparison: dict[str, Any],
     *, prior_historical_scenarios: set[str],
@@ -181,6 +197,80 @@ def _tier_summary(rows: list[dict[str, Any]], tier_id: str) -> dict[str, Any]:
     return summary
 
 
+def _repetition_mapping(evidence: list[dict[str, Any]]) -> dict[str, Any]:
+    mapping: dict[str, Any] = {}
+    for row in evidence:
+        mapping.setdefault(row["run_id"], {
+            "result_sha256": row["source_result_sha256"], "budget_pairs": [],
+        })["budget_pairs"].append({
+            "budget_index": row["budget_index"],
+            "execution_order": row["execution_order"],
+            "cold_repetitions": row["cold_repetitions"],
+            "warm_repetitions": row["warm_repetitions"],
+        })
+    return mapping
+
+
+def validate_compact_evidence(audit: dict[str, Any]) -> None:
+    """Validate the submitted compact evidence without reading raw D-drive artifacts."""
+    runs = {row["run_id"]: row for row in audit["runs"]}
+    pairs = {(row["run_id"], int(row["budget_index"])): row for row in audit["pairs"]}
+    evidence = audit["technical_repetition_evidence"]
+    if len(evidence) != 63 or len(pairs) != 63:
+        raise ValueError("compact evidence must contain exactly 63 ordered budget pairs")
+    execution_indices: list[int] = []
+    total = 0
+    for row in evidence:
+        pair_key = (row["run_id"], int(row["budget_index"]))
+        if pair_key not in pairs or row["run_id"] not in runs:
+            raise ValueError("technical repetition evidence has an unknown source pair")
+        if row["source_result_sha256"] != runs[row["run_id"]]["result_sha256"]:
+            raise ValueError("technical repetition evidence is not bound to its source result")
+        pair = pairs[pair_key]
+        if (row["tier_id"], int(row["seed"]), float(row["budget"])) != (
+            pair["tier_id"], int(pair["seed"]), float(pair["budget"]),
+        ):
+            raise ValueError("technical repetition identity mismatch")
+        expected_repetitions = 3 if row["tier_id"] == "V2" else 1
+        cold = row["cold_repetitions"]; warm = row["warm_repetitions"]
+        if len(cold) != expected_repetitions or len(warm) != expected_repetitions:
+            raise ValueError("technical repetition count mismatch")
+        expected_order = [
+            f"cold_r{index:02d}" for index in range(1, expected_repetitions + 1)
+        ] + [f"warm_r{index:02d}" for index in range(1, expected_repetitions + 1)]
+        if row["execution_order"] != expected_order:
+            raise ValueError("frozen cold-then-warm execution order mismatch")
+        for algorithm, repetitions in (("cold", cold), ("warm", warm)):
+            for expected_index, repetition in enumerate(repetitions, start=1):
+                if repetition["algorithm"] != algorithm or int(repetition["repetition_index"]) != expected_index:
+                    raise ValueError("technical repetition algorithm or index mismatch")
+                if repetition["status"] != "optimal":
+                    raise ValueError("nonoptimal technical repetition")
+                seconds = float(repetition["subprocess_wall_seconds"])
+                objective = float(repetition["objective"])
+                if not math.isfinite(seconds) or seconds <= 0 or not math.isfinite(objective):
+                    raise ValueError("nonfinite or nonpositive technical repetition evidence")
+                execution_indices.append(int(repetition["execution_index"])); total += 1
+        cold_times = [float(item["subprocess_wall_seconds"]) for item in cold]
+        warm_times = [float(item["subprocess_wall_seconds"]) for item in warm]
+        cold_objectives = [float(item["objective"]) for item in cold]
+        warm_objectives = [float(item["objective"]) for item in warm]
+        if not math.isclose(_median(cold_times), float(pair["cold_seconds"]), rel_tol=0.0, abs_tol=1e-12):
+            raise ValueError("cold median is not reproducible from repetitions")
+        if not math.isclose(_median(warm_times), float(pair["warm_seconds"]), rel_tol=0.0, abs_tol=1e-12):
+            raise ValueError("warm median is not reproducible from repetitions")
+        cold_objective = _median(cold_objectives); warm_objective = _median(warm_objectives)
+        if cold_objective != float(pair["cold_objective"]) or warm_objective != float(pair["warm_objective"]):
+            raise ValueError("representative objective is not reproducible from repetitions")
+        if abs(cold_objective - warm_objective) != float(pair["objective_difference"]):
+            raise ValueError("cold/warm objective difference mismatch")
+    if total != 246 or execution_indices != list(range(1, 247)):
+        raise ValueError("246-entry global execution order is incomplete")
+    mapping_hash = canonical_sha256(_repetition_mapping(evidence))
+    if mapping_hash != audit["global_artifacts"]["technical_repetition_evidence_mapping_sha256"]:
+        raise ValueError("technical repetition evidence mapping hash mismatch")
+
+
 def build_audit(*, root: Path, output_root: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     base = output_root / "formal/primary/experiments/phase6"
     registry_path = base / "run_registry.csv"
@@ -201,6 +291,8 @@ def build_audit(*, root: Path, output_root: Path) -> tuple[dict[str, Any], list[
 
     runs: list[dict[str, Any]] = []
     pairs: list[dict[str, Any]] = []
+    technical_repetition_evidence: list[dict[str, Any]] = []
+    next_execution_index = 1
     expected_git = {"commit_sha": "23b1f1d01ee88d08c981b250dfeacbc8ebb9d20c", "tree_sha": "e5cb644536a66c8bd65d8a74a98ceb0272cc667e"}
     for row in registry:
         manifest_path = Path(row["manifest_path"])
@@ -227,6 +319,24 @@ def build_audit(*, root: Path, output_root: Path) -> tuple[dict[str, Any], list[
                 str(value)
                 for value in comparison["transferred_state"]["historical_adversarial_scenarios"]
             }
+            cold_repetitions = _compact_repetitions(
+                comparison["cold"], algorithm="cold", first_execution_index=next_execution_index,
+            )
+            next_execution_index += len(cold_repetitions)
+            warm_repetitions = _compact_repetitions(
+                comparison["warm"], algorithm="warm", first_execution_index=next_execution_index,
+            )
+            next_execution_index += len(warm_repetitions)
+            repetitions = len(cold_repetitions)
+            technical_repetition_evidence.append({
+                "run_id": row["run_id"], "tier_id": row["tier_id"], "seed": int(row["seed"]),
+                "budget_index": int(comparison["budget_index"]), "budget": float(comparison["budget"]),
+                "source_result_sha256": manifest["result_sha256"],
+                "execution_order": [
+                    f"cold_r{index:02d}" for index in range(1, repetitions + 1)
+                ] + [f"warm_r{index:02d}" for index in range(1, repetitions + 1)],
+                "cold_repetitions": cold_repetitions, "warm_repetitions": warm_repetitions,
+            })
         if any(pair["objective_difference"] > pair["consistency_tolerance"] for pair in run_pairs):
             raise ValueError("cold/warm objective mismatch")
         pairs.extend(run_pairs)
@@ -250,6 +360,22 @@ def build_audit(*, root: Path, output_root: Path) -> tuple[dict[str, Any], list[
         gc.collect()
 
     tier_summaries = {tier: _tier_summary(pairs, tier) for tier in EXPECTED_TIER_RUNS}
+    flattened_repetitions = []
+    for row in technical_repetition_evidence:
+        for repetition in row["cold_repetitions"] + row["warm_repetitions"]:
+            flattened_repetitions.append((
+                row["run_id"], row["tier_id"], int(row["seed"]), int(row["budget_index"]),
+                float(row["budget"]), repetition["algorithm"], int(repetition["repetition_index"]),
+                repetition["status"], float(repetition["objective"]),
+                float(repetition["subprocess_wall_seconds"]),
+            ))
+    performance_repetitions = [(
+        row["run_id"], row["tier_id"], int(row["seed"]), int(row["budget_index"]),
+        float(row["budget"]), row["algorithm"], int(row["repetition"]), row["status"],
+        float(row["objective"]), float(row["wall_seconds"]),
+    ) for row in performance]
+    if flattened_repetitions != performance_repetitions:
+        raise ValueError("result-level technical repetitions do not reproduce algorithm_performance.csv")
     artifact_mapping = {
         row["run_id"]: {key: row[key] for key in (
             "result_sha256", "manifest_sha256", "status_summary_sha256",
@@ -281,6 +407,10 @@ def build_audit(*, root: Path, output_root: Path) -> tuple[dict[str, Any], list[
         "counts": {
             "primary_run_count": len(runs), "budget_pair_count": len(pairs),
             "algorithm_execution_count": len(performance),
+            "technical_repetition_record_count": sum(
+                len(row["cold_repetitions"]) + len(row["warm_repetitions"])
+                for row in technical_repetition_evidence
+            ),
             "tier_primary_run_counts": {tier: sum(row["tier_id"] == tier for row in runs) for tier in EXPECTED_TIER_RUNS},
             "tier_algorithm_execution_counts": {tier: sum(row["tier_id"] == tier for row in performance) for tier in EXPECTED_TIER_RUNS},
             "failed_primary_run_count": 0, "invalid_primary_run_count": 0,
@@ -292,9 +422,13 @@ def build_audit(*, root: Path, output_root: Path) -> tuple[dict[str, Any], list[
             "projection_sha256": sha256_file(projection_path),
             "status_summary_sha256": sha256_file(status_path),
             "run_artifact_mapping_sha256": canonical_sha256(artifact_mapping),
+            "technical_repetition_evidence_mapping_sha256": canonical_sha256(
+                _repetition_mapping(technical_repetition_evidence)
+            ),
         },
         "runs": runs,
         "pairs": pairs,
+        "technical_repetition_evidence": technical_repetition_evidence,
         "tier_summaries": tier_summaries,
         "aggregate": {
             "total_worker_seconds": total_worker_seconds,
@@ -314,6 +448,7 @@ def build_audit(*, root: Path, output_root: Path) -> tuple[dict[str, Any], list[
             "other_formal_experiments_started": False,
         },
     }
+    validate_compact_evidence(audit)
     return audit, pairs
 
 

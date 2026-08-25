@@ -18,6 +18,7 @@
     "primary_run_count": 21,
     "budget_pair_count": 63,
     "algorithm_execution_count": 246,
+    "technical_repetition_record_count": 246,
     "tier_primary_run_counts": {
       "V1": 3,
       "V2": 10,
@@ -40,7 +41,8 @@
     "algorithm_performance_sha256": "3b2ab4da0a2bdc0c242670fd655d5013f3d2b398d3b239705c66e36fb055ab5d",
     "projection_sha256": "1449284052a02e485fb32b6abf76934a2d47adaa913d0aa5fc239c069658faa1",
     "status_summary_sha256": "1449284052a02e485fb32b6abf76934a2d47adaa913d0aa5fc239c069658faa1",
-    "run_artifact_mapping_sha256": "300002d21cfeb2cf20c358533a9e122e4c4ea319dde3c98a42c6c1b5d5bfc94e"
+    "run_artifact_mapping_sha256": "300002d21cfeb2cf20c358533a9e122e4c4ea319dde3c98a42c6c1b5d5bfc94e",
+    "technical_repetition_evidence_mapping_sha256": "e2cd28a21633f55c672606e3b3fc3ac09bf326988c7483af048d44d71d62c9d0"
   },
   "runs": [
     {
@@ -3339,6 +3341,3104 @@
       "warm_reused_scenario_count": 1,
       "warm_scenario_reuse_rate": 0.3333333333333333,
       "training_scenario_count": 1000
+    }
+  ],
+  "technical_repetition_evidence": [
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V1_seed2026072401",
+      "tier_id": "V1",
+      "seed": 2026072401,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "74d55627d54d6e8e8cdf472aebed1210ed9433fbf57b51bb19705db1a9e1272a",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 1,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.368781900000613,
+          "objective": 20028.494961363824
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 2,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3108295000020007,
+          "objective": 20028.494961363824
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V1_seed2026072401",
+      "tier_id": "V1",
+      "seed": 2026072401,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "74d55627d54d6e8e8cdf472aebed1210ed9433fbf57b51bb19705db1a9e1272a",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 3,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3375282999986666,
+          "objective": 14886.214367683033
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 4,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.318317000001116,
+          "objective": 14886.214367683033
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V1_seed2026072401",
+      "tier_id": "V1",
+      "seed": 2026072401,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "74d55627d54d6e8e8cdf472aebed1210ed9433fbf57b51bb19705db1a9e1272a",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 5,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3663258000015048,
+          "objective": 9758.421235498252
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 6,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.312643699999171,
+          "objective": 9758.421235498252
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V1_seed2026072402",
+      "tier_id": "V1",
+      "seed": 2026072402,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "8cb0645e4aa24656c9387e58770ab12d5a4b526a473668564ce9286b56222196",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 7,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3032437000001664,
+          "objective": 12275.619671562159
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 8,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3079599999982747,
+          "objective": 12275.619671562159
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V1_seed2026072402",
+      "tier_id": "V1",
+      "seed": 2026072402,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "8cb0645e4aa24656c9387e58770ab12d5a4b526a473668564ce9286b56222196",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 9,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3119884000007005,
+          "objective": 7149.352150038045
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 10,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3100379999996221,
+          "objective": 7149.352150038045
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V1_seed2026072402",
+      "tier_id": "V1",
+      "seed": 2026072402,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "8cb0645e4aa24656c9387e58770ab12d5a4b526a473668564ce9286b56222196",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 11,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8426180000024033,
+          "objective": 2034.459298727941
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 12,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8557111000009172,
+          "objective": 2034.459298727941
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V1_seed2026072403",
+      "tier_id": "V1",
+      "seed": 2026072403,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "a3b05c4aa9f58610201f64e928a7cd45b88e4a3ffdf5b030f6a79899061b8260",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 13,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3101861999966786,
+          "objective": 29785.311506953058
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 14,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3806589000014355,
+          "objective": 29785.311506953058
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V1_seed2026072403",
+      "tier_id": "V1",
+      "seed": 2026072403,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "a3b05c4aa9f58610201f64e928a7cd45b88e4a3ffdf5b030f6a79899061b8260",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 15,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3247526999984984,
+          "objective": 24606.897986764678
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 16,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.300595599997905,
+          "objective": 24606.897986764678
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V1_seed2026072403",
+      "tier_id": "V1",
+      "seed": 2026072403,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "a3b05c4aa9f58610201f64e928a7cd45b88e4a3ffdf5b030f6a79899061b8260",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 17,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3667910000003758,
+          "objective": 19476.070293628538
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 18,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.3072427000006428,
+          "objective": 19476.070293628538
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072401",
+      "tier_id": "V2",
+      "seed": 2026072401,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "7f3cd81b51e2e13956151515a3dc090718a64cf360afb31b75ac1a3f2202cdc1",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 19,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.858797400000185,
+          "objective": 20028.494961363824
+        },
+        {
+          "execution_index": 20,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8429728999981307,
+          "objective": 20028.494961363824
+        },
+        {
+          "execution_index": 21,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.7964575000005425,
+          "objective": 20028.494961363824
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 22,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.83636590000242,
+          "objective": 20028.494961363824
+        },
+        {
+          "execution_index": 23,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8548704000022553,
+          "objective": 20028.494961363824
+        },
+        {
+          "execution_index": 24,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8382735000013781,
+          "objective": 20028.494961363824
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072401",
+      "tier_id": "V2",
+      "seed": 2026072401,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "7f3cd81b51e2e13956151515a3dc090718a64cf360afb31b75ac1a3f2202cdc1",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 25,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 3.9784325000000536,
+          "objective": 14887.267031710016
+        },
+        {
+          "execution_index": 26,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 3.975549700000556,
+          "objective": 14887.267031710016
+        },
+        {
+          "execution_index": 27,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 3.9556486000001314,
+          "objective": 14887.267031710016
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 28,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 4.0088853999986895,
+          "objective": 14887.267031710016
+        },
+        {
+          "execution_index": 29,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 4.0106539000007615,
+          "objective": 14887.267031710016
+        },
+        {
+          "execution_index": 30,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 4.022227900000871,
+          "objective": 14887.267031710016
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072401",
+      "tier_id": "V2",
+      "seed": 2026072401,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "7f3cd81b51e2e13956151515a3dc090718a64cf360afb31b75ac1a3f2202cdc1",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 31,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 3.9608087000015075,
+          "objective": 9762.855834951699
+        },
+        {
+          "execution_index": 32,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 4.020024099998409,
+          "objective": 9762.855834951699
+        },
+        {
+          "execution_index": 33,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 3.9612845000010566,
+          "objective": 9762.855834951699
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 34,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9024924999976065,
+          "objective": 9762.855834951699
+        },
+        {
+          "execution_index": 35,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.904095599998982,
+          "objective": 9762.855834951699
+        },
+        {
+          "execution_index": 36,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8845946999972512,
+          "objective": 9762.855834951699
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072402",
+      "tier_id": "V2",
+      "seed": 2026072402,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "c32b7caf7d05b7ce0d7ee57e5e0847f30023085fde3b9d53704ce892a5d231d5",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 37,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8308671999984654,
+          "objective": 24673.34048769904
+        },
+        {
+          "execution_index": 38,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9035299999995914,
+          "objective": 24673.34048769904
+        },
+        {
+          "execution_index": 39,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.896211499999481,
+          "objective": 24673.34048769904
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 40,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9742107999991276,
+          "objective": 24673.34048769904
+        },
+        {
+          "execution_index": 41,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8414610999971046,
+          "objective": 24673.34048769904
+        },
+        {
+          "execution_index": 42,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8401178999993135,
+          "objective": 24673.34048769904
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072402",
+      "tier_id": "V2",
+      "seed": 2026072402,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "c32b7caf7d05b7ce0d7ee57e5e0847f30023085fde3b9d53704ce892a5d231d5",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 43,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8250719999996363,
+          "objective": 19528.224924237802
+        },
+        {
+          "execution_index": 44,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8545230999989144,
+          "objective": 19528.224924237802
+        },
+        {
+          "execution_index": 45,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8383805000012217,
+          "objective": 19528.224924237802
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 46,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8957743999999366,
+          "objective": 19528.224924237802
+        },
+        {
+          "execution_index": 47,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8398016000028292,
+          "objective": 19528.224924237802
+        },
+        {
+          "execution_index": 48,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8450224000007438,
+          "objective": 19528.224924237802
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072402",
+      "tier_id": "V2",
+      "seed": 2026072402,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "c32b7caf7d05b7ce0d7ee57e5e0847f30023085fde3b9d53704ce892a5d231d5",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 49,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9043282999991789,
+          "objective": 14402.550941395868
+        },
+        {
+          "execution_index": 50,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8525566999996954,
+          "objective": 14402.550941395868
+        },
+        {
+          "execution_index": 51,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8569946999996318,
+          "objective": 14402.550941395868
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 52,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.850914599999669,
+          "objective": 14402.550941395868
+        },
+        {
+          "execution_index": 53,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8536400000011781,
+          "objective": 14402.550941395868
+        },
+        {
+          "execution_index": 54,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8387598000008438,
+          "objective": 14402.550941395868
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072403",
+      "tier_id": "V2",
+      "seed": 2026072403,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "7bef3f114ab6d4959e26782f1bc4d9f2f4721ab637deed443b6d137cae1ee48a",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 55,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.902200200001971,
+          "objective": 34657.38841210053
+        },
+        {
+          "execution_index": 56,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9645902999982354,
+          "objective": 34657.38841210053
+        },
+        {
+          "execution_index": 57,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.783458800000517,
+          "objective": 34657.38841210053
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 58,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8429366999989725,
+          "objective": 34657.38841210053
+        },
+        {
+          "execution_index": 59,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9037601000018185,
+          "objective": 34657.38841210053
+        },
+        {
+          "execution_index": 60,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8488500999992539,
+          "objective": 34657.38841210053
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072403",
+      "tier_id": "V2",
+      "seed": 2026072403,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "7bef3f114ab6d4959e26782f1bc4d9f2f4721ab637deed443b6d137cae1ee48a",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 61,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8994162999988475,
+          "objective": 29480.737663672786
+        },
+        {
+          "execution_index": 62,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8990101999988838,
+          "objective": 29480.737663672786
+        },
+        {
+          "execution_index": 63,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8489325999980792,
+          "objective": 29480.737663672786
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 64,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8520293000001402,
+          "objective": 29480.737663672786
+        },
+        {
+          "execution_index": 65,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.83640910000031,
+          "objective": 29480.737663672786
+        },
+        {
+          "execution_index": 66,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.843910200001119,
+          "objective": 29480.737663672786
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072403",
+      "tier_id": "V2",
+      "seed": 2026072403,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "7bef3f114ab6d4959e26782f1bc4d9f2f4721ab637deed443b6d137cae1ee48a",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 67,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9018225999971037,
+          "objective": 24344.250838026765
+        },
+        {
+          "execution_index": 68,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8394455000016023,
+          "objective": 24344.250838026765
+        },
+        {
+          "execution_index": 69,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9503356000022904,
+          "objective": 24344.250838026765
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 70,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.841101099998923,
+          "objective": 24344.250838026765
+        },
+        {
+          "execution_index": 71,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8910852000008163,
+          "objective": 24344.250838026765
+        },
+        {
+          "execution_index": 72,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9053389999971841,
+          "objective": 24344.250838026765
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072404",
+      "tier_id": "V2",
+      "seed": 2026072404,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "a1b29ac7042bd3673b0600444f32830edde765ee390fc7123a4c57e71c234976",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 73,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.7979345000021567,
+          "objective": 27211.34741188877
+        },
+        {
+          "execution_index": 74,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9593968000008317,
+          "objective": 27211.34741188877
+        },
+        {
+          "execution_index": 75,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8565153000017744,
+          "objective": 27211.34741188877
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 76,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.834171399998013,
+          "objective": 27211.34741188877
+        },
+        {
+          "execution_index": 77,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8391014000008,
+          "objective": 27211.34741188877
+        },
+        {
+          "execution_index": 78,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8942725000015344,
+          "objective": 27211.34741188877
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072404",
+      "tier_id": "V2",
+      "seed": 2026072404,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "a1b29ac7042bd3673b0600444f32830edde765ee390fc7123a4c57e71c234976",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 79,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9509489000010944,
+          "objective": 22032.638755577602
+        },
+        {
+          "execution_index": 80,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9063338000014483,
+          "objective": 22032.638755577602
+        },
+        {
+          "execution_index": 81,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.944546300001093,
+          "objective": 22032.638755577602
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 82,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9582975000012084,
+          "objective": 22032.638755577602
+        },
+        {
+          "execution_index": 83,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9535993999998027,
+          "objective": 22032.638755577602
+        },
+        {
+          "execution_index": 84,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9482919000001857,
+          "objective": 22032.638755577602
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072404",
+      "tier_id": "V2",
+      "seed": 2026072404,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "a1b29ac7042bd3673b0600444f32830edde765ee390fc7123a4c57e71c234976",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 85,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 3.065826600002765,
+          "objective": 16903.265564059082
+        },
+        {
+          "execution_index": 86,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9937855000025593,
+          "objective": 16903.265564059082
+        },
+        {
+          "execution_index": 87,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.94719299999997,
+          "objective": 16903.265564059082
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 88,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8791657000001578,
+          "objective": 16903.265564059082
+        },
+        {
+          "execution_index": 89,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.885671000000002,
+          "objective": 16903.265564059082
+        },
+        {
+          "execution_index": 90,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8519108000000415,
+          "objective": 16903.265564059082
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072405",
+      "tier_id": "V2",
+      "seed": 2026072405,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "b2edf07b3232a1ab3a8a5e842bfa0b1d3134d125d1d3dbb9cdb6c5e9dd6fdf4a",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 91,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.900984799998696,
+          "objective": 26856.3343094475
+        },
+        {
+          "execution_index": 92,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8856534000005922,
+          "objective": 26856.3343094475
+        },
+        {
+          "execution_index": 93,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8372467000008328,
+          "objective": 26856.3343094475
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 94,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9058126000018092,
+          "objective": 26856.3343094475
+        },
+        {
+          "execution_index": 95,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8328989000001457,
+          "objective": 26856.3343094475
+        },
+        {
+          "execution_index": 96,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8432450000000244,
+          "objective": 26856.3343094475
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072405",
+      "tier_id": "V2",
+      "seed": 2026072405,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "b2edf07b3232a1ab3a8a5e842bfa0b1d3134d125d1d3dbb9cdb6c5e9dd6fdf4a",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 97,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8609166999995068,
+          "objective": 21679.09268883419
+        },
+        {
+          "execution_index": 98,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.821724199999153,
+          "objective": 21679.09268883419
+        },
+        {
+          "execution_index": 99,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8989030999982788,
+          "objective": 21679.09268883419
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 100,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8865888000000268,
+          "objective": 21679.09268883419
+        },
+        {
+          "execution_index": 101,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8459914000013669,
+          "objective": 21679.09268883419
+        },
+        {
+          "execution_index": 102,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8319981999993615,
+          "objective": 21679.09268883419
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072405",
+      "tier_id": "V2",
+      "seed": 2026072405,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "b2edf07b3232a1ab3a8a5e842bfa0b1d3134d125d1d3dbb9cdb6c5e9dd6fdf4a",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 103,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8990912000008393,
+          "objective": 16550.048532553752
+        },
+        {
+          "execution_index": 104,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8593030999982147,
+          "objective": 16550.048532553752
+        },
+        {
+          "execution_index": 105,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9406679999992775,
+          "objective": 16550.048532553752
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 106,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9528532999975141,
+          "objective": 16550.048532553752
+        },
+        {
+          "execution_index": 107,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.0365855999989435,
+          "objective": 16550.048532553752
+        },
+        {
+          "execution_index": 108,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.834605099997134,
+          "objective": 16550.048532553752
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072406",
+      "tier_id": "V2",
+      "seed": 2026072406,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "77c9393a44451381040cd4e7881ab8716f6be0d1d1bcbefb4af761840e717c58",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 109,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.880481600001076,
+          "objective": 19727.0140867981
+        },
+        {
+          "execution_index": 110,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.949435499998799,
+          "objective": 19727.0140867981
+        },
+        {
+          "execution_index": 111,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8387901999994938,
+          "objective": 19727.0140867981
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 112,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.888395900001342,
+          "objective": 19727.0140867981
+        },
+        {
+          "execution_index": 113,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9127040000021225,
+          "objective": 19727.0140867981
+        },
+        {
+          "execution_index": 114,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8304324000018823,
+          "objective": 19727.0140867981
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072406",
+      "tier_id": "V2",
+      "seed": 2026072406,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "77c9393a44451381040cd4e7881ab8716f6be0d1d1bcbefb4af761840e717c58",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 115,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.8923974000026647,
+          "objective": 14596.371590177432
+        },
+        {
+          "execution_index": 116,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.90533570000116,
+          "objective": 14596.371590177432
+        },
+        {
+          "execution_index": 117,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.8842408999989857,
+          "objective": 14596.371590177432
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 118,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 3.016521300000022,
+          "objective": 14596.371590177432
+        },
+        {
+          "execution_index": 119,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9188744999992196,
+          "objective": 14596.371590177432
+        },
+        {
+          "execution_index": 120,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9696844999998575,
+          "objective": 14596.371590177432
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072406",
+      "tier_id": "V2",
+      "seed": 2026072406,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "77c9393a44451381040cd4e7881ab8716f6be0d1d1bcbefb4af761840e717c58",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 121,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9377547999974922,
+          "objective": 9473.427294936557
+        },
+        {
+          "execution_index": 122,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 3.001783300001989,
+          "objective": 9473.427294936557
+        },
+        {
+          "execution_index": 123,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9461570999992546,
+          "objective": 9473.427294936557
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 124,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.940379200001189,
+          "objective": 9473.427294936557
+        },
+        {
+          "execution_index": 125,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8896283999965817,
+          "objective": 9473.427294936557
+        },
+        {
+          "execution_index": 126,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8985942999970575,
+          "objective": 9473.427294936557
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072407",
+      "tier_id": "V2",
+      "seed": 2026072407,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "eaf66f9d77018e70fbd808e9d3d0b4d0b5053bf34ebc163927e4576ee76cd97e",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 127,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.835416300000361,
+          "objective": 19501.034797122666
+        },
+        {
+          "execution_index": 128,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.828102099996613,
+          "objective": 19501.034797122666
+        },
+        {
+          "execution_index": 129,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8407283000015013,
+          "objective": 19501.034797122666
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 130,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8871517999978096,
+          "objective": 19501.034797122666
+        },
+        {
+          "execution_index": 131,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8977039999990666,
+          "objective": 19501.034797122666
+        },
+        {
+          "execution_index": 132,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8346670999999333,
+          "objective": 19501.034797122666
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072407",
+      "tier_id": "V2",
+      "seed": 2026072407,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "eaf66f9d77018e70fbd808e9d3d0b4d0b5053bf34ebc163927e4576ee76cd97e",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 133,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8904022999995505,
+          "objective": 14371.99064084223
+        },
+        {
+          "execution_index": 134,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.959607300002972,
+          "objective": 14371.99064084223
+        },
+        {
+          "execution_index": 135,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9573306000020239,
+          "objective": 14371.99064084223
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 136,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8563299000015832,
+          "objective": 14371.99064084223
+        },
+        {
+          "execution_index": 137,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8349121999999625,
+          "objective": 14371.99064084223
+        },
+        {
+          "execution_index": 138,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8419678999998723,
+          "objective": 14371.99064084223
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072407",
+      "tier_id": "V2",
+      "seed": 2026072407,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "eaf66f9d77018e70fbd808e9d3d0b4d0b5053bf34ebc163927e4576ee76cd97e",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 139,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.907947100000456,
+          "objective": 9249.217510876935
+        },
+        {
+          "execution_index": 140,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8945242000008875,
+          "objective": 9249.217510876935
+        },
+        {
+          "execution_index": 141,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8319022999967274,
+          "objective": 9249.217510876935
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 142,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.846372900003189,
+          "objective": 9249.217510876935
+        },
+        {
+          "execution_index": 143,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8835811999997532,
+          "objective": 9249.217510876935
+        },
+        {
+          "execution_index": 144,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8996993000000657,
+          "objective": 9249.217510876935
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072408",
+      "tier_id": "V2",
+      "seed": 2026072408,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "ceeecc318f0f25f2c8a4f69c2640a432ff5450dc962d352ad418ef67d3cae111",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 145,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.829815699999017,
+          "objective": 46988.383456773416
+        },
+        {
+          "execution_index": 146,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.889656899998954,
+          "objective": 46988.383456773416
+        },
+        {
+          "execution_index": 147,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8415038999992248,
+          "objective": 46988.383456773416
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 148,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8892480000031355,
+          "objective": 46988.383456773416
+        },
+        {
+          "execution_index": 149,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8984505999978865,
+          "objective": 46988.383456773416
+        },
+        {
+          "execution_index": 150,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8864135000003444,
+          "objective": 46988.383456773416
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072408",
+      "tier_id": "V2",
+      "seed": 2026072408,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "ceeecc318f0f25f2c8a4f69c2640a432ff5450dc962d352ad418ef67d3cae111",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 151,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.7884185999973852,
+          "objective": 41797.84426797548
+        },
+        {
+          "execution_index": 152,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8239744999991672,
+          "objective": 41797.84426797548
+        },
+        {
+          "execution_index": 153,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.833257099999173,
+          "objective": 41797.84426797548
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 154,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.943045500000153,
+          "objective": 41797.84426797548
+        },
+        {
+          "execution_index": 155,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.7709228999992774,
+          "objective": 41797.84426797548
+        },
+        {
+          "execution_index": 156,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8349698000019998,
+          "objective": 41797.84426797548
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072408",
+      "tier_id": "V2",
+      "seed": 2026072408,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "ceeecc318f0f25f2c8a4f69c2640a432ff5450dc962d352ad418ef67d3cae111",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 157,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8773389999987558,
+          "objective": 36607.305079177546
+        },
+        {
+          "execution_index": 158,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8454506999987643,
+          "objective": 36607.305079177546
+        },
+        {
+          "execution_index": 159,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8194576999994752,
+          "objective": 36607.305079177546
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 160,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8418128000012075,
+          "objective": 36607.305079177546
+        },
+        {
+          "execution_index": 161,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8309411000009277,
+          "objective": 36607.305079177546
+        },
+        {
+          "execution_index": 162,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8428615999982867,
+          "objective": 36607.305079177546
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072409",
+      "tier_id": "V2",
+      "seed": 2026072409,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "960dc222f57b006d442f0875a99989f3f3ec192a64aabd73ffae96eebbd09b79",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 163,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8311032999990857,
+          "objective": 27568.6250770552
+        },
+        {
+          "execution_index": 164,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8191126000019722,
+          "objective": 27568.6250770552
+        },
+        {
+          "execution_index": 165,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8302020000010089,
+          "objective": 27568.6250770552
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 166,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.828461299999617,
+          "objective": 27568.6250770552
+        },
+        {
+          "execution_index": 167,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.831618599997455,
+          "objective": 27568.6250770552
+        },
+        {
+          "execution_index": 168,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.826193400000193,
+          "objective": 27568.6250770552
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072409",
+      "tier_id": "V2",
+      "seed": 2026072409,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "960dc222f57b006d442f0875a99989f3f3ec192a64aabd73ffae96eebbd09b79",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 169,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.840834899998299,
+          "objective": 22423.932060345196
+        },
+        {
+          "execution_index": 170,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8264000999988639,
+          "objective": 22423.932060345196
+        },
+        {
+          "execution_index": 171,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8311060999985784,
+          "objective": 22423.932060345196
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 172,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9013541999993322,
+          "objective": 22423.932060345196
+        },
+        {
+          "execution_index": 173,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9525651000003563,
+          "objective": 22423.932060345196
+        },
+        {
+          "execution_index": 174,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.9054968000018562,
+          "objective": 22423.932060345196
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072409",
+      "tier_id": "V2",
+      "seed": 2026072409,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "960dc222f57b006d442f0875a99989f3f3ec192a64aabd73ffae96eebbd09b79",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 175,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8278137000015704,
+          "objective": 17294.887904064755
+        },
+        {
+          "execution_index": 176,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8263178000015614,
+          "objective": 17294.887904064755
+        },
+        {
+          "execution_index": 177,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8359815000003437,
+          "objective": 17294.887904064755
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 178,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8864181999997527,
+          "objective": 17294.887904064755
+        },
+        {
+          "execution_index": 179,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8465071999999054,
+          "objective": 17294.887904064755
+        },
+        {
+          "execution_index": 180,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8747404999994615,
+          "objective": 17294.887904064755
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072410",
+      "tier_id": "V2",
+      "seed": 2026072410,
+      "budget_index": 0,
+      "budget": 1107.2893851278257,
+      "source_result_sha256": "f4f95ea9d110a09bf444c541cd2469a922e4153100f162681e3309106487ee95",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 181,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.949265399998694,
+          "objective": 21694.247697714352
+        },
+        {
+          "execution_index": 182,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.8749200999991444,
+          "objective": 21694.247697714352
+        },
+        {
+          "execution_index": 183,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.884796800000913,
+          "objective": 21694.247697714352
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 184,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.8810884000013175,
+          "objective": 21694.247697714352
+        },
+        {
+          "execution_index": 185,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.938463700000284,
+          "objective": 21694.247697714352
+        },
+        {
+          "execution_index": 186,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.8741960000006657,
+          "objective": 21694.247697714352
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072410",
+      "tier_id": "V2",
+      "seed": 2026072410,
+      "budget_index": 1,
+      "budget": 1353.3536929340091,
+      "source_result_sha256": "f4f95ea9d110a09bf444c541cd2469a922e4153100f162681e3309106487ee95",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 187,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9388437000015983,
+          "objective": 16565.203541433915
+        },
+        {
+          "execution_index": 188,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.8794255000029807,
+          "objective": 16565.203541433915
+        },
+        {
+          "execution_index": 189,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.934779699997307,
+          "objective": 16565.203541433915
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 190,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.8956471999990754,
+          "objective": 16565.203541433915
+        },
+        {
+          "execution_index": 191,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 1.941032599999744,
+          "objective": 16565.203541433915
+        },
+        {
+          "execution_index": 192,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.0033511000001454,
+          "objective": 16565.203541433915
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_V2_seed2026072410",
+      "tier_id": "V2",
+      "seed": 2026072410,
+      "budget_index": 2,
+      "budget": 1599.4180007401926,
+      "source_result_sha256": "f4f95ea9d110a09bf444c541cd2469a922e4153100f162681e3309106487ee95",
+      "execution_order": [
+        "cold_r01",
+        "cold_r02",
+        "cold_r03",
+        "warm_r01",
+        "warm_r02",
+        "warm_r03"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 193,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 3.995762399998057,
+          "objective": 11440.96195033938
+        },
+        {
+          "execution_index": 194,
+          "repetition_index": 2,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 4.002467799997248,
+          "objective": 11440.96195033938
+        },
+        {
+          "execution_index": 195,
+          "repetition_index": 3,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 3.996669899999688,
+          "objective": 11440.96195033938
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 196,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.9308349000020826,
+          "objective": 11440.96195033938
+        },
+        {
+          "execution_index": 197,
+          "repetition_index": 2,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.8827087999998184,
+          "objective": 11440.96195033938
+        },
+        {
+          "execution_index": 198,
+          "repetition_index": 3,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 2.946844100002636,
+          "objective": 11440.96195033938
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072401",
+      "tier_id": "P1",
+      "seed": 2026072401,
+      "budget_index": 0,
+      "budget": 5870.3989732624905,
+      "source_result_sha256": "c223610e8d15d7f74222d0a65479635d06d52e058f140b0d50261f24dee9f38a",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 199,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 50.99798920000103,
+          "objective": 115640.64050554234
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 200,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 49.494606499996735,
+          "objective": 115640.64050554234
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072401",
+      "tier_id": "P1",
+      "seed": 2026072401,
+      "budget_index": 1,
+      "budget": 7174.932078431933,
+      "source_result_sha256": "c223610e8d15d7f74222d0a65479635d06d52e058f140b0d50261f24dee9f38a",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 201,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 49.9610305999995,
+          "objective": 88385.47197353466
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 202,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.587443500000518,
+          "objective": 88385.47197353466
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072401",
+      "tier_id": "P1",
+      "seed": 2026072401,
+      "budget_index": 2,
+      "budget": 8479.465183601376,
+      "source_result_sha256": "c223610e8d15d7f74222d0a65479635d06d52e058f140b0d50261f24dee9f38a",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 203,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 49.475269300000946,
+          "objective": 61302.201984847445
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 204,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.26243539999996,
+          "objective": 61302.201984847445
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072402",
+      "tier_id": "P1",
+      "seed": 2026072402,
+      "budget_index": 0,
+      "budget": 5870.3989732624905,
+      "source_result_sha256": "4d65240906e89b8b8aa2e4127e20ff27141c090e170d016f1e1ad13717e733ad",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 205,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.413772100000642,
+          "objective": 172894.68749525005
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 206,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.2303107000007,
+          "objective": 172894.68749525005
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072402",
+      "tier_id": "P1",
+      "seed": 2026072402,
+      "budget_index": 1,
+      "budget": 7174.932078431933,
+      "source_result_sha256": "4d65240906e89b8b8aa2e4127e20ff27141c090e170d016f1e1ad13717e733ad",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 207,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.187031699999352,
+          "objective": 145465.17935463157
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 208,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.353920599998673,
+          "objective": 145465.17935463157
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072402",
+      "tier_id": "P1",
+      "seed": 2026072402,
+      "budget_index": 2,
+      "budget": 8479.465183601376,
+      "source_result_sha256": "4d65240906e89b8b8aa2e4127e20ff27141c090e170d016f1e1ad13717e733ad",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 209,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.547129400001722,
+          "objective": 118189.50762042991
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 210,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.361313299999892,
+          "objective": 118189.50762042991
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072403",
+      "tier_id": "P1",
+      "seed": 2026072403,
+      "budget_index": 0,
+      "budget": 5870.3989732624905,
+      "source_result_sha256": "d94745c1d767bf761e360bbd196e20430004df7b45c01f3560503c0f8363cd04",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 211,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.170842300001823,
+          "objective": 150287.05242696733
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 212,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.288865599999554,
+          "objective": 150287.05242696733
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072403",
+      "tier_id": "P1",
+      "seed": 2026072403,
+      "budget_index": 1,
+      "budget": 7174.932078431933,
+      "source_result_sha256": "d94745c1d767bf761e360bbd196e20430004df7b45c01f3560503c0f8363cd04",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 213,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.258631900000182,
+          "objective": 122950.04090412188
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 214,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.31871830000091,
+          "objective": 122950.04090412188
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072403",
+      "tier_id": "P1",
+      "seed": 2026072403,
+      "budget_index": 2,
+      "budget": 8479.465183601376,
+      "source_result_sha256": "d94745c1d767bf761e360bbd196e20430004df7b45c01f3560503c0f8363cd04",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 215,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.309938800000964,
+          "objective": 95744.12194710999
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 216,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.325773300002766,
+          "objective": 95744.12194710999
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072404",
+      "tier_id": "P1",
+      "seed": 2026072404,
+      "budget_index": 0,
+      "budget": 5870.3989732624905,
+      "source_result_sha256": "1d0bb096f86429aa6b06224c46e88651fcee92193596f237b01d772029034915",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 217,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 32.773208700000396,
+          "objective": 122797.54046947352
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 218,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 32.95711149999988,
+          "objective": 122797.54046947352
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072404",
+      "tier_id": "P1",
+      "seed": 2026072404,
+      "budget_index": 1,
+      "budget": 7174.932078431933,
+      "source_result_sha256": "1d0bb096f86429aa6b06224c46e88651fcee92193596f237b01d772029034915",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 219,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 32.84737130000212,
+          "objective": 95500.23528758451
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 220,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.392525700000988,
+          "objective": 95500.23528758451
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072404",
+      "tier_id": "P1",
+      "seed": 2026072404,
+      "budget_index": 2,
+      "budget": 8479.465183601376,
+      "source_result_sha256": "1d0bb096f86429aa6b06224c46e88651fcee92193596f237b01d772029034915",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 221,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 32.839598400001705,
+          "objective": 68336.18388136307
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 222,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.30725650000022,
+          "objective": 68336.18388136307
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072405",
+      "tier_id": "P1",
+      "seed": 2026072405,
+      "budget_index": 0,
+      "budget": 5870.3989732624905,
+      "source_result_sha256": "23300e95e60f57034080b44510ea776d0c1cb4f97859daa8b5bbc41efc5a4948",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 223,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.22189100000105,
+          "objective": 148009.752092022
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 224,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.092829200002598,
+          "objective": 148009.752092022
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072405",
+      "tier_id": "P1",
+      "seed": 2026072405,
+      "budget_index": 1,
+      "budget": 7174.932078431933,
+      "source_result_sha256": "23300e95e60f57034080b44510ea776d0c1cb4f97859daa8b5bbc41efc5a4948",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 225,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.216085299998667,
+          "objective": 120575.42402686372
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 226,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.5672029999987,
+          "objective": 120575.42402686372
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P1_seed2026072405",
+      "tier_id": "P1",
+      "seed": 2026072405,
+      "budget_index": 2,
+      "budget": 8479.465183601376,
+      "source_result_sha256": "23300e95e60f57034080b44510ea776d0c1cb4f97859daa8b5bbc41efc5a4948",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 227,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.634545099997922,
+          "objective": 93307.01274717004
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 228,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 16.590927699999156,
+          "objective": 93307.01274717004
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P2_seed2026072401",
+      "tier_id": "P2",
+      "seed": 2026072401,
+      "budget_index": 0,
+      "budget": 8805.598459893736,
+      "source_result_sha256": "3f2666090a5712f6f1d1de69cf3610ede54db8e9a82bdc27f4b7f654cbbc76fe",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 229,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 48.648434599999746,
+          "objective": 195182.93325973238
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 230,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 48.578095900000335,
+          "objective": 195182.93325973238
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P2_seed2026072401",
+      "tier_id": "P2",
+      "seed": 2026072401,
+      "budget_index": 1,
+      "budget": 10762.3981176479,
+      "source_result_sha256": "3f2666090a5712f6f1d1de69cf3610ede54db8e9a82bdc27f4b7f654cbbc76fe",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 231,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 48.65013220000037,
+          "objective": 154300.23974839706
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 232,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 48.67489819999901,
+          "objective": 154300.23974839706
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P2_seed2026072401",
+      "tier_id": "P2",
+      "seed": 2026072401,
+      "budget_index": 2,
+      "budget": 12719.197775402063,
+      "source_result_sha256": "3f2666090a5712f6f1d1de69cf3610ede54db8e9a82bdc27f4b7f654cbbc76fe",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 233,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 48.83264129999952,
+          "objective": 113603.73742995074
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 234,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 48.79560280000078,
+          "objective": 113603.73742995074
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P2_seed2026072402",
+      "tier_id": "P2",
+      "seed": 2026072402,
+      "budget_index": 0,
+      "budget": 8805.598459893736,
+      "source_result_sha256": "173a5371290f119dbe1031db2d8040625e27fdce3fc4ab45e77b718420c309c7",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 235,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 103.1144867999974,
+          "objective": 236014.9138931337
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 236,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 103.70844489999945,
+          "objective": 236014.9138931337
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P2_seed2026072402",
+      "tier_id": "P2",
+      "seed": 2026072402,
+      "budget_index": 1,
+      "budget": 10762.3981176479,
+      "source_result_sha256": "173a5371290f119dbe1031db2d8040625e27fdce3fc4ab45e77b718420c309c7",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 237,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 160.95170320000034,
+          "objective": 194955.71197073
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 238,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 103.65162170000258,
+          "objective": 194955.71197073
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P2_seed2026072402",
+      "tier_id": "P2",
+      "seed": 2026072402,
+      "budget_index": 2,
+      "budget": 12719.197775402063,
+      "source_result_sha256": "173a5371290f119dbe1031db2d8040625e27fdce3fc4ab45e77b718420c309c7",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 239,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 160.79391290000058,
+          "objective": 154133.07503978984
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 240,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 48.79795550000199,
+          "objective": 154133.07503978984
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P2_seed2026072403",
+      "tier_id": "P2",
+      "seed": 2026072403,
+      "budget_index": 0,
+      "budget": 8805.598459893736,
+      "source_result_sha256": "b2c4d9e435e28cc25364301f39ced707409a4507895c19dfe085007d805f30b2",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 241,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 103.41043200000058,
+          "objective": 238617.3080278897
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 242,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 104.09987980000005,
+          "objective": 238617.3080278897
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P2_seed2026072403",
+      "tier_id": "P2",
+      "seed": 2026072403,
+      "budget_index": 1,
+      "budget": 10762.3981176479,
+      "source_result_sha256": "b2c4d9e435e28cc25364301f39ced707409a4507895c19dfe085007d805f30b2",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 243,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 103.68772660000104,
+          "objective": 197567.76903527134
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 244,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 48.32905039999969,
+          "objective": 197567.76903527134
+        }
+      ]
+    },
+    {
+      "run_id": "m0e3_formal_v1_20260823_M0_E3_P2_seed2026072403",
+      "tier_id": "P2",
+      "seed": 2026072403,
+      "budget_index": 2,
+      "budget": 12719.197775402063,
+      "source_result_sha256": "b2c4d9e435e28cc25364301f39ced707409a4507895c19dfe085007d805f30b2",
+      "execution_order": [
+        "cold_r01",
+        "warm_r01"
+      ],
+      "cold_repetitions": [
+        {
+          "execution_index": 245,
+          "repetition_index": 1,
+          "algorithm": "cold",
+          "status": "optimal",
+          "subprocess_wall_seconds": 104.72830750000139,
+          "objective": 156750.9690752105
+        }
+      ],
+      "warm_repetitions": [
+        {
+          "execution_index": 246,
+          "repetition_index": 1,
+          "algorithm": "warm",
+          "status": "optimal",
+          "subprocess_wall_seconds": 48.65667340000073,
+          "objective": 156750.9690752105
+        }
+      ]
     }
   ],
   "tier_summaries": {

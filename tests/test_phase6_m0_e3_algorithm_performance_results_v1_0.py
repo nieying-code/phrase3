@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import copy
 import hashlib
 import json
 import math
@@ -9,6 +10,12 @@ import statistics
 
 import numpy as np
 import pytest
+
+from src.phase6_m0_algorithm_performance_results import (
+    PAIR_FIELDS,
+    canonical_sha256,
+    validate_compact_evidence,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +30,7 @@ GLOBAL_HASHES = {
     "projection_sha256": "1449284052a02e485fb32b6abf76934a2d47adaa913d0aa5fc239c069658faa1",
     "status_summary_sha256": "1449284052a02e485fb32b6abf76934a2d47adaa913d0aa5fc239c069658faa1",
     "run_artifact_mapping_sha256": "300002d21cfeb2cf20c358533a9e122e4c4ea319dde3c98a42c6c1b5d5bfc94e",
+    "technical_repetition_evidence_mapping_sha256": "e2cd28a21633f55c672606e3b3fc3ac09bf326988c7483af048d44d71d62c9d0",
 }
 
 
@@ -54,6 +62,7 @@ def test_exact_execution_identity_counts_and_artifacts() -> None:
     assert audit["counts"] == {
         "primary_run_count": 21, "budget_pair_count": 63,
         "algorithm_execution_count": 246,
+        "technical_repetition_record_count": 246,
         "tier_primary_run_counts": {key: len(value) for key, value in TIER_SEEDS.items()},
         "tier_algorithm_execution_counts": TIER_EXECUTIONS,
         "failed_primary_run_count": 0, "invalid_primary_run_count": 0,
@@ -95,7 +104,12 @@ def test_pair_matrix_objectives_repetitions_and_numerical_closure() -> None:
     expected = {(tier, seed, budget) for tier, seeds in TIER_SEEDS.items() for seed in seeds for budget in range(3)}
     assert identities == expected
     with PAIR_PATH.open(encoding="utf-8", newline="") as handle:
-        assert len(list(csv.DictReader(handle))) == 63
+        csv_rows = list(csv.DictReader(handle))
+    assert len(csv_rows) == 63
+    audit_pairs = {(row["run_id"], row["budget_index"]): row for row in pairs}
+    for row in csv_rows:
+        pair = audit_pairs[(row["run_id"], int(row["budget_index"]))]
+        assert all(row[field] == str(pair[field]) for field in PAIR_FIELDS)
     executions = 0
     for row in pairs:
         repetitions = 3 if row["tier_id"] == "V2" else 1
@@ -115,6 +129,52 @@ def test_pair_matrix_objectives_repetitions_and_numerical_closure() -> None:
     assert audit["aggregate"]["maximum_objective_difference"] == 0.0
     assert audit["aggregate"]["maximum_within_technical_repeat_objective_difference"] == 0.0
     assert audit["aggregate"]["all_objectives_within_frozen_tolerance"] is True
+
+
+def test_all_246_technical_repetitions_reconstruct_medians_and_source_mapping() -> None:
+    audit = _audit()
+    validate_compact_evidence(audit)
+    evidence = audit["technical_repetition_evidence"]
+    assert len(evidence) == 63
+    repetitions = [
+        repetition
+        for row in evidence
+        for repetition in row["cold_repetitions"] + row["warm_repetitions"]
+    ]
+    assert len(repetitions) == 246
+    assert [row["execution_index"] for row in repetitions] == list(range(1, 247))
+    assert all(row["status"] == "optimal" for row in repetitions)
+    assert all(math.isfinite(row["subprocess_wall_seconds"]) and row["subprocess_wall_seconds"] > 0 for row in repetitions)
+    assert all(math.isfinite(row["objective"]) for row in repetitions)
+    assert audit["aggregate"]["maximum_within_technical_repeat_objective_difference"] == 0.0
+
+    mapping = {}
+    for row in evidence:
+        mapping.setdefault(row["run_id"], {
+            "result_sha256": row["source_result_sha256"], "budget_pairs": [],
+        })["budget_pairs"].append({
+            "budget_index": row["budget_index"],
+            "execution_order": row["execution_order"],
+            "cold_repetitions": row["cold_repetitions"],
+            "warm_repetitions": row["warm_repetitions"],
+        })
+    assert canonical_sha256(mapping) == GLOBAL_HASHES["technical_repetition_evidence_mapping_sha256"]
+
+
+@pytest.mark.parametrize("field", ["time", "objective", "order", "source_result"])
+def test_technical_repetition_tampering_is_rejected(field: str) -> None:
+    audit = copy.deepcopy(_audit())
+    row = audit["technical_repetition_evidence"][0]
+    if field == "time":
+        row["cold_repetitions"][0]["subprocess_wall_seconds"] += 0.125
+    elif field == "objective":
+        row["cold_repetitions"][0]["objective"] += 1.0
+    elif field == "order":
+        row["execution_order"] = list(reversed(row["execution_order"]))
+    else:
+        row["source_result_sha256"] = "0" * 64
+    with pytest.raises(ValueError):
+        validate_compact_evidence(audit)
 
 
 def test_frozen_seed_level_statistics_and_interpretation_boundaries() -> None:

@@ -24,6 +24,8 @@
 
 验收结果：21/21 primary、63/63预算配对和246/246算法执行全部为`optimal`。失败、超时、无效、重复primary和诊断运行均为0。全部冷热目标差为0，V2同一技术重复组内最大目标离差也为0。冻结数值一致性门槛通过。
 
+紧凑审计逐次保留了246条执行的全局顺序、cold/warm身份、重复编号、状态、墙钟时间和目标值。每条证据均绑定来源`run_id`及`result_sha256`；规范化的“来源result→三组有序预算配对→全部技术重复”映射哈希为`e2cd28a21633f55c672606e3b3fc3ac09bf326988c7483af048d44d71d62c9d0`。V2中位时间和全部目标一致性指标均由这些逐次记录重新计算，不再依赖对重复次数的推算。
+
 累计worker墙钟为2,595.8738588秒（约0.7211小时），最大采样RSS为214.20703125 MiB。该累计值是各算法worker耗时之和，不等同于端到端批次日历时间。
 
 ## 冻结统计结果
@@ -68,5 +70,7 @@ V2三个固定预算的种子层配对bootstrap速度比95%区间分别为：
 - 63组预算配对表：`docs/handoffs/2026-08-23_phase6_m0_e3_algorithm_performance_results_v1_0_pairs.csv`
 - 机械提取脚本：`src/phase6_m0_algorithm_performance_results.py`
 - 专项审计测试：`tests/test_phase6_m0_e3_algorithm_performance_results_v1_0.py`
+
+专项测试还逐字段核对63行CSV与审计配对表，并对时间、目标、执行顺序及来源result哈希实施篡改拒绝测试。
 
 大型原始result、manifest、状态与registry制品继续保留在D盘受控输出目录，不提交GitHub；紧凑审计锁定其哈希，但不能替代原始制品备份。
