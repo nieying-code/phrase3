@@ -1,0 +1,17 @@
+approval_id: phase6_m2_algorithm_performance_pilot_approval_v1_1
+status: runner_frozen_pilot_pending_authorization
+runner_namespace: phase6_m2_algorithm_performance_v1_1
+approved_on: 2026-08-25
+pilot_authorized: false
+formal_authorized: false
+M0_E3_additional_runs_authorized: false
+M2_mechanism_additional_runs_authorized: false
+M2_OOS_additional_runs_authorized: false
+M2_1_additional_runs_authorized: false
+explicit_cli_authorization_required: true
+pilot_primary_sequence_count: 6
+pilot_algorithm_solve_count: 36
+approved_fingerprints: {}
+artifact_sha256: {}
+review_base_commit: 3ee18bae67694dd94d768df780d6e05a65943d8c
+reviewed_runner_merge_commit: null

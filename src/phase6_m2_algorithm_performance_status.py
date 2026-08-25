@@ -11,7 +11,7 @@ from .phase6_m2_algorithm_performance import read_status
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output-root", type=Path, default=Path("outputs/phase6_m2_algorithm_performance_v1_0"))
+    parser.add_argument("--output-root", type=Path, default=Path("outputs/phase6_m2_algorithm_performance_v1_1"))
     parser.add_argument("--run-id")
     args = parser.parse_args()
     if args.run_id:

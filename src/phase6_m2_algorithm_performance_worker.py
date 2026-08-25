@@ -186,7 +186,7 @@ def execute_worker_request(request: dict[str, Any]) -> dict[str, Any]:
             "seed": int(request["seed"]),
             "profile_id": str(request["profile_id"]),
             "beta": float(request["beta"]),
-            "budget": float(data.total_budget),
+            "budget": float(data.budget),
             "reference_budget": float(reference),
             "scenario_count": len(data.scenarios),
             "joint_scenario_set_sha256": generated.joint_scenario_set_sha256,

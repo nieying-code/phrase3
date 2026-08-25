@@ -31,7 +31,7 @@ from .phase6_protocol import load_phase6_matrix
 from .phase6_runner import _build_transferred_state
 
 
-NAMESPACE = "phase6_m2_algorithm_performance_v1_0"
+NAMESPACE = "phase6_m2_algorithm_performance_v1_1"
 DESIGN_STATUS = "frozen_for_runner_implementation"
 APPROVAL_PENDING_STATUS = "runner_frozen_pilot_pending_authorization"
 APPROVAL_READY_STATUS = "frozen_for_pilot_execution"
@@ -45,7 +45,7 @@ ORCHESTRATOR_FILES = (
     "src/run_phase6_m2_algorithm_performance.py",
     "src/phase6_m2_algorithm_performance_status.py",
     "configs/phase6_m2_algorithm_performance_design_v1_0.yaml",
-    "configs/phase6_m2_algorithm_performance_runner_v1_0.yaml",
+    "configs/phase6_m2_algorithm_performance_runner_v1_1.yaml",
 )
 E3_FILES = tuple(dict.fromkeys((*M2_E3_COMPONENT_FILES, *ORCHESTRATOR_FILES)))
 FAMILY_FILES = tuple(dict.fromkeys((*M2_FAMILY_COMPONENT_FILES, *ORCHESTRATOR_FILES)))
@@ -73,7 +73,7 @@ def _validate_synchronized_main(
     root: Path, *, reviewed_runner_merge_commit: str,
 ) -> dict[str, str]:
     if re.fullmatch(r"[0-9a-f]{40}", reviewed_runner_merge_commit or "") is None:
-        raise RuntimeError("approved PR #79 merge commit is missing or invalid")
+        raise RuntimeError("approved reviewed runner commit is missing or invalid")
     branch = _git(root, "branch", "--show-current")
     if branch != "main":
         raise RuntimeError("M2 algorithm-performance execution requires main")
@@ -88,7 +88,7 @@ def _validate_synchronized_main(
     try:
         _git(root, "merge-base", "--is-ancestor", reviewed_runner_merge_commit, head)
     except subprocess.CalledProcessError as exc:
-        raise RuntimeError("reviewed PR #79 merge commit is not an ancestor of execution HEAD") from exc
+        raise RuntimeError("reviewed runner commit is not an ancestor of execution HEAD") from exc
     tree = _git(root, "rev-parse", "HEAD^{tree}")
     return {
         "branch": branch, "upstream_remote": remote,
