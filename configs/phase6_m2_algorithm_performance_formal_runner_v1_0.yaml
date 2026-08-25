@@ -1,0 +1,40 @@
+runner_id: phase6_m2_algorithm_performance_formal_v1_0
+namespace: phase6_m2_algorithm_performance_formal_v1_0
+design_config: configs/phase6_m2_algorithm_performance_design_v1_0.yaml
+base_matrix: configs/phase6_experiment_matrix.yaml
+pilot_results_audit: docs/handoffs/2026-08-25_phase6_m2_algorithm_performance_pilot_results_v1_1_audit.json
+output_root: outputs/phase6_m2_algorithm_performance_formal_v1_0
+formal_subdirectory: formal/primary
+solver:
+  preference: [gurobi]
+  interface: gurobi_direct
+  optimizer_version: 13.0.2
+  gurobipy_version: 13.0.2
+  threads: 1
+  feasibility_tolerance: 1.0e-7
+  optimality_tolerance: 1.0e-7
+  call_time_limit_seconds: 120
+ccg:
+  absolute_tolerance: 1.0e-6
+  relative_tolerance: 1.0e-6
+  max_iterations: 100
+  active_scenario_tolerance: 1.0e-6
+objective_consistency:
+  source: frozen_M2_scientific_objective_consistency_tolerance
+  absolute_tolerance: 1.0e-5
+  relative_tolerance: 1.0e-7
+execution:
+  strictly_serial: true
+  complete_primary_batch_required: true
+  explicit_cli_authorization_required: true
+  immutable_run_ids: true
+  failed_primary_permanently_blocks_gate: true
+  diagnostic_retry_requires_case_id_and_parent_run_id: true
+  formal_execution_implemented: true
+  formal_authorized: false
+  primary_sequence_count: 20
+  budget_pair_count: 40
+  algorithm_execution_count: 240
+limits:
+  worker_wall_seconds: 180
+  threads: 1
