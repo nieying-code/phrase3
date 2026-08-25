@@ -70,10 +70,20 @@ def test_all_36_solves_have_complete_oracles_and_matching_objectives() -> None:
             )
             assert set(comparison["methods"]) == {"extensive", "cold", "warm"}
             objectives = []
+            method_oracle_orders = []
             for name, method in comparison["methods"].items():
                 solve_count += 1
                 assert method["status"] == "optimal"
                 assert method["exact_oracle_scenario_count"] == 50
+                expected_order = [f"s{index:04d}" for index in range(50)]
+                assert method["exact_oracle_scenario_keys"] == expected_order
+                assert len(set(method["exact_oracle_scenario_keys"])) == 50
+                oracle_order_sha = _canonical_sha(method["exact_oracle_scenario_keys"])
+                assert method["exact_oracle_scenario_order_sha256"] == oracle_order_sha
+                assert oracle_order_sha == method["component_set_sha256"]["scenario_order_sha256"]
+                assert method["joint_scenario_set_sha256"] == comparison["joint_scenario_set_sha256"]
+                assert method["component_set_sha256"] == comparison["component_set_sha256"]
+                method_oracle_orders.append(method["exact_oracle_scenario_keys"])
                 assert math.isfinite(method["objective"])
                 assert math.isfinite(method["subprocess_wall_seconds"])
                 assert method["subprocess_wall_seconds"] > 0.0
@@ -83,6 +93,7 @@ def test_all_36_solves_have_complete_oracles_and_matching_objectives() -> None:
                 maximum_rss = max(maximum_rss, method["sampled_peak_RSS_MiB"])
                 if name in {"cold", "warm"}:
                     maximum_ccg_seconds = max(maximum_ccg_seconds, method["subprocess_wall_seconds"])
+            assert method_oracle_orders[0] == method_oracle_orders[1] == method_oracle_orders[2]
             difference = max(objectives) - min(objectives)
             tolerance = 1.0e-5 + 1.0e-7 * max(1.0, *(abs(value) for value in objectives))
             assert difference <= tolerance
@@ -112,10 +123,38 @@ def test_crn_and_cross_budget_transfer_are_reconstructed_from_run_evidence() -> 
             first, second = row["comparisons"]
             assert first["joint_scenario_set_sha256"] == second["joint_scenario_set_sha256"]
             assert first["component_set_sha256"] == second["component_set_sha256"]
+            assert first["transfer_input_state"] is None
+            assert first["transfer_input_state_sha256"] is None
+            assert first["transferred_state_sha256"] == _canonical_sha(first["transferred_state"])
+            assert second["transfer_input_state"] == first["transferred_state"]
+            assert second["transfer_input_state_sha256"] == first["transferred_state_sha256"]
+            assert second["transferred_state_sha256"] == _canonical_sha(second["transferred_state"])
             warm = second["methods"]["warm"]
+            assert warm["transfer_source_state_sha256"] == first["transferred_state_sha256"]
+            assert warm["transfer_source_budget"] == first["budget"] == 2571.372016574617
+            assert warm["initial_scenario_pool_size"] == len(warm["initial_scenarios"])
+            reusable = set(first["transferred_state"]["active_scenarios"]) | set(
+                first["transferred_state"]["historical_adversarial_scenarios"]
+            )
+            expected_transfer = [
+                name for name in warm["initial_scenarios"] if name in reusable
+            ]
+            assert warm["transferred_exact_scenarios"] == expected_transfer
             assert warm["transferred_exact_scenario_count"] == len(warm["transferred_exact_scenarios"])
             assert warm["transferred_exact_scenario_count"] > 0
-            assert warm["transferred_scenarios_becoming_active_or_worst_count"] == warm["transferred_exact_scenario_count"]
+            assert warm["transferred_scenario_reuse_rate"] == len(expected_transfer) / len(warm["initial_scenarios"])
+            assert set(warm["transferred_exact_scenario_costs"]) == set(expected_transfer)
+            expected_active_or_worst = [
+                name for name in expected_transfer
+                if warm["exact_oracle_worst_cost"]
+                - warm["transferred_exact_scenario_costs"][name] <= 1.0e-6
+                or name == warm["worst_scenario"]
+            ]
+            assert warm["transferred_scenarios_becoming_active_or_worst"] == expected_active_or_worst
+            assert warm["transferred_scenarios_becoming_active_or_worst_count"] == len(expected_active_or_worst)
+            assert set(expected_active_or_worst).issubset(
+                set(warm["active_scenarios_at_frozen_tolerance"]) | {warm["worst_scenario"]}
+            )
             transferred += warm["transferred_exact_scenario_count"]
             active_or_worst += warm["transferred_scenarios_becoming_active_or_worst_count"]
         for budget_index in (0, 1):
