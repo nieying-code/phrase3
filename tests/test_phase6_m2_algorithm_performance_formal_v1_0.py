@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
 
 from src.phase6_m2_algorithm_performance_formal import (
-    FormalCase, _run_formal_sequence, build_formal_cases, read_status,
+    FormalCase, _run_formal_sequence, _validate_result, build_formal_cases,
+    compute_formal_statistics, read_status,
     run_formal_batch, update_projection, validate_preflight, validate_static_freeze,
 )
 
@@ -34,7 +36,7 @@ def _fake_worker(calls,fail_at=None):
         costs={name:float(i) for i,name in enumerate(scenarios)}
         result={"termination_status":"optimal","converged":True,"objective":1000.0,"lower_bound":1000.0,"upper_bound":1000.0,"gap":0.0,"iterations":1,"initial_scenario_set":initial,"final_scenario_set":initial,"regular_purchase":{},"reserve":1.0,"reserve_ratio":0.1,"worst_scenario":"s0099","exact_scenario_costs":costs,"total_runtime_seconds":1.0,"master_runtime_seconds":0.2,"oracle_runtime_seconds":0.8,"solver":"gurobi_direct","iteration_log":[],"incumbent_evaluation":{},"joint_scenario_set_sha256":"a"*64,"scenario_identities":[]}
         components={"latent_draw_sha256":"1"*64,"demand_sha256":"2"*64,"fulfillment_sha256":("3" if request["profile_id"]=="C0" else "4")*64,"emergency_price_sha256":"5"*64,"emergency_supply_sha256":"6"*64,"scenario_order_sha256":_sha(scenarios)}
-        return {"status":"optimal","solver_status":"optimal","algorithm":request["algorithm"],"repetition":request["repetition"],"objective":1000.0,"scenario_count":100,"joint_scenario_set_sha256":"a"*64,"component_set_sha256":components,"initial_scenarios":initial,"initial_scenario_pool_size":len(initial),"transfer_source_state_sha256":None if prior is None else _sha(prior),"transfer_source_budget":None if prior is None else prior["budget"],"transferred_exact_scenarios":transferred,"transferred_exact_scenario_count":len(transferred),"transferred_scenario_reuse_rate":0.0 if prior is None else len(transferred)/len(initial),"transferred_scenarios_becoming_active_or_worst":[n for n in transferred if n=="s0099"],"transferred_scenarios_becoming_active_or_worst_count":sum(n=="s0099" for n in transferred),"ccg_result":result,"scientific_result":result,"subprocess_wall_seconds":1.0,"sampled_peak_RSS_MiB":10.0,"failure":None}
+        return {"status":"optimal","solver_status":"optimal","algorithm":request["algorithm"],"repetition":request["repetition"],"seed":request["seed"],"profile_id":request["profile_id"],"beta":request["beta"],"budget":request["budget"],"objective":1000.0,"scenario_count":100,"joint_scenario_set_sha256":"a"*64,"component_set_sha256":components,"initial_scenarios":initial,"initial_scenario_pool_size":len(initial),"transfer_source_state_sha256":None if prior is None else _sha(prior),"transfer_source_budget":None if prior is None else prior["budget"],"transferred_exact_scenarios":transferred,"transferred_exact_scenario_count":len(transferred),"transferred_scenario_reuse_rate":0.0 if prior is None else len(transferred)/len(initial),"transferred_scenarios_becoming_active_or_worst":[n for n in transferred if n=="s0099"],"transferred_scenarios_becoming_active_or_worst_count":sum(n=="s0099" for n in transferred),"ccg_result":result,"scientific_result":result,"subprocess_wall_seconds":1.0,"sampled_peak_RSS_MiB":10.0,"failure":None}
     return execute
 
 
@@ -82,6 +84,31 @@ def test_one_formal_sequence_has_12_fresh_solves_and_three_transfer_chains(tmp_p
         *[(1,"warm",r) for r in (1,2,3)],*[(1,"cold",r) for r in (1,2,3)],
     ]
     assert all(calls[6+i]["previous_state"] is not None for i in range(3))
+    derived=_validate_result(result,case,context,expected_run_id="formal_case")
+    assert derived["execution_count"]==12 and len(derived["timing"])==2
+
+
+def test_formal_result_identity_and_false_transfer_tampering_are_rejected(tmp_path) -> None:
+    context=_context(tmp_path); case=FormalCase("case",2026091101,"T03")
+    result=_run_formal_sequence(root=ROOT,context=context,case=case,run_id="identity_case",execution_root=tmp_path,worker_executor=_fake_worker([]))
+    mutations=[]
+    for field,value in (("seed",0),("profile_id","C0"),("tier_id","V1"),("run_id","wrong")):
+        def mutate(payload,field=field,value=value): payload[field]=value
+        mutations.append(mutate)
+    mutations.extend((
+        lambda payload: payload["comparisons"][0].__setitem__("beta",9.9),
+        lambda payload: payload["comparisons"][1].__setitem__("budget",1.0),
+        lambda payload: payload["comparisons"][0]["methods"]["cold"][0].__setitem__("seed",0),
+        lambda payload: payload["comparisons"][0]["methods"]["warm"][0].__setitem__("profile_id","C0"),
+        lambda payload: payload["comparisons"][0]["methods"]["cold"][0].__setitem__("beta",9.9),
+        lambda payload: payload["comparisons"][1]["methods"]["warm"][0].__setitem__("budget",1.0),
+        lambda payload: payload["comparisons"][0]["methods"]["cold"][0].__setitem__("joint_scenario_set_sha256","f"*64),
+        lambda payload: payload["comparisons"][0]["methods"]["cold"][0].__setitem__("transfer_source_state_sha256","f"*64),
+    ))
+    for mutate in mutations:
+        tampered=deepcopy(result); mutate(tampered)
+        with pytest.raises(ValueError):
+            _validate_result(tampered,case,context,expected_run_id="identity_case")
 
 
 def test_solver_timeout_is_immutable_and_stops_sequence(tmp_path) -> None:
@@ -98,18 +125,46 @@ def test_projection_closes_only_exact_20_40_240(monkeypatch,tmp_path) -> None:
     execution=tmp_path/"formal"; (execution/"runs").mkdir(parents=True)
     rows=[]
     for case in context["cases"]:
+        run_id=f"run_{case.case_id}"
         components={"latent_draw_sha256":"1"*64,"demand_sha256":"2"*64,"fulfillment_sha256":("3" if case.profile_id=="C0" else "4")*64,"emergency_price_sha256":"5"*64,"emergency_supply_sha256":"6"*64,"scenario_order_sha256":"7"*64}
-        result={"status":"optimal","run_id":case.case_id,"case_id":case.case_id,"seed":case.seed,"profile_id":case.profile_id,"execution_mode":"formal","fingerprints":context["fingerprints"],"execution_identity":context["synchronized_main"],"comparisons":[{"methods":{"cold":[{"component_set_sha256":components}]}},{"methods":{"cold":[{"component_set_sha256":components}]}}]}
-        directory=execution/"runs"/case.case_id; directory.mkdir(); (directory/"result.json").write_text(json.dumps(result))
+        result={"status":"optimal","run_id":run_id,"case_id":case.case_id,"seed":case.seed,"profile_id":case.profile_id,"execution_mode":"formal","fingerprints":context["fingerprints"],"execution_identity":context["synchronized_main"],"comparisons":[{"methods":{"cold":[{"component_set_sha256":components}]}},{"methods":{"cold":[{"component_set_sha256":components}]}}]}
+        directory=execution/"runs"/run_id; directory.mkdir(); (directory/"result.json").write_text(json.dumps(result))
         digest=hashlib.sha256((directory/"result.json").read_bytes()).hexdigest(); (directory/"manifest.json").write_text(json.dumps({"result_sha256":digest}))
-        rows.append({"run_id":case.case_id,"case_id":case.case_id,"parent_run_id":None,"status":"optimal"})
+        rows.append({"run_id":run_id,"case_id":case.case_id,"seed":case.seed,"profile_id":case.profile_id,"parent_run_id":None,"status":"optimal"})
     (execution/"run_registry.json").write_text(json.dumps({"runs":rows}))
-    monkeypatch.setattr("src.phase6_m2_algorithm_performance_formal._validate_result",lambda *args:{"execution_count":12,"budget_pair_count":2,"timing":[]})
+    monkeypatch.setattr("src.phase6_m2_algorithm_performance_formal._validate_result",lambda *args,**kwargs:{"execution_count":12,"budget_pair_count":2,"timing":[]})
+    monkeypatch.setattr("src.phase6_m2_algorithm_performance_formal.compute_formal_statistics",lambda *args,**kwargs:{"reliable_M2_T03_acceleration_gate_passed":False,"supply_disruption_enhances_warm_start_benefit_gate_passed":False})
     projection=update_projection(execution,context)
     assert projection["formal_algorithm_performance_gate_passed"] is True
     assert projection["completed_algorithm_execution_count"]==240
     rows[0]["status"]="timeout"; (execution/"run_registry.json").write_text(json.dumps({"runs":rows}))
     assert update_projection(execution,context)["formal_algorithm_performance_gate_passed"] is False
+    rows[0]["status"]="optimal"; (execution/"run_registry.json").write_text(json.dumps({"runs":rows}))
+    path=execution/"runs"/rows[0]["run_id"]/"result.json"
+    payload=json.loads(path.read_text()); payload["seed"]=999; path.write_text(json.dumps(payload))
+    (path.with_name("manifest.json")).write_text(json.dumps({"result_sha256":hashlib.sha256(path.read_bytes()).hexdigest()}))
+    projection=update_projection(execution,context)
+    assert projection["formal_algorithm_performance_gate_passed"] is False
+    assert projection["common_random_number_mismatches"]
+
+
+def test_preregistered_statistics_use_seed_medians_and_do_not_gate_completion() -> None:
+    derived=[]
+    for seed in range(2026091101,2026091111):
+        for profile in ("C0","T03"):
+            timing=[]
+            for budget_index,beta in enumerate((1.1,1.3)):
+                speedup=2.0 if profile=="T03" and budget_index==1 else 1.0
+                timing.append({"seed":seed,"profile_id":profile,"budget_index":budget_index,"beta":beta,"budget":beta*100.0,"cold_median_seconds":20.0*speedup,"warm_median_seconds":20.0,"speedup_cold_over_warm":speedup})
+            derived.append({"derived":{"timing":timing}})
+    statistics=compute_formal_statistics(derived,correctness_gate_passed=True)
+    assert statistics["primary_estimand"]["point_estimate"]==2.0
+    assert statistics["primary_estimand"]["bootstrap_95_percentile_CI"]==[2.0,2.0]
+    assert statistics["confirmatory_disruption_enhancement_estimand"]["point_estimate"]==2.0
+    assert statistics["secondary_end_to_end_two_budget_speedup"]["T03"]==1.5
+    assert statistics["reliable_M2_T03_acceleration_gate_passed"] is True
+    assert statistics["supply_disruption_enhances_warm_start_benefit_gate_passed"] is True
+    assert len(statistics["seed_level_values"])==10
 
 
 def test_bounded_status_reader(tmp_path) -> None:

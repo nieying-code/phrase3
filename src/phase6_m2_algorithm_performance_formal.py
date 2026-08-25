@@ -9,6 +9,8 @@ from pathlib import Path
 from statistics import median
 from typing import Any, Callable, Mapping, Sequence
 
+import numpy as np
+
 from .model_common import validate_gurobi_runtime
 from .phase6_environment import environment_sha256, validate_locked_environment
 from .phase6_io import atomic_write_json
@@ -43,6 +45,12 @@ FORMAL_FILES = (
 E3_FILES = tuple(dict.fromkeys((*M2_E3_COMPONENT_FILES, *FORMAL_FILES)))
 FAMILY_FILES = tuple(dict.fromkeys((*M2_FAMILY_COMPONENT_FILES, *FORMAL_FILES)))
 WorkerExecutor = Callable[[dict[str, Any], float, Path], dict[str, Any]]
+COMPONENT_FIELDS = (
+    "latent_draw_sha256", "demand_sha256", "fulfillment_sha256",
+    "emergency_price_sha256", "emergency_supply_sha256",
+    "scenario_order_sha256",
+)
+CRN_FIELDS = tuple(field for field in COMPONENT_FIELDS if field != "fulfillment_sha256")
 
 
 @dataclass(frozen=True)
@@ -199,6 +207,97 @@ def validate_preflight(
     return context
 
 
+def _finite(value: Any, *, name: str, nonnegative: bool = False) -> float:
+    numeric = float(value)
+    if not math.isfinite(numeric) or (nonnegative and numeric < 0.0):
+        raise ValueError(f"{name} must be finite" + (" and nonnegative" if nonnegative else ""))
+    return numeric
+
+
+def _validate_worker_identity(
+    row: Mapping[str, Any], *, case: FormalCase, algorithm: str,
+    repetition: int, beta: float, budget: float, budget_index: int,
+) -> None:
+    if (
+        row.get("status") != "optimal"
+        or row.get("algorithm") != algorithm
+        or int(row.get("repetition", -1)) != repetition
+        or int(row.get("seed", -1)) != case.seed
+        or row.get("profile_id") != case.profile_id
+        or not math.isclose(float(row.get("beta", math.nan)), beta, rel_tol=0.0, abs_tol=1.0e-12)
+        or not math.isclose(float(row.get("budget", math.nan)), budget, rel_tol=0.0, abs_tol=1.0e-9)
+        or int(row.get("scenario_count", -1)) != 100
+    ):
+        raise ValueError("formal worker identity differs from its frozen request")
+    joint = str(row.get("joint_scenario_set_sha256", ""))
+    components = row.get("component_set_sha256", {})
+    if len(joint) != 64 or set(components) != set(COMPONENT_FIELDS) or any(
+        len(str(components[field])) != 64 for field in COMPONENT_FIELDS
+    ):
+        raise ValueError("formal worker scenario identity is incomplete")
+    has_source = row.get("transfer_source_state_sha256") is not None
+    transfer_names = list(row.get("transferred_exact_scenarios", []))
+    transfer_count = int(row.get("transferred_exact_scenario_count", -1))
+    reuse_rate = _finite(
+        row.get("transferred_scenario_reuse_rate", math.nan),
+        name="transferred scenario reuse rate", nonnegative=True,
+    )
+    if algorithm == "cold" or budget_index == 0:
+        if (
+            has_source or row.get("transfer_source_budget") is not None
+            or transfer_names or transfer_count != 0 or reuse_rate != 0.0
+        ):
+            raise ValueError("cold and first-budget warm executions may not claim transfer")
+
+
+def _method_metrics(row: Mapping[str, Any]) -> dict[str, Any]:
+    ccg = row.get("ccg_result")
+    if not isinstance(ccg, Mapping):
+        raise ValueError("formal C&CG evidence is missing")
+    objective = _finite(row["objective"], name="objective")
+    lower = _finite(ccg["lower_bound"], name="lower bound")
+    upper = _finite(ccg["upper_bound"], name="upper bound")
+    gap = _finite(ccg["gap"], name="optimality gap", nonnegative=True)
+    iterations = int(ccg["iterations"])
+    if iterations <= 0:
+        raise ValueError("iterations must be positive")
+    if ccg.get("termination_status") != "optimal" or ccg.get("converged") is not True:
+        raise ValueError("formal C&CG termination evidence is not optimal")
+    if ccg.get("solver") != "gurobi_direct":
+        raise ValueError("formal C&CG solver identity mismatch")
+    master = _finite(ccg["master_runtime_seconds"], name="master runtime", nonnegative=True)
+    oracle = _finite(ccg["oracle_runtime_seconds"], name="oracle runtime", nonnegative=True)
+    wall = _finite(row["subprocess_wall_seconds"], name="subprocess wall time")
+    memory = _finite(row["sampled_peak_RSS_MiB"], name="sampled peak RSS", nonnegative=True)
+    initial = list(row.get("initial_scenarios", []))
+    final = list(ccg.get("final_scenario_set", []))
+    if wall <= 0.0:
+        raise ValueError("subprocess wall time must be positive")
+    if (
+        lower > upper + 1.0e-9
+        or objective < lower - 1.0e-6
+        or objective > upper + 1.0e-6
+        or not initial or not final
+    ):
+        raise ValueError("formal scenario-pool evidence is incomplete")
+    return {
+        "objective": objective, "lower_bound": lower, "upper_bound": upper,
+        "optimality_gap": gap, "iterations": iterations,
+        "master_solve_count": iterations, "oracle_call_count": iterations * 100,
+        "master_runtime_seconds": master, "oracle_runtime_seconds": oracle,
+        "subprocess_wall_seconds": wall, "sampled_peak_RSS_MiB": memory,
+        "initial_scenario_pool_size": len(initial),
+        "final_scenario_pool_size": len(final),
+        "transferred_exact_scenario_count": int(row["transferred_exact_scenario_count"]),
+        "transferred_scenario_reuse_rate": float(row["transferred_scenario_reuse_rate"]),
+        "transferred_scenarios_becoming_active_or_worst_count": int(
+            row["transferred_scenarios_becoming_active_or_worst_count"]
+        ),
+        "joint_scenario_set_sha256": str(row["joint_scenario_set_sha256"]),
+        "component_set_sha256": dict(row["component_set_sha256"]),
+    }
+
+
 def _run_formal_sequence(
     *, root: Path, context: Mapping[str, Any], case: FormalCase, run_id: str,
     execution_root: Path, worker_executor: WorkerExecutor = _worker_executor,
@@ -240,6 +339,10 @@ def _run_formal_sequence(
                         raise RuntimeError(json.dumps({"terminal": terminal, "native_status": native}))
                     row = dict(row)
                     row["repetition"] = repetition
+                    _validate_worker_identity(
+                        row, case=case, algorithm=algorithm, repetition=repetition,
+                        beta=float(beta), budget=float(budget), budget_index=budget_index,
+                    )
                     _validate_worker_evidence(row, expected_scenarios=100)
                     methods[algorithm].append(row)
                     if algorithm == "warm":
@@ -287,55 +390,97 @@ def _run_formal_sequence(
         raise
 
 
-def _validate_result(result: Mapping[str, Any], case: FormalCase, context: Mapping[str, Any]) -> dict[str, Any]:
-    if result.get("status") != "optimal" or result.get("execution_mode") != "formal" or result.get("case_id") != case.case_id:
+def _validate_result(
+    result: Mapping[str, Any], case: FormalCase, context: Mapping[str, Any],
+    *, expected_run_id: str,
+) -> dict[str, Any]:
+    if (
+        result.get("status") != "optimal"
+        or result.get("artifact_state") != "finalized"
+        or result.get("execution_mode") != "formal"
+        or result.get("run_id") != expected_run_id
+        or result.get("parent_run_id") is not None
+        or result.get("case_id") != case.case_id
+        or result.get("tier_id") != "M2AP2"
+        or int(result.get("seed", -1)) != case.seed
+        or result.get("profile_id") != case.profile_id
+        or int(result.get("planned_algorithm_execution_count", -1)) != 12
+        or int(result.get("completed_algorithm_execution_count", -1)) != 12
+    ):
         raise ValueError("formal result identity/status mismatch")
     if result.get("fingerprints") != context["fingerprints"] or result.get("execution_identity") != context["synchronized_main"]:
         raise ValueError("formal execution identity mismatch")
-    comparisons = result.get("comparisons", []); executions = 0; pair_rows = []
+    comparisons = result.get("comparisons", [])
+    executions = 0
+    pair_rows: list[dict[str, Any]] = []
     if len(comparisons) != 2:
         raise ValueError("formal result must contain two budgets")
     prior_states = None
     prior_components = None
+    prior_joint = None
+    expected_betas = tuple(float(value) for value in context["design"]["budget_sequence"]["betas"])
+    expected_budgets = tuple(float(value) for value in context["design"]["budget_sequence"]["budgets"])
     for index, comparison in enumerate(comparisons):
         expected_order = ["cold", "warm"] if index == 0 else ["warm", "cold"]
-        if comparison.get("execution_order") != expected_order or comparison.get("budget_index") != index:
-            raise ValueError("formal execution order mismatch")
+        beta, budget = expected_betas[index], expected_budgets[index]
+        if (
+            comparison.get("status") != "optimal"
+            or comparison.get("execution_order") != expected_order
+            or int(comparison.get("budget_index", -1)) != index
+            or not math.isclose(float(comparison.get("beta", math.nan)), beta, rel_tol=0.0, abs_tol=1.0e-12)
+            or not math.isclose(float(comparison.get("budget", math.nan)), budget, rel_tol=0.0, abs_tol=1.0e-9)
+        ):
+            raise ValueError("formal budget identity, status, or execution order mismatch")
         methods = comparison.get("methods", {})
         if set(methods) != {"cold", "warm"} or any(len(methods[name]) != 3 for name in methods):
             raise ValueError("formal technical repetitions are incomplete")
-        objectives=[]
+        objectives: list[float] = []
+        metrics: dict[str, list[dict[str, Any]]] = {"cold": [], "warm": []}
+        component_identities: list[dict[str, str]] = []
+        joint_identities: list[str] = []
         for name in ("cold", "warm"):
             for repetition, row in enumerate(methods[name], 1):
-                if (
-                    row.get("algorithm") != name
-                    or row.get("status") != "optimal"
-                    or int(row.get("repetition", -1)) != repetition
-                ):
-                    raise ValueError("formal method identity mismatch")
-                _validate_worker_evidence(row, expected_scenarios=100); objectives.append(float(row["objective"])); executions += 1
+                _validate_worker_identity(
+                    row, case=case, algorithm=name, repetition=repetition,
+                    beta=beta, budget=budget, budget_index=index,
+                )
+                _validate_worker_evidence(row, expected_scenarios=100)
+                method_metrics = _method_metrics(row)
+                metrics[name].append(method_metrics)
+                objectives.append(method_metrics["objective"])
+                component_identities.append(method_metrics["component_set_sha256"])
+                joint_identities.append(method_metrics["joint_scenario_set_sha256"])
+                executions += 1
                 if index == 1 and name == "warm":
                     prior = prior_states[str(repetition)]
-                    if row["transfer_source_state_sha256"] != _canonical_sha(prior) or int(row["transferred_exact_scenario_count"]) <= 0:
-                        raise ValueError("formal transfer chain mismatch")
+                    if row["transfer_source_state_sha256"] != _canonical_sha(prior):
+                        raise ValueError("formal warm repetition source mismatch")
+                    if not math.isclose(
+                        float(row.get("transfer_source_budget", math.nan)),
+                        expected_budgets[0], rel_tol=0.0, abs_tol=1.0e-9,
+                    ):
+                        raise ValueError("formal warm repetition source budget mismatch")
         tolerance = _objective_tolerance(objectives, context["runner"]["objective_consistency"])
-        if max(objectives)-min(objectives) > tolerance:
-            raise ValueError("formal objective mismatch")
-        component_identities = [
-            row["component_set_sha256"]
-            for name in ("cold", "warm") for row in methods[name]
-        ]
+        difference = max(objectives) - min(objectives)
+        if (
+            not math.isclose(float(comparison.get("objective_tolerance", math.nan)), tolerance, rel_tol=0.0, abs_tol=1.0e-12)
+            or not math.isclose(float(comparison.get("maximum_objective_difference", math.nan)), difference, rel_tol=0.0, abs_tol=1.0e-12)
+            or difference > tolerance
+        ):
+            raise ValueError("formal objective consistency evidence mismatch")
         if any(value != component_identities[0] for value in component_identities[1:]):
-            raise ValueError("formal repetitions do not share scenario identity")
-        if prior_components is not None and component_identities[0] != prior_components:
+            raise ValueError("formal repetitions do not share component identity")
+        if len(set(joint_identities)) != 1:
+            raise ValueError("formal repetitions do not share joint scenario identity")
+        if (
+            prior_components is not None and component_identities[0] != prior_components
+        ) or (prior_joint is not None and joint_identities[0] != prior_joint):
             raise ValueError("formal sequence regenerated different scenarios across budgets")
         if index == 1:
             for repetition, row in enumerate(methods["warm"], 1):
                 prior = prior_states[str(repetition)]
                 initial_pool = list(row.get("initial_scenarios", []))
-                reusable = set(prior["active_scenarios"]) | set(
-                    prior["historical_adversarial_scenarios"]
-                )
+                reusable = set(prior["active_scenarios"]) | set(prior["historical_adversarial_scenarios"])
                 expected_transfer = [name for name in initial_pool if name in reusable]
                 actual_transfer = list(row.get("transferred_exact_scenarios", []))
                 if actual_transfer != expected_transfer or not expected_transfer:
@@ -343,50 +488,154 @@ def _validate_result(result: Mapping[str, Any], case: FormalCase, context: Mappi
                 if int(row.get("transferred_exact_scenario_count", -1)) != len(expected_transfer):
                     raise ValueError("formal transferred scenario count mismatch")
                 expected_rate = len(expected_transfer) / len(initial_pool)
-                if not math.isclose(
-                    float(row.get("transferred_scenario_reuse_rate", math.nan)),
-                    expected_rate, rel_tol=0.0, abs_tol=1.0e-12,
-                ):
+                if not math.isclose(float(row.get("transferred_scenario_reuse_rate", math.nan)), expected_rate, rel_tol=0.0, abs_tol=1.0e-12):
                     raise ValueError("formal transferred scenario reuse rate mismatch")
                 exact_costs = row["ccg_result"]["exact_scenario_costs"]
                 worst_cost = max(float(value) for value in exact_costs.values())
-                active = {
-                    name for name, value in exact_costs.items()
-                    if worst_cost - float(value)
-                    <= float(context["runner"]["ccg"]["active_scenario_tolerance"])
-                }
+                active = {name for name, value in exact_costs.items() if worst_cost - float(value) <= float(context["runner"]["ccg"]["active_scenario_tolerance"])}
                 worst = row["ccg_result"].get("worst_scenario")
-                expected_active_or_worst = [
-                    name for name in expected_transfer if name in active or name == worst
-                ]
+                expected_active_or_worst = [name for name in expected_transfer if name in active or name == worst]
                 if (
-                    row.get("transferred_scenarios_becoming_active_or_worst")
-                    != expected_active_or_worst
-                    or int(row.get("transferred_scenarios_becoming_active_or_worst_count", -1))
-                    != len(expected_active_or_worst)
+                    row.get("transferred_scenarios_becoming_active_or_worst") != expected_active_or_worst
+                    or int(row.get("transferred_scenarios_becoming_active_or_worst_count", -1)) != len(expected_active_or_worst)
                 ):
                     raise ValueError("formal transferred active/worst evidence mismatch")
         rebuilt_states = {
             str(repetition): _build_transferred_state(
                 row, None if index == 0 else prior_states[str(repetition)],
-                budget=float(comparison["budget"]),
+                budget=budget,
                 tolerance=float(context["runner"]["ccg"]["active_scenario_tolerance"]),
             )
             for repetition, row in enumerate(methods["warm"], 1)
         }
         if comparison.get("transferred_states") != rebuilt_states:
             raise ValueError("formal transferable states were not independently reproduced")
+        cold_median = float(median(value["subprocess_wall_seconds"] for value in metrics["cold"]))
+        warm_median = float(median(value["subprocess_wall_seconds"] for value in metrics["warm"]))
+        if cold_median <= 0.0 or warm_median <= 0.0:
+            raise ValueError("formal median timing must be positive")
         pair_rows.append({
-            "budget_index": index,
-            "cold_median_seconds": median(float(v["subprocess_wall_seconds"]) for v in methods["cold"]),
-            "warm_median_seconds": median(float(v["subprocess_wall_seconds"]) for v in methods["warm"]),
+            "seed": case.seed, "profile_id": case.profile_id,
+            "budget_index": index, "beta": beta, "budget": budget,
+            "cold_median_seconds": cold_median,
+            "warm_median_seconds": warm_median,
+            "speedup_cold_over_warm": cold_median / warm_median,
+            "methods": metrics,
             "component_set_sha256": component_identities[0],
+            "joint_scenario_set_sha256": joint_identities[0],
         })
         prior_states = comparison["transferred_states"]
         prior_components = component_identities[0]
+        prior_joint = joint_identities[0]
     if executions != 12:
         raise ValueError("formal result does not contain 12 executions")
     return {"execution_count": executions, "budget_pair_count": 2, "timing": pair_rows}
+
+
+def _percentile_interval(values: np.ndarray) -> list[float]:
+    return [
+        float(value)
+        for value in np.percentile(values, [2.5, 97.5], method="linear")
+    ]
+
+
+def compute_formal_statistics(
+    derived_rows: Sequence[Mapping[str, Any]], *, correctness_gate_passed: bool,
+) -> dict[str, Any]:
+    """Apply the pre-registered ten-seed formal analysis without selection."""
+
+    timing = [
+        row
+        for value in derived_rows
+        for row in value["derived"]["timing"]
+    ]
+    index = {
+        (int(row["seed"]), str(row["profile_id"]), int(row["budget_index"])): row
+        for row in timing
+    }
+    seeds = tuple(range(2026091101, 2026091111))
+    if len(timing) != 40 or len(index) != 40:
+        raise ValueError("formal statistics require exactly 40 unique seed/profile/budget rows")
+    seed_level: list[dict[str, Any]] = []
+    primary_logs: list[float] = []
+    paired_log_differences: list[float] = []
+    end_to_end_logs: dict[str, list[float]] = {"C0": [], "T03": []}
+    for seed in seeds:
+        profiles: dict[str, Any] = {}
+        for profile in ("C0", "T03"):
+            rows = [index[(seed, profile, budget_index)] for budget_index in (0, 1)]
+            speedups = [float(row["speedup_cold_over_warm"]) for row in rows]
+            if not all(math.isfinite(value) and value > 0.0 for value in speedups):
+                raise ValueError("formal speedups must be finite and positive")
+            end_to_end = (
+                sum(float(row["cold_median_seconds"]) for row in rows)
+                / sum(float(row["warm_median_seconds"]) for row in rows)
+            )
+            compact = [
+                {
+                    "beta": float(row["beta"]), "budget": float(row["budget"]),
+                    "cold_median_seconds": float(row["cold_median_seconds"]),
+                    "warm_median_seconds": float(row["warm_median_seconds"]),
+                    "speedup_cold_over_warm": float(row["speedup_cold_over_warm"]),
+                }
+                for row in rows
+            ]
+            profiles[profile] = {
+                "beta_1_1": compact[0], "beta_1_3": compact[1],
+                "end_to_end_two_budget_speedup": end_to_end,
+            }
+            end_to_end_logs[profile].append(math.log(end_to_end))
+        primary_log = math.log(profiles["T03"]["beta_1_3"]["speedup_cold_over_warm"])
+        paired = primary_log - math.log(profiles["C0"]["beta_1_3"]["speedup_cold_over_warm"])
+        primary_logs.append(primary_log)
+        paired_log_differences.append(paired)
+        seed_level.append({
+            "seed": seed, "profiles": profiles,
+            "T03_beta_1_3_log_speedup": primary_log,
+            "paired_T03_minus_C0_beta_1_3_log_speedup": paired,
+        })
+    primary_point = math.exp(float(median(primary_logs)))
+    enhancement_point = math.exp(float(median(paired_log_differences)))
+    rng = np.random.Generator(np.random.PCG64DXSM(2026091299))
+    draws = rng.integers(0, len(seeds), size=(10000, len(seeds)), endpoint=False)
+    primary_source = np.asarray(primary_logs, dtype=float)
+    enhancement_source = np.asarray(paired_log_differences, dtype=float)
+    primary_bootstrap = np.exp(np.median(primary_source[draws], axis=1))
+    enhancement_bootstrap = np.exp(np.median(enhancement_source[draws], axis=1))
+    primary_ci = _percentile_interval(primary_bootstrap)
+    enhancement_ci = _percentile_interval(enhancement_bootstrap)
+    reliable = bool(correctness_gate_passed and primary_point > 1.0 and primary_ci[0] > 1.0)
+    enhanced = bool(reliable and enhancement_point > 1.0 and enhancement_ci[0] > 1.0)
+    return {
+        "protocol": {
+            "independent_unit": "formal_performance_seed",
+            "technical_repetitions_reduced_by": "median",
+            "random_number_generator": "numpy_Generator_PCG64DXSM",
+            "random_seed": 2026091299, "resamples": 10000,
+            "confidence_level": 0.95, "interval": "percentile_linear",
+            "shared_paired_seed_resample_indices_for_both_estimands": True,
+            "P_values_planned": False,
+        },
+        "seed_level_values": seed_level,
+        "primary_estimand": {
+            "name": "T03_beta_1_3_cross_budget_transfer_speedup",
+            "point_estimate": primary_point,
+            "bootstrap_95_percentile_CI": primary_ci,
+            "beta_1_1_excluded_because_no_prior_budget_transfer": True,
+        },
+        "confirmatory_disruption_enhancement_estimand": {
+            "name": "paired_T03_vs_C0_beta_1_3_speedup_ratio",
+            "point_estimate": enhancement_point,
+            "bootstrap_95_percentile_CI": enhancement_ci,
+        },
+        "secondary_end_to_end_two_budget_speedup": {
+            profile: math.exp(float(median(values)))
+            for profile, values in end_to_end_logs.items()
+        },
+        "reliable_M2_T03_acceleration_gate_passed": reliable,
+        "supply_disruption_enhances_warm_start_benefit_gate_passed": enhanced,
+        "effect_direction_does_not_control_execution_completeness_gate": True,
+    }
 
 
 def update_projection(execution_root: Path, context: Mapping[str, Any]) -> dict[str, Any]:
@@ -399,34 +648,78 @@ def update_projection(execution_root: Path, context: Mapping[str, Any]) -> dict[
         row=values[0]
         if row.get("status")!="optimal": failed.append(row.get("run_id")); continue
         try:
+            if (
+                SAFE_RUN_ID.fullmatch(str(row.get("run_id", ""))) is None
+                or not str(row["run_id"]).endswith("_" + case_id)
+                or int(row.get("seed", -1)) != expected[case_id].seed
+                or row.get("profile_id") != expected[case_id].profile_id
+            ):
+                raise ValueError("formal registry identity mismatch")
             path=(execution_root/"runs"/row["run_id"]/"result.json").resolve(); manifest=json.loads(path.with_name("manifest.json").read_text()); result=json.loads(path.read_text())
             if execution_root.resolve() not in path.parents or manifest["result_sha256"]!=sha256_file(path): raise ValueError("formal artifact binding mismatch")
-            derived.append({"result":result,"derived":_validate_result(result,expected[case_id],context)})
+            derived.append({
+                "result": result,
+                "derived": _validate_result(
+                    result, expected[case_id], context,
+                    expected_run_id=str(row["run_id"]),
+                ),
+            })
         except Exception as exc: invalid.append({"case_id":case_id,"message":f"{type(exc).__name__}: {exc}"})
     crn_mismatches=[]
     results=[value["result"] for value in derived]
     for seed in sorted({case.seed for case in context["cases"]}):
         paired=[result for result in results if int(result["seed"])==seed]
         if len(paired)!=2:
+            crn_mismatches.append({
+                "seed": seed, "field": "paired_profile_record_count",
+                "expected": 2, "actual": len(paired),
+            })
+            continue
+        if {result["profile_id"] for result in paired}!={"C0","T03"}:
+            crn_mismatches.append({"seed":seed,"field":"paired_profile_identity"})
             continue
         for budget_index in (0,1):
             components=[
                 result["comparisons"][budget_index]["methods"]["cold"][0]["component_set_sha256"]
                 for result in paired
             ]
-            for field in (
-                "latent_draw_sha256", "demand_sha256", "emergency_price_sha256",
-                "emergency_supply_sha256", "scenario_order_sha256",
-            ):
+            for field in CRN_FIELDS:
                 if len({value[field] for value in components})!=1:
                     crn_mismatches.append({"seed":seed,"budget_index":budget_index,"field":field})
             if len({value["fulfillment_sha256"] for value in components})!=2:
                 crn_mismatches.append({"seed":seed,"budget_index":budget_index,"field":"fulfillment_profile_separation"})
     diagnostics=[r["run_id"] for r in rows if r.get("parent_run_id")]
     pairs=sum(v["derived"]["budget_pair_count"] for v in derived); executions=sum(v["derived"]["execution_count"] for v in derived)
-    gate=not(missing or duplicates or failed or invalid or diagnostics or crn_mismatches) and len(derived)==20 and pairs==40 and executions==240
-    payload={"status":"passed" if gate else "incomplete","required_primary_sequence_count":20,"completed_primary_sequence_count":len(derived),"required_budget_pair_count":40,"completed_budget_pair_count":pairs,"required_algorithm_execution_count":240,"completed_algorithm_execution_count":executions,"missing_case_ids":missing,"duplicate_case_ids":duplicates,"failed_primary_run_ids":failed,"invalid_primary_runs":invalid,"diagnostic_run_ids":diagnostics,"common_random_number_mismatches":crn_mismatches,"fingerprints":context["fingerprints"],"execution_identity":context["synchronized_main"],"formal_algorithm_performance_gate_passed":gate,"other_experiments_authorized":False,"updated_at_utc":utc_now()}
-    atomic_write_json(execution_root/"formal_projection.json",payload); atomic_write_json(execution_root/"status_summary.json",payload); return payload
+    evidence_gate=not(missing or duplicates or failed or invalid or diagnostics or crn_mismatches) and len(derived)==20 and pairs==40 and executions==240
+    statistics_error=None
+    statistics=None
+    if evidence_gate:
+        try:
+            statistics=compute_formal_statistics(derived,correctness_gate_passed=True)
+        except Exception as exc:
+            statistics_error=f"{type(exc).__name__}: {exc}"
+    gate=evidence_gate and statistics is not None
+    payload={"status":"passed" if gate else "incomplete","required_primary_sequence_count":20,"completed_primary_sequence_count":len(derived),"required_budget_pair_count":40,"completed_budget_pair_count":pairs,"required_algorithm_execution_count":240,"completed_algorithm_execution_count":executions,"missing_case_ids":missing,"duplicate_case_ids":duplicates,"failed_primary_run_ids":failed,"invalid_primary_runs":invalid,"diagnostic_run_ids":diagnostics,"common_random_number_mismatches":crn_mismatches,"statistics_error":statistics_error,"formal_statistics":statistics,"fingerprints":context["fingerprints"],"execution_identity":context["synchronized_main"],"formal_algorithm_performance_gate_passed":gate,"effect_direction_controls_completion_gate":False,"other_experiments_authorized":False,"updated_at_utc":utc_now()}
+    status_summary={
+        "status": payload["status"],
+        "completed_primary_sequence_count": len(derived),
+        "completed_budget_pair_count": pairs,
+        "completed_algorithm_execution_count": executions,
+        "failure_count": len(failed)+len(invalid)+len(duplicates),
+        "formal_algorithm_performance_gate_passed": gate,
+        "reliable_M2_T03_acceleration_gate_passed": (
+            None if statistics is None
+            else statistics["reliable_M2_T03_acceleration_gate_passed"]
+        ),
+        "supply_disruption_enhances_warm_start_benefit_gate_passed": (
+            None if statistics is None
+            else statistics["supply_disruption_enhances_warm_start_benefit_gate_passed"]
+        ),
+        "updated_at_utc": payload["updated_at_utc"],
+    }
+    atomic_write_json(execution_root/"formal_projection.json",payload)
+    atomic_write_json(execution_root/"status_summary.json",status_summary)
+    return payload
 
 
 def run_formal_batch(*, root: Path, runner_path: Path, approval_path: Path, authorize: bool, run_id_prefix: str, worker_executor: WorkerExecutor=_worker_executor) -> dict[str, Any]:
