@@ -1,6 +1,6 @@
 protocol_id: phase6_m2_algorithm_performance_design_v1_0
 version: 1.0.0-design-only
-status: candidate_design_pending_review
+status: frozen_for_runner_implementation
 runner_namespace: phase6_m2_algorithm_performance_v1_0
 output_root: outputs/phase6_m2_algorithm_performance_v1_0
 designed_on: 2026-08-25
@@ -256,7 +256,7 @@ execution_sequence_and_stop_boundaries:
   no_stage_may_start_before_previous_review_is_merged_and_explicitly_authorized: true
 
 execution_boundaries:
-  runner_implemented: false
+  runner_implemented: true
   pilot_authorized: false
   formal_authorized: false
   scenario_generation_count: 0
