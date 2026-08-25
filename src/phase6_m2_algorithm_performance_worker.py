@@ -168,6 +168,18 @@ def execute_worker_request(request: dict[str, Any]) -> dict[str, Any]:
                 previous_state["historical_adversarial_scenarios"]
             )
             transferred = [name for name in initial if name in reusable]
+        active_or_worst: list[str] = []
+        if algorithm in {"cold", "warm"}:
+            costs = evidence["exact_scenario_costs"]
+            worst_cost = max(float(value) for value in costs.values())
+            active = {
+                name for name, value in costs.items()
+                if worst_cost - float(value) <= float(ccg["active_scenario_tolerance"])
+            }
+            worst = evidence.get("worst_scenario")
+            active_or_worst = [
+                name for name in transferred if name in active or name == worst
+            ]
         return {
             "status": status,
             "algorithm": algorithm,
@@ -193,6 +205,8 @@ def execute_worker_request(request: dict[str, Any]) -> dict[str, Any]:
                 0.0 if previous_state is None or not initial
                 else len(transferred) / len(initial)
             ),
+            "transferred_scenarios_becoming_active_or_worst": active_or_worst,
+            "transferred_scenarios_becoming_active_or_worst_count": len(active_or_worst),
             "pool_build_seconds": pool_seconds,
             "objective": None if objective is None else float(objective),
             "scientific_result": evidence,

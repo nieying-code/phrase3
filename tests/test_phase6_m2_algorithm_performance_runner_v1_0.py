@@ -4,6 +4,7 @@ import json
 import hashlib
 import math
 from pathlib import Path
+import subprocess
 from types import SimpleNamespace
 
 import pytest
@@ -12,6 +13,8 @@ import yaml
 from src.phase6_m2_algorithm_performance import (
     PerformanceCase,
     _objective_tolerance,
+    _validate_pilot_result,
+    _validate_synchronized_main,
     build_pilot_cases,
     read_status,
     run_sequence,
@@ -54,13 +57,16 @@ def _fake_worker(
         profile = request["profile_id"]
         beta = request["beta"]
         scenario_order = [f"scenario_{index:04d}" for index in range(1, 51)]
+        scenario_order_sha256 = hashlib.sha256(json.dumps(
+            scenario_order, sort_keys=True, ensure_ascii=False, separators=(",", ":")
+        ).encode()).hexdigest()
         components = {
             "latent_draw_sha256": "a" * 64,
             "demand_sha256": "b" * 64,
             "fulfillment_sha256": ("c" if profile == "C0" else "d") * 64,
             "emergency_price_sha256": "e" * 64,
             "emergency_supply_sha256": "f" * 64,
-            "scenario_order_sha256": "9" * 64,
+            "scenario_order_sha256": scenario_order_sha256,
         }
         ccg = {
             "objective": 100.0 + beta,
@@ -82,6 +88,10 @@ def _fake_worker(
             prior, sort_keys=True, ensure_ascii=False, separators=(",", ":")
         ).encode()).hexdigest()
         transferred = [name for name in initial if name in reusable]
+        active_or_worst = [
+            name for name in transferred
+            if name == scenario_order[-1] or name == ccg["worst_scenario"]
+        ]
         return {
             "status": "optimal", "solver_status": "optimal",
             "algorithm": request["algorithm"], "objective": 100.0 + beta,
@@ -95,6 +105,8 @@ def _fake_worker(
             "transferred_exact_scenarios": transferred,
             "transferred_exact_scenario_count": len(transferred),
             "transferred_scenario_reuse_rate": 0.0 if not initial else len(transferred) / len(initial),
+            "transferred_scenarios_becoming_active_or_worst": active_or_worst,
+            "transferred_scenarios_becoming_active_or_worst_count": len(active_or_worst),
             "ccg_result": ccg if request["algorithm"] != "extensive" else None,
             "scientific_result": ccg, "subprocess_wall_seconds": 1.0,
             "sampled_peak_RSS_MiB": 10.0, "failure": None,
@@ -143,6 +155,12 @@ def test_audit_locks_runner_artifacts_fingerprints_and_zero_execution() -> None:
         "other_tracks_authorized": False,
     }
     assert all(value == 0 for value in audit["execution_counts"].values())
+    assert approval["reviewed_runner_merge_commit"] is None
+    assert audit["safety"]["execution_requires_main_tracking_origin_main"] is True
+    assert audit["safety"]["execution_requires_HEAD_equal_fetched_origin_main"] is True
+    assert audit["safety"]["execution_requires_reviewed_PR79_merge_commit_ancestor"] is True
+    assert audit["safety"]["ordered_oracle_scenario_keys_bound_to_scenario_order_sha256"] is True
+    assert audit["safety"]["second_budget_transfer_recomputed_from_prior_state_and_must_be_nonempty"] is True
 
 
 def test_pending_approval_rejects_before_runtime_or_generation(monkeypatch) -> None:
@@ -155,6 +173,69 @@ def test_pending_approval_rejects_before_runtime_or_generation(monkeypatch) -> N
     with pytest.raises(RuntimeError, match="not authorized"):
         validate_preflight(ROOT, RUNNER, APPROVAL, require_authorization=True)
     assert called is False
+
+
+def test_synchronized_main_is_read_only_and_requires_reviewed_merge(monkeypatch) -> None:
+    head = "1" * 40
+    merge_commit = "2" * 40
+    values = {
+        ("branch", "--show-current"): "main",
+        ("config", "--get", "branch.main.remote"): "origin",
+        ("config", "--get", "branch.main.merge"): "refs/heads/main",
+        ("rev-parse", "HEAD"): head,
+        ("rev-parse", "refs/remotes/origin/main"): head,
+        ("rev-parse", "HEAD^{tree}"): "3" * 40,
+        ("merge-base", "--is-ancestor", merge_commit, head): "",
+    }
+    monkeypatch.setattr(
+        "src.phase6_m2_algorithm_performance._git",
+        lambda root, *args: values[args],
+    )
+    identity = _validate_synchronized_main(ROOT, reviewed_runner_merge_commit=merge_commit)
+    assert identity == {
+        "branch": "main", "upstream_remote": "origin",
+        "upstream_merge": "refs/heads/main", "head": head,
+        "remote_main": head, "tree": "3" * 40,
+        "reviewed_runner_merge_commit": merge_commit,
+    }
+
+
+def test_synchronized_main_rejects_unsynchronized_or_missing_reviewed_merge(monkeypatch) -> None:
+    with pytest.raises(RuntimeError, match="missing or invalid"):
+        _validate_synchronized_main(ROOT, reviewed_runner_merge_commit="")
+    head = "1" * 40
+    values = {
+        ("branch", "--show-current"): "main",
+        ("config", "--get", "branch.main.remote"): "origin",
+        ("config", "--get", "branch.main.merge"): "refs/heads/main",
+        ("rev-parse", "HEAD"): head,
+        ("rev-parse", "refs/remotes/origin/main"): "4" * 40,
+    }
+    monkeypatch.setattr(
+        "src.phase6_m2_algorithm_performance._git",
+        lambda root, *args: values[args],
+    )
+    with pytest.raises(RuntimeError, match="synchronized"):
+        _validate_synchronized_main(ROOT, reviewed_runner_merge_commit="2" * 40)
+
+
+def test_synchronized_main_rejects_unreviewed_head(monkeypatch) -> None:
+    head = "1" * 40
+    merge_commit = "2" * 40
+    values = {
+        ("branch", "--show-current"): "main",
+        ("config", "--get", "branch.main.remote"): "origin",
+        ("config", "--get", "branch.main.merge"): "refs/heads/main",
+        ("rev-parse", "HEAD"): head,
+        ("rev-parse", "refs/remotes/origin/main"): head,
+    }
+    def fake_git(root, *args):
+        if args[0] == "merge-base":
+            raise subprocess.CalledProcessError(1, args)
+        return values[args]
+    monkeypatch.setattr("src.phase6_m2_algorithm_performance._git", fake_git)
+    with pytest.raises(RuntimeError, match="not an ancestor"):
+        _validate_synchronized_main(ROOT, reviewed_runner_merge_commit=merge_commit)
 
 
 def test_sequence_executes_frozen_order_and_transfers_first_budget_pool(tmp_path) -> None:
@@ -173,6 +254,13 @@ def test_sequence_executes_frozen_order_and_transfers_first_budget_pool(tmp_path
     assert calls[2]["previous_state"] is None
     assert calls[4]["previous_state"]["budget"] == 2571.372016574617
     assert calls[4]["previous_state"]["historical_adversarial_scenarios"] == ["scenario_0002"]
+    second_warm = result["comparisons"][1]["methods"]["warm"]
+    assert second_warm["transferred_exact_scenarios"] == [
+        "scenario_0002", "scenario_0050",
+    ]
+    assert second_warm["transferred_scenarios_becoming_active_or_worst"] == [
+        "scenario_0002", "scenario_0050",
+    ]
     assert result["completed_algorithm_solve_count"] == 6
     assert all(row["maximum_objective_difference"] == 0.0 for row in result["comparisons"])
     manifest = json.loads((tmp_path / "runs/pilot_case/manifest.json").read_text(encoding="utf-8"))
@@ -209,6 +297,43 @@ def test_incomplete_exact_oracle_stops_before_next_method(tmp_path) -> None:
     assert [row["algorithm"] for row in calls] == ["extensive", "cold"]
 
 
+def test_oracle_count_cannot_hide_wrong_ordered_scenario_identities(tmp_path) -> None:
+    context = validate_static_freeze(ROOT, RUNNER, APPROVAL)
+    result = run_sequence(
+        root=ROOT, runner=context["runner"], design=context["design"],
+        fingerprints=_fingerprints(), case=PerformanceCase("case", 1, "C0"),
+        run_id="wrong_oracle", execution_root=tmp_path,
+        worker_executor=_fake_worker([]),
+    )
+    result["comparisons"][0]["methods"]["cold"]["ccg_result"]["exact_scenario_costs"] = {
+        f"wrong_{index:04d}": float(index) for index in range(1, 51)
+    }
+    with pytest.raises(ValueError, match="scenario identities"):
+        _validate_pilot_result(
+            result, PerformanceCase("case", 1, "C0"), _fingerprints(), None,
+        )
+
+
+def test_second_budget_cannot_claim_empty_cross_budget_transfer(tmp_path) -> None:
+    context = validate_static_freeze(ROOT, RUNNER, APPROVAL)
+    result = run_sequence(
+        root=ROOT, runner=context["runner"], design=context["design"],
+        fingerprints=_fingerprints(), case=PerformanceCase("case", 1, "T03"),
+        run_id="empty_transfer", execution_root=tmp_path,
+        worker_executor=_fake_worker([]),
+    )
+    warm = result["comparisons"][1]["methods"]["warm"]
+    warm["transferred_exact_scenarios"] = []
+    warm["transferred_exact_scenario_count"] = 0
+    warm["transferred_scenario_reuse_rate"] = 0.0
+    warm["transferred_scenarios_becoming_active_or_worst"] = []
+    warm["transferred_scenarios_becoming_active_or_worst_count"] = 0
+    with pytest.raises(ValueError, match="empty or differ"):
+        _validate_pilot_result(
+            result, PerformanceCase("case", 1, "T03"), _fingerprints(), None,
+        )
+
+
 def test_projection_recomputes_crn_as_a_hard_gate(tmp_path) -> None:
     context = validate_static_freeze(ROOT, RUNNER, APPROVAL)
     cases = tuple(
@@ -230,6 +355,9 @@ def test_projection_recomputes_crn_as_a_hard_gate(tmp_path) -> None:
     assert complete["pilot_compute_gate_passed"] is True
     assert complete["completed_budget_pair_count"] == 12
     assert complete["completed_algorithm_solve_count"] == 36
+    assert len(complete["cross_budget_transfer_evidence"]) == 6
+    assert complete["total_transferred_exact_scenario_count"] == 12
+    assert complete["total_transferred_scenarios_becoming_active_or_worst_count"] == 12
     assert complete["formal_compute_projection"] == {
         "status": "projected",
         "method": "240_times_maximum_pilot_CCG_worker_seconds",

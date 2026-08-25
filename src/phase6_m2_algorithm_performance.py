@@ -65,6 +65,39 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _git(root: Path, *args: str) -> str:
+    return subprocess.check_output(("git", *args), cwd=root, text=True).strip()
+
+
+def _validate_synchronized_main(
+    root: Path, *, reviewed_runner_merge_commit: str,
+) -> dict[str, str]:
+    if re.fullmatch(r"[0-9a-f]{40}", reviewed_runner_merge_commit or "") is None:
+        raise RuntimeError("approved PR #79 merge commit is missing or invalid")
+    branch = _git(root, "branch", "--show-current")
+    if branch != "main":
+        raise RuntimeError("M2 algorithm-performance execution requires main")
+    remote = _git(root, "config", "--get", "branch.main.remote")
+    merge = _git(root, "config", "--get", "branch.main.merge")
+    if remote != "origin" or merge != "refs/heads/main":
+        raise RuntimeError("local main must track origin/main")
+    head = _git(root, "rev-parse", "HEAD")
+    remote_main = _git(root, "rev-parse", "refs/remotes/origin/main")
+    if head != remote_main:
+        raise RuntimeError("main must be synchronized with the fetched origin/main")
+    try:
+        _git(root, "merge-base", "--is-ancestor", reviewed_runner_merge_commit, head)
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError("reviewed PR #79 merge commit is not an ancestor of execution HEAD") from exc
+    tree = _git(root, "rev-parse", "HEAD^{tree}")
+    return {
+        "branch": branch, "upstream_remote": remote,
+        "upstream_merge": merge, "head": head,
+        "remote_main": remote_main, "tree": tree,
+        "reviewed_runner_merge_commit": reviewed_runner_merge_commit,
+    }
+
+
 def _load_yaml(path: Path) -> dict[str, Any]:
     payload = yaml.safe_load(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
@@ -181,6 +214,14 @@ def validate_preflight(
     )
     if any(approval.get(field) is not False for field in false_scope):
         raise RuntimeError("pilot approval exceeds the reviewed scope")
+    synchronized_main = None
+    if require_authorization:
+        synchronized_main = _validate_synchronized_main(
+            root,
+            reviewed_runner_merge_commit=str(
+                approval.get("reviewed_runner_merge_commit") or ""
+            ),
+        )
     matrix_path = root / str(runner["base_matrix"])
     matrix = load_phase6_matrix(matrix_path)
     confirmation = _confirmation_config(root)
@@ -218,7 +259,10 @@ def validate_preflight(
             if approval.get("artifact_sha256", {}).get(name) != sha256_file(path):
                 raise RuntimeError(f"approved artifact differs: {name}")
         validate_gurobi_runtime()
-    context.update(matrix=matrix, fingerprints=actual, matrix_path=matrix_path)
+    context.update(
+        matrix=matrix, fingerprints=actual, matrix_path=matrix_path,
+        synchronized_main=synchronized_main,
+    )
     return context
 
 
@@ -293,6 +337,8 @@ def _validate_worker_evidence(row: Mapping[str, Any], *, expected_scenarios: int
             raise ValueError("C&CG exact oracle does not cover all pilot scenarios")
         if not all(math.isfinite(float(value)) for value in exact.values()):
             raise ValueError("C&CG exact oracle contains non-finite costs")
+        if _canonical_sha(list(exact)) != row["component_set_sha256"]["scenario_order_sha256"]:
+            raise ValueError("C&CG exact oracle scenario identities differ from scenario order")
 
 
 def _manifest(result_path: Path, result: Mapping[str, Any], fingerprints: Mapping[str, str]) -> dict[str, Any]:
@@ -307,6 +353,7 @@ def run_sequence(
     *, root: Path, runner: Mapping[str, Any], design: Mapping[str, Any],
     fingerprints: Mapping[str, str], case: PerformanceCase, run_id: str,
     execution_root: Path, worker_executor: WorkerExecutor = _worker_executor,
+    execution_identity: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     if SAFE_RUN_ID.fullmatch(run_id) is None or ".." in run_id:
         raise ValueError("unsafe run_id")
@@ -319,6 +366,11 @@ def run_sequence(
     result_path, manifest_path = run_dir / "result.json", run_dir / "manifest.json"
     status_path = run_dir / "status_summary.json"
     started = utc_now()
+    execution_identity = dict(execution_identity or {
+        "branch": "test", "upstream_remote": "test", "upstream_merge": "test",
+        "head": "0" * 40, "remote_main": "0" * 40, "tree": "0" * 40,
+        "reviewed_runner_merge_commit": "0" * 40,
+    })
     comparisons: list[dict[str, Any]] = []
     previous_state: dict[str, Any] | None = None
     prior_components: dict[str, str] | None = None
@@ -390,6 +442,7 @@ def run_sequence(
             "profile_id": case.profile_id, "planned_algorithm_solve_count": 6,
             "completed_algorithm_solve_count": 6, "comparisons": comparisons,
             "fingerprints": dict(fingerprints), "started_at_utc": started,
+            "execution_identity": execution_identity,
             "completed_at_utc": utc_now(),
         }
         atomic_write_json(result_path, result)
@@ -400,7 +453,7 @@ def run_sequence(
     except BaseException as exc:
         message = str(exc)
         terminal = "interrupted" if isinstance(exc, KeyboardInterrupt) else ("timeout" if '"terminal": "timeout"' in message else "runner_exception")
-        failure = {"artifact_state": "finalized", "status": terminal, "run_id": run_id, "parent_run_id": None, "case_id": case.case_id, "seed": case.seed, "profile_id": case.profile_id, "comparisons": comparisons, "exception_type": type(exc).__name__, "message": message[:4096], "fingerprints": dict(fingerprints), "completed_at_utc": utc_now()}
+        failure = {"artifact_state": "finalized", "status": terminal, "run_id": run_id, "parent_run_id": None, "case_id": case.case_id, "seed": case.seed, "profile_id": case.profile_id, "comparisons": comparisons, "exception_type": type(exc).__name__, "message": message[:4096], "fingerprints": dict(fingerprints), "execution_identity": execution_identity, "completed_at_utc": utc_now()}
         atomic_write_json(result_path, failure)
         atomic_write_json(manifest_path, _manifest(result_path, failure, fingerprints))
         atomic_write_json(status_path, {"status": terminal, "run_id": run_id, "message": message[:4096], "updated_at_utc": utc_now()})
@@ -415,10 +468,12 @@ def _registry(path: Path) -> list[dict[str, Any]]:
 
 def _validate_pilot_result(
     result: Mapping[str, Any], case: PerformanceCase,
-    fingerprints: Mapping[str, str],
+    fingerprints: Mapping[str, str], expected_execution_identity: Mapping[str, str] | None,
 ) -> dict[str, Any]:
     if result.get("fingerprints") != dict(fingerprints):
         raise ValueError("result fingerprints mismatch")
+    if expected_execution_identity is not None and result.get("execution_identity") != dict(expected_execution_identity):
+        raise ValueError("result execution Git identity mismatch")
     if (
         result.get("case_id") != case.case_id
         or int(result.get("seed", -1)) != case.seed
@@ -519,8 +574,33 @@ def _validate_pilot_result(
                 raise ValueError("second-budget warm result has the wrong source budget")
             if comparison.get("transfer_input_state") != prior_state:
                 raise ValueError("comparison transfer input is not the prior warm state")
-            if not set(transfer_names).issubset(set(warm.get("initial_scenarios", []))):
-                raise ValueError("transferred scenarios are missing from the warm initial pool")
+            initial_pool = list(warm.get("initial_scenarios", []))
+            reusable = set(prior_state["active_scenarios"]) | set(
+                prior_state["historical_adversarial_scenarios"]
+            )
+            expected_transfer = [name for name in initial_pool if name in reusable]
+            if transfer_names != expected_transfer or not expected_transfer:
+                raise ValueError("second-budget transferred scenarios are empty or differ from prior state")
+            expected_rate = len(expected_transfer) / len(initial_pool)
+            if not math.isclose(reuse_rate, expected_rate, rel_tol=0.0, abs_tol=1.0e-12):
+                raise ValueError("transferred scenario reuse rate was not independently reproduced")
+            exact_costs = warm["ccg_result"]["exact_scenario_costs"]
+            worst_cost = max(float(value) for value in exact_costs.values())
+            active = {
+                name for name, value in exact_costs.items()
+                if worst_cost - float(value) <= 1.0e-6
+            }
+            worst = warm["ccg_result"].get("worst_scenario")
+            expected_active_or_worst = [
+                name for name in expected_transfer if name in active or name == worst
+            ]
+            if (
+                warm.get("transferred_scenarios_becoming_active_or_worst")
+                != expected_active_or_worst
+                or int(warm.get("transferred_scenarios_becoming_active_or_worst_count", -1))
+                != len(expected_active_or_worst)
+            ):
+                raise ValueError("transferred active/worst evidence mismatch")
         prior_state = comparison.get("transferred_state")
         if not isinstance(prior_state, dict):
             raise ValueError("warm solve did not finalize a transferable state")
@@ -537,10 +617,36 @@ def _validate_pilot_result(
             comparisons[index]["methods"]["cold"]["component_set_sha256"]
             for index in (0, 1)
         ],
+        "cross_budget_transfer": {
+            "source_budget": float(comparisons[1]["methods"]["warm"]["transfer_source_budget"]),
+            "transferred_exact_scenarios": list(
+                comparisons[1]["methods"]["warm"]["transferred_exact_scenarios"]
+            ),
+            "transferred_exact_scenario_count": int(
+                comparisons[1]["methods"]["warm"]["transferred_exact_scenario_count"]
+            ),
+            "transferred_scenario_reuse_rate": float(
+                comparisons[1]["methods"]["warm"]["transferred_scenario_reuse_rate"]
+            ),
+            "transferred_scenarios_becoming_active_or_worst": list(
+                comparisons[1]["methods"]["warm"][
+                    "transferred_scenarios_becoming_active_or_worst"
+                ]
+            ),
+            "transferred_scenarios_becoming_active_or_worst_count": int(
+                comparisons[1]["methods"]["warm"][
+                    "transferred_scenarios_becoming_active_or_worst_count"
+                ]
+            ),
+        },
     }
 
 
-def update_projection(execution_root: Path, cases: Sequence[PerformanceCase], fingerprints: Mapping[str, str]) -> dict[str, Any]:
+def update_projection(
+    execution_root: Path, cases: Sequence[PerformanceCase],
+    fingerprints: Mapping[str, str],
+    execution_identity: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
     registry_path = execution_root / "run_registry.json"
     rows = _registry(registry_path)
     expected = {case.case_id: case for case in cases}
@@ -561,7 +667,9 @@ def update_projection(execution_root: Path, cases: Sequence[PerformanceCase], fi
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             if manifest.get("result_sha256") != sha256_file(result_path):
                 raise ValueError("result hash mismatch")
-            derived = _validate_pilot_result(result, expected[case_id], fingerprints)
+            derived = _validate_pilot_result(
+                result, expected[case_id], fingerprints, execution_identity,
+            )
             results.append(result)
             derived_rows.append({"result": result, "derived": derived})
         except Exception as exc:
@@ -584,6 +692,16 @@ def update_projection(execution_root: Path, cases: Sequence[PerformanceCase], fi
     maximum_peak_memory = max((row["derived"]["peak_memory_MiB"] for row in derived_rows), default=0.0)
     conservative_seconds = max(ccg_seconds, default=0.0)
     projected_hours = 240.0 * conservative_seconds / 3600.0
+    transfer_evidence = [
+        {
+            "run_id": row["result"]["run_id"],
+            "case_id": row["result"]["case_id"],
+            "seed": row["result"]["seed"],
+            "profile_id": row["result"]["profile_id"],
+            **row["derived"]["cross_budget_transfer"],
+        }
+        for row in derived_rows
+    ]
     projection_complete = (
         len(ccg_seconds) == 24
         and math.isfinite(conservative_seconds) and conservative_seconds > 0.0
@@ -603,6 +721,14 @@ def update_projection(execution_root: Path, cases: Sequence[PerformanceCase], fi
         "missing_case_ids": missing, "duplicate_case_ids": duplicates,
         "failed_primary_run_ids": failed, "invalid_primary_runs": invalid,
         "diagnostic_run_ids": diagnostics, "common_random_number_mismatches": crn_mismatches,
+        "cross_budget_transfer_evidence": transfer_evidence,
+        "total_transferred_exact_scenario_count": sum(
+            row["transferred_exact_scenario_count"] for row in transfer_evidence
+        ),
+        "total_transferred_scenarios_becoming_active_or_worst_count": sum(
+            row["transferred_scenarios_becoming_active_or_worst_count"]
+            for row in transfer_evidence
+        ),
         "formal_compute_projection": {
             "status": "projected" if projection_complete else "unavailable",
             "method": "240_times_maximum_pilot_CCG_worker_seconds",
@@ -612,6 +738,9 @@ def update_projection(execution_root: Path, cases: Sequence[PerformanceCase], fi
             "maximum_sampled_peak_RSS_MiB": maximum_peak_memory,
         },
         "fingerprints": dict(fingerprints), "pilot_compute_gate_passed": gate,
+        "execution_identity": (
+            None if execution_identity is None else dict(execution_identity)
+        ),
         "formal_authorized": False, "updated_at_utc": utc_now(),
     }
     atomic_write_json(execution_root / "pilot_projection.json", payload)
@@ -638,20 +767,20 @@ def run_pilot_batch(
         for case in context["cases"]:
             run_id = f"{run_id_prefix}_{case.case_id}"
             try:
-                result = run_sequence(root=root, runner=context["runner"], design=context["design"], fingerprints=context["fingerprints"], case=case, run_id=run_id, execution_root=execution_root, worker_executor=worker_executor)
+                result = run_sequence(root=root, runner=context["runner"], design=context["design"], fingerprints=context["fingerprints"], case=case, run_id=run_id, execution_root=execution_root, worker_executor=worker_executor, execution_identity=context["synchronized_main"])
                 rows = _registry(registry_path)
                 rows.append({"run_id": run_id, "parent_run_id": None, "case_id": case.case_id, "seed": case.seed, "profile_id": case.profile_id, "status": result["status"]})
                 atomic_write_json(registry_path, {"namespace": NAMESPACE, "runs": rows})
-                projection = update_projection(execution_root, context["cases"], context["fingerprints"])
+                projection = update_projection(execution_root, context["cases"], context["fingerprints"], context["synchronized_main"])
                 if result["status"] != "optimal": return projection
             except BaseException:
                 rows = _registry(registry_path)
                 status = json.loads((execution_root / "runs" / run_id / "status_summary.json").read_text(encoding="utf-8"))["status"]
                 rows.append({"run_id": run_id, "parent_run_id": None, "case_id": case.case_id, "seed": case.seed, "profile_id": case.profile_id, "status": status})
                 atomic_write_json(registry_path, {"namespace": NAMESPACE, "runs": rows})
-                update_projection(execution_root, context["cases"], context["fingerprints"])
+                update_projection(execution_root, context["cases"], context["fingerprints"], context["synchronized_main"])
                 raise
-        return update_projection(execution_root, context["cases"], context["fingerprints"])
+        return update_projection(execution_root, context["cases"], context["fingerprints"], context["synchronized_main"])
 
 
 def read_status(path: Path, *, maximum_bytes: int = 16384) -> dict[str, Any]:
