@@ -1,0 +1,85 @@
+{
+  "audit_id": "phase6_m2_algorithm_performance_pilot_v1_0_failure",
+  "status": "stopped_after_first_primary_failure",
+  "execution_identity": {
+    "pr79_runner_merge_commit": "72c430e9c12bb3aca9d65f9d69fe257aa71591a0",
+    "pr80_authorization_merge_commit": "9da8ef8bbcd3537f407272733bebbc08e4bc3b16",
+    "execution_git_sha": "9da8ef8bbcd3537f407272733bebbc08e4bc3b16",
+    "execution_git_tree_sha": "cd972a3c6782faec0c2ae5384e33aacec9d47524",
+    "branch": "main",
+    "HEAD_equal_fetched_origin_main": true,
+    "working_tree_dirty": false
+  },
+  "failed_primary": {
+    "run_id": "m2ap_pilot_v1_20260825_M2AP2_pilot_seed2026091001_profileC0",
+    "parent_run_id": null,
+    "case_id": "M2AP2_pilot_seed2026091001_profileC0",
+    "tier_id": "M2AP2",
+    "seed": 2026091001,
+    "profile_id": "C0",
+    "budget_index": 0,
+    "beta": 1.1,
+    "algorithm": "extensive",
+    "outer_status": "runner_exception",
+    "worker_status": "worker_exception",
+    "failure_stage": "complete_extensive_model",
+    "exception_type": "AttributeError",
+    "exception_message": "'DisruptedProcurementData' object has no attribute 'total_budget'",
+    "worker_wall_seconds": 1.1539828999957535,
+    "subprocess_wall_seconds": 2.0347475000016857,
+    "sampled_peak_RSS_MiB": 115.39453125,
+    "worker_return_code": 2
+  },
+  "root_cause": {
+    "classification": "runner_result_packaging_interface_error",
+    "file": "src/phase6_m2_algorithm_performance_worker.py",
+    "invalid_access": "data.total_budget",
+    "actual_frozen_data_field": "data.budget",
+    "mathematical_model_failure": false,
+    "gurobi_solver_failure": false,
+    "scientific_result_finalized": false,
+    "fix_applied_in_this_PR": false
+  },
+  "source_artifact_sha256": {
+    "pilot_projection": "7ef092142a511d9883c938758ab42225d996483cd234a685971a782b0944043b",
+    "run_registry": "ead2560ea73c275e73644a102f725e8db05ec3c705d02283ce645f3a74af7f0f",
+    "status_summary": "7ef092142a511d9883c938758ab42225d996483cd234a685971a782b0944043b",
+    "run_result": "72531d7d5b9c34a2bb2438f0b22a507eddd798a0a6a0f4f9f2e615ca146e51a6",
+    "run_manifest": "963eab15b3461e89117288e2c93257de338d15b57cdc70e7c981c87bed7c001d",
+    "worker_request": "260962cf975054f881ff706931f83ac219cb4baa3af24735bebf1e0b420fc06a",
+    "worker_result": "1d624f250cb069016d3b8ecdb56984183b1e6478858d6109d8b556d7b54eef01"
+  },
+  "batch_closure": {
+    "required_primary_sequence_count": 6,
+    "completed_primary_sequence_count": 0,
+    "failed_primary_sequence_count": 1,
+    "not_started_primary_sequence_count": 5,
+    "required_algorithm_solve_count": 36,
+    "attempted_algorithm_solve_count": 1,
+    "finalized_optimal_algorithm_solve_count": 0,
+    "not_started_algorithm_solve_count": 35,
+    "diagnostic_run_count": 0,
+    "duplicate_primary_run_count": 0,
+    "pilot_compute_gate_passed": false,
+    "formal_authorized": false
+  },
+  "execution_side_effects": {
+    "scenario_generation_count": 1,
+    "gurobi_call_count": 1,
+    "residual_python_or_gurobi_process_count": 0,
+    "same_run_id_retry_count": 0,
+    "formal_algorithm_execution_count": 0,
+    "M0_E3_additional_runs": 0,
+    "M2_mechanism_additional_runs": 0,
+    "M2_OOS_additional_runs": 0,
+    "M2_1_additional_runs": 0
+  },
+  "disposition": {
+    "failed_output_preserved": true,
+    "current_namespace_may_not_be_reused_for_primary_batch": true,
+    "automatic_retry_forbidden": true,
+    "new_runner_fix_and_reauthorization_required": true,
+    "pilot_or_formal_execution_authorized_by_this_PR": false
+  },
+  "CI": "recorded_in_pr_body"
+}
