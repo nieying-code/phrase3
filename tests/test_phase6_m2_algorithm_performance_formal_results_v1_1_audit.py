@@ -7,7 +7,10 @@ from pathlib import Path
 
 import pytest
 
-from src.phase6_m2_algorithm_performance_formal_results import validate_compact_audit
+from src.phase6_m2_algorithm_performance_formal_results import (
+    canonical_sha,
+    validate_compact_audit,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -64,7 +67,7 @@ def test_execution_identity_fingerprints_and_global_artifacts_are_locked() -> No
     assert audit["global_artifacts"] == {
         "formal_projection_sha256": "23b0d08b3a9b51c5df84c1e30e80eb74beb6d3f6ba7d427105d96906f29aea72",
         "formal_run_registry_sha256": "b455c045968244567555d81692f7aba7fbfb392430fe6132b5f16c047f315271",
-        "run_evidence_mapping_sha256": "309a835ff55bf420f7d4573422200705cdb37d39956b343a0dd4f59fdf740c57",
+        "run_evidence_mapping_sha256": "94299372aa35d052719b3338bbc8cf55e1de52065ac42b30c0de5b7b6fdb7614",
     }
 
 
@@ -122,3 +125,41 @@ def test_no_adjacent_experiment_was_authorized_or_run() -> None:
     assert audit["execution_boundaries"] == {
         "M2_1_runs": 0, "M0_E3_runs": 0, "other_formal_experiment_runs": 0,
     }
+
+
+@pytest.mark.parametrize(
+    ("target", "replacement"),
+    (
+        ("transfer_list", []),
+        ("transfer_count", 0),
+        ("reuse_rate", 0.0),
+        ("source_budget", 0.0),
+        ("source_state", ["tampered_scenario"]),
+        ("active_or_worst", []),
+    ),
+)
+def test_synchronized_transfer_evidence_tampering_is_rejected(
+    target: str, replacement: object,
+) -> None:
+    audit = _load()
+    tampered = copy.deepcopy(audit)
+    first, second = tampered["runs"][0]["comparisons"]
+    warm = second["methods"]["warm"][0]
+    if target == "transfer_list":
+        warm["transferred_exact_scenarios"] = replacement
+    elif target == "transfer_count":
+        warm["transferred_exact_scenario_count"] = replacement
+    elif target == "reuse_rate":
+        warm["transferred_scenario_reuse_rate"] = replacement
+    elif target == "source_budget":
+        warm["transfer_source_budget"] = replacement
+    elif target == "source_state":
+        first["transferred_states"]["1"]["active_scenarios"] = replacement
+        new_hash = canonical_sha(first["transferred_states"]["1"])
+        first["transferred_states_sha256"]["1"] = new_hash
+        warm["transfer_source_state_sha256"] = new_hash
+    else:
+        warm["transferred_scenarios_becoming_active_or_worst"] = replacement
+        warm["transferred_scenarios_becoming_active_or_worst_count"] = len(replacement)
+    with pytest.raises(ValueError):
+        validate_compact_audit(tampered)

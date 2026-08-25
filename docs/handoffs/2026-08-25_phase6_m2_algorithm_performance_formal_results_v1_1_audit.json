@@ -277,6 +277,77 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0068",
+                "s0093",
+                "s0061",
+                "s0078",
+                "s0080",
+                "s0067",
+                "s0027"
+              ],
+              "active_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0068",
+                "s0093",
+                "s0061",
+                "s0078",
+                "s0080",
+                "s0067",
+                "s0027"
+              ],
+              "active_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0068",
+                "s0093",
+                "s0061",
+                "s0078",
+                "s0080",
+                "s0067",
+                "s0027"
+              ],
+              "active_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "3d5ea9e23df4539bf032a8cd404a6f42452161a3e3e3867d5687a1bb161a1545",
             "2": "3d5ea9e23df4539bf032a8cd404a6f42452161a3e3e3867d5687a1bb161a1545",
@@ -457,7 +528,24 @@
                   "s0067",
                   "s0080",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0061",
+                  "s0067",
+                  "s0068",
+                  "s0078",
+                  "s0080",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0027": 10506.8078652457,
+                  "s0067": 10506.807865245697,
+                  "s0080": 10506.807865245693,
+                  "s0093": 10506.807865245695
+                },
+                "exact_oracle_worst_cost": 10506.8078652457,
+                "worst_scenario": "s0027"
               },
               {
                 "repetition": 2,
@@ -504,7 +592,24 @@
                   "s0067",
                   "s0080",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0061",
+                  "s0067",
+                  "s0068",
+                  "s0078",
+                  "s0080",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0027": 10506.8078652457,
+                  "s0067": 10506.807865245697,
+                  "s0080": 10506.807865245693,
+                  "s0093": 10506.807865245695
+                },
+                "exact_oracle_worst_cost": 10506.8078652457,
+                "worst_scenario": "s0027"
               },
               {
                 "repetition": 3,
@@ -551,9 +656,97 @@
                   "s0067",
                   "s0080",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0061",
+                  "s0067",
+                  "s0068",
+                  "s0078",
+                  "s0080",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0027": 10506.8078652457,
+                  "s0067": 10506.807865245697,
+                  "s0080": 10506.807865245693,
+                  "s0093": 10506.807865245695
+                },
+                "exact_oracle_worst_cost": 10506.8078652457,
+                "worst_scenario": "s0027"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0061",
+                "s0067",
+                "s0068",
+                "s0078",
+                "s0080",
+                "s0093"
+              ],
+              "active_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0061",
+                "s0067",
+                "s0068",
+                "s0078",
+                "s0080",
+                "s0093"
+              ],
+              "active_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0061",
+                "s0067",
+                "s0068",
+                "s0078",
+                "s0080",
+                "s0093"
+              ],
+              "active_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0027",
+                "s0067",
+                "s0080"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "6b9eeb3ae3b1d7425985c68d9d40f53b268e4b7f8827e17d9e7dabb14653f254",
@@ -837,6 +1030,59 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0068",
+                "s0093",
+                "s0061",
+                "s0078",
+                "s0067"
+              ],
+              "active_scenarios": [
+                "s0067",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0067"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0068",
+                "s0093",
+                "s0061",
+                "s0078",
+                "s0067"
+              ],
+              "active_scenarios": [
+                "s0067",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0067"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0068",
+                "s0093",
+                "s0061",
+                "s0078",
+                "s0067"
+              ],
+              "active_scenarios": [
+                "s0067",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0067"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "57f20bc7974981a50c7bc12122d345fe93bdb7b29785c6ccfe683936db6a2c58",
             "2": "57f20bc7974981a50c7bc12122d345fe93bdb7b29785c6ccfe683936db6a2c58",
@@ -1013,7 +1259,20 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0067",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0061",
+                  "s0067",
+                  "s0068",
+                  "s0078",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0067": 26925.89667995216,
+                  "s0093": 26925.89667995216
+                },
+                "exact_oracle_worst_cost": 26925.89667995216,
+                "worst_scenario": "s0067"
               },
               {
                 "repetition": 2,
@@ -1056,7 +1315,20 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0067",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0061",
+                  "s0067",
+                  "s0068",
+                  "s0078",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0067": 26925.89667995216,
+                  "s0093": 26925.89667995216
+                },
+                "exact_oracle_worst_cost": 26925.89667995216,
+                "worst_scenario": "s0067"
               },
               {
                 "repetition": 3,
@@ -1099,9 +1371,75 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0067",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0061",
+                  "s0067",
+                  "s0068",
+                  "s0078",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0067": 26925.89667995216,
+                  "s0093": 26925.89667995216
+                },
+                "exact_oracle_worst_cost": 26925.89667995216,
+                "worst_scenario": "s0067"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0061",
+                "s0067",
+                "s0068",
+                "s0078",
+                "s0093"
+              ],
+              "active_scenarios": [
+                "s0067",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0067"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0061",
+                "s0067",
+                "s0068",
+                "s0078",
+                "s0093"
+              ],
+              "active_scenarios": [
+                "s0067",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0067"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0061",
+                "s0067",
+                "s0068",
+                "s0078",
+                "s0093"
+              ],
+              "active_scenarios": [
+                "s0067",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0067"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "4573c36d4eaf34e61008b8c9f402d85c779655281e2f4fa421d8a5c8076e006d",
@@ -1385,6 +1723,56 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0052",
+                "s0033",
+                "s0020",
+                "s0000"
+              ],
+              "active_scenarios": [
+                "s0020",
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0020"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0052",
+                "s0033",
+                "s0020",
+                "s0000"
+              ],
+              "active_scenarios": [
+                "s0020",
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0020"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0052",
+                "s0033",
+                "s0020",
+                "s0000"
+              ],
+              "active_scenarios": [
+                "s0020",
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0020"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "ecd5389e82396600975e0abb442eaa0b5b1b66150c5b14852b8711d0d7b876de",
             "2": "ecd5389e82396600975e0abb442eaa0b5b1b66150c5b14852b8711d0d7b876de",
@@ -1561,7 +1949,19 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0020",
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0000",
+                  "s0020",
+                  "s0033",
+                  "s0052"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0020": 13121.733607742724,
+                  "s0033": 13121.733607742719
+                },
+                "exact_oracle_worst_cost": 13121.733607742724,
+                "worst_scenario": "s0020"
               },
               {
                 "repetition": 2,
@@ -1604,7 +2004,19 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0020",
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0000",
+                  "s0020",
+                  "s0033",
+                  "s0052"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0020": 13121.733607742724,
+                  "s0033": 13121.733607742719
+                },
+                "exact_oracle_worst_cost": 13121.733607742724,
+                "worst_scenario": "s0020"
               },
               {
                 "repetition": 3,
@@ -1647,9 +2059,80 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0020",
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0000",
+                  "s0020",
+                  "s0033",
+                  "s0052"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0020": 13121.733607742724,
+                  "s0033": 13121.733607742719
+                },
+                "exact_oracle_worst_cost": 13121.733607742724,
+                "worst_scenario": "s0020"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0000",
+                "s0020",
+                "s0033",
+                "s0052",
+                "s0095"
+              ],
+              "active_scenarios": [
+                "s0020",
+                "s0033",
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0020",
+                "s0095"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0000",
+                "s0020",
+                "s0033",
+                "s0052",
+                "s0095"
+              ],
+              "active_scenarios": [
+                "s0020",
+                "s0033",
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0020",
+                "s0095"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0000",
+                "s0020",
+                "s0033",
+                "s0052",
+                "s0095"
+              ],
+              "active_scenarios": [
+                "s0020",
+                "s0033",
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0020",
+                "s0095"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "8b5c8ce02010addaeb78c39320f809f3521d8da470b81784cdd26f5c6ca9d99f",
@@ -1933,6 +2416,53 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0052",
+                "s0033",
+                "s0020",
+                "s0000"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0052",
+                "s0033",
+                "s0020",
+                "s0000"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0052",
+                "s0033",
+                "s0020",
+                "s0000"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "98a9f7934a5164f010d875189f085920669cb74e23f035575f2b471973c6708c",
             "2": "98a9f7934a5164f010d875189f085920669cb74e23f035575f2b471973c6708c",
@@ -2107,7 +2637,18 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0000",
+                  "s0020",
+                  "s0033",
+                  "s0052"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0033": 28867.220992550672
+                },
+                "exact_oracle_worst_cost": 28867.220992550672,
+                "worst_scenario": "s0033"
               },
               {
                 "repetition": 2,
@@ -2148,7 +2689,18 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0000",
+                  "s0020",
+                  "s0033",
+                  "s0052"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0033": 28867.220992550672
+                },
+                "exact_oracle_worst_cost": 28867.220992550672,
+                "worst_scenario": "s0033"
               },
               {
                 "repetition": 3,
@@ -2189,9 +2741,76 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0000",
+                  "s0020",
+                  "s0033",
+                  "s0052"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0033": 28867.220992550672
+                },
+                "exact_oracle_worst_cost": 28867.220992550672,
+                "worst_scenario": "s0033"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0000",
+                "s0020",
+                "s0033",
+                "s0052",
+                "s0050"
+              ],
+              "active_scenarios": [
+                "s0033",
+                "s0050"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033",
+                "s0050"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0000",
+                "s0020",
+                "s0033",
+                "s0052",
+                "s0050"
+              ],
+              "active_scenarios": [
+                "s0033",
+                "s0050"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033",
+                "s0050"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0000",
+                "s0020",
+                "s0033",
+                "s0052",
+                "s0050"
+              ],
+              "active_scenarios": [
+                "s0033",
+                "s0050"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033",
+                "s0050"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "9fe6e470753131ef3f1156d0a6008e4778eb425bdabf89125ac8ec419f31aded",
@@ -2475,6 +3094,53 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0066",
+                "s0062"
+              ],
+              "active_scenarios": [
+                "s0062",
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0066",
+                "s0062"
+              ],
+              "active_scenarios": [
+                "s0062",
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0066",
+                "s0062"
+              ],
+              "active_scenarios": [
+                "s0062",
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "cc93c9b2675ded050c8db09bfa86f4b75a0df272b4a2642471a1f79fb1517073",
             "2": "cc93c9b2675ded050c8db09bfa86f4b75a0df272b4a2642471a1f79fb1517073",
@@ -2651,7 +3317,18 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0062",
                   "s0066"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0062",
+                  "s0066"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0062": 29275.067455953384,
+                  "s0066": 29275.067455953387
+                },
+                "exact_oracle_worst_cost": 29275.067455953387,
+                "worst_scenario": "s0066"
               },
               {
                 "repetition": 2,
@@ -2694,7 +3371,18 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0062",
                   "s0066"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0062",
+                  "s0066"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0062": 29275.067455953384,
+                  "s0066": 29275.067455953387
+                },
+                "exact_oracle_worst_cost": 29275.067455953387,
+                "worst_scenario": "s0066"
               },
               {
                 "repetition": 3,
@@ -2737,9 +3425,67 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0062",
                   "s0066"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0062",
+                  "s0066"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0062": 29275.067455953384,
+                  "s0066": 29275.067455953387
+                },
+                "exact_oracle_worst_cost": 29275.067455953387,
+                "worst_scenario": "s0066"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0062",
+                "s0066"
+              ],
+              "active_scenarios": [
+                "s0062",
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0062",
+                "s0066"
+              ],
+              "active_scenarios": [
+                "s0062",
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0062",
+                "s0066"
+              ],
+              "active_scenarios": [
+                "s0062",
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "9f564949a0fe9aab6bea34066514d70c858ebc9088b8eb4aab7f477c04a4d027",
@@ -3023,6 +3769,50 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0066",
+                "s0062"
+              ],
+              "active_scenarios": [
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0066",
+                "s0062"
+              ],
+              "active_scenarios": [
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0066",
+                "s0062"
+              ],
+              "active_scenarios": [
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "de6722a25c8f4563536ec8b457eef80fec64682260548804208f3e90bcc20e04",
             "2": "de6722a25c8f4563536ec8b457eef80fec64682260548804208f3e90bcc20e04",
@@ -3197,7 +3987,17 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0066"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0062",
+                  "s0066"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0066": 45779.210469036836
+                },
+                "exact_oracle_worst_cost": 45779.210469036836,
+                "worst_scenario": "s0066"
               },
               {
                 "repetition": 2,
@@ -3238,7 +4038,17 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0066"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0062",
+                  "s0066"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0066": 45779.210469036836
+                },
+                "exact_oracle_worst_cost": 45779.210469036836,
+                "worst_scenario": "s0066"
               },
               {
                 "repetition": 3,
@@ -3279,9 +4089,63 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0066"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0062",
+                  "s0066"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0066": 45779.210469036836
+                },
+                "exact_oracle_worst_cost": 45779.210469036836,
+                "worst_scenario": "s0066"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0062",
+                "s0066"
+              ],
+              "active_scenarios": [
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0062",
+                "s0066"
+              ],
+              "active_scenarios": [
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0062",
+                "s0066"
+              ],
+              "active_scenarios": [
+                "s0066"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0066"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "be0936c2e566a543b6c87ad4d9b1b586159f816768e39020e7146077ad3b8dd0",
@@ -3565,6 +4429,65 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0054",
+                "s0096",
+                "s0018",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0018",
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0018",
+                "s0099"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0054",
+                "s0096",
+                "s0018",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0018",
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0018",
+                "s0099"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0054",
+                "s0096",
+                "s0018",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0018",
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0018",
+                "s0099"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "7737e7775cdb8ee69d1a83227329c629424bc36e5caebdc2e46f3b7741429c14",
             "2": "7737e7775cdb8ee69d1a83227329c629424bc36e5caebdc2e46f3b7741429c14",
@@ -3743,7 +4666,21 @@
                   "s0018",
                   "s0054",
                   "s0099"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0018",
+                  "s0054",
+                  "s0096",
+                  "s0099"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0018": 15483.824829128644,
+                  "s0054": 15483.824829128638,
+                  "s0099": 15483.824829128649
+                },
+                "exact_oracle_worst_cost": 15483.824829128649,
+                "worst_scenario": "s0099"
               },
               {
                 "repetition": 2,
@@ -3788,7 +4725,21 @@
                   "s0018",
                   "s0054",
                   "s0099"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0018",
+                  "s0054",
+                  "s0096",
+                  "s0099"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0018": 15483.824829128644,
+                  "s0054": 15483.824829128638,
+                  "s0099": 15483.824829128649
+                },
+                "exact_oracle_worst_cost": 15483.824829128649,
+                "worst_scenario": "s0099"
               },
               {
                 "repetition": 3,
@@ -3833,9 +4784,82 @@
                   "s0018",
                   "s0054",
                   "s0099"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0018",
+                  "s0054",
+                  "s0096",
+                  "s0099"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0018": 15483.824829128644,
+                  "s0054": 15483.824829128638,
+                  "s0099": 15483.824829128649
+                },
+                "exact_oracle_worst_cost": 15483.824829128649,
+                "worst_scenario": "s0099"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0018",
+                "s0054",
+                "s0096",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0018",
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0018",
+                "s0099"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0018",
+                "s0054",
+                "s0096",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0018",
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0018",
+                "s0099"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0018",
+                "s0054",
+                "s0096",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0018",
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0018",
+                "s0099"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "ca664c669a3b851409782a3f60c5610d9e396347dfb400ccb66a3a01205b8ee3",
@@ -4119,6 +5143,59 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0054",
+                "s0096",
+                "s0018",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0099"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0054",
+                "s0096",
+                "s0018",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0099"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0054",
+                "s0096",
+                "s0018",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0099"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "f7062817eea54fe3d08b0961f7ad42cb8130e7d8a9c149e7f085a20ab4b629e8",
             "2": "f7062817eea54fe3d08b0961f7ad42cb8130e7d8a9c149e7f085a20ab4b629e8",
@@ -4295,7 +5372,20 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0054",
                   "s0099"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0018",
+                  "s0054",
+                  "s0096",
+                  "s0099"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0054": 32697.14772322103,
+                  "s0099": 32697.147723221027
+                },
+                "exact_oracle_worst_cost": 32697.14772322103,
+                "worst_scenario": "s0054"
               },
               {
                 "repetition": 2,
@@ -4338,7 +5428,20 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0054",
                   "s0099"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0018",
+                  "s0054",
+                  "s0096",
+                  "s0099"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0054": 32697.14772322103,
+                  "s0099": 32697.147723221027
+                },
+                "exact_oracle_worst_cost": 32697.14772322103,
+                "worst_scenario": "s0054"
               },
               {
                 "repetition": 3,
@@ -4381,9 +5484,78 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0054",
                   "s0099"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0018",
+                  "s0054",
+                  "s0096",
+                  "s0099"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0054": 32697.14772322103,
+                  "s0099": 32697.147723221027
+                },
+                "exact_oracle_worst_cost": 32697.14772322103,
+                "worst_scenario": "s0054"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0018",
+                "s0054",
+                "s0096",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0054",
+                "s0099"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0018",
+                "s0054",
+                "s0096",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0054",
+                "s0099"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0018",
+                "s0054",
+                "s0096",
+                "s0099"
+              ],
+              "active_scenarios": [
+                "s0054",
+                "s0099"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0054",
+                "s0099"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "170296386c207fec8def911a494e7c0628884d9a21dbfe5fece019ea923e2a3f",
@@ -4667,6 +5839,68 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0085",
+                "s0093",
+                "s0023",
+                "s0011",
+                "s0025",
+                "s0072"
+              ],
+              "active_scenarios": [
+                "s0025",
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0025",
+                "s0072"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0085",
+                "s0093",
+                "s0023",
+                "s0011",
+                "s0025",
+                "s0072"
+              ],
+              "active_scenarios": [
+                "s0025",
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0025",
+                "s0072"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0085",
+                "s0093",
+                "s0023",
+                "s0011",
+                "s0025",
+                "s0072"
+              ],
+              "active_scenarios": [
+                "s0025",
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0025",
+                "s0072"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "054fca5d895518e9d047c701526711798488f3539b9a4f33891a30adee5c375c",
             "2": "054fca5d895518e9d047c701526711798488f3539b9a4f33891a30adee5c375c",
@@ -4845,7 +6079,22 @@
                   "s0025",
                   "s0072",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0011",
+                  "s0023",
+                  "s0025",
+                  "s0072",
+                  "s0085",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0025": 12153.88270720936,
+                  "s0072": 12153.882707209363,
+                  "s0093": 12153.882707209355
+                },
+                "exact_oracle_worst_cost": 12153.88270720937,
+                "worst_scenario": "s0052"
               },
               {
                 "repetition": 2,
@@ -4890,7 +6139,22 @@
                   "s0025",
                   "s0072",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0011",
+                  "s0023",
+                  "s0025",
+                  "s0072",
+                  "s0085",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0025": 12153.88270720936,
+                  "s0072": 12153.882707209363,
+                  "s0093": 12153.882707209355
+                },
+                "exact_oracle_worst_cost": 12153.88270720937,
+                "worst_scenario": "s0052"
               },
               {
                 "repetition": 3,
@@ -4935,9 +6199,95 @@
                   "s0025",
                   "s0072",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0011",
+                  "s0023",
+                  "s0025",
+                  "s0072",
+                  "s0085",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0025": 12153.88270720936,
+                  "s0072": 12153.882707209363,
+                  "s0093": 12153.882707209355
+                },
+                "exact_oracle_worst_cost": 12153.88270720937,
+                "worst_scenario": "s0052"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0011",
+                "s0023",
+                "s0025",
+                "s0072",
+                "s0085",
+                "s0093",
+                "s0052"
+              ],
+              "active_scenarios": [
+                "s0025",
+                "s0052",
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0025",
+                "s0052",
+                "s0072"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0011",
+                "s0023",
+                "s0025",
+                "s0072",
+                "s0085",
+                "s0093",
+                "s0052"
+              ],
+              "active_scenarios": [
+                "s0025",
+                "s0052",
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0025",
+                "s0052",
+                "s0072"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0011",
+                "s0023",
+                "s0025",
+                "s0072",
+                "s0085",
+                "s0093",
+                "s0052"
+              ],
+              "active_scenarios": [
+                "s0025",
+                "s0052",
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0025",
+                "s0052",
+                "s0072"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "33fd98b722c0405659fbaec44dd57bc7bfd1ac77496255c372abd615a5fa0736",
@@ -5221,6 +6571,59 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0085",
+                "s0093",
+                "s0023",
+                "s0011",
+                "s0072"
+              ],
+              "active_scenarios": [
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0072"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0085",
+                "s0093",
+                "s0023",
+                "s0011",
+                "s0072"
+              ],
+              "active_scenarios": [
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0072"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0085",
+                "s0093",
+                "s0023",
+                "s0011",
+                "s0072"
+              ],
+              "active_scenarios": [
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0072"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "e1d472a7c8a6674d177a1faaaabbf767044f42344b709c78a494d65a8642fa68",
             "2": "e1d472a7c8a6674d177a1faaaabbf767044f42344b709c78a494d65a8642fa68",
@@ -5397,7 +6800,20 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0072",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0011",
+                  "s0023",
+                  "s0072",
+                  "s0085",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0072": 28012.097774338803,
+                  "s0093": 28012.097774338807
+                },
+                "exact_oracle_worst_cost": 28012.097774338807,
+                "worst_scenario": "s0093"
               },
               {
                 "repetition": 2,
@@ -5440,7 +6856,20 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0072",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0011",
+                  "s0023",
+                  "s0072",
+                  "s0085",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0072": 28012.097774338803,
+                  "s0093": 28012.097774338807
+                },
+                "exact_oracle_worst_cost": 28012.097774338807,
+                "worst_scenario": "s0093"
               },
               {
                 "repetition": 3,
@@ -5483,9 +6912,78 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0072",
                   "s0093"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0011",
+                  "s0023",
+                  "s0072",
+                  "s0085",
+                  "s0093"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0072": 28012.097774338803,
+                  "s0093": 28012.097774338807
+                },
+                "exact_oracle_worst_cost": 28012.097774338807,
+                "worst_scenario": "s0093"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0011",
+                "s0023",
+                "s0072",
+                "s0085",
+                "s0093"
+              ],
+              "active_scenarios": [
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0072",
+                "s0093"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0011",
+                "s0023",
+                "s0072",
+                "s0085",
+                "s0093"
+              ],
+              "active_scenarios": [
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0072",
+                "s0093"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0011",
+                "s0023",
+                "s0072",
+                "s0085",
+                "s0093"
+              ],
+              "active_scenarios": [
+                "s0072",
+                "s0093"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0072",
+                "s0093"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "c77d7147431151e4375e94ac2d384c2f7b3c2ccfbb0410e8274a81e479c1df30",
@@ -5769,6 +7267,56 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0095",
+                "s0030",
+                "s0088"
+              ],
+              "active_scenarios": [
+                "s0088",
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0088"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0095",
+                "s0030",
+                "s0088"
+              ],
+              "active_scenarios": [
+                "s0088",
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0088"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0095",
+                "s0030",
+                "s0088"
+              ],
+              "active_scenarios": [
+                "s0088",
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0088"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "0a1e6f29a3dbc05c2430860a68e3a68cab5d6aa18ce05b66264c22ddc7249a9f",
             "2": "0a1e6f29a3dbc05c2430860a68e3a68cab5d6aa18ce05b66264c22ddc7249a9f",
@@ -5945,7 +7493,19 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0088",
                   "s0095"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0030",
+                  "s0088",
+                  "s0095"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0088": 12568.143685900228,
+                  "s0095": 12568.14368590023
+                },
+                "exact_oracle_worst_cost": 12568.14368590023,
+                "worst_scenario": "s0095"
               },
               {
                 "repetition": 2,
@@ -5988,7 +7548,19 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0088",
                   "s0095"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0030",
+                  "s0088",
+                  "s0095"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0088": 12568.143685900228,
+                  "s0095": 12568.14368590023
+                },
+                "exact_oracle_worst_cost": 12568.14368590023,
+                "worst_scenario": "s0095"
               },
               {
                 "repetition": 3,
@@ -6031,9 +7603,83 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0088",
                   "s0095"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0030",
+                  "s0088",
+                  "s0095"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0088": 12568.143685900228,
+                  "s0095": 12568.14368590023
+                },
+                "exact_oracle_worst_cost": 12568.14368590023,
+                "worst_scenario": "s0095"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0030",
+                "s0088",
+                "s0095",
+                "s0061"
+              ],
+              "active_scenarios": [
+                "s0061",
+                "s0088",
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0061",
+                "s0088",
+                "s0095"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0030",
+                "s0088",
+                "s0095",
+                "s0061"
+              ],
+              "active_scenarios": [
+                "s0061",
+                "s0088",
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0061",
+                "s0088",
+                "s0095"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0030",
+                "s0088",
+                "s0095",
+                "s0061"
+              ],
+              "active_scenarios": [
+                "s0061",
+                "s0088",
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0061",
+                "s0088",
+                "s0095"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "e83b2375e69eefb67a5919c00ccc44e8eb71020ce3975c1ef2470d595ad3d1d9",
@@ -6317,6 +7963,50 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0095",
+                "s0030"
+              ],
+              "active_scenarios": [
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0095"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0095",
+                "s0030"
+              ],
+              "active_scenarios": [
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0095"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0008",
+                "s0095",
+                "s0030"
+              ],
+              "active_scenarios": [
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0095"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "d3a50e5fa88dc04fec4ae0fa7d7d50e703d0a1e14488267cb8cad4f4f526466b",
             "2": "d3a50e5fa88dc04fec4ae0fa7d7d50e703d0a1e14488267cb8cad4f4f526466b",
@@ -6491,7 +8181,17 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0095"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0030",
+                  "s0095"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0095": 29126.187672606487
+                },
+                "exact_oracle_worst_cost": 29126.187672606487,
+                "worst_scenario": "s0095"
               },
               {
                 "repetition": 2,
@@ -6532,7 +8232,17 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0095"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0030",
+                  "s0095"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0095": 29126.187672606487
+                },
+                "exact_oracle_worst_cost": 29126.187672606487,
+                "worst_scenario": "s0095"
               },
               {
                 "repetition": 3,
@@ -6573,9 +8283,63 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0095"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0008",
+                  "s0030",
+                  "s0095"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0095": 29126.187672606487
+                },
+                "exact_oracle_worst_cost": 29126.187672606487,
+                "worst_scenario": "s0095"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0030",
+                "s0095"
+              ],
+              "active_scenarios": [
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0095"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0030",
+                "s0095"
+              ],
+              "active_scenarios": [
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0095"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0008",
+                "s0030",
+                "s0095"
+              ],
+              "active_scenarios": [
+                "s0095"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0095"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "1c5e1627546ce8c7b41a9f4444ab25fd34c8f081804536e3ce6050bfebc5324e",
@@ -6859,6 +8623,53 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0080",
+                "s0033",
+                "s0057",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0080",
+                "s0033",
+                "s0057",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0080",
+                "s0033",
+                "s0057",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "0a79b3a99f0288af61d2f55be97e05566cf4af41a9a21191fb5543c0c1bd9222",
             "2": "0a79b3a99f0288af61d2f55be97e05566cf4af41a9a21191fb5543c0c1bd9222",
@@ -7033,7 +8844,18 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0033",
+                  "s0057",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0033": 26223.621472987656
+                },
+                "exact_oracle_worst_cost": 26223.621472987656,
+                "worst_scenario": "s0033"
               },
               {
                 "repetition": 2,
@@ -7074,7 +8896,18 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0033",
+                  "s0057",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0033": 26223.621472987656
+                },
+                "exact_oracle_worst_cost": 26223.621472987656,
+                "worst_scenario": "s0033"
               },
               {
                 "repetition": 3,
@@ -7115,9 +8948,67 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0033",
+                  "s0057",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0033": 26223.621472987656
+                },
+                "exact_oracle_worst_cost": 26223.621472987656,
+                "worst_scenario": "s0033"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0033",
+                "s0057",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0033",
+                "s0057",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0033",
+                "s0057",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "ca2157207c63267884550c5c4f9d6c0fc7bfdaf2d016862ea9ca3e57e2d10c1c",
@@ -7401,6 +9292,53 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0080",
+                "s0033",
+                "s0057",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0080",
+                "s0033",
+                "s0057",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0080",
+                "s0033",
+                "s0057",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "0a79b3a99f0288af61d2f55be97e05566cf4af41a9a21191fb5543c0c1bd9222",
             "2": "0a79b3a99f0288af61d2f55be97e05566cf4af41a9a21191fb5543c0c1bd9222",
@@ -7575,7 +9513,18 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0033",
+                  "s0057",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0033": 41574.662398448025
+                },
+                "exact_oracle_worst_cost": 41574.662398448025,
+                "worst_scenario": "s0033"
               },
               {
                 "repetition": 2,
@@ -7616,7 +9565,18 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0033",
+                  "s0057",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0033": 41574.662398448025
+                },
+                "exact_oracle_worst_cost": 41574.662398448025,
+                "worst_scenario": "s0033"
               },
               {
                 "repetition": 3,
@@ -7657,9 +9617,67 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0033"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0033",
+                  "s0057",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0033": 41574.662398448025
+                },
+                "exact_oracle_worst_cost": 41574.662398448025,
+                "worst_scenario": "s0033"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0033",
+                "s0057",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0033",
+                "s0057",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0033",
+                "s0057",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0033"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0033"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "ca2157207c63267884550c5c4f9d6c0fc7bfdaf2d016862ea9ca3e57e2d10c1c",
@@ -7943,6 +9961,56 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0098",
+                "s0041",
+                "s0079"
+              ],
+              "active_scenarios": [
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0041",
+                "s0079"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0098",
+                "s0041",
+                "s0079"
+              ],
+              "active_scenarios": [
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0041",
+                "s0079"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0098",
+                "s0041",
+                "s0079"
+              ],
+              "active_scenarios": [
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0041",
+                "s0079"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "c638f8e8103a010fc8f89e1a8f836a55f29c3fab757b29eeb4bf501a529d9ef9",
             "2": "c638f8e8103a010fc8f89e1a8f836a55f29c3fab757b29eeb4bf501a529d9ef9",
@@ -8119,7 +10187,18 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0041",
                   "s0079"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0041",
+                  "s0079",
+                  "s0098"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0041": 25145.613266267752,
+                  "s0079": 25145.613266267752
+                },
+                "exact_oracle_worst_cost": 25145.613266267752,
+                "worst_scenario": "s0041"
               },
               {
                 "repetition": 2,
@@ -8162,7 +10241,18 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0041",
                   "s0079"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0041",
+                  "s0079",
+                  "s0098"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0041": 25145.613266267752,
+                  "s0079": 25145.613266267752
+                },
+                "exact_oracle_worst_cost": 25145.613266267752,
+                "worst_scenario": "s0041"
               },
               {
                 "repetition": 3,
@@ -8205,9 +10295,70 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0041",
                   "s0079"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0041",
+                  "s0079",
+                  "s0098"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0041": 25145.613266267752,
+                  "s0079": 25145.613266267752
+                },
+                "exact_oracle_worst_cost": 25145.613266267752,
+                "worst_scenario": "s0041"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0041",
+                "s0079",
+                "s0098"
+              ],
+              "active_scenarios": [
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0041",
+                "s0079"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0041",
+                "s0079",
+                "s0098"
+              ],
+              "active_scenarios": [
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0041",
+                "s0079"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0041",
+                "s0079",
+                "s0098"
+              ],
+              "active_scenarios": [
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0041",
+                "s0079"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "54a0e9256229bd93cdfaae0d90452600529a4b6bfba181b00df961038e55ff5a",
@@ -8491,6 +10642,53 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0098",
+                "s0041",
+                "s0079"
+              ],
+              "active_scenarios": [
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0079"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0098",
+                "s0041",
+                "s0079"
+              ],
+              "active_scenarios": [
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0079"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0098",
+                "s0041",
+                "s0079"
+              ],
+              "active_scenarios": [
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0079"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "c1365ebe4098d27b38b143bbe1e3e3f8cc0627fff78991e3ae2ee0fcec9dc2d6",
             "2": "c1365ebe4098d27b38b143bbe1e3e3f8cc0627fff78991e3ae2ee0fcec9dc2d6",
@@ -8667,7 +10865,18 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0041",
                   "s0079"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0041",
+                  "s0079",
+                  "s0098"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0041": 41711.084139911116,
+                  "s0079": 41711.08413991113
+                },
+                "exact_oracle_worst_cost": 41711.08413991113,
+                "worst_scenario": "s0079"
               },
               {
                 "repetition": 2,
@@ -8710,7 +10919,18 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0041",
                   "s0079"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0041",
+                  "s0079",
+                  "s0098"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0041": 41711.084139911116,
+                  "s0079": 41711.08413991113
+                },
+                "exact_oracle_worst_cost": 41711.08413991113,
+                "worst_scenario": "s0079"
               },
               {
                 "repetition": 3,
@@ -8753,9 +10973,76 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0041",
                   "s0079"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0041",
+                  "s0079",
+                  "s0098"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0041": 41711.084139911116,
+                  "s0079": 41711.08413991113
+                },
+                "exact_oracle_worst_cost": 41711.08413991113,
+                "worst_scenario": "s0079"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0041",
+                "s0079",
+                "s0098",
+                "s0010"
+              ],
+              "active_scenarios": [
+                "s0010",
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0010",
+                "s0079"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0041",
+                "s0079",
+                "s0098",
+                "s0010"
+              ],
+              "active_scenarios": [
+                "s0010",
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0010",
+                "s0079"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0041",
+                "s0079",
+                "s0098",
+                "s0010"
+              ],
+              "active_scenarios": [
+                "s0010",
+                "s0041",
+                "s0079"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0010",
+                "s0079"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "548660c294c01193f2642836e4e0d5a7e5e334801c50bcbf3bbd1f34b5d40637",
@@ -9039,6 +11326,50 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0075",
+                "s0017",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0075",
+                "s0017",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0075",
+                "s0017",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "902debe89a81221d12882a8ad6907137e9067067eb3be236cd6122cfda5e2646",
             "2": "902debe89a81221d12882a8ad6907137e9067067eb3be236cd6122cfda5e2646",
@@ -9213,7 +11544,17 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0017"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0017",
+                  "s0075"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0017": 21388.035268966727
+                },
+                "exact_oracle_worst_cost": 21388.035268966727,
+                "worst_scenario": "s0017"
               },
               {
                 "repetition": 2,
@@ -9254,7 +11595,17 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0017"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0017",
+                  "s0075"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0017": 21388.035268966727
+                },
+                "exact_oracle_worst_cost": 21388.035268966727,
+                "worst_scenario": "s0017"
               },
               {
                 "repetition": 3,
@@ -9295,9 +11646,63 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0017"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0017",
+                  "s0075"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0017": 21388.035268966727
+                },
+                "exact_oracle_worst_cost": 21388.035268966727,
+                "worst_scenario": "s0017"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0017",
+                "s0075"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0017",
+                "s0075"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0017",
+                "s0075"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "826bdc9bc38816d0fdd28b74da4ac1d5d39a497a053811d9f1dd4b156c493b6d",
@@ -9581,6 +11986,50 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0075",
+                "s0017",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0075",
+                "s0017",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0075",
+                "s0017",
+                "s0003"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "902debe89a81221d12882a8ad6907137e9067067eb3be236cd6122cfda5e2646",
             "2": "902debe89a81221d12882a8ad6907137e9067067eb3be236cd6122cfda5e2646",
@@ -9755,7 +12204,17 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0017"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0017",
+                  "s0075"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0017": 37314.95231113777
+                },
+                "exact_oracle_worst_cost": 37314.95231113777,
+                "worst_scenario": "s0017"
               },
               {
                 "repetition": 2,
@@ -9796,7 +12255,17 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0017"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0017",
+                  "s0075"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0017": 37314.95231113777
+                },
+                "exact_oracle_worst_cost": 37314.95231113777,
+                "worst_scenario": "s0017"
               },
               {
                 "repetition": 3,
@@ -9837,9 +12306,63 @@
                 ],
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0017"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0003",
+                  "s0017",
+                  "s0075"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0017": 37314.95231113777
+                },
+                "exact_oracle_worst_cost": 37314.95231113777,
+                "worst_scenario": "s0017"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0017",
+                "s0075"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0017",
+                "s0075"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0003",
+                "s0017",
+                "s0075"
+              ],
+              "active_scenarios": [
+                "s0017"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0017"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "826bdc9bc38816d0fdd28b74da4ac1d5d39a497a053811d9f1dd4b156c493b6d",
@@ -10123,6 +12646,56 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0080",
+                "s0046",
+                "s0039"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0080",
+                "s0046",
+                "s0039"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0080",
+                "s0046",
+                "s0039"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "74ed78f65bf99a01ad21b68d4563d10be706e8caa024a0addf8006dae9511603",
             "2": "74ed78f65bf99a01ad21b68d4563d10be706e8caa024a0addf8006dae9511603",
@@ -10299,7 +12872,19 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0046",
                   "s0080"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0039",
+                  "s0046",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0046": 24787.410681945777,
+                  "s0080": 24787.410681945774
+                },
+                "exact_oracle_worst_cost": 24787.410681945777,
+                "worst_scenario": "s0046"
               },
               {
                 "repetition": 2,
@@ -10342,7 +12927,19 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0046",
                   "s0080"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0039",
+                  "s0046",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0046": 24787.410681945777,
+                  "s0080": 24787.410681945774
+                },
+                "exact_oracle_worst_cost": 24787.410681945777,
+                "worst_scenario": "s0046"
               },
               {
                 "repetition": 3,
@@ -10385,9 +12982,71 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0046",
                   "s0080"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0039",
+                  "s0046",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0046": 24787.410681945777,
+                  "s0080": 24787.410681945774
+                },
+                "exact_oracle_worst_cost": 24787.410681945777,
+                "worst_scenario": "s0046"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0039",
+                "s0046",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0039",
+                "s0046",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0039",
+                "s0046",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "389a462610e2de13b213181ad28092b6d39c26cec7f48901cd94926dec326cbb",
@@ -10671,6 +13330,56 @@
               }
             ]
           },
+          "transferred_states": {
+            "1": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0080",
+                "s0046",
+                "s0039"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            },
+            "2": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0080",
+                "s0046",
+                "s0039"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            },
+            "3": {
+              "budget": 2571.372016574617,
+              "final_scenario_set": [
+                "s0027",
+                "s0080",
+                "s0046",
+                "s0039"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            }
+          },
           "transferred_states_sha256": {
             "1": "74ed78f65bf99a01ad21b68d4563d10be706e8caa024a0addf8006dae9511603",
             "2": "74ed78f65bf99a01ad21b68d4563d10be706e8caa024a0addf8006dae9511603",
@@ -10847,7 +13556,19 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0046",
                   "s0080"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0039",
+                  "s0046",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0046": 41167.388056635355,
+                  "s0080": 41167.38805663535
+                },
+                "exact_oracle_worst_cost": 41167.388056635355,
+                "worst_scenario": "s0046"
               },
               {
                 "repetition": 2,
@@ -10890,7 +13611,19 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0046",
                   "s0080"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0039",
+                  "s0046",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0046": 41167.388056635355,
+                  "s0080": 41167.38805663535
+                },
+                "exact_oracle_worst_cost": 41167.388056635355,
+                "worst_scenario": "s0046"
               },
               {
                 "repetition": 3,
@@ -10933,9 +13666,71 @@
                 "transferred_scenarios_becoming_active_or_worst": [
                   "s0046",
                   "s0080"
-                ]
+                ],
+                "initial_scenarios": [
+                  "s0027",
+                  "s0039",
+                  "s0046",
+                  "s0080"
+                ],
+                "transferred_exact_scenario_costs": {
+                  "s0046": 41167.388056635355,
+                  "s0080": 41167.38805663535
+                },
+                "exact_oracle_worst_cost": 41167.388056635355,
+                "worst_scenario": "s0046"
               }
             ]
+          },
+          "transferred_states": {
+            "1": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0039",
+                "s0046",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            },
+            "2": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0039",
+                "s0046",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            },
+            "3": {
+              "budget": 3038.894201406366,
+              "final_scenario_set": [
+                "s0027",
+                "s0039",
+                "s0046",
+                "s0080"
+              ],
+              "active_scenarios": [
+                "s0046",
+                "s0080"
+              ],
+              "historical_adversarial_scenarios": [
+                "s0046"
+              ]
+            }
           },
           "transferred_states_sha256": {
             "1": "389a462610e2de13b213181ad28092b6d39c26cec7f48901cd94926dec326cbb",
@@ -11436,7 +14231,7 @@
   "global_artifacts": {
     "formal_projection_sha256": "23b0d08b3a9b51c5df84c1e30e80eb74beb6d3f6ba7d427105d96906f29aea72",
     "formal_run_registry_sha256": "b455c045968244567555d81692f7aba7fbfb392430fe6132b5f16c047f315271",
-    "run_evidence_mapping_sha256": "309a835ff55bf420f7d4573422200705cdb37d39956b343a0dd4f59fdf740c57"
+    "run_evidence_mapping_sha256": "94299372aa35d052719b3338bbc8cf55e1de52065ac42b30c0de5b7b6fdb7614"
   },
   "execution_boundaries": {
     "M2_1_runs": 0,

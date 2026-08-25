@@ -54,7 +54,9 @@ def _oracle_order(row: Mapping[str, Any]) -> list[str]:
 def _compact_method(row: Mapping[str, Any]) -> dict[str, Any]:
     metrics = _method_metrics(row)
     order = _oracle_order(row)
-    return {
+    transferred = list(row["transferred_exact_scenarios"])
+    exact_costs = row["ccg_result"]["exact_scenario_costs"]
+    compact = {
         "repetition": int(row["repetition"]),
         "status": str(row["status"]),
         **metrics,
@@ -62,11 +64,21 @@ def _compact_method(row: Mapping[str, Any]) -> dict[str, Any]:
         "exact_oracle_scenario_order_sha256": canonical_sha(order),
         "transfer_source_state_sha256": row.get("transfer_source_state_sha256"),
         "transfer_source_budget": row.get("transfer_source_budget"),
-        "transferred_exact_scenarios": list(row["transferred_exact_scenarios"]),
+        "transferred_exact_scenarios": transferred,
         "transferred_scenarios_becoming_active_or_worst": list(
             row["transferred_scenarios_becoming_active_or_worst"]
         ),
     }
+    if row.get("transfer_source_state_sha256") is not None:
+        compact.update({
+            "initial_scenarios": list(row["initial_scenarios"]),
+            "transferred_exact_scenario_costs": {
+                name: float(exact_costs[name]) for name in transferred
+            },
+            "exact_oracle_worst_cost": max(float(value) for value in exact_costs.values()),
+            "worst_scenario": row["ccg_result"]["worst_scenario"],
+        })
+    return compact
 
 
 def _compact_run(result_path: Path) -> dict[str, Any]:
@@ -91,6 +103,7 @@ def _compact_run(result_path: Path) -> dict[str, Any]:
             "warm_median_seconds": warm_median,
             "speedup_cold_over_warm": cold_median / warm_median,
             "methods": methods,
+            "transferred_states": comparison["transferred_states"],
             "transferred_states_sha256": {
                 key: _canonical_sha(value)
                 for key, value in comparison["transferred_states"].items()
@@ -133,6 +146,9 @@ def _derived(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
 def _run_mapping(runs: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         run["run_id"]: {
+            "case_id": run["case_id"], "seed": run["seed"],
+            "profile_id": run["profile_id"],
+            "execution_identity": run["execution_identity"],
             "result_sha256": run["result_sha256"],
             "manifest_sha256": run["manifest_sha256"],
             "status_summary_sha256": run["status_summary_sha256"],
@@ -165,7 +181,7 @@ def validate_compact_audit(audit: Mapping[str, Any]) -> None:
             or len(run["comparisons"]) != 2
         ):
             raise ValueError("formal run closure mismatch")
-        prior_states: dict[str, str] | None = None
+        prior_states: dict[str, dict[str, Any]] | None = None
         prior_components = prior_joint = None
         for index, comparison in enumerate(run["comparisons"]):
             pairs += 1
@@ -213,8 +229,46 @@ def validate_compact_audit(audit: Mapping[str, Any]) -> None:
                             raise ValueError("unexpected transfer")
                     else:
                         key = str(repetition)
-                        if row["transfer_source_state_sha256"] != prior_states[key] or not row["transferred_exact_scenarios"]:
-                            raise ValueError("second-budget transfer mismatch")
+                        source = prior_states[key]
+                        if row["transfer_source_state_sha256"] != _canonical_sha(source):
+                            raise ValueError("second-budget source state mismatch")
+                        if not math.isclose(
+                            float(row["transfer_source_budget"]), EXPECTED_BUDGETS[0],
+                            rel_tol=0.0, abs_tol=1.0e-9,
+                        ):
+                            raise ValueError("second-budget source budget mismatch")
+                        reusable = set(source["active_scenarios"]) | set(
+                            source["historical_adversarial_scenarios"]
+                        )
+                        expected_transfer = [
+                            scenario for scenario in row["initial_scenarios"]
+                            if scenario in reusable
+                        ]
+                        if row["transferred_exact_scenarios"] != expected_transfer or not expected_transfer:
+                            raise ValueError("second-budget transferred scenario set mismatch")
+                        if row["transferred_exact_scenario_count"] != len(expected_transfer):
+                            raise ValueError("second-budget transferred scenario count mismatch")
+                        expected_rate = len(expected_transfer) / len(row["initial_scenarios"])
+                        if not math.isclose(
+                            row["transferred_scenario_reuse_rate"], expected_rate,
+                            rel_tol=0.0, abs_tol=1.0e-12,
+                        ):
+                            raise ValueError("second-budget reuse rate mismatch")
+                        costs = row["transferred_exact_scenario_costs"]
+                        if set(costs) != set(expected_transfer):
+                            raise ValueError("transferred scenario cost identity mismatch")
+                        expected_active_or_worst = [
+                            scenario for scenario in expected_transfer
+                            if row["exact_oracle_worst_cost"] - float(costs[scenario]) <= 1.0e-6
+                            or scenario == row["worst_scenario"]
+                        ]
+                        if (
+                            row["transferred_scenarios_becoming_active_or_worst"]
+                            != expected_active_or_worst
+                            or row["transferred_scenarios_becoming_active_or_worst_count"]
+                            != len(expected_active_or_worst)
+                        ):
+                            raise ValueError("transferred active/worst evidence mismatch")
                     objectives.append(row["objective"])
                     identities.append((row["joint_scenario_set_sha256"], row["component_set_sha256"]))
             if any(value != identities[0] for value in identities[1:]):
@@ -231,7 +285,12 @@ def validate_compact_audit(audit: Mapping[str, Any]) -> None:
                 raise ValueError("median timing mismatch")
             if comparison["speedup_cold_over_warm"] != comparison["cold_median_seconds"] / comparison["warm_median_seconds"]:
                 raise ValueError("speedup mismatch")
-            prior_states = comparison["transferred_states_sha256"]
+            states = comparison["transferred_states"]
+            if set(states) != {"1", "2", "3"} or comparison["transferred_states_sha256"] != {
+                key: _canonical_sha(value) for key, value in states.items()
+            }:
+                raise ValueError("transferable state content/hash mismatch")
+            prior_states = states
             prior_joint, prior_components = identities[0]
     if (pairs, executions) != (40, 240):
         raise ValueError("formal workload closure mismatch")
@@ -309,7 +368,10 @@ def build(*, execution_root: Path, audit_path: Path, csv_path: Path) -> dict[str
         },
     }
     validate_compact_audit(audit)
-    audit_path.write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    audit_path.write_text(
+        json.dumps(audit, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8", newline="\n",
+    )
     with csv_path.open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=(
             "seed", "C0_beta_1_1_speedup", "C0_beta_1_3_speedup", "C0_end_to_end_speedup",
