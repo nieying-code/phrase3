@@ -8,15 +8,16 @@ from pathlib import Path
 import pytest
 
 from src.phase6_m2_algorithm_performance_formal import (
-    FormalCase, FormalEvidenceError, _run_formal_sequence, _validate_result, build_formal_cases,
+    GAP_NUMERICAL_PROTECTION, FormalCase, FormalEvidenceError, _method_metrics,
+    _run_formal_sequence, _validate_result, build_formal_cases,
     compute_formal_statistics, read_status,
     run_formal_batch, update_projection, validate_preflight, validate_static_freeze,
 )
 
 
 ROOT=Path(__file__).resolve().parents[1]
-RUNNER=ROOT/"configs/phase6_m2_algorithm_performance_formal_runner_v1_0.yaml"
-APPROVAL=ROOT/"configs/phase6_m2_algorithm_performance_formal_approval_v1_0.yaml"
+RUNNER=ROOT/"configs/phase6_m2_algorithm_performance_formal_runner_v1_1.yaml"
+APPROVAL=ROOT/"configs/phase6_m2_algorithm_performance_formal_approval_v1_1.yaml"
 
 
 def _sha(value):
@@ -139,6 +140,34 @@ def test_solver_timeout_is_immutable_and_stops_sequence(tmp_path) -> None:
     assert len(calls)==2
     status=json.loads((tmp_path/"runs/timeout_case/status_summary.json").read_text())
     assert status["status"]=="timeout"
+
+
+@pytest.mark.parametrize("reported_gap", (-1.4551915228366852e-11, -1.0e-9))
+def test_near_zero_negative_gap_is_preserved_and_normalized(reported_gap) -> None:
+    request={"profile_id":"T03","algorithm":"cold","repetition":1,"seed":1,"beta":1.1,"budget":1.0}
+    row=_fake_worker([])(request,1.0,ROOT)
+    row["ccg_result"]["gap"]=reported_gap
+    metrics=_method_metrics(row)
+    assert metrics["reported_optimality_gap"]==reported_gap
+    assert metrics["optimality_gap"]==0.0
+    assert metrics["recomputed_upper_minus_lower"]==0.0
+
+
+@pytest.mark.parametrize("reported_gap", (-1.0000001e-9,float("nan"),float("inf"),float("-inf")))
+def test_materially_negative_or_nonfinite_gap_is_rejected(reported_gap) -> None:
+    request={"profile_id":"T03","algorithm":"cold","repetition":1,"seed":1,"beta":1.1,"budget":1.0}
+    row=_fake_worker([])(request,1.0,ROOT)
+    row["ccg_result"]["gap"]=reported_gap
+    with pytest.raises(ValueError):
+        _method_metrics(row)
+
+
+def test_reported_gap_must_match_upper_minus_lower_within_protection() -> None:
+    request={"profile_id":"T03","algorithm":"cold","repetition":1,"seed":1,"beta":1.1,"budget":1.0}
+    row=_fake_worker([])(request,1.0,ROOT)
+    row["ccg_result"]["gap"]=GAP_NUMERICAL_PROTECTION+1.0e-12
+    with pytest.raises(ValueError,match="upper minus lower"):
+        _method_metrics(row)
 
 
 def test_optimal_worker_with_invalid_metric_stops_before_next_solve(tmp_path) -> None:
