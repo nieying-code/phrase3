@@ -5,7 +5,7 @@
   "base_main_tree": "28daa90572a76446f1701fc0817e386fd685f4b5",
   "design_config": {
     "path": "configs/phase6_m2_algorithm_performance_design_v1_0.yaml",
-    "sha256": "e514a08ed53577b58734bd87b29104fff19d5c17042d2026b38fcaad0dd654c4"
+    "sha256": "2c5fda31262af1522a8719044c9b4126e70c920b65ff8f3b8c382b5d6fdf1f49"
   },
   "parent_evidence": {
     "M2_formal_mechanism_results": {
@@ -64,17 +64,31 @@
     "technical_repetitions_are_not_independent_samples": true
   },
   "primary_estimand": {
-    "name": "T03_profile_sequence_speedup",
+    "name": "T03_beta_1_3_cross_budget_transfer_speedup",
     "per_budget": "median_cold_seconds_divided_by_median_warm_seconds",
-    "per_seed": "median_across_two_budgets_of_log_per_budget_speedup",
-    "aggregate": "exp_median_across_ten_seeds",
+    "per_seed": "log_q_seed_T03_beta_1_3",
+    "aggregate": "exp_median_across_ten_seeds_of_log_q_seed_T03_beta_1_3",
+    "beta_1_1_excluded_because_no_prior_budget_transfer": true,
     "bootstrap_rng": "numpy_Generator_PCG64DXSM",
     "bootstrap_seed": 2026091299,
     "bootstrap_resamples": 10000,
     "confidence_level": 0.95
   },
+  "confirmatory_disruption_enhancement_estimand": {
+    "name": "paired_T03_vs_C0_beta_1_3_speedup_ratio",
+    "per_seed": "log_q_seed_T03_beta_1_3_minus_log_q_seed_C0_beta_1_3",
+    "aggregate": "exp_median_across_ten_seeds_of_paired_log_speedup_difference",
+    "claim_requires_point_estimate_and_bootstrap_CI_lower_bound_above_one": true
+  },
+  "secondary_end_to_end_estimand": {
+    "per_seed_profile": "sum_median_cold_seconds_across_two_budgets_divided_by_sum_median_warm_seconds_across_two_budgets",
+    "geometric_mean_of_budget_speed_ratios_forbidden": true
+  },
   "pre_registered_reporting_rule": {
-    "M2_stronger_requires_correctness_and_point_estimate_above_one_and_CI_lower_bound_above_one": true,
+    "reliable_M2_T03_acceleration_requires_correctness_and_S_point_estimate_and_CI_lower_bound_above_one": true,
+    "disruption_enhancement_requires_reliable_acceleration_and_D_point_estimate_and_CI_lower_bound_above_one": true,
+    "M2_vs_M0_cross_experiment_effect_not_preregistered": true,
+    "claim_M2_is_stronger_than_M0_forbidden": true,
     "M0_results_always_retained": true,
     "M2_results_must_be_reported_regardless_of_direction": true,
     "further_parameter_or_seed_search_after_formal_results_forbidden": true

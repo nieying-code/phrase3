@@ -19,7 +19,7 @@ M0_PARENT = ROOT / "docs/handoffs/2026-08-23_phase6_m0_e3_algorithm_performance_
 MATRIX = ROOT / "configs/phase6_experiment_matrix.yaml"
 M2C2 = ROOT / "configs/phase6_m2_two_item_confirmation.yaml"
 
-CONFIG_SHA256 = "e514a08ed53577b58734bd87b29104fff19d5c17042d2026b38fcaad0dd654c4"
+CONFIG_SHA256 = "2c5fda31262af1522a8719044c9b4126e70c920b65ff8f3b8c382b5d6fdf1f49"
 M2_PARENT_SHA256 = "bce5b075d352a4679b4371a073f5cc0a931a6b309b401318e9f4c38a8a7489a5"
 M0_PARENT_SHA256 = "cec805c4b414a9ebbfd0ebbb80990d85016873dbc974eea2e7f9f0ef172e2e54"
 PILOT = tuple(range(2026091001, 2026091004))
@@ -158,27 +158,48 @@ def test_primary_estimator_and_nonselective_reporting_rule_are_frozen() -> None:
 
     assert stats["independent_unit"] == "formal_performance_seed"
     assert stats["per_budget_speedup"]["formula"] == "median_cold_seconds_divided_by_median_warm_seconds"
-    assert stats["per_seed_profile_sequence_log_speedup"]["formula"] == (
-        "median_across_two_budgets_of_log_per_budget_speedup"
-    )
-    assert stats["profile_sequence_speedup"]["formula"] == "exp_median_across_ten_seeds_of_per_seed_profile_sequence_log_speedup"
-    assert stats["primary_estimand"] == "T03_profile_sequence_speedup"
+    assert stats["primary_estimand"] == {
+        "name": "T03_beta_1_3_cross_budget_transfer_speedup",
+        "formula": "exp_median_across_ten_seeds_of_log_q_seed_T03_beta_1_3",
+        "first_budget_beta_1_1_excluded_because_no_prior_budget_transfer": True,
+    }
+    assert stats["confirmatory_disruption_enhancement_estimand"] == {
+        "name": "paired_T03_vs_C0_beta_1_3_speedup_ratio",
+        "per_seed_formula": "log_q_seed_T03_beta_1_3_minus_log_q_seed_C0_beta_1_3",
+        "aggregate_formula": "exp_median_across_ten_seeds_of_paired_log_speedup_difference",
+    }
+    assert stats["end_to_end_sequence_speedup"] == {
+        "role": "secondary_descriptive",
+        "per_seed_profile_formula": "sum_median_cold_seconds_across_two_budgets_divided_by_sum_median_warm_seconds_across_two_budgets",
+        "aggregate_formula": "exp_median_across_ten_seeds_of_log_per_seed_end_to_end_speedup",
+        "geometric_mean_of_two_budget_speed_ratios_forbidden_as_end_to_end_measure": True,
+    }
     assert stats["bootstrap"] == {
         "method": "paired_seed_cluster_percentile",
         "random_number_generator": "numpy_Generator_PCG64DXSM",
         "random_seed": 2026091299,
         "resamples": 10000,
         "confidence_level": 0.95,
-        "primary_statistic": "exp_median_resampled_T03_seed_level_log_speedups",
-        "paired_profile_contrast_statistic": "exp_median_resampled_seed_level_T03_minus_C0_log_speedup",
+        "primary_statistic": "exp_median_resampled_log_q_seed_T03_beta_1_3",
+        "confirmatory_disruption_enhancement_statistic": "exp_median_resampled_beta_1_3_T03_minus_C0_log_speedup",
     }
     assert stats["P_values_planned"] is False
     assert interpretation["M0_results_may_not_be_deleted_or_rewritten"] is True
     assert interpretation["M2_results_may_not_be_hidden_if_unfavorable"] is True
     assert interpretation["no_further_parameter_seed_profile_or_scale_search_after_formal_results"] is True
-    assert audit["primary_estimand"]["name"] == stats["primary_estimand"]
+    assert interpretation["claim_M2_is_stronger_than_M0_forbidden"] is True
+    assert interpretation["M2_vs_M0_cross_experiment_effect_comparison_preregistered"] is False
+    assert audit["primary_estimand"]["name"] == stats["primary_estimand"]["name"]
+    assert audit["primary_estimand"]["beta_1_1_excluded_because_no_prior_budget_transfer"] is True
+    assert audit["confirmatory_disruption_enhancement_estimand"]["name"] == (
+        stats["confirmatory_disruption_enhancement_estimand"]["name"]
+    )
+    assert audit["secondary_end_to_end_estimand"]["geometric_mean_of_budget_speed_ratios_forbidden"] is True
     assert audit["pre_registered_reporting_rule"] == {
-        "M2_stronger_requires_correctness_and_point_estimate_above_one_and_CI_lower_bound_above_one": True,
+        "reliable_M2_T03_acceleration_requires_correctness_and_S_point_estimate_and_CI_lower_bound_above_one": True,
+        "disruption_enhancement_requires_reliable_acceleration_and_D_point_estimate_and_CI_lower_bound_above_one": True,
+        "M2_vs_M0_cross_experiment_effect_not_preregistered": True,
+        "claim_M2_is_stronger_than_M0_forbidden": True,
         "M0_results_always_retained": True,
         "M2_results_must_be_reported_regardless_of_direction": True,
         "further_parameter_or_seed_search_after_formal_results_forbidden": True,
