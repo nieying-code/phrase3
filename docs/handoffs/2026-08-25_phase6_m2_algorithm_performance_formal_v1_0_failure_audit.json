@@ -1,0 +1,142 @@
+{
+  "audit_id": "phase6_m2_algorithm_performance_formal_v1_0_failure",
+  "status": "stopped_after_first_invalid_primary",
+  "execution_identity": {
+    "pr84_merge_commit": "b41d5f25f3f4f628307debe6fc4292e2a587ced3",
+    "execution_git_sha": "b41d5f25f3f4f628307debe6fc4292e2a587ced3",
+    "execution_git_tree_sha": "6cdb22a4fdb80240a9a7c106899e050a07346377",
+    "branch": "main",
+    "HEAD_equal_fetched_origin_main": true,
+    "working_tree_dirty": false,
+    "run_id_prefix": "m2ap_formal_v1_20260825"
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "ce001f9fdce3eae0f9a14a99093186e90072fb945e546406305764e765bb0734",
+    "e3_component_sha256": "385728aff66aa3433a54ba657f40718a5a747040a6c0cf246890646617001af2",
+    "family_component_sha256": "3622c71b61214053fec18b19bfc321091eacc367bcb2fe03d7b3fb32c541a660",
+    "runner_config_sha256": "8058dfd3b0aceafd3b93cb5fa7ae1bb94c4cacd809bc6bff31607b9b18828bd8",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
+    "algorithm_performance_orchestrator_sha256": "6b2abadbbee4108fdac59d90f3b36a6c8e41ba821616a24f8378c24b111b923f"
+  },
+  "source_artifact_sha256": {
+    "formal_projection": "155e43858ea6979cd71c1070b6a6fce9707a8682e66c6fd64544238908f43afc",
+    "run_registry": "5760ced0d036cb2f1cf303cf64556cf6aa7d65fefa528dc1de3b9149c549ebf8",
+    "status_summary": "48b34a945d78d3dc20d06b2c1c6e3a586f242b48a6e8b94b73b42f84f9e062f6",
+    "failed_run_result": "a2f9f4c0788c5ca19faf819c90850dfedb911d7ea72fcfb652aea9d760549435",
+    "failed_run_manifest": "164405e7db726d332be6d8e121bdd83321127533135fb61787459f23a16316fe",
+    "failed_run_status_summary": "e839073e5d84f03d321629bf03f5accc8dedde95a3371d9cce740a8fbae7a39e",
+    "failed_worker_request": "fbe21a596ed35dd2b6e91e2ed26b83063913c315a8718da1996fc06397ce44c2",
+    "failed_worker_result": "12950b8813ef121ffafe6a39e09ff6c0e2bf140a398f6dcc91d8fc6117f60dd0"
+  },
+  "primary_runs": [
+    {
+      "run_id": "m2ap_formal_v1_20260825_M2AP2_formal_seed2026091101_profileC0",
+      "case_id": "M2AP2_formal_seed2026091101_profileC0",
+      "seed": 2026091101,
+      "profile_id": "C0",
+      "status": "optimal",
+      "result_sha256": "287949860a1220c066f4ddacd7f74947cbf9007a22cb52cba0de7a1604d11102",
+      "manifest_sha256": "993b569e8fc57f0e743b751d7361df7dfbb1e34425e758c1da663f482ac9cf50"
+    },
+    {
+      "run_id": "m2ap_formal_v1_20260825_M2AP2_formal_seed2026091101_profileT03",
+      "case_id": "M2AP2_formal_seed2026091101_profileT03",
+      "seed": 2026091101,
+      "profile_id": "T03",
+      "status": "optimal",
+      "result_sha256": "f9049bf3c4f4a66b99c70aef82f16b6b35f71cfee6920f3810fc0c77309b0c05",
+      "manifest_sha256": "f4629b7b4d9ccc2e043584ea98dee42e352a1ad26da0c948936439e8658dec2c"
+    },
+    {
+      "run_id": "m2ap_formal_v1_20260825_M2AP2_formal_seed2026091102_profileC0",
+      "case_id": "M2AP2_formal_seed2026091102_profileC0",
+      "seed": 2026091102,
+      "profile_id": "C0",
+      "status": "optimal",
+      "result_sha256": "9a7a6fab6c958ed12ca0a7bfaecce9213908ef24884230b6d8f2cf1f7eefbff2",
+      "manifest_sha256": "990f50aab64431c254f71692256ef0e5093ca5dc4965173501ba2b7e6188106b"
+    },
+    {
+      "run_id": "m2ap_formal_v1_20260825_M2AP2_formal_seed2026091102_profileT03",
+      "case_id": "M2AP2_formal_seed2026091102_profileT03",
+      "seed": 2026091102,
+      "profile_id": "T03",
+      "status": "evidence_invalid",
+      "result_sha256": "a2f9f4c0788c5ca19faf819c90850dfedb911d7ea72fcfb652aea9d760549435",
+      "manifest_sha256": "164405e7db726d332be6d8e121bdd83321127533135fb61787459f23a16316fe"
+    }
+  ],
+  "failed_primary": {
+    "run_id": "m2ap_formal_v1_20260825_M2AP2_formal_seed2026091102_profileT03",
+    "parent_run_id": null,
+    "case_id": "M2AP2_formal_seed2026091102_profileT03",
+    "tier_id": "M2AP2",
+    "seed": 2026091102,
+    "profile_id": "T03",
+    "budget_index": 0,
+    "beta": 1.1,
+    "algorithm": "cold",
+    "repetition": 1,
+    "outer_status": "evidence_invalid",
+    "worker_status": "optimal",
+    "exception_type": "FormalEvidenceError",
+    "exception_message": "optimality gap must be finite and nonnegative",
+    "termination_status": "optimal",
+    "converged": true,
+    "objective": 38907.64189347718,
+    "lower_bound": 38907.641893477194,
+    "upper_bound": 38907.64189347718,
+    "reported_gap": -1.4551915228366852e-11,
+    "upper_minus_lower": -1.4551915228366852e-11,
+    "frozen_objective_tolerance": 0.003900764189347718,
+    "iterations": 1,
+    "solver": "gurobi_direct",
+    "subprocess_wall_seconds": 2.4446415999846067,
+    "sampled_peak_RSS_MiB": 86.0859375
+  },
+  "root_cause": {
+    "classification": "numerical_reporting_roundoff_at_zero_gap",
+    "lower_bound_exceeds_upper_bound_by": 1.4551915228366852e-11,
+    "magnitude_is_below_frozen_objective_tolerance": true,
+    "mathematical_model_failure": false,
+    "gurobi_solver_failure": false,
+    "worker_reported_optimal": true,
+    "formal_evidence_gate_correctly_rejected_negative_gap": true,
+    "fix_applied_in_this_PR": false
+  },
+  "batch_closure": {
+    "required_primary_sequence_count": 20,
+    "completed_primary_sequence_count": 3,
+    "failed_primary_sequence_count": 1,
+    "not_started_primary_sequence_count": 16,
+    "required_budget_pair_count": 40,
+    "completed_budget_pair_count": 6,
+    "failed_incomplete_budget_pair_count": 1,
+    "not_started_budget_pair_count": 33,
+    "required_algorithm_execution_count": 240,
+    "completed_algorithm_execution_count": 36,
+    "failed_evidence_algorithm_execution_count": 1,
+    "not_started_algorithm_execution_count": 203,
+    "diagnostic_run_count": 0,
+    "duplicate_primary_run_count": 0,
+    "formal_algorithm_performance_gate_passed": false
+  },
+  "execution_side_effects": {
+    "attempted_worker_algorithm_execution_count": 37,
+    "residual_python_or_gurobi_process_count": 0,
+    "same_run_id_retry_count": 0,
+    "M0_E3_additional_runs": 0,
+    "M2_mechanism_additional_runs": 0,
+    "M2_OOS_additional_runs": 0,
+    "M2_1_additional_runs": 0
+  },
+  "disposition": {
+    "failed_output_preserved": true,
+    "current_namespace_may_not_be_reused_for_primary_batch": true,
+    "automatic_retry_forbidden": true,
+    "diagnostic_retry_started": false,
+    "new_runner_fix_and_reauthorization_required": true,
+    "formal_or_other_execution_authorized_by_this_PR": false
+  },
+  "CI": "recorded_in_pr_body"
+}
