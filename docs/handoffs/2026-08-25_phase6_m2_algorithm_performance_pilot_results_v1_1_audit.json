@@ -1,0 +1,920 @@
+{
+  "audit_id": "phase6_m2_algorithm_performance_pilot_results_v1_1",
+  "status": "passed",
+  "execution_identity": {
+    "branch": "main",
+    "upstream_remote": "origin",
+    "upstream_merge": "refs/heads/main",
+    "head": "769dafca0fddf13f3d28287a815a6bca0807454b",
+    "remote_main": "769dafca0fddf13f3d28287a815a6bca0807454b",
+    "tree": "6bcb55edc6db5fa979ea903786c84b9e6d92a8ea",
+    "reviewed_runner_merge_commit": "03978b0efce768672233079ea23364c6ca632418"
+  },
+  "fingerprints": {
+    "scientific_config_sha256": "ce001f9fdce3eae0f9a14a99093186e90072fb945e546406305764e765bb0734",
+    "e3_component_sha256": "304aad69069bac84088cb2f34308c44dd54e06c4d5042170c4815086af62e6e9",
+    "family_component_sha256": "1f75200e9516aa77c93fa26deaf9e35b13106111d3a19637fa1d438ef3be6c30",
+    "runner_config_sha256": "a8798a2dd782c07bd8b17702b577faf6d25aadaac8142eee77112d4b5575e535",
+    "environment_sha256": "b46fb4921101d1002af2b7c5873b6df45ea7c83040cc904d3becc5ab3b66a6af",
+    "algorithm_performance_orchestrator_sha256": "f19219a898d5d6401fa5beb789e12c9f46345dc29e3a60504da70e1a36eda9fc"
+  },
+  "global_artifacts": {
+    "pilot_projection_sha256": "7e569409c5d0565b09ffb777a978007f162a2787f36c0005ca1877db335d05ca",
+    "run_registry_sha256": "cfa18e105d40942fbd2a2ee728f0fe2df25af4d04762fe04f98e5d254b327710",
+    "status_summary_sha256": "7e569409c5d0565b09ffb777a978007f162a2787f36c0005ca1877db335d05ca",
+    "run_artifact_mapping_sha256": "d6e57f909be4a378e238a8d190ac5ce66d5cfd0fe4372498e8ed393056e4a851"
+  },
+  "runs": [
+    {
+      "run_id": "m2ap_pilot_v1_1_20260825_M2AP2_pilot_seed2026091001_profileC0",
+      "case_id": "M2AP2_pilot_seed2026091001_profileC0",
+      "tier_id": "M2AP2",
+      "execution_mode": "pilot",
+      "seed": 2026091001,
+      "profile_id": "C0",
+      "status": "optimal",
+      "planned_algorithm_solve_count": 6,
+      "completed_algorithm_solve_count": 6,
+      "result_sha256": "922896e485a2124d91ed98c36def1fbe9793b9455b81f9c6fc004f3a7721f88d",
+      "manifest_sha256": "8c3f3f31aea482bd690df9ef33164baf0debf0656c243091ce313bb33b0eb495",
+      "status_summary_sha256": "3f1ad9d8e44678b74313526ece75c9c045c34dd13247ca64ec521f5f71b7b7bb",
+      "comparisons": [
+        {
+          "budget_index": 0,
+          "beta": 1.1,
+          "budget": 2571.372016574617,
+          "execution_order": [
+            "extensive",
+            "cold",
+            "warm"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "63e05691a18c9cbe01d8ad1e1f264f523ed3b391ddbbf93ba56a592d8c85e213",
+          "component_set_sha256": {
+            "latent_draw_sha256": "fc94f65e3764fb28625a7ab5d40557adaa35d75f811ccbb07f4aa24d992d4e4a",
+            "demand_sha256": "12d63f5178f54fe87e33b713ba58ef96c5eaa23a444795f9c5d9f917364e8933",
+            "fulfillment_sha256": "222acb23db7f37c5009ee8ed6f294ae45abf1f0ead44c4aea4f77b76379b5539",
+            "emergency_price_sha256": "d87e5722f8bcf420a286940813a2fbc8b35fb43b8a08d74190c5f3f873076d79",
+            "emergency_supply_sha256": "5b5ec4ebcd3b367ea948cf17cd9fbbef378287ebdc09e339dbf7511fa2c5ae39",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 22317.130321067933,
+              "subprocess_wall_seconds": 2.0868171000038274,
+              "sampled_peak_RSS_MiB": 110.41796875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 22317.130321067933,
+              "subprocess_wall_seconds": 1.740854900010163,
+              "sampled_peak_RSS_MiB": 82.23046875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 3,
+              "final_scenario_pool_size": 3,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 22317.130321067933,
+              "subprocess_wall_seconds": 1.7405820999993011,
+              "sampled_peak_RSS_MiB": 82.22265625,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 3,
+              "final_scenario_pool_size": 3,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 0.0
+        },
+        {
+          "budget_index": 1,
+          "beta": 1.3,
+          "budget": 3038.894201406366,
+          "execution_order": [
+            "extensive",
+            "warm",
+            "cold"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "63e05691a18c9cbe01d8ad1e1f264f523ed3b391ddbbf93ba56a592d8c85e213",
+          "component_set_sha256": {
+            "latent_draw_sha256": "fc94f65e3764fb28625a7ab5d40557adaa35d75f811ccbb07f4aa24d992d4e4a",
+            "demand_sha256": "12d63f5178f54fe87e33b713ba58ef96c5eaa23a444795f9c5d9f917364e8933",
+            "fulfillment_sha256": "222acb23db7f37c5009ee8ed6f294ae45abf1f0ead44c4aea4f77b76379b5539",
+            "emergency_price_sha256": "d87e5722f8bcf420a286940813a2fbc8b35fb43b8a08d74190c5f3f873076d79",
+            "emergency_supply_sha256": "5b5ec4ebcd3b367ea948cf17cd9fbbef378287ebdc09e339dbf7511fa2c5ae39",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 12585.529904802483,
+              "subprocess_wall_seconds": 2.0390073000162374,
+              "sampled_peak_RSS_MiB": 102.35546875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 12585.529904802483,
+              "subprocess_wall_seconds": 1.7305578000086825,
+              "sampled_peak_RSS_MiB": 82.52734375,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 3,
+              "final_scenario_pool_size": 3,
+              "transferred_exact_scenarios": [
+                "s0032"
+              ],
+              "transferred_exact_scenario_count": 1,
+              "transferred_scenario_reuse_rate": 0.3333333333333333,
+              "transferred_scenarios_becoming_active_or_worst_count": 1
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 12585.529904802483,
+              "subprocess_wall_seconds": 1.7307524000061676,
+              "sampled_peak_RSS_MiB": 82.71484375,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 3,
+              "final_scenario_pool_size": 3,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 0.0
+        }
+      ]
+    },
+    {
+      "run_id": "m2ap_pilot_v1_1_20260825_M2AP2_pilot_seed2026091001_profileT03",
+      "case_id": "M2AP2_pilot_seed2026091001_profileT03",
+      "tier_id": "M2AP2",
+      "execution_mode": "pilot",
+      "seed": 2026091001,
+      "profile_id": "T03",
+      "status": "optimal",
+      "planned_algorithm_solve_count": 6,
+      "completed_algorithm_solve_count": 6,
+      "result_sha256": "f862d79251a9d1c5704af83dedc7e6c20bf3be32f4432ca078d9e80e22546ad2",
+      "manifest_sha256": "8230ea65c0a210956e19c372628354f910d6aef286d54a7cad5f425a5978b95a",
+      "status_summary_sha256": "d9f189a7da0d0f2fe975c8c690b329995b4db23535a87ff3d32edd0012a498cd",
+      "comparisons": [
+        {
+          "budget_index": 0,
+          "beta": 1.1,
+          "budget": 2571.372016574617,
+          "execution_order": [
+            "extensive",
+            "cold",
+            "warm"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "e6049a3252a81fa668e15b0f14db05afa486d47e2c1d4d84d352ca95d54a4c29",
+          "component_set_sha256": {
+            "latent_draw_sha256": "fc94f65e3764fb28625a7ab5d40557adaa35d75f811ccbb07f4aa24d992d4e4a",
+            "demand_sha256": "12d63f5178f54fe87e33b713ba58ef96c5eaa23a444795f9c5d9f917364e8933",
+            "fulfillment_sha256": "b099d01e557404a0141e070f93d08cc8badd9c6e29d3895b20ac301440176565",
+            "emergency_price_sha256": "d87e5722f8bcf420a286940813a2fbc8b35fb43b8a08d74190c5f3f873076d79",
+            "emergency_supply_sha256": "5b5ec4ebcd3b367ea948cf17cd9fbbef378287ebdc09e339dbf7511fa2c5ae39",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 34123.34380379778,
+              "subprocess_wall_seconds": 2.0845557000138797,
+              "sampled_peak_RSS_MiB": 106.9921875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 34123.34380379778,
+              "subprocess_wall_seconds": 1.73639799997909,
+              "sampled_peak_RSS_MiB": 82.91015625,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 3,
+              "final_scenario_pool_size": 3,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 34123.34380379778,
+              "subprocess_wall_seconds": 1.7430025999783538,
+              "sampled_peak_RSS_MiB": 82.8203125,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 3,
+              "final_scenario_pool_size": 3,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 0.0
+        },
+        {
+          "budget_index": 1,
+          "beta": 1.3,
+          "budget": 3038.894201406366,
+          "execution_order": [
+            "extensive",
+            "warm",
+            "cold"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "e6049a3252a81fa668e15b0f14db05afa486d47e2c1d4d84d352ca95d54a4c29",
+          "component_set_sha256": {
+            "latent_draw_sha256": "fc94f65e3764fb28625a7ab5d40557adaa35d75f811ccbb07f4aa24d992d4e4a",
+            "demand_sha256": "12d63f5178f54fe87e33b713ba58ef96c5eaa23a444795f9c5d9f917364e8933",
+            "fulfillment_sha256": "b099d01e557404a0141e070f93d08cc8badd9c6e29d3895b20ac301440176565",
+            "emergency_price_sha256": "d87e5722f8bcf420a286940813a2fbc8b35fb43b8a08d74190c5f3f873076d79",
+            "emergency_supply_sha256": "5b5ec4ebcd3b367ea948cf17cd9fbbef378287ebdc09e339dbf7511fa2c5ae39",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 27194.409756943653,
+              "subprocess_wall_seconds": 2.0962383000005502,
+              "sampled_peak_RSS_MiB": 110.35546875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 27194.409756943656,
+              "subprocess_wall_seconds": 2.50497519999044,
+              "sampled_peak_RSS_MiB": 83.65234375,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 3,
+              "final_scenario_pool_size": 4,
+              "transferred_exact_scenarios": [
+                "s0032"
+              ],
+              "transferred_exact_scenario_count": 1,
+              "transferred_scenario_reuse_rate": 0.3333333333333333,
+              "transferred_scenarios_becoming_active_or_worst_count": 1
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 27194.409756943656,
+              "subprocess_wall_seconds": 2.4424543000059202,
+              "sampled_peak_RSS_MiB": 83.5859375,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 3,
+              "final_scenario_pool_size": 4,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 3.637978807091713e-12
+        }
+      ]
+    },
+    {
+      "run_id": "m2ap_pilot_v1_1_20260825_M2AP2_pilot_seed2026091002_profileC0",
+      "case_id": "M2AP2_pilot_seed2026091002_profileC0",
+      "tier_id": "M2AP2",
+      "execution_mode": "pilot",
+      "seed": 2026091002,
+      "profile_id": "C0",
+      "status": "optimal",
+      "planned_algorithm_solve_count": 6,
+      "completed_algorithm_solve_count": 6,
+      "result_sha256": "7208e577466e40fbd603d2b7887c448c416958592f22b43ef26d61e41c482f4c",
+      "manifest_sha256": "7b34255f771d8fd9f193256747e61d6a4582342ac5ff9feef91114ef68f1bed1",
+      "status_summary_sha256": "209b23e14dbf64627916f0ac91555aee78a109b9860d4e593f240b662a172af0",
+      "comparisons": [
+        {
+          "budget_index": 0,
+          "beta": 1.1,
+          "budget": 2571.372016574617,
+          "execution_order": [
+            "extensive",
+            "cold",
+            "warm"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "aec7ee5f5c899294ae3c1d06266db3ebca3deab7162c2a3dfa185fd4c43e6e9b",
+          "component_set_sha256": {
+            "latent_draw_sha256": "947a4c00e017f647f19b3abea3d2ef4e1296a9212bcce9140f74504e015a1b12",
+            "demand_sha256": "c5b0dc83dff1fbcadb6fda8834ef327dc7e0276a863e2dfc8edd566a65398a67",
+            "fulfillment_sha256": "222acb23db7f37c5009ee8ed6f294ae45abf1f0ead44c4aea4f77b76379b5539",
+            "emergency_price_sha256": "ed7110f27b7071b29128aa2f4c1164863c68fbb5e717484ea16a7e833176f015",
+            "emergency_supply_sha256": "8074e8cd295af57414036780b50edc7ed252006e6e9f47aa54401ad6178e1aaf",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 13144.573629908857,
+              "subprocess_wall_seconds": 2.1001845999853685,
+              "sampled_peak_RSS_MiB": 109.86328125,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 13144.573629908857,
+              "subprocess_wall_seconds": 2.4449054999859072,
+              "sampled_peak_RSS_MiB": 84.1953125,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 4,
+              "final_scenario_pool_size": 5,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 13144.573629908857,
+              "subprocess_wall_seconds": 2.4676427000085823,
+              "sampled_peak_RSS_MiB": 84.13671875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 4,
+              "final_scenario_pool_size": 5,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 0.0
+        },
+        {
+          "budget_index": 1,
+          "beta": 1.3,
+          "budget": 3038.894201406366,
+          "execution_order": [
+            "extensive",
+            "warm",
+            "cold"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "aec7ee5f5c899294ae3c1d06266db3ebca3deab7162c2a3dfa185fd4c43e6e9b",
+          "component_set_sha256": {
+            "latent_draw_sha256": "947a4c00e017f647f19b3abea3d2ef4e1296a9212bcce9140f74504e015a1b12",
+            "demand_sha256": "c5b0dc83dff1fbcadb6fda8834ef327dc7e0276a863e2dfc8edd566a65398a67",
+            "fulfillment_sha256": "222acb23db7f37c5009ee8ed6f294ae45abf1f0ead44c4aea4f77b76379b5539",
+            "emergency_price_sha256": "ed7110f27b7071b29128aa2f4c1164863c68fbb5e717484ea16a7e833176f015",
+            "emergency_supply_sha256": "8074e8cd295af57414036780b50edc7ed252006e6e9f47aa54401ad6178e1aaf",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 3577.443653908221,
+              "subprocess_wall_seconds": 2.04578310000943,
+              "sampled_peak_RSS_MiB": 111.98046875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 3577.443653908225,
+              "subprocess_wall_seconds": 3.2838973000179976,
+              "sampled_peak_RSS_MiB": 85.3203125,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 5,
+              "final_scenario_pool_size": 7,
+              "transferred_exact_scenarios": [
+                "s0003",
+                "s0007"
+              ],
+              "transferred_exact_scenario_count": 2,
+              "transferred_scenario_reuse_rate": 0.4,
+              "transferred_scenarios_becoming_active_or_worst_count": 2
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 3577.443653908225,
+              "subprocess_wall_seconds": 4.053376099996967,
+              "sampled_peak_RSS_MiB": 86.13671875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 4,
+              "final_scenario_pool_size": 7,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 3.637978807091713e-12
+        }
+      ]
+    },
+    {
+      "run_id": "m2ap_pilot_v1_1_20260825_M2AP2_pilot_seed2026091002_profileT03",
+      "case_id": "M2AP2_pilot_seed2026091002_profileT03",
+      "tier_id": "M2AP2",
+      "execution_mode": "pilot",
+      "seed": 2026091002,
+      "profile_id": "T03",
+      "status": "optimal",
+      "planned_algorithm_solve_count": 6,
+      "completed_algorithm_solve_count": 6,
+      "result_sha256": "8a6f163daa9e5e2c7f7fb0236559606e76c2c1a6645bc06861527a2d5a71db77",
+      "manifest_sha256": "792a75b81ba86f73b1ea94869790d447f2c292641c5fccd1ffb8c4d79bf081f2",
+      "status_summary_sha256": "4f1f2df63190407cbb267fed89a6301c9631bf643d7f7177bb669dca37856580",
+      "comparisons": [
+        {
+          "budget_index": 0,
+          "beta": 1.1,
+          "budget": 2571.372016574617,
+          "execution_order": [
+            "extensive",
+            "cold",
+            "warm"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "9fc3dddf3875952038f0fa3f0b31a834178d6158a651923865508c6387158b2f",
+          "component_set_sha256": {
+            "latent_draw_sha256": "947a4c00e017f647f19b3abea3d2ef4e1296a9212bcce9140f74504e015a1b12",
+            "demand_sha256": "c5b0dc83dff1fbcadb6fda8834ef327dc7e0276a863e2dfc8edd566a65398a67",
+            "fulfillment_sha256": "aecb1c317711dd2f1b60c8d17d3733bc685e0a39a56fd1187e063a9f7a0bdbb2",
+            "emergency_price_sha256": "ed7110f27b7071b29128aa2f4c1164863c68fbb5e717484ea16a7e833176f015",
+            "emergency_supply_sha256": "8074e8cd295af57414036780b50edc7ed252006e6e9f47aa54401ad6178e1aaf",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 22992.592175079266,
+              "subprocess_wall_seconds": 2.0392683999962173,
+              "sampled_peak_RSS_MiB": 110.61328125,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 22992.59217507927,
+              "subprocess_wall_seconds": 4.053564200003166,
+              "sampled_peak_RSS_MiB": 86.65625,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 4,
+              "final_scenario_pool_size": 7,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 22992.59217507927,
+              "subprocess_wall_seconds": 3.9969391000049654,
+              "sampled_peak_RSS_MiB": 85.69921875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 4,
+              "final_scenario_pool_size": 7,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 3.637978807091713e-12
+        },
+        {
+          "budget_index": 1,
+          "beta": 1.3,
+          "budget": 3038.894201406366,
+          "execution_order": [
+            "extensive",
+            "warm",
+            "cold"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "9fc3dddf3875952038f0fa3f0b31a834178d6158a651923865508c6387158b2f",
+          "component_set_sha256": {
+            "latent_draw_sha256": "947a4c00e017f647f19b3abea3d2ef4e1296a9212bcce9140f74504e015a1b12",
+            "demand_sha256": "c5b0dc83dff1fbcadb6fda8834ef327dc7e0276a863e2dfc8edd566a65398a67",
+            "fulfillment_sha256": "aecb1c317711dd2f1b60c8d17d3733bc685e0a39a56fd1187e063a9f7a0bdbb2",
+            "emergency_price_sha256": "ed7110f27b7071b29128aa2f4c1164863c68fbb5e717484ea16a7e833176f015",
+            "emergency_supply_sha256": "8074e8cd295af57414036780b50edc7ed252006e6e9f47aa54401ad6178e1aaf",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 15797.636149793623,
+              "subprocess_wall_seconds": 2.09049750000122,
+              "sampled_peak_RSS_MiB": 115.421875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 15797.63614979362,
+              "subprocess_wall_seconds": 1.674750900012441,
+              "sampled_peak_RSS_MiB": 83.3125,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 7,
+              "final_scenario_pool_size": 7,
+              "transferred_exact_scenarios": [
+                "s0003",
+                "s0015",
+                "s0028",
+                "s0039"
+              ],
+              "transferred_exact_scenario_count": 4,
+              "transferred_scenario_reuse_rate": 0.5714285714285714,
+              "transferred_scenarios_becoming_active_or_worst_count": 4
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 15797.63614979362,
+              "subprocess_wall_seconds": 4.003452100005234,
+              "sampled_peak_RSS_MiB": 85.41796875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 4,
+              "final_scenario_pool_size": 7,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 3.637978807091713e-12
+        }
+      ]
+    },
+    {
+      "run_id": "m2ap_pilot_v1_1_20260825_M2AP2_pilot_seed2026091003_profileC0",
+      "case_id": "M2AP2_pilot_seed2026091003_profileC0",
+      "tier_id": "M2AP2",
+      "execution_mode": "pilot",
+      "seed": 2026091003,
+      "profile_id": "C0",
+      "status": "optimal",
+      "planned_algorithm_solve_count": 6,
+      "completed_algorithm_solve_count": 6,
+      "result_sha256": "79ec9ec0613497bd9f17a7d856771badae5f6d7b6358558d294febda9c570b7c",
+      "manifest_sha256": "6ea979cd7ff38d818ce1d8f53489b70b6d3dd4ba07016943632faa352025dafb",
+      "status_summary_sha256": "5dad9bad63fe9881d665fbb0eb7940101e5256e9c2eb26f3f493d1ad8a6eeba4",
+      "comparisons": [
+        {
+          "budget_index": 0,
+          "beta": 1.1,
+          "budget": 2571.372016574617,
+          "execution_order": [
+            "extensive",
+            "cold",
+            "warm"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "a5cd2760cea2a566a96128f08e713de5aced8cb65b30b5caeec5a01876adfd7f",
+          "component_set_sha256": {
+            "latent_draw_sha256": "c80131d9da08c953edf4b082463365871088220b56585cfa5b0c56a69171f130",
+            "demand_sha256": "26bdc075068d5b883a851172d6c4d3f692b0077ae2934ed131e2295140654535",
+            "fulfillment_sha256": "222acb23db7f37c5009ee8ed6f294ae45abf1f0ead44c4aea4f77b76379b5539",
+            "emergency_price_sha256": "7bfb8e8667de533384c9ccfcda58a0c8429e004ca1bebb2645ab51eebec194ab",
+            "emergency_supply_sha256": "6e663c9bcc8e3efeca066b0f6f69bac7320d2a5821551c212714c52c40a8dca2",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 64110.15847299417,
+              "subprocess_wall_seconds": 2.0413829000026453,
+              "sampled_peak_RSS_MiB": 115.3984375,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 64110.15847299417,
+              "subprocess_wall_seconds": 1.6646724000165705,
+              "sampled_peak_RSS_MiB": 82.5859375,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 2,
+              "final_scenario_pool_size": 2,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 64110.15847299417,
+              "subprocess_wall_seconds": 1.6668324999918696,
+              "sampled_peak_RSS_MiB": 82.41796875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 2,
+              "final_scenario_pool_size": 2,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 0.0
+        },
+        {
+          "budget_index": 1,
+          "beta": 1.3,
+          "budget": 3038.894201406366,
+          "execution_order": [
+            "extensive",
+            "warm",
+            "cold"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "a5cd2760cea2a566a96128f08e713de5aced8cb65b30b5caeec5a01876adfd7f",
+          "component_set_sha256": {
+            "latent_draw_sha256": "c80131d9da08c953edf4b082463365871088220b56585cfa5b0c56a69171f130",
+            "demand_sha256": "26bdc075068d5b883a851172d6c4d3f692b0077ae2934ed131e2295140654535",
+            "fulfillment_sha256": "222acb23db7f37c5009ee8ed6f294ae45abf1f0ead44c4aea4f77b76379b5539",
+            "emergency_price_sha256": "7bfb8e8667de533384c9ccfcda58a0c8429e004ca1bebb2645ab51eebec194ab",
+            "emergency_supply_sha256": "6e663c9bcc8e3efeca066b0f6f69bac7320d2a5821551c212714c52c40a8dca2",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 54277.54673785503,
+              "subprocess_wall_seconds": 2.0280023000086658,
+              "sampled_peak_RSS_MiB": 110.13671875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 54277.54673785503,
+              "subprocess_wall_seconds": 1.67893580000964,
+              "sampled_peak_RSS_MiB": 82.375,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 2,
+              "final_scenario_pool_size": 2,
+              "transferred_exact_scenarios": [
+                "s0030"
+              ],
+              "transferred_exact_scenario_count": 1,
+              "transferred_scenario_reuse_rate": 0.5,
+              "transferred_scenarios_becoming_active_or_worst_count": 1
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 54277.54673785503,
+              "subprocess_wall_seconds": 1.734418399981223,
+              "sampled_peak_RSS_MiB": 82.421875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 2,
+              "final_scenario_pool_size": 2,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 0.0
+        }
+      ]
+    },
+    {
+      "run_id": "m2ap_pilot_v1_1_20260825_M2AP2_pilot_seed2026091003_profileT03",
+      "case_id": "M2AP2_pilot_seed2026091003_profileT03",
+      "tier_id": "M2AP2",
+      "execution_mode": "pilot",
+      "seed": 2026091003,
+      "profile_id": "T03",
+      "status": "optimal",
+      "planned_algorithm_solve_count": 6,
+      "completed_algorithm_solve_count": 6,
+      "result_sha256": "8fdc25b68f98ded62d2b916a90d03ee259ef2e0774f5de664464beddc1905895",
+      "manifest_sha256": "ac8876098afb7e235a9f40d04742a6f360e62a38fbcfdee870815964cfbe195f",
+      "status_summary_sha256": "cdc4f409451197e3ed0453fe05ff616be0155ee59bb68513b2936e9740576d2f",
+      "comparisons": [
+        {
+          "budget_index": 0,
+          "beta": 1.1,
+          "budget": 2571.372016574617,
+          "execution_order": [
+            "extensive",
+            "cold",
+            "warm"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "e4abd1467846f4b48cf59ba8f818fc8f4cd276a9d3a1d1a41e68affbbede5c29",
+          "component_set_sha256": {
+            "latent_draw_sha256": "c80131d9da08c953edf4b082463365871088220b56585cfa5b0c56a69171f130",
+            "demand_sha256": "26bdc075068d5b883a851172d6c4d3f692b0077ae2934ed131e2295140654535",
+            "fulfillment_sha256": "1d8168de5274f96227109351c1516e619fbab5b86f7c1876321aab63734cf30e",
+            "emergency_price_sha256": "7bfb8e8667de533384c9ccfcda58a0c8429e004ca1bebb2645ab51eebec194ab",
+            "emergency_supply_sha256": "6e663c9bcc8e3efeca066b0f6f69bac7320d2a5821551c212714c52c40a8dca2",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 77800.21230911395,
+              "subprocess_wall_seconds": 2.0391589000064414,
+              "sampled_peak_RSS_MiB": 108.67578125,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 77800.21230911395,
+              "subprocess_wall_seconds": 1.7332659999956377,
+              "sampled_peak_RSS_MiB": 84.0625,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 2,
+              "final_scenario_pool_size": 2,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 77800.21230911395,
+              "subprocess_wall_seconds": 1.6817838000133634,
+              "sampled_peak_RSS_MiB": 82.4296875,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 2,
+              "final_scenario_pool_size": 2,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 0.0
+        },
+        {
+          "budget_index": 1,
+          "beta": 1.3,
+          "budget": 3038.894201406366,
+          "execution_order": [
+            "extensive",
+            "warm",
+            "cold"
+          ],
+          "status": "optimal",
+          "joint_scenario_set_sha256": "e4abd1467846f4b48cf59ba8f818fc8f4cd276a9d3a1d1a41e68affbbede5c29",
+          "component_set_sha256": {
+            "latent_draw_sha256": "c80131d9da08c953edf4b082463365871088220b56585cfa5b0c56a69171f130",
+            "demand_sha256": "26bdc075068d5b883a851172d6c4d3f692b0077ae2934ed131e2295140654535",
+            "fulfillment_sha256": "1d8168de5274f96227109351c1516e619fbab5b86f7c1876321aab63734cf30e",
+            "emergency_price_sha256": "7bfb8e8667de533384c9ccfcda58a0c8429e004ca1bebb2645ab51eebec194ab",
+            "emergency_supply_sha256": "6e663c9bcc8e3efeca066b0f6f69bac7320d2a5821551c212714c52c40a8dca2",
+            "scenario_order_sha256": "c4247742f6ccddbbe3cd0cf504df0bed0731d4781ead0237a44ea86b7c23c6a4"
+          },
+          "methods": {
+            "extensive": {
+              "status": "optimal",
+              "objective": 70484.2484563812,
+              "subprocess_wall_seconds": 2.0423652000026777,
+              "sampled_peak_RSS_MiB": 114.3984375,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 0,
+              "final_scenario_pool_size": 0,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            },
+            "warm": {
+              "status": "optimal",
+              "objective": 70484.2484563812,
+              "subprocess_wall_seconds": 1.6658649000164587,
+              "sampled_peak_RSS_MiB": 82.59765625,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 2,
+              "final_scenario_pool_size": 2,
+              "transferred_exact_scenarios": [
+                "s0030"
+              ],
+              "transferred_exact_scenario_count": 1,
+              "transferred_scenario_reuse_rate": 0.5,
+              "transferred_scenarios_becoming_active_or_worst_count": 1
+            },
+            "cold": {
+              "status": "optimal",
+              "objective": 70484.2484563812,
+              "subprocess_wall_seconds": 1.6804503000166733,
+              "sampled_peak_RSS_MiB": 82.515625,
+              "exact_oracle_scenario_count": 50,
+              "initial_scenario_pool_size": 2,
+              "final_scenario_pool_size": 2,
+              "transferred_exact_scenarios": [],
+              "transferred_exact_scenario_count": 0,
+              "transferred_scenario_reuse_rate": 0.0,
+              "transferred_scenarios_becoming_active_or_worst_count": 0
+            }
+          },
+          "maximum_objective_difference": 0.0
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "required_primary_sequence_count": 6,
+    "completed_primary_sequence_count": 6,
+    "required_budget_pair_count": 12,
+    "completed_budget_pair_count": 12,
+    "required_algorithm_solve_count": 36,
+    "completed_algorithm_solve_count": 36,
+    "maximum_three_method_objective_difference": 3.637978807091713e-12,
+    "missing_case_ids": [],
+    "duplicate_case_ids": [],
+    "failed_primary_run_ids": [],
+    "invalid_primary_runs": [],
+    "diagnostic_run_ids": [],
+    "common_random_number_mismatches": [],
+    "total_transferred_exact_scenario_count": 10,
+    "total_transferred_scenarios_becoming_active_or_worst_count": 10,
+    "formal_compute_projection": {
+      "status": "projected",
+      "method": "240_times_maximum_pilot_CCG_worker_seconds",
+      "planned_formal_algorithm_execution_count": 240,
+      "conservative_seconds_per_execution": 4.053564200003166,
+      "projected_wall_hours": 0.2702376133335444,
+      "maximum_sampled_peak_RSS_MiB": 115.421875
+    },
+    "pilot_compute_gate_passed": true,
+    "formal_authorized": false
+  },
+  "execution_boundaries": {
+    "M0_E3_additional_runs": 0,
+    "M2_mechanism_additional_runs": 0,
+    "M2_OOS_additional_runs": 0,
+    "M2_1_additional_runs": 0,
+    "formal_algorithm_executions": 0
+  },
+  "CI": "recorded_in_pr_body"
+}
