@@ -1,11 +1,11 @@
 {
   "audit_id": "phase6_m2_algorithm_performance_design_v1_0",
-  "status": "candidate_design_pending_review",
+  "status": "frozen_for_runner_implementation",
   "base_main_commit": "95e4a25452a47ba83e238d49a794fb236c51b0a6",
   "base_main_tree": "28daa90572a76446f1701fc0817e386fd685f4b5",
   "design_config": {
     "path": "configs/phase6_m2_algorithm_performance_design_v1_0.yaml",
-    "sha256": "2c5fda31262af1522a8719044c9b4126e70c920b65ff8f3b8c382b5d6fdf1f49"
+    "sha256": "f78fae4652c24e438b09424343340b2b3fa2c1370156f38d1946d9e25e9d8855"
   },
   "parent_evidence": {
     "M2_formal_mechanism_results": {
@@ -106,7 +106,7 @@
     "M2_1_additional_runs": 0
   },
   "authorization": {
-    "runner_implemented": false,
+    "runner_implemented": true,
     "pilot_authorized": false,
     "formal_authorized": false
   },

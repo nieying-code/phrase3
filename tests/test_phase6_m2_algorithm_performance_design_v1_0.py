@@ -19,7 +19,7 @@ M0_PARENT = ROOT / "docs/handoffs/2026-08-23_phase6_m0_e3_algorithm_performance_
 MATRIX = ROOT / "configs/phase6_experiment_matrix.yaml"
 M2C2 = ROOT / "configs/phase6_m2_two_item_confirmation.yaml"
 
-CONFIG_SHA256 = "2c5fda31262af1522a8719044c9b4126e70c920b65ff8f3b8c382b5d6fdf1f49"
+CONFIG_SHA256 = "f78fae4652c24e438b09424343340b2b3fa2c1370156f38d1946d9e25e9d8855"
 M2_PARENT_SHA256 = "bce5b075d352a4679b4371a073f5cc0a931a6b309b401318e9f4c38a8a7489a5"
 M0_PARENT_SHA256 = "cec805c4b414a9ebbfd0ebbb80990d85016873dbc974eea2e7f9f0ef172e2e54"
 PILOT = tuple(range(2026091001, 2026091004))
@@ -90,7 +90,7 @@ def test_seed_sets_are_exact_disjoint_and_not_reused() -> None:
 
     selected = {str(value) for value in PILOT + FORMAL}
     observed: set[str] = set()
-    marker = "phase6_m2_algorithm_performance_design_v1_0"
+    marker = "phase6_m2_algorithm_performance"
     for folder in (ROOT / "configs", ROOT / "docs", ROOT / "src", ROOT / "tests"):
         for path in folder.rglob("*"):
             if not path.is_file() or marker in path.name:
@@ -212,7 +212,7 @@ def test_design_only_state_has_no_execution_authority() -> None:
     boundaries = config["execution_boundaries"]
 
     assert boundaries == {
-        "runner_implemented": False,
+        "runner_implemented": True,
         "pilot_authorized": False,
         "formal_authorized": False,
         "scenario_generation_count": 0,
@@ -230,12 +230,12 @@ def test_design_only_state_has_no_execution_authority() -> None:
         "runner_implemented", "pilot_authorized", "formal_authorized"
     }}
     assert audit["authorization"] == {
-        "runner_implemented": False,
+        "runner_implemented": True,
         "pilot_authorized": False,
         "formal_authorized": False,
     }
-    assert not (ROOT / "src/phase6_m2_algorithm_performance.py").exists()
-    assert not (ROOT / "src/run_phase6_m2_algorithm_performance.py").exists()
+    assert (ROOT / "src/phase6_m2_algorithm_performance.py").is_file()
+    assert (ROOT / "src/run_phase6_m2_algorithm_performance.py").is_file()
     assert config["execution_sequence_and_stop_boundaries"][
         "no_stage_may_start_before_previous_review_is_merged_and_explicitly_authorized"
     ] is True
