@@ -60,6 +60,10 @@ class FormalCase:
     profile_id: str
 
 
+class FormalEvidenceError(RuntimeError):
+    """An optimal-looking worker/result failed frozen evidence validation."""
+
+
 def build_formal_cases(design: Mapping[str, Any]) -> tuple[FormalCase, ...]:
     seeds = tuple(int(v) for v in design["seed_protocol"]["formal_performance_seeds"])
     profiles = tuple(str(v) for v in design["profiles"])
@@ -298,6 +302,52 @@ def _method_metrics(row: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def _validate_second_budget_transfer(
+    row: Mapping[str, Any], prior: Mapping[str, Any], *,
+    source_budget: float, active_tolerance: float,
+) -> None:
+    if row.get("transfer_source_state_sha256") != _canonical_sha(prior):
+        raise ValueError("formal warm repetition source mismatch")
+    if not math.isclose(
+        float(row.get("transfer_source_budget", math.nan)),
+        source_budget, rel_tol=0.0, abs_tol=1.0e-9,
+    ):
+        raise ValueError("formal warm repetition source budget mismatch")
+    initial_pool = list(row.get("initial_scenarios", []))
+    reusable = set(prior["active_scenarios"]) | set(
+        prior["historical_adversarial_scenarios"]
+    )
+    expected_transfer = [name for name in initial_pool if name in reusable]
+    actual_transfer = list(row.get("transferred_exact_scenarios", []))
+    if actual_transfer != expected_transfer or not expected_transfer:
+        raise ValueError("formal transferred scenarios differ from prior state")
+    if int(row.get("transferred_exact_scenario_count", -1)) != len(expected_transfer):
+        raise ValueError("formal transferred scenario count mismatch")
+    expected_rate = len(expected_transfer) / len(initial_pool)
+    if not math.isclose(
+        float(row.get("transferred_scenario_reuse_rate", math.nan)),
+        expected_rate, rel_tol=0.0, abs_tol=1.0e-12,
+    ):
+        raise ValueError("formal transferred scenario reuse rate mismatch")
+    exact_costs = row["ccg_result"]["exact_scenario_costs"]
+    worst_cost = max(float(value) for value in exact_costs.values())
+    active = {
+        name for name, value in exact_costs.items()
+        if worst_cost - float(value) <= active_tolerance
+    }
+    worst = row["ccg_result"].get("worst_scenario")
+    expected_active_or_worst = [
+        name for name in expected_transfer if name in active or name == worst
+    ]
+    if (
+        row.get("transferred_scenarios_becoming_active_or_worst")
+        != expected_active_or_worst
+        or int(row.get("transferred_scenarios_becoming_active_or_worst_count", -1))
+        != len(expected_active_or_worst)
+    ):
+        raise ValueError("formal transferred active/worst evidence mismatch")
+
+
 def _run_formal_sequence(
     *, root: Path, context: Mapping[str, Any], case: FormalCase, run_id: str,
     execution_root: Path, worker_executor: WorkerExecutor = _worker_executor,
@@ -339,11 +389,21 @@ def _run_formal_sequence(
                         raise RuntimeError(json.dumps({"terminal": terminal, "native_status": native}))
                     row = dict(row)
                     row["repetition"] = repetition
-                    _validate_worker_identity(
-                        row, case=case, algorithm=algorithm, repetition=repetition,
-                        beta=float(beta), budget=float(budget), budget_index=budget_index,
-                    )
-                    _validate_worker_evidence(row, expected_scenarios=100)
+                    try:
+                        _validate_worker_identity(
+                            row, case=case, algorithm=algorithm, repetition=repetition,
+                            beta=float(beta), budget=float(budget), budget_index=budget_index,
+                        )
+                        _validate_worker_evidence(row, expected_scenarios=100)
+                        _method_metrics(row)
+                        if budget_index == 1 and algorithm == "warm":
+                            _validate_second_budget_transfer(
+                                row, previous_states[repetition],
+                                source_budget=float(context["design"]["budget_sequence"]["budgets"][0]),
+                                active_tolerance=float(context["runner"]["ccg"]["active_scenario_tolerance"]),
+                            )
+                    except (KeyError, TypeError, ValueError) as exc:
+                        raise FormalEvidenceError(str(exc)) from exc
                     methods[algorithm].append(row)
                     if algorithm == "warm":
                         previous_states[repetition] = _build_transferred_state(
@@ -380,11 +440,21 @@ def _run_formal_sequence(
             "comparisons": comparisons, "fingerprints": context["fingerprints"],
             "execution_identity": context["synchronized_main"], "completed_at_utc": utc_now(),
         }
+        try:
+            _validate_result(result, case, context, expected_run_id=run_id)
+        except (KeyError, TypeError, ValueError) as exc:
+            raise FormalEvidenceError(str(exc)) from exc
         atomic_write_json(result_path, result); atomic_write_json(manifest_path, _manifest(result_path, result, context["fingerprints"]))
         atomic_write_json(status_path, {"status": "optimal", "run_id": run_id, "completed_algorithm_execution_count": 12, "updated_at_utc": utc_now()})
         return result
     except BaseException as exc:
-        message = str(exc); terminal = "interrupted" if isinstance(exc, KeyboardInterrupt) else ("timeout" if '"terminal": "timeout"' in message else "runner_exception")
+        message = str(exc)
+        terminal = (
+            "interrupted" if isinstance(exc, KeyboardInterrupt)
+            else "timeout" if '"terminal": "timeout"' in message
+            else "evidence_invalid" if isinstance(exc, FormalEvidenceError)
+            else "runner_exception"
+        )
         failure = {"artifact_state": "finalized", "status": terminal, "run_id": run_id, "parent_run_id": None, "case_id": case.case_id, "seed": case.seed, "profile_id": case.profile_id, "comparisons": comparisons, "exception_type": type(exc).__name__, "message": message[:4096], "fingerprints": context["fingerprints"], "execution_identity": context["synchronized_main"], "completed_at_utc": utc_now()}
         atomic_write_json(result_path, failure); atomic_write_json(manifest_path, _manifest(result_path, failure, context["fingerprints"])); atomic_write_json(status_path, {"status": terminal, "run_id": run_id, "message": message[:4096], "updated_at_utc": utc_now()})
         raise
@@ -451,15 +521,6 @@ def _validate_result(
                 component_identities.append(method_metrics["component_set_sha256"])
                 joint_identities.append(method_metrics["joint_scenario_set_sha256"])
                 executions += 1
-                if index == 1 and name == "warm":
-                    prior = prior_states[str(repetition)]
-                    if row["transfer_source_state_sha256"] != _canonical_sha(prior):
-                        raise ValueError("formal warm repetition source mismatch")
-                    if not math.isclose(
-                        float(row.get("transfer_source_budget", math.nan)),
-                        expected_budgets[0], rel_tol=0.0, abs_tol=1.0e-9,
-                    ):
-                        raise ValueError("formal warm repetition source budget mismatch")
         tolerance = _objective_tolerance(objectives, context["runner"]["objective_consistency"])
         difference = max(objectives) - min(objectives)
         if (
@@ -478,28 +539,11 @@ def _validate_result(
             raise ValueError("formal sequence regenerated different scenarios across budgets")
         if index == 1:
             for repetition, row in enumerate(methods["warm"], 1):
-                prior = prior_states[str(repetition)]
-                initial_pool = list(row.get("initial_scenarios", []))
-                reusable = set(prior["active_scenarios"]) | set(prior["historical_adversarial_scenarios"])
-                expected_transfer = [name for name in initial_pool if name in reusable]
-                actual_transfer = list(row.get("transferred_exact_scenarios", []))
-                if actual_transfer != expected_transfer or not expected_transfer:
-                    raise ValueError("formal transferred scenarios differ from prior state")
-                if int(row.get("transferred_exact_scenario_count", -1)) != len(expected_transfer):
-                    raise ValueError("formal transferred scenario count mismatch")
-                expected_rate = len(expected_transfer) / len(initial_pool)
-                if not math.isclose(float(row.get("transferred_scenario_reuse_rate", math.nan)), expected_rate, rel_tol=0.0, abs_tol=1.0e-12):
-                    raise ValueError("formal transferred scenario reuse rate mismatch")
-                exact_costs = row["ccg_result"]["exact_scenario_costs"]
-                worst_cost = max(float(value) for value in exact_costs.values())
-                active = {name for name, value in exact_costs.items() if worst_cost - float(value) <= float(context["runner"]["ccg"]["active_scenario_tolerance"])}
-                worst = row["ccg_result"].get("worst_scenario")
-                expected_active_or_worst = [name for name in expected_transfer if name in active or name == worst]
-                if (
-                    row.get("transferred_scenarios_becoming_active_or_worst") != expected_active_or_worst
-                    or int(row.get("transferred_scenarios_becoming_active_or_worst_count", -1)) != len(expected_active_or_worst)
-                ):
-                    raise ValueError("formal transferred active/worst evidence mismatch")
+                _validate_second_budget_transfer(
+                    row, prior_states[str(repetition)],
+                    source_budget=expected_budgets[0],
+                    active_tolerance=float(context["runner"]["ccg"]["active_scenario_tolerance"]),
+                )
         rebuilt_states = {
             str(repetition): _build_transferred_state(
                 row, None if index == 0 else prior_states[str(repetition)],
@@ -668,6 +712,11 @@ def update_projection(execution_root: Path, context: Mapping[str, Any]) -> dict[
     crn_mismatches=[]
     results=[value["result"] for value in derived]
     for seed in sorted({case.seed for case in context["cases"]}):
+        seed_case_ids=[case.case_id for case in context["cases"] if case.seed==seed]
+        if any(len(primary[case_id])!=1 for case_id in seed_case_ids):
+            # A not-yet-run profile is ordinary in-progress state; missing and
+            # duplicate primary collections are already reported separately.
+            continue
         paired=[result for result in results if int(result["seed"])==seed]
         if len(paired)!=2:
             crn_mismatches.append({
@@ -722,23 +771,60 @@ def update_projection(execution_root: Path, context: Mapping[str, Any]) -> dict[
     return payload
 
 
-def run_formal_batch(*, root: Path, runner_path: Path, approval_path: Path, authorize: bool, run_id_prefix: str, worker_executor: WorkerExecutor=_worker_executor) -> dict[str, Any]:
-    if not authorize: raise RuntimeError("explicit formal algorithm-performance authorization is required")
-    if SAFE_RUN_ID.fullmatch(run_id_prefix or "") is None or ".." in run_id_prefix: raise ValueError("unsafe run_id_prefix")
-    context=validate_preflight(root,runner_path,approval_path,require_authorization=True)
-    output_root=(root/context["runner"]["output_root"]).resolve()
-    if output_root.exists() and any(output_root.iterdir()): raise RuntimeError("formal output root must be empty")
-    execution_root=output_root/context["runner"]["formal_subdirectory"]; execution_root.mkdir(parents=True); registry=execution_root/"run_registry.json"
-    with exclusive_file_lock(output_root/".batch.lock",timeout_seconds=0.0):
+def run_formal_batch(
+    *, root: Path, runner_path: Path, approval_path: Path, authorize: bool,
+    run_id_prefix: str, worker_executor: WorkerExecutor = _worker_executor,
+) -> dict[str, Any]:
+    if not authorize:
+        raise RuntimeError("explicit formal algorithm-performance authorization is required")
+    if SAFE_RUN_ID.fullmatch(run_id_prefix or "") is None or ".." in run_id_prefix:
+        raise ValueError("unsafe run_id_prefix")
+    context = validate_preflight(root, runner_path, approval_path, require_authorization=True)
+    output_root = (root / context["runner"]["output_root"]).resolve()
+    if output_root.exists() and any(output_root.iterdir()):
+        raise RuntimeError("formal output root must be empty")
+    execution_root = output_root / context["runner"]["formal_subdirectory"]
+    execution_root.mkdir(parents=True)
+    registry = execution_root / "run_registry.json"
+    blocker_fields = (
+        "duplicate_case_ids", "failed_primary_run_ids", "invalid_primary_runs",
+        "diagnostic_run_ids", "common_random_number_mismatches",
+    )
+    with exclusive_file_lock(output_root / ".batch.lock", timeout_seconds=0.0):
         for case in context["cases"]:
-            run_id=f"{run_id_prefix}_{case.case_id}"
+            run_id = f"{run_id_prefix}_{case.case_id}"
             try:
-                result=_run_formal_sequence(root=root,context=context,case=case,run_id=run_id,execution_root=execution_root,worker_executor=worker_executor)
-                rows=_registry(registry); rows.append({"run_id":run_id,"parent_run_id":None,"case_id":case.case_id,"seed":case.seed,"profile_id":case.profile_id,"status":result["status"]}); atomic_write_json(registry,{"namespace":NAMESPACE,"runs":rows}); update_projection(execution_root,context)
+                result = _run_formal_sequence(
+                    root=root, context=context, case=case, run_id=run_id,
+                    execution_root=execution_root, worker_executor=worker_executor,
+                )
+                rows = _registry(registry)
+                rows.append({
+                    "run_id": run_id, "parent_run_id": None,
+                    "case_id": case.case_id, "seed": case.seed,
+                    "profile_id": case.profile_id, "status": result["status"],
+                })
+                atomic_write_json(registry, {"namespace": NAMESPACE, "runs": rows})
+                projection = update_projection(execution_root, context)
+                if any(projection[field] for field in blocker_fields):
+                    raise FormalEvidenceError(
+                        "formal projection found invalid evidence after primary finalization"
+                    )
             except BaseException:
-                rows=_registry(registry); status=json.loads((execution_root/"runs"/run_id/"status_summary.json").read_text())["status"]
-                rows.append({"run_id":run_id,"parent_run_id":None,"case_id":case.case_id,"seed":case.seed,"profile_id":case.profile_id,"status":status}); atomic_write_json(registry,{"namespace":NAMESPACE,"runs":rows}); update_projection(execution_root,context); raise
-        return update_projection(execution_root,context)
+                rows = _registry(registry)
+                if not any(row.get("run_id") == run_id for row in rows):
+                    status = json.loads(
+                        (execution_root / "runs" / run_id / "status_summary.json").read_text()
+                    )["status"]
+                    rows.append({
+                        "run_id": run_id, "parent_run_id": None,
+                        "case_id": case.case_id, "seed": case.seed,
+                        "profile_id": case.profile_id, "status": status,
+                    })
+                    atomic_write_json(registry, {"namespace": NAMESPACE, "runs": rows})
+                update_projection(execution_root, context)
+                raise
+        return update_projection(execution_root, context)
 
 
 def read_status(path: Path, maximum_bytes: int=16384) -> dict[str, Any]:

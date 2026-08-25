@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from src.phase6_m2_algorithm_performance_formal import (
-    FormalCase, _run_formal_sequence, _validate_result, build_formal_cases,
+    FormalCase, FormalEvidenceError, _run_formal_sequence, _validate_result, build_formal_cases,
     compute_formal_statistics, read_status,
     run_formal_batch, update_projection, validate_preflight, validate_static_freeze,
 )
@@ -44,6 +44,27 @@ def _context(tmp_path):
     static=validate_static_freeze(ROOT,RUNNER,APPROVAL)
     static.update(fingerprints={"x":"y"},synchronized_main={"head":"1"*40},matrix={})
     return static
+
+
+def _tampered_optimal_worker(calls, *, invalid_metric=False, invalid_transfer=False):
+    execute = _fake_worker(calls)
+
+    def tampered(request, timeout, directory):
+        row = execute(request, timeout, directory)
+        if invalid_metric and len(calls) == 1:
+            row["ccg_result"]["gap"] = float("nan")
+        if (
+            invalid_transfer
+            and request["budget_index"] == 1
+            and request["algorithm"] == "warm"
+            and request["repetition"] == 1
+        ):
+            row["transferred_exact_scenarios"] = []
+            row["transferred_exact_scenario_count"] = 0
+            row["transferred_scenario_reuse_rate"] = 0.0
+        return row
+
+    return tampered
 
 
 def test_frozen_formal_matrix_is_exact_and_pending() -> None:
@@ -118,6 +139,65 @@ def test_solver_timeout_is_immutable_and_stops_sequence(tmp_path) -> None:
     assert len(calls)==2
     status=json.loads((tmp_path/"runs/timeout_case/status_summary.json").read_text())
     assert status["status"]=="timeout"
+
+
+def test_optimal_worker_with_invalid_metric_stops_before_next_solve(tmp_path) -> None:
+    calls=[]; context=_context(tmp_path); case=FormalCase("case",2026091101,"C0")
+    with pytest.raises(FormalEvidenceError):
+        _run_formal_sequence(
+            root=ROOT,context=context,case=case,run_id="invalid_metric_case",
+            execution_root=tmp_path,
+            worker_executor=_tampered_optimal_worker(calls,invalid_metric=True),
+        )
+    assert len(calls)==1
+    run_dir=tmp_path/"runs/invalid_metric_case"
+    status=json.loads((run_dir/"status_summary.json").read_text())
+    result=json.loads((run_dir/"result.json").read_text())
+    assert status["status"]=="evidence_invalid"
+    assert result["status"]=="evidence_invalid"
+
+
+def test_optimal_worker_with_invalid_transfer_stops_before_next_solve(tmp_path) -> None:
+    calls=[]; context=_context(tmp_path); case=FormalCase("case",2026091101,"T03")
+    with pytest.raises(FormalEvidenceError):
+        _run_formal_sequence(
+            root=ROOT,context=context,case=case,run_id="invalid_transfer_case",
+            execution_root=tmp_path,
+            worker_executor=_tampered_optimal_worker(calls,invalid_transfer=True),
+        )
+    assert len(calls)==7
+    status=json.loads(
+        (tmp_path/"runs/invalid_transfer_case/status_summary.json").read_text()
+    )
+    assert status["status"]=="evidence_invalid"
+
+
+def test_invalid_optimal_worker_stops_batch_before_next_primary(monkeypatch,tmp_path) -> None:
+    calls=[]; context=_context(tmp_path)
+    context["runner"]=dict(context["runner"])
+    context["runner"]["output_root"]="output"
+    context["runner"]["formal_subdirectory"]="formal"
+    context["cases"]=(
+        FormalCase("case0",2026091101,"C0"),
+        FormalCase("case1",2026091101,"T03"),
+    )
+    monkeypatch.setattr(
+        "src.phase6_m2_algorithm_performance_formal.validate_preflight",
+        lambda *args,**kwargs: context,
+    )
+    with pytest.raises(FormalEvidenceError):
+        run_formal_batch(
+            root=tmp_path,runner_path=RUNNER,approval_path=APPROVAL,
+            authorize=True,run_id_prefix="invalid_batch",
+            worker_executor=_tampered_optimal_worker(calls,invalid_metric=True),
+        )
+    assert len(calls)==1
+    registry=json.loads(
+        (tmp_path/"output/formal/run_registry.json").read_text()
+    )["runs"]
+    assert [row["case_id"] for row in registry]==["case0"]
+    assert registry[0]["status"]=="evidence_invalid"
+    assert not (tmp_path/"output/formal/runs/invalid_batch_case1").exists()
 
 
 def test_projection_closes_only_exact_20_40_240(monkeypatch,tmp_path) -> None:
