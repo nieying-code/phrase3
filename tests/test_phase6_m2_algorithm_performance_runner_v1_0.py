@@ -141,7 +141,11 @@ def test_audit_locks_runner_artifacts_fingerprints_and_zero_execution() -> None:
         "cli_sha256": ROOT / "src/run_phase6_m2_algorithm_performance.py",
         "status_module_sha256": ROOT / "src/phase6_m2_algorithm_performance_status.py",
     }
-    assert {field: _sha(path) for field, path in paths.items()} == audit["artifacts"]
+    current_artifacts = {field: _sha(path) for field, path in paths.items()}
+    assert current_artifacts.pop("approval_sha256") != audit["artifacts"]["approval_sha256"]
+    historical_artifacts = dict(audit["artifacts"])
+    historical_artifacts.pop("approval_sha256")
+    assert historical_artifacts == current_artifacts
     assert approval["approved_fingerprints"] == audit["fingerprints"]
     assert approval["artifact_sha256"] == {
         "runner_config": audit["artifacts"]["runner_config_sha256"],
@@ -155,7 +159,7 @@ def test_audit_locks_runner_artifacts_fingerprints_and_zero_execution() -> None:
         "other_tracks_authorized": False,
     }
     assert all(value == 0 for value in audit["execution_counts"].values())
-    assert approval["reviewed_runner_merge_commit"] is None
+    assert audit["safety"]["reviewed_runner_merge_commit"] is None
     assert audit["safety"]["execution_requires_main_tracking_origin_main"] is True
     assert audit["safety"]["execution_requires_HEAD_equal_fetched_origin_main"] is True
     assert audit["safety"]["execution_requires_reviewed_PR79_merge_commit_ancestor"] is True
@@ -163,15 +167,21 @@ def test_audit_locks_runner_artifacts_fingerprints_and_zero_execution() -> None:
     assert audit["safety"]["second_budget_transfer_recomputed_from_prior_state_and_must_be_nonempty"] is True
 
 
-def test_pending_approval_rejects_before_runtime_or_generation(monkeypatch) -> None:
+def test_pending_approval_rejects_before_runtime_or_generation(monkeypatch, tmp_path) -> None:
     called = False
     def forbidden(*args, **kwargs):
         nonlocal called
         called = True
         raise AssertionError("runtime preflight must not run")
     monkeypatch.setattr("src.phase6_m2_algorithm_performance.validate_gurobi_runtime", forbidden)
+    pending = yaml.safe_load(APPROVAL.read_text(encoding="utf-8"))
+    pending["status"] = "runner_frozen_pilot_pending_authorization"
+    pending["pilot_authorized"] = False
+    pending["reviewed_runner_merge_commit"] = None
+    pending_path = tmp_path / "pending_approval.yaml"
+    pending_path.write_text(yaml.safe_dump(pending, sort_keys=False), encoding="utf-8")
     with pytest.raises(RuntimeError, match="not authorized"):
-        validate_preflight(ROOT, RUNNER, APPROVAL, require_authorization=True)
+        validate_preflight(ROOT, RUNNER, pending_path, require_authorization=True)
     assert called is False
 
 
