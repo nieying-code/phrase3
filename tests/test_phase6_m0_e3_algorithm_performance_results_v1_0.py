@@ -30,7 +30,7 @@ GLOBAL_HASHES = {
     "projection_sha256": "1449284052a02e485fb32b6abf76934a2d47adaa913d0aa5fc239c069658faa1",
     "status_summary_sha256": "1449284052a02e485fb32b6abf76934a2d47adaa913d0aa5fc239c069658faa1",
     "run_artifact_mapping_sha256": "300002d21cfeb2cf20c358533a9e122e4c4ea319dde3c98a42c6c1b5d5bfc94e",
-    "technical_repetition_evidence_mapping_sha256": "e2cd28a21633f55c672606e3b3fc3ac09bf326988c7483af048d44d71d62c9d0",
+    "technical_repetition_evidence_mapping_sha256": "113ab3ff80c8cd3494054a41a3e6973f223fe8040c5f0a5104c37413f52d4633",
 }
 
 
@@ -136,13 +136,27 @@ def test_all_246_technical_repetitions_reconstruct_medians_and_source_mapping() 
     validate_compact_evidence(audit)
     evidence = audit["technical_repetition_evidence"]
     assert len(evidence) == 63
-    repetitions = [
-        repetition
-        for row in evidence
-        for repetition in row["cold_repetitions"] + row["warm_repetitions"]
-    ]
+    repetitions = []
+    middle_budget_pairs = []
+    for row in evidence:
+        by_label = {
+            f"{repetition['algorithm']}_r{repetition['repetition_index']:02d}": repetition
+            for repetition in row["cold_repetitions"] + row["warm_repetitions"]
+        }
+        repetitions.extend(by_label[label] for label in row["execution_order"])
+        expected_modes = ("cold", "warm") if row["budget_index"] % 2 == 0 else ("warm", "cold")
+        expected_order = [
+            f"{mode}_r{index:02d}"
+            for mode in expected_modes
+            for index in range(1, (3 if row["tier_id"] == "V2" else 1) + 1)
+        ]
+        assert row["execution_order"] == expected_order
+        if row["budget_index"] == 1:
+            middle_budget_pairs.append(row)
     assert len(repetitions) == 246
     assert [row["execution_index"] for row in repetitions] == list(range(1, 247))
+    assert len(middle_budget_pairs) == 21
+    assert all(row["execution_order"][0] == "warm_r01" for row in middle_budget_pairs)
     assert all(row["status"] == "optimal" for row in repetitions)
     assert all(math.isfinite(row["subprocess_wall_seconds"]) and row["subprocess_wall_seconds"] > 0 for row in repetitions)
     assert all(math.isfinite(row["objective"]) for row in repetitions)

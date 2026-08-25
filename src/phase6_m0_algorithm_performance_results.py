@@ -235,11 +235,15 @@ def validate_compact_evidence(audit: dict[str, Any]) -> None:
         cold = row["cold_repetitions"]; warm = row["warm_repetitions"]
         if len(cold) != expected_repetitions or len(warm) != expected_repetitions:
             raise ValueError("technical repetition count mismatch")
+        expected_modes = ("cold", "warm") if int(row["budget_index"]) % 2 == 0 else ("warm", "cold")
         expected_order = [
-            f"cold_r{index:02d}" for index in range(1, expected_repetitions + 1)
-        ] + [f"warm_r{index:02d}" for index in range(1, expected_repetitions + 1)]
+            f"{mode}_r{index:02d}"
+            for mode in expected_modes
+            for index in range(1, expected_repetitions + 1)
+        ]
         if row["execution_order"] != expected_order:
-            raise ValueError("frozen cold-then-warm execution order mismatch")
+            raise ValueError("frozen alternating execution order mismatch")
+        repetition_by_label: dict[str, dict[str, Any]] = {}
         for algorithm, repetitions in (("cold", cold), ("warm", warm)):
             for expected_index, repetition in enumerate(repetitions, start=1):
                 if repetition["algorithm"] != algorithm or int(repetition["repetition_index"]) != expected_index:
@@ -250,7 +254,12 @@ def validate_compact_evidence(audit: dict[str, Any]) -> None:
                 objective = float(repetition["objective"])
                 if not math.isfinite(seconds) or seconds <= 0 or not math.isfinite(objective):
                     raise ValueError("nonfinite or nonpositive technical repetition evidence")
-                execution_indices.append(int(repetition["execution_index"])); total += 1
+                repetition_by_label[f"{algorithm}_r{expected_index:02d}"] = repetition
+                total += 1
+        execution_indices.extend(
+            int(repetition_by_label[label]["execution_index"])
+            for label in expected_order
+        )
         cold_times = [float(item["subprocess_wall_seconds"]) for item in cold]
         warm_times = [float(item["subprocess_wall_seconds"]) for item in warm]
         cold_objectives = [float(item["objective"]) for item in cold]
@@ -319,22 +328,25 @@ def build_audit(*, root: Path, output_root: Path) -> tuple[dict[str, Any], list[
                 str(value)
                 for value in comparison["transferred_state"]["historical_adversarial_scenarios"]
             }
-            cold_repetitions = _compact_repetitions(
-                comparison["cold"], algorithm="cold", first_execution_index=next_execution_index,
-            )
-            next_execution_index += len(cold_repetitions)
-            warm_repetitions = _compact_repetitions(
-                comparison["warm"], algorithm="warm", first_execution_index=next_execution_index,
-            )
-            next_execution_index += len(warm_repetitions)
-            repetitions = len(cold_repetitions)
+            compact_by_mode: dict[str, list[dict[str, Any]]] = {}
+            execution_order: list[str] = []
+            for mode in comparison["execution_order"]:
+                repetitions_for_mode = _compact_repetitions(
+                    comparison[mode], algorithm=mode, first_execution_index=next_execution_index,
+                )
+                compact_by_mode[mode] = repetitions_for_mode
+                next_execution_index += len(repetitions_for_mode)
+                execution_order.extend(
+                    f"{mode}_r{index:02d}"
+                    for index in range(1, len(repetitions_for_mode) + 1)
+                )
+            cold_repetitions = compact_by_mode["cold"]
+            warm_repetitions = compact_by_mode["warm"]
             technical_repetition_evidence.append({
                 "run_id": row["run_id"], "tier_id": row["tier_id"], "seed": int(row["seed"]),
                 "budget_index": int(comparison["budget_index"]), "budget": float(comparison["budget"]),
                 "source_result_sha256": manifest["result_sha256"],
-                "execution_order": [
-                    f"cold_r{index:02d}" for index in range(1, repetitions + 1)
-                ] + [f"warm_r{index:02d}" for index in range(1, repetitions + 1)],
+                "execution_order": execution_order,
                 "cold_repetitions": cold_repetitions, "warm_repetitions": warm_repetitions,
             })
         if any(pair["objective_difference"] > pair["consistency_tolerance"] for pair in run_pairs):
@@ -360,20 +372,31 @@ def build_audit(*, root: Path, output_root: Path) -> tuple[dict[str, Any], list[
         gc.collect()
 
     tier_summaries = {tier: _tier_summary(pairs, tier) for tier in EXPECTED_TIER_RUNS}
-    flattened_repetitions = []
+    flattened_repetitions: dict[tuple[str, int, str, int], tuple[Any, ...]] = {}
     for row in technical_repetition_evidence:
         for repetition in row["cold_repetitions"] + row["warm_repetitions"]:
-            flattened_repetitions.append((
+            key = (
+                row["run_id"], int(row["budget_index"]),
+                repetition["algorithm"], int(repetition["repetition_index"]),
+            )
+            if key in flattened_repetitions:
+                raise ValueError("duplicate result-level technical repetition identity")
+            flattened_repetitions[key] = (
                 row["run_id"], row["tier_id"], int(row["seed"]), int(row["budget_index"]),
                 float(row["budget"]), repetition["algorithm"], int(repetition["repetition_index"]),
                 repetition["status"], float(repetition["objective"]),
                 float(repetition["subprocess_wall_seconds"]),
-            ))
-    performance_repetitions = [(
-        row["run_id"], row["tier_id"], int(row["seed"]), int(row["budget_index"]),
-        float(row["budget"]), row["algorithm"], int(row["repetition"]), row["status"],
-        float(row["objective"]), float(row["wall_seconds"]),
-    ) for row in performance]
+            )
+    performance_repetitions: dict[tuple[str, int, str, int], tuple[Any, ...]] = {}
+    for row in performance:
+        key = (row["run_id"], int(row["budget_index"]), row["algorithm"], int(row["repetition"]))
+        if key in performance_repetitions:
+            raise ValueError("duplicate algorithm_performance.csv repetition identity")
+        performance_repetitions[key] = (
+            row["run_id"], row["tier_id"], int(row["seed"]), int(row["budget_index"]),
+            float(row["budget"]), row["algorithm"], int(row["repetition"]), row["status"],
+            float(row["objective"]), float(row["wall_seconds"]),
+        )
     if flattened_repetitions != performance_repetitions:
         raise ValueError("result-level technical repetitions do not reproduce algorithm_performance.csv")
     artifact_mapping = {
