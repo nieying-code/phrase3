@@ -32,6 +32,20 @@ def canonical_sha(value: Any) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def _nested_equal(left: Any, right: Any) -> bool:
+    """Compare reconstructed statistics across NumPy platforms at frozen precision."""
+    if isinstance(left, Mapping) and isinstance(right, Mapping):
+        return set(left) == set(right) and all(_nested_equal(left[key], right[key]) for key in left)
+    if isinstance(left, list) and isinstance(right, list):
+        return len(left) == len(right) and all(_nested_equal(a, b) for a, b in zip(left, right, strict=True))
+    if isinstance(left, float) or isinstance(right, float):
+        try:
+            return math.isclose(float(left), float(right), rel_tol=0.0, abs_tol=1.0e-12)
+        except (TypeError, ValueError):
+            return False
+    return left == right
+
+
 def _oracle_order(row: Mapping[str, Any]) -> list[str]:
     costs = row["ccg_result"]["exact_scenario_costs"]
     return list(costs)
@@ -231,7 +245,7 @@ def validate_compact_audit(audit: Mapping[str, Any]) -> None:
     ):
         raise ValueError("formal aggregate mismatch")
     rebuilt = compute_formal_statistics(_derived(runs), correctness_gate_passed=True)
-    if rebuilt != audit["formal_statistics"]:
+    if not _nested_equal(rebuilt, audit["formal_statistics"]):
         raise ValueError("formal statistics mismatch")
     if canonical_sha(_run_mapping(runs)) != audit["global_artifacts"]["run_evidence_mapping_sha256"]:
         raise ValueError("run evidence mapping mismatch")
